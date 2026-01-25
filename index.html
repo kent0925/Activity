@@ -1460,8 +1460,8 @@
             container.innerHTML = '';
 
             const filtered = appState.events.filter(e => {
-                if (type === 'all') return isEventOpen(e);
-                return normalizeType(e.type) === type && isEventOpen(e);
+                if (type === 'all') return isEventOpen(e) && e.isActiveValue !== '';
+                return normalizeType(e.type) === type && isEventOpen(e) && e.isActiveValue !== '';
             }).sort((a, b) => {
                 // Parse dates (handle date ranges if necessary, verify ISO format)
                 const getTime = (t) => {
