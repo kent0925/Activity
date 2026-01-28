@@ -18,6 +18,9 @@
     <!-- Performance Optimizations -->
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://static.line-scdn.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js" defer></script>
@@ -1325,7 +1328,7 @@
             // Reset
             Object.values(fields).forEach(el => el.classList.add('hidden'));
             // ★ 修改這裡：預設標籤
-            document.getElementById('stat-sec-label').innerText = "贊助筆數";;
+            document.getElementById('stat-sec-label').innerText = "贊助筆數";
 
             if (e.type === 'travel') {
                 fields.travel.classList.remove('hidden');
@@ -2115,12 +2118,6 @@
                 g.add(new Option(`${i} 人`, i));
             }
         }
-        function populateCreateDropdowns() {
-            populateSelect('new-organizer-select', appState.settings.organizers);
-            const locEl = document.getElementById('new-location-select');
-            locEl.innerHTML = '<option value="">請選擇</option>';
-            appState.settings.locations.forEach(l => locEl.add(new Option(l.name, l.name)));
-        }
         function onLocationChange() {
             const val = document.getElementById('new-location-select').value;
             const loc = appState.settings.locations.find(l => l.name === val);
@@ -2804,32 +2801,6 @@
         function restoreSponsorList(str) {
             appState.sponsorList = parseSponsorData(str);
             renderSponsorList();
-        }
-
-        function restoreGuestList(str) {
-            appState.guestList = [];
-            if (!str || str === '無') { renderGuestList(); return; }
-            const entries = str.split(/[,、]\s*/);
-            entries.forEach(s => {
-                if (!s.trim()) return;
-                let parts = s.split('|');
-                let namePart = parts[0].trim();
-                let pickup = parts[1] ? parts[1].trim() : '';
-                let room = parts[2] ? parts[2].trim() : '';
-                if (pickup === '無') pickup = '';
-                if (room === '無') room = '';
-                let displayName = namePart;
-                let count = 1;
-                const match = namePart.match(/(.*?)\((\d+)\)/);
-                if (match) {
-                    displayName = match[1].trim();
-                    count = parseInt(match[2]);
-                }
-                if (displayName.includes('[')) displayName = displayName.split('[')[0].trim();
-                const id = 'g_' + Date.now() + Math.random().toString(36).substr(2, 5);
-                appState.guestList.push({ id, name: displayName, count, pickup, room });
-            });
-            renderGuestList();
         }
 
         function ensureManualCopyModalExists() {
