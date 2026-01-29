@@ -5,17 +5,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>大老二兄弟會活動報名系統</title>
-    <!-- Open Graph Tags for LIFF Preview -->
     <meta property="og:title" content="大老二兄弟會活動報名系統" />
-    <meta property="og:description" content="生活有點苦， 需要一點酒精的甜，配上兄弟間的廢話。是時候將煩惱泡進酒裡一口乾掉， 報名吧！🍻" />
+    <meta property="og:description" id="og-description" content="地球沒你照樣轉，但酒局沒你轉不動，別把自己想得太重要，快滾出來。" />
     <meta property="og:image" content="https://kent0925.github.io/test/logo.jpg" />
     <meta property="og:type" content="website" />
-    <!-- Added SEO & Branding Tags -->
-    <meta name="description" content="生活有點苦， 需要一點酒精的甜， 配上兄弟間的廢話。是時候將煩惱泡進酒裡一口乾掉， 報名吧！🍻" />
+    <!-- 新增 SEO 與品牌標籤 -->
+    <meta name="description" id="meta-description" content="地球沒你照樣轉，但酒局沒你轉不動，別把自己想得太重要，快滾出來。" />
     <meta name="theme-color" content="#06c755">
     <meta name="twitter:card" content="summary_large_image">
 
-    <!-- Performance Optimizations -->
+    <!-- 隨機 Meta 描述初始化 -->
+    <script>
+        (function () {
+            const descriptions = [
+                "地球沒你照樣轉，但酒局沒你轉不動，別把自己想得太重要，快滾出來。",
+                "別跟我談理想，你的理想不就是不用上班嗎？快來喝！",
+                "老闆不會記得你的加班，但兄弟會記得你的缺席。",
+                "再忙也就那點薪水，不如來這喝點快樂水。",
+                "不要當薪水小偷，來當酒精強盜。",
+                "已讀不回是小狗，出來喝酒是朋友。",
+                "我看你不是忙，是怕狂歡後的空虛，還是怕喝輸的恐懼？",
+                "別潛水了，出來換氣（酒精）。",
+                "你是被工作綁架，還是被老婆綁架？眨兩下眼，我帶酒去救你。",
+                "你的酒膽跟你的桃花運一樣，都是零。",
+                "不用擔心喝掛，反正你醒著也沒多聰明。",
+                "聽說你最近走養生路線？是怕喝輸還是怕吐？",
+                "你是來喝酒的，還是來參觀酒杯的？金魚都被你養得像鯨魚了。",
+                "杯底不可飼金魚，但你的杯底可以養鯊魚了。",
+                "酒量決定你的份量，看來你今天輕如鴻毛。",
+                "喝水也會胖啦，不如喝酒胖得開心點。",
+                "我都乾了，你還在舔？你是在試毒喔？",
+                "留半杯是在拜拜嗎？乾掉！",
+                "你的肝說它很無聊，需要一點刺激。",
+                "錢是身外之物，酒是體內之物，還不快來補充？",
+                "賺錢沒你的份，花錢總要有你吧？",
+                "今天不喝，明天也不會變有錢，不如喝個爽。",
+                "不要問我今天喝什麼，問你自己抗體夠不夠。",
+                "最近酒價要漲了，為了省錢，我們今晚先喝光它。",
+                "我掐指一算，你今晚五行缺酒，命裡缺我。",
+                "別把藉口講得那麼好聽，翻譯過來就是「我老了」。",
+                "你的人際關係已經岌岌可危，建議出席挽救一下。",
+                // --- 新增 30 句 ---
+                "聽說你現在出門要申請簽證？你是娶老婆還是娶海關？",
+                "你的膝蓋是用來走路的，不是用來跪算盤的。站起來，出來喝！",
+                "別跟我說你要回家倒垃圾，你就是那個垃圾，快把自己倒來這裡。",
+                "雖然你失去了自由，但至少你還有我們（喝酒）。",
+                "你的家庭地位我很清楚，今晚給你個機會當「暫時的一家之主」。",
+                "帶老婆一起來啊！還是你怕她在我們面前爆你的料？",
+                "你是灰姑娘嗎？12點前要回家？",
+                "把你的脊椎挺直了！我們的酒局，是你重振雄風的時刻。",
+                "理由那麼多，你是要出書喔？《論躲酒的一百種方法》？",
+                "不要跟我說明天有事，明天的事留給明天的那個笨蛋去煩。",
+                "你再不出來，我們就在群組直播「檢討你」。",
+                "我不想聽你的行程表，我只想看你的酒測表。",
+                "說真的，地球少了你的工作不會毀滅，但今晚少了你...酒會喝不完。",
+                "別解釋了，解釋就是掩飾，掩飾就是想喝又不敢講。",
+                "你的藉口比我的尿還多。",
+                "天氣冷是喝酒的理由，天氣熱也是喝酒的理由，你不想喝才是沒理由。",
+                "在群組打字很快，在酒桌上怎麼像個樹懶？",
+                "你的酒量如果有你的廢話一半強，我就服你。",
+                "不要只會在群組發貼圖，有種出來發酒瘋。",
+                "打字不用負責任，喝酒才要。敢不敢？",
+                "我看你打字的手速，應該是單身很久了，還不出來聯誼？",
+                "隔著螢幕都能聞到你的慫味。",
+                "你的肝是保麗龍做的喔？一碰就溶化？",
+                "長得醜沒關係，喝醉了大家看你都帥。",
+                "你的存在感太低了，快來用酒精刷一下存在感。",
+                "我不是在約你，我是在約你的錢包，人來不來無所謂，錢包來就好。",
+                "看你最近氣色不好，明顯是缺乏酒精滋潤，我是為了你的健康著想。",
+                "別把「養生」掛嘴邊，你那叫「怕死」。",
+                "你的酒量就像你的戶頭餘額，總是讓人想哭。",
+                "趁你還沒痛風之前，多喝幾杯吧。",
+                // --- 新增 21 句 ---
+                "你的「下次約」就像你的「我愛你」一樣廉價。",
+                "怕老婆罵？跟她說你是來參加「心靈成長團體」（酒精治療）。",
+                "你的肝在抗議？叫它閉嘴，今晚老闆是你，不是它。",
+                "別把壓力留給明天，把嘔吐物留給馬桶就好。",
+                "你的酒量就像你的信用，已經破產了，不差這一次透支。",
+                "你的夢想縮水了，但你的肚子變大了，不喝一杯慶祝嗎？",
+                "你的人生已經夠苦了，不差這杯苦酒，快來喝甜的。",
+                "酒精是液體的勇氣，我看你現在很缺。",
+                "你的戰鬥力剩多少？5%？快過來充電，別廢話。",
+                "膽子是放在家裡沒帶出來喔？要不要我叫車幫你送過來？",
+                "工作上的狗，酒桌上的虎。你是哪一種？證明給我看。",
+                "別當角落生物，出來當派對動物。",
+                "你的酒杯是破洞喔？怎麼過了十分鐘都沒少？",
+                "肝若不好，人生是黑白的；酒若不喝，人生是空白的。",
+                "趁還沒痛風之前，我們再乾一杯。",
+                "敬我們一事無成，卻還能聚在一起笑得像智障。",
+                "我們喝的不是酒，是中年危機的解藥。",
+                "錢沒了可以再賺，酒沒了會渴死，孰輕孰重自己想。",
+                "這一杯，敬我們逐漸後退的髮際線。",
+                "老了，朋友剩這些；醉了，真話剩這些。",
+                "沒有什麼是一頓酒解決不了的，如果有，就兩頓。"
+            ];
+            const randomDesc = descriptions[Math.floor(Math.random() * descriptions.length)];
+            document.addEventListener('DOMContentLoaded', function () {
+                // 更新 Meta 標籤
+                const ogDesc = document.getElementById('og-description');
+                const metaDesc = document.getElementById('meta-description');
+                if (ogDesc) ogDesc.setAttribute('content', randomDesc);
+                if (metaDesc) metaDesc.setAttribute('content', randomDesc);
+
+                // 同步更新首頁標語文字
+                const sloganText = document.getElementById('slogan-text');
+                if (sloganText) sloganText.innerText = randomDesc;
+            });
+        })();
+    </script>
+
+    <!-- 效能優化 (Performance Optimizations) -->
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://static.line-scdn.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,7 +154,7 @@
             scrollbar-width: none;
         }
 
-        /* Glassmorphism */
+        /* 玻璃擬態 (Glassmorphism) */
         .glass-effect {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
@@ -80,7 +179,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        /* Custom Animations */
+        /* 自定義動畫 */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -115,7 +214,7 @@
             animation: pulse-subtle 2s infinite ease-in-out;
         }
 
-        /* Detailed styling */
+        /* 詳細樣式 */
         details>summary {
             list-style: none;
             cursor: pointer;
@@ -133,7 +232,7 @@
             transform: rotate(180deg);
         }
 
-        /* Tabs */
+        /* 分頁標籤 (Tabs) */
         .filter-tab {
             transition: all 0.3s ease;
             position: relative;
@@ -145,7 +244,7 @@
             box-shadow: 0 4px 12px rgba(6, 199, 85, 0.3);
         }
 
-        /* Skeleton Loading */
+        /* 骨架屏載入效果 (Skeleton Loading) */
         .skeleton {
             background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
             background-size: 200% 100%;
@@ -162,7 +261,7 @@
             }
         }
 
-        /* Safe areas for mobile notched screens */
+        /* 行動裝置瀏海安全區域 */
         .pb-safe {
             padding-bottom: env(safe-area-inset-bottom);
         }
@@ -231,89 +330,29 @@
             </button>
             <h1 class="text-lg font-bold tracking-wide" id="header-title">活動與報名</h1>
         </div>
-        <div class="flex items-center gap-2">
-            <div class="flex items-center gap-2 bg-black/10 px-3 py-1.5 rounded-full backdrop-blur-sm"
-                id="header-user-badge">
-                <img id="header-avatar" src="https://ui-avatars.com/api/?name=Guest&background=random"
-                    class="w-5 h-5 rounded-full border border-white/50">
-                <span class="text-xs font-medium opacity-90 truncate max-w-[80px]" id="header-username">訪客</span>
-            </div>
-        </div>
     </header>
 
     <div class="max-w-md mx-auto p-4 pb-24 relative min-h-[calc(100vh-64px)]">
 
-        <div id="view-home" class="view-section space-y-6 animate-fade-in">
-            <div class="premium-gradient rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden">
+        <div id="view-home" class="view-section space-y-4 animate-fade-in">
+            <!-- Premium 區塊：標語與歷史按鈕 -->
+            <div class="premium-gradient rounded-[2rem] p-6 text-white shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
                 <div class="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full -ml-10 -mb-10 blur-2xl"></div>
 
                 <div class="relative z-10">
-                    <h2 class="text-3xl font-extrabold mb-2 tracking-tight">活動報名系統</h2>
-                    <p class="text-green-50/90 text-sm font-medium mb-6">生活有點苦， 需要一點酒精的甜， 配上兄弟間的廢話。<br>是時候將煩惱泡進酒裡一口乾掉，
-                        報名吧！🍻</p>
+                    <h2 class="text-2xl font-extrabold mb-1 tracking-tight">活動報名系統</h2>
+                    <p id="slogan-text" class="text-green-50/90 text-xs font-medium mb-4">你的人際關係已經岌岌可危，建議出席挽救一下。</p>
 
                     <button onclick="toggleHistoryView()" id="btn-history-toggle"
-                        class="glass-effect text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 hover:bg-white/20 transition-all font-semibold text-sm">
+                        class="glass-effect text-white px-4 py-2 rounded-2xl flex items-center gap-2 hover:bg-white/20 transition-all font-semibold text-sm">
                         <i data-lucide="history" class="w-4 h-4"></i>
                         <span id="history-btn-text">查看歷史活動</span>
                     </button>
                 </div>
             </div>
 
-            <div id="active-categories" class="grid grid-cols-1 gap-4">
-                <div onclick="enterCategory('general')"
-                    class="premium-card p-6 flex items-center gap-5 cursor-pointer relative overflow-hidden group">
-                    <div class="absolute left-0 top-0 bottom-0 w-2 bg-green-500"></div>
-                    <div
-                        class="bg-green-50 p-4 rounded-2xl text-green-600 group-hover:scale-110 transition-transform duration-300">
-                        <i data-lucide="users" class="w-8 h-8"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="text-xl font-bold text-gray-800">一般活動</h3>
-                        <p class="text-sm text-gray-500 mt-1">月聚會、運動會、慶生會</p>
-                    </div>
-                    <div
-                        class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-green-50 group-hover:text-green-500 transition-colors">
-                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
-                    </div>
-                </div>
-
-                <div onclick="enterCategory('banquet')"
-                    class="premium-card p-6 flex items-center gap-5 cursor-pointer relative overflow-hidden group">
-                    <div class="absolute left-0 top-0 bottom-0 w-2 bg-orange-500"></div>
-                    <div
-                        class="bg-orange-50 p-4 rounded-2xl text-orange-600 group-hover:scale-110 transition-transform duration-300">
-                        <i data-lucide="utensils" class="w-8 h-8"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="text-xl font-bold text-gray-800">大型餐會</h3>
-                        <p class="text-sm text-gray-500 mt-1">春酒、尾牙、授證典禮</p>
-                    </div>
-                    <div
-                        class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-orange-50 group-hover:text-orange-500 transition-colors">
-                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
-                    </div>
-                </div>
-
-                <div onclick="enterCategory('travel')"
-                    class="premium-card p-6 flex items-center gap-5 cursor-pointer relative overflow-hidden group">
-                    <div class="absolute left-0 top-0 bottom-0 w-2 bg-blue-500"></div>
-                    <div
-                        class="bg-blue-50 p-4 rounded-2xl text-blue-600 group-hover:scale-110 transition-transform duration-300">
-                        <i data-lucide="bus" class="w-8 h-8"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="text-xl font-bold text-gray-800">旅遊活動</h3>
-                        <p class="text-sm text-gray-500 mt-1">旅遊、家庭日、兩天一夜</p>
-                    </div>
-                    <div
-                        class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
-                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
-                    </div>
-                </div>
-            </div>
-
+            <!-- 歷史活動列表 (隱藏狀態) -->
             <div id="history-list" class="hidden space-y-4 animate-fade-in">
                 <div id="history-loading" class="hidden space-y-3">
                     <div class="h-20 bg-gray-200 rounded-xl skeleton"></div>
@@ -322,36 +361,44 @@
                 <div id="history-items" class="space-y-3"></div>
             </div>
 
-            <button onclick="showCreateView()" id="btn-create-event"
-                class="w-full premium-gradient text-white py-4 rounded-2xl shadow-lg flex justify-center items-center gap-3 hover:scale-[1.02] transition-all font-bold active:scale-95 mt-6">
-                <i data-lucide="plus-circle" class="w-6 h-6"></i>
-                <span class="text-lg">建立新活動</span>
-            </button>
+            <!-- 分類 Tab (原 view-event-list 內容) -->
+            <div id="active-event-section">
+                <div id="filter-container"
+                    class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 sticky top-[56px] pt-2 z-40 bg-gray-50/95 backdrop-blur-sm">
+                    <button onclick="switchCategory('all')" id="tab-all"
+                        class="filter-tab active px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">全部</button>
+                    <button onclick="switchCategory('general')" id="tab-general"
+                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">一般</button>
+                    <button onclick="switchCategory('banquet')" id="tab-banquet"
+                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">餐會</button>
+                    <button onclick="switchCategory('travel')" id="tab-travel"
+                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">旅遊</button>
+                </div>
+
+                <!-- 活動列表骨架屏 -->
+                <div id="event-list-loading" class="hidden space-y-3 mt-2">
+                    <div class="bg-white p-4 rounded-xl shadow-sm h-28 w-full skeleton"></div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm h-28 w-full skeleton"></div>
+                </div>
+
+                <!-- 活動卡片容器 -->
+                <div id="event-grid-container" class="grid grid-cols-1 gap-4 pb-20 mt-2"></div>
+
+                <!-- 無活動提示 -->
+                <div id="no-events-msg" class="hidden flex flex-col items-center justify-center py-16 text-gray-400">
+                    <div class="bg-gray-100 p-4 rounded-full mb-3"><i data-lucide="calendar-x" class="w-8 h-8"></i>
+                    </div>
+                    <p class="font-medium">目前沒有此類型的活動</p>
+                    <p class="text-xs text-gray-400 mt-1" id="debug-msg"></p>
+                </div>
+            </div>
         </div>
 
-        <div id="view-event-list" class="view-section hidden space-y-4">
-            <div id="filter-container"
-                class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 sticky top-[0px] pt-2 z-40 bg-gray-50/95 backdrop-blur-sm">
-                <button onclick="switchCategory('all')" id="tab-all"
-                    class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">全部</button>
-                <button onclick="switchCategory('general')" id="tab-general"
-                    class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">一般</button>
-                <button onclick="switchCategory('banquet')" id="tab-banquet"
-                    class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">餐會</button>
-                <button onclick="switchCategory('travel')" id="tab-travel"
-                    class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">旅遊</button>
-            </div>
-            <div id="event-list-loading" class="hidden space-y-3">
-                <div class="bg-white p-4 rounded-xl shadow-sm h-28 w-full skeleton"></div>
-                <div class="bg-white p-4 rounded-xl shadow-sm h-28 w-full skeleton"></div>
-            </div>
-            <div id="event-grid-container" class="grid grid-cols-1 gap-4 pb-safe"></div>
-            <div id="no-events-msg" class="hidden flex flex-col items-center justify-center py-16 text-gray-400">
-                <div class="bg-gray-100 p-4 rounded-full mb-3"><i data-lucide="calendar-x" class="w-8 h-8"></i></div>
-                <p class="font-medium">目前沒有此類型的活動</p>
-                <p class="text-xs text-gray-400 mt-1" id="debug-msg"></p>
-            </div>
-        </div>
+        <!-- FAB: 建立新活動按鈕 (固定右下角) -->
+        <button onclick="showCreateView()" id="btn-create-event"
+            class="fixed bottom-6 right-6 w-14 h-14 premium-gradient text-white rounded-full shadow-2xl flex justify-center items-center hover:scale-110 transition-all active:scale-95 z-50">
+            <i data-lucide="plus" class="w-7 h-7"></i>
+        </button>
 
         <div id="view-activity-detail" class="view-section hidden space-y-6 animate-fade-in">
             <div id="event-info-card" class="premium-card p-6 relative overflow-hidden">
@@ -832,7 +879,7 @@
 
     <script>
         // ==========================================
-        // 1. CONFIGURATION & STATE
+        // 1. 設定與狀態
         // ==========================================
 
         // ★ 請替換為您的 Google Apps Script 網址
@@ -841,7 +888,7 @@
         // ★ 請替換為您的 LIFF ID
         const LIFF_ID = "2008678090-aXTesgDK";
 
-        // State Variables
+        // 狀態變數
         let appState = {
             events: [],
             settings: { organizers: [], locations: [] },
@@ -864,7 +911,7 @@
             populateCountOptions();
             renderAddSponsorUI();
 
-            // UI Init
+            // 介面初始化
             document.getElementById('header-title').innerText = "活動與報名";
             switchView('view-home');
 
@@ -900,39 +947,34 @@
             // 更新介面顯示使用者頭像與名稱
             updateUserProfileUI();
 
-            // Fetch Data
+            // 抓取資料
             await Promise.all([fetchEvents(), fetchSettings(), fetchMyRegistrations()]);
             appState.isDataLoaded = true;
 
-            const listView = document.getElementById('view-event-list');
-            if (!listView.classList.contains('hidden')) {
-                // 使用者正在列表頁等待，立刻渲染卡片
-                renderEventGrid(appState.currentCategory);
-            }
+            // 首頁直接渲染活動列表（已移除分類頁導航邏輯）
+            appState.currentCategory = 'all';
+            renderEventGrid('all');
 
-            // Remove initial skeleton loaders if on home
+            // 若在首頁則移除初始骨架屏
             document.getElementById('history-loading').classList.add('hidden');
         };
 
         function updateUserProfileUI() {
-            document.getElementById('header-username').innerText = appState.user.displayName;
-            document.getElementById('user-name').value = appState.user.displayName;
-            document.getElementById('user-id').value = appState.user.userId;
+            // 更新使用者資訊（僅更新存在的元素）
+            const userName = document.getElementById('user-name');
+            const userId = document.getElementById('user-id');
+            const userPicture = document.getElementById('user-picture');
 
-            if (appState.user.pictureUrl) {
-                document.getElementById('header-avatar').src = appState.user.pictureUrl;
-                document.getElementById('user-picture').src = appState.user.pictureUrl;
-            }
+            if (userName) userName.value = appState.user.displayName;
+            if (userId) userId.value = appState.user.userId;
 
-            // Change badge color if logged in
-            if (appState.user.userId) {
-                document.getElementById('header-user-badge').classList.add('bg-white/20');
-                document.getElementById('header-user-badge').classList.remove('bg-black/10');
+            if (appState.user.pictureUrl && userPicture) {
+                userPicture.src = appState.user.pictureUrl;
             }
         }
 
         // ==========================================
-        // 3. API HANDLING
+        // 3. API 處理
         // ==========================================
         async function fetchEvents() {
             if (!GAS_URL) return;
@@ -949,7 +991,7 @@
             try {
                 const res = await fetch(`${GAS_URL}?action=getSettings`);
                 appState.settings = await res.json();
-                // Removed dropdown population as fields are now manual
+                // 已移除下拉選單填入邏輯（改為手動輸入）
             } catch (e) {
                 console.warn("API Error (getSettings)", e);
             }
@@ -958,7 +1000,7 @@
         async function fetchMyRegistrations() {
             if (!appState.user.userId || !GAS_URL) return;
             try {
-                // Try to fetch registrations.
+                // 嘗試抓取報名紀錄
                 const res = await fetch(`${GAS_URL}?action=getMyRegistrations&userId=${appState.user.userId}`);
                 const data = await res.json();
                 appState.myRegistrations = Array.isArray(data) ? data : [];
@@ -985,7 +1027,7 @@
                 const res = await fetch(`${GAS_URL}?action=stats&eventId=${e.id}&_=${Date.now()}`);
                 appState.currentStats = await res.json();
 
-                // Update UI numbers
+                // 更新 UI 數字
                 animateValue(totalEl, 0, appState.currentStats.totalPeople || 0, 500);
 
                 // 根據活動類型決定顯示哪個數字
@@ -1025,7 +1067,7 @@
         }
 
         // ==========================================
-        // 4. CORE LOGIC (Registration & Navigation)
+        // 4. 核心邏輯 (報名與導航)
         // ==========================================
         async function enterEventDetail(eventId) {
             const event = appState.events.find(e => e.id === eventId);
@@ -1035,30 +1077,30 @@
             showToast("正在讀取活動詳情...");
 
             appState.currentEvent = event;
-            // Clear stats immediately to prevent old data showing
+            // 立即清除統計以避免顯示舊資料
             appState.currentStats = {};
             document.getElementById('stat-total').innerText = "-";
             document.getElementById('stat-sec-val').innerText = "-";
 
-            // 1. Reset Form & UI
+            // 1. 重置表單與 UI
             resetFormState();
 
-            // 2. Navigate
+            // 2. 導航
             appState.historyStack.push('detail');
             switchView('view-activity-detail');
             document.getElementById('header-title').innerText = event.name;
 
-            // 3. Render Static Info (Initial)
+            // 3. 渲染靜態資訊 (初始)
             renderEventStaticInfo();
 
-            // 4. Parallel Fetch for Speed
-            // Use Promise.all to fetch stats and registration check concurrently
+            // 4. 平行抓取以提升速度
+            // 使用 Promise.all 同步抓取統計與檢查報名
             await Promise.all([
                 fetchStats(),
                 checkMyRegistration()
             ]);
 
-            // 5. Re-render to update dropdown stats
+            // 5. 重新渲染以更新下拉選單統計
             renderEventStaticInfo();
         }
 
@@ -1076,11 +1118,11 @@
         }
 
         function fillFormWithRecord(record) {
-            // Change UI to Update Mode
+            // 切換 UI 至更新模式
             document.getElementById('formAction').value = 'update';
             const btn = document.getElementById('submit-btn');
 
-            // Check if event is open to decide button state
+            // 檢查活動是否開放以決定按鈕狀態
             if (isEventOpen(appState.currentEvent)) {
                 btn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
                 btn.classList.replace('bg-[#06c755]', 'bg-blue-600');
@@ -1096,7 +1138,7 @@
 
             document.getElementById('form-title').innerText = "編輯您的報名";
 
-            // Map Backend Keys to Local Variables (Comprehensive Fallback)
+            // 將後端鍵值映射至本地變數 (完整備援)
             const family = parseInt(record.family || record.Family || record['眷屬'] || record['眷屬人數']) || 0;
             const tableCount = parseInt(record.tableCount || record.TableCount || record['TableCount'] || record['Table Count'] || record['認桌數量'] || record['認桌']) || 0;
             const room = record.room || record.RoomType || record['RoomType'] || record['Room Type'] || record['房型'];
@@ -1108,32 +1150,31 @@
 
             console.log("FillForm Record:", record);
 
-            // Fill Fields
+            // 填入欄位
             document.getElementById('family-count').value = family;
             if (tableCount) document.getElementById('table-count').value = tableCount;
 
-            // Travel Fields
+            // 旅遊欄位
             if (room && room !== '無') document.getElementById('room-type').value = room;
             if (pickup && pickup !== '無') document.getElementById('pickup-loc').value = pickup;
 
-            // Restore Complex Lists (Guests & Sponsors)
+            // 還原複雜列表 (來賓與贊助)
             appState.guestList = [];
 
-            // Comprehensive parsing using helper
-            // Comprehensive parsing using helper
-            // Priority: JSON > Name String > Count Fallback
+            // 完整鍵值映射 using helper
+            // 來賓處理：優先使用 JSON，其次為字串 > Count Fallback
             // ★ 修改：直接傳入整個 record 讓 parseGuestData 統一處理
             const parsedGuests = parseGuestData(record);
 
             if (parsedGuests.length > 0) {
-                // Add IDs for local state
+                // 增加本地狀態用的 ID
                 appState.guestList = parsedGuests.map(g => ({
                     ...g,
                     id: g.id || ('g_' + Date.now() + Math.random().toString(36).substr(2, 5))
                 }));
                 renderGuestList();
             } else if (guestCount > 0) {
-                // Dummy entries fallback
+                // 假資料備援
                 for (let i = 0; i < guestCount; i++) {
                     const id = 'g_' + Date.now() + Math.random().toString(36).substr(2, 5) + i;
                     appState.guestList.push({ id, name: `來賓 ${i + 1}`, count: 1, pickup: '', room: '' });
@@ -1152,7 +1193,7 @@
             const btn = document.getElementById('submit-btn');
             const originalContent = btn.innerHTML;
 
-            // Validation
+            // 驗證
             if (!validateForm()) return;
 
             btn.disabled = true;
@@ -1178,13 +1219,13 @@
             try {
                 await apiSubmit(formData);
                 showToast(formData.action === 'update' ? "更新成功！" : "報名成功！");
-                // Update local registration state
+                // 更新本地報名狀態
                 if (!appState.myRegistrations.includes(appState.currentEvent.id)) {
                     appState.myRegistrations.push(appState.currentEvent.id);
                 }
                 await fetchStats();
                 await checkMyRegistration();
-                // Re-render dropdown stats
+                // 重新渲染下拉選單統計
                 renderEventStaticInfo();
             } catch (err) {
                 showToast("發生錯誤，請重試");
@@ -1211,10 +1252,10 @@
                 });
                 showToast("已取消報名");
 
-                // Remove from local registrations
+                // 從本地報名紀錄移除
                 appState.myRegistrations = appState.myRegistrations.filter(id => id !== appState.currentEvent.id);
 
-                // Reset to clean state
+                // 重置為初始狀態
                 resetFormState();
                 await fetchStats();
                 renderEventStaticInfo(); // Update dropdowns
@@ -1237,11 +1278,11 @@
             document.getElementById('guest-list-container').innerHTML = '';
             document.getElementById('sponsor-list-container').innerHTML = '';
 
-            // Re-enable form fields
+            // 重新啟用表單欄位
             const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button');
             formInputs.forEach(el => el.disabled = false);
 
-            // Reset Button to Register Mode
+            // 重置按鈕為報名模式
             document.getElementById('formAction').value = 'register';
             const btn = document.getElementById('submit-btn');
             btn.innerHTML = '<span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>';
@@ -1251,7 +1292,7 @@
             document.getElementById('cancel-reg-btn').classList.add('hidden');
             document.getElementById('form-title').innerText = "填寫報名資料";
 
-            // Restore User Name
+            // 還原使用者名稱
             document.getElementById('user-name').value = appState.user.displayName;
         }
 
@@ -1260,27 +1301,27 @@
             // ★ 安全檢查：防止資料尚未載入時報錯
             if (!e) return;
 
-            // Text Fields
+            // 文字欄位
             document.getElementById('display-name').innerText = e.name;
             document.getElementById('display-organizer').innerText = e.organizer;
             document.getElementById('display-location').innerText = e.location;
             document.getElementById('display-address').innerText = e.address;
             document.getElementById('map-link').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.address)}`;
 
-            // Time Display
+            // 時間顯示
             const timeDiv = document.getElementById('display-time-container');
             if (e.type === 'travel' && e.time.includes('~')) {
                 const [start, end] = e.time.split('~');
-                // Use formatDateOnly instead of formatDate for travel
+                // 旅遊活動使用日期專用格式
                 timeDiv.innerHTML = `<div class="flex flex-col text-sm"><span class="text-green-700 font-bold">起：${formatDateOnly(start)}</span><span class="text-red-700 font-bold">止：${formatDateOnly(end)}</span></div>`;
             } else {
                 timeDiv.innerText = formatDate(e.time);
             }
 
-            // Check if Closed -> Disable Form
+            // 檢查是否關閉 -> 停用表單
             const isOpen = isEventOpen(e);
             if (!isOpen) {
-                // Disable all inputs in form
+                // 停用表單內所有輸入框
                 const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button');
                 formInputs.forEach(el => el.disabled = true);
 
@@ -1290,13 +1331,13 @@
                 btn.disabled = true;
             }
 
-            // Deadline
+            // 截止日期
             if (e.deadline) {
                 const isExpired = new Date() > new Date(e.deadline);
                 const color = isExpired ? "text-red-500 font-bold" : "text-gray-400";
                 timeDiv.innerHTML += `<div class="mt-1 pt-1 border-t border-gray-100 text-xs ${color} flex items-center gap-1"><i data-lucide="hourglass" class="w-3 h-3"></i> 截止：${formatDate(e.deadline)}</div>`;
 
-                if (isExpired && isOpen) { // Only show expired if event is technically still "open" but past deadline
+                if (isExpired && isOpen) { // 僅在活動仍開放但已過截止時間時顯示
                     const btn = document.getElementById('submit-btn');
                     btn.disabled = true;
                     btn.innerText = "報名已截止";
@@ -1305,7 +1346,7 @@
                 }
             }
 
-            // Status Toggle Button - Permission Check
+            // 狀態切換按鈕 - 權限檢查
             const managerControls = document.getElementById('manager-controls');
             if (appState.user.userId && e.creatorId && appState.user.userId === e.creatorId) {
                 managerControls.classList.remove('hidden');
@@ -1317,7 +1358,7 @@
             statusBtn.className = `text-xs px-3 py-1.5 rounded-full font-bold border transition flex items-center gap-1 ${isOpen ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'}`;
             statusBtn.innerHTML = isOpen ? '<i data-lucide="stop-circle" class="w-3 h-3"></i> 關閉活動' : '<i data-lucide="play-circle" class="w-3 h-3"></i> 開啟活動';
 
-            // Fields Visibility
+            // 欄位顯示狀態
             const fields = {
                 travel: document.getElementById('field-travel'),
                 banquet: document.getElementById('field-banquet'),
@@ -1325,7 +1366,7 @@
                 guestTravel: document.getElementById('guest-travel-options')
             };
 
-            // Reset
+            // 重置
             Object.values(fields).forEach(el => el.classList.add('hidden'));
             // ★ 修改這裡：預設標籤
             document.getElementById('stat-sec-label').innerText = "贊助筆數";
@@ -1340,7 +1381,7 @@
                 // ★ 修改這裡：如果是旅遊，標籤顯示「已訂房數」
                 document.getElementById('stat-sec-label').innerText = "已訂房數";
 
-                // Populate Options
+                // 填入選項
                 populateSelect('pickup-loc', e.pickupOpts);
                 populateSelect('add-guest-pickup', e.pickupOpts);
                 populateRoomOptions('room-type', e.roomOpts);
@@ -1354,7 +1395,7 @@
             refreshIcons();
         }
 
-        // --- Render Lists ---
+        // --- 渲染列表 ---
         function renderGuestList() {
             const container = document.getElementById('guest-list-container');
             container.innerHTML = '';
@@ -1365,7 +1406,7 @@
                 if (g.room) details.push(g.room);
                 const subtext = details.length > 0 ? `<span class="text-xs text-gray-400 ml-1">(${details.join(', ')})</span>` : '';
 
-                // Use g.id for removal
+                // 使用 g.id 進行移除
                 container.innerHTML += `
                     <div class="flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in">
                         <div class="flex items-center gap-2">
@@ -1407,7 +1448,7 @@
             if (g.pickup) document.getElementById('add-guest-pickup').value = g.pickup;
             if (g.room) document.getElementById('add-guest-room').value = g.room;
 
-            // Remove current item so it can be re-added
+            // 移除當前項目以便重新加入
             appState.guestList.splice(i, 1);
             renderGuestList();
             showToast("已載入資料至輸入框，修改後請點選「加入名單」");
@@ -1415,7 +1456,7 @@
 
         function editSponsor(i) {
             const s = appState.sponsorList[i];
-            // Logic to parse s string back to UI
+            // 解析字串回填 UI 的邏輯
             // Format 1: 酒類: 5瓶
             // Format 2: 紅包: 1000元
             // Format 3: 其他: ...
@@ -1466,10 +1507,10 @@
                 if (type === 'all') return isEventOpen(e) && e.isActiveValue !== '';
                 return normalizeType(e.type) === type && isEventOpen(e) && e.isActiveValue !== '';
             }).sort((a, b) => {
-                // Parse dates (handle date ranges if necessary, verify ISO format)
+                // 解析日期（處理日期範圍與驗證 ISO 格式）
                 const getTime = (t) => {
                     if (!t) return 0;
-                    // If range "start~end", take start
+                    // 若為範圍 "start~end"，取開始日期
                     const start = t.includes('~') ? t.split('~')[0] : t;
                     return new Date(start).getTime();
                 };
@@ -1492,7 +1533,7 @@
                         default: icon = 'calendar'; colorClass = 'text-green-600'; bgClass = 'bg-green-50';
                     }
 
-                    // Deadline Warning / Registered Badge Logic
+                    // 截止警告 / 已報名標籤邏輯
                     let badge = '';
                     // 優先顯示已報名，即使已截止
                     if (appState.myRegistrations.includes(e.id)) {
@@ -1522,7 +1563,7 @@
             }
         }
 
-        // --- Modal & Details Logic ---
+        // --- 視窗與詳細資訊邏輯 ---
         async function openDetailsModal(filterType = 'all') {
             if (!appState.currentEvent) return;
             const modal = document.getElementById('details-modal');
@@ -1548,7 +1589,7 @@
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
-            // Populate Summary
+            // 填入摘要
             const sumDiv = document.getElementById('modal-summary');
             sumDiv.innerHTML = '';
             if (appState.currentEvent.type === 'travel') {
@@ -1571,7 +1612,7 @@
             empty.classList.add('hidden');
 
             const data = await fetchDetails();
-            appState.cachedDetails = data; // ★ CACHE DATA FOR SYNC COPY
+            appState.cachedDetails = data; // ★ 快取資料以供同步複製使用
             loading.classList.add('hidden');
 
             if (!data || data.length === 0) {
@@ -1615,14 +1656,14 @@
             }
         }
 
-        // Helper to find value case-insensitively (Move to top level or reuse)
+        // 不分大小寫尋找值的輔助函式
         function findCaseInsensitiveValue(row, candidates) {
             if (!row) return undefined;
-            // 1. Direct match (Fast)
+            // 1. 直接匹配 (快)
             for (const key of candidates) {
                 if (row[key] !== undefined && row[key] !== '') return row[key];
             }
-            // 2. Case-insensitive Scan (Slow path)
+            // 2. 不分大小寫掃描 (慢)
             const keys = Object.keys(row);
             for (const c of candidates) {
                 const lowerC = c.toLowerCase().replace(/\s/g, '');
@@ -1650,7 +1691,7 @@
             let hasItems = false;
 
             if (data.length > 0) {
-                // DEBUG: Show keys of the first item to debug missing data
+                // 除錯：顯示第一筆項目的鍵值以除錯遺失資料
                 const firstItem = data[0];
                 const keys = Object.keys(firstItem).join(", ");
                 console.log("Debug Keys:", keys);
@@ -1658,12 +1699,12 @@
 
             data.forEach((row, idx) => {
 
-                // Comprehensive Key Mapping
+                // 全面性鍵值映射
                 // ★ 新增 UserName 支援
                 const name = findCaseInsensitiveValue(row, ['name', 'Name', '姓名', 'UserName', 'username']) || 'Unknown';
                 const family = parseInt(row.family || row.Family || row['眷屬'] || row['眷屬人數'] || row['FamilyCount']) || 0;
 
-                // Guest Handling: Prioritize JSON, fallback to String
+                // 來賓處理：優先使用 JSON，其次為字串
                 // ★ 使用統一函式解析來賓，確保萬無一失 ★
                 const guestData = parseGuestData(row);
                 // 處理舊版 guestCount 備用
@@ -1696,14 +1737,14 @@
                     }
                 }
 
-                // Re-extract main person travel info for the list
+                // 重新提取主要人員的旅遊資訊
                 const pickup = row.pickup || row.Pickup || row['上車地點'];
                 const room = row.room || row.RoomType || row['RoomType'] || row['房型'];
 
-                // Table: Try TableCount, Table Count, 認桌數量, 認桌
+                // 認桌：嘗試各種命名欄位
                 const tableCount = parseInt(row.tableCount || row.TableCount || row['TableCount'] || row['Table Count'] || row['認桌數量'] || row['認桌']) || 0;
 
-                // Sponsor: Try Sponsorship, Sponsor, 贊助項目, 贊助
+                // 贊助：嘗試各種命名欄位
                 const sponsor = row.sponsorList || row.sponsor || row.Sponsorship || row.Sponsor || row['Sponsorship'] || row['贊助項目'] || row['贊助'];
 
                 const num = (idx + 1).toString().padStart(2, '0');
@@ -1718,7 +1759,7 @@
                     </li>`;
 
                 if (appState.currentEvent.type === 'travel') {
-                    // Check main person
+                    // 檢查主要人員
                     if ((pickup && pickup !== '無') || (room && room !== '無')) {
                         hasTravel = true;
                         listT.innerHTML += `
@@ -1731,7 +1772,7 @@
                             </li>`;
                     }
 
-                    // Check guests
+                    // 檢查來賓
                     guestData.forEach(g => {
                         if ((g.pickup && g.pickup !== '無') || (g.room && g.room !== '無')) {
                             hasTravel = true;
@@ -1750,7 +1791,7 @@
                 const items = [];
                 if (tableCount > 0) items.push(`認桌 ${tableCount} 桌`);
 
-                // Use Helper to parse sponsors
+                // 使用輔助函式解析贊助
                 const spList = parseSponsorData(sponsor);
                 if (spList.length > 0) {
                     items.push(...spList);
@@ -1785,8 +1826,8 @@
         // ==========================================
 
         /**
-         * Parses guest data from various formats (JSON, JSON string, or legacy string)
-         * Returns an array of guest objects: { name, count, pickup, room }
+          * 解析來賓資料：支援多種格式（JSON、JSON 字串或舊版字串）
+          * 回傳來賓物件陣列：{ name, count, pickup, room }
          */
         /**
          * 統一解析來賓資料，解決後端回傳格式不一致的問題
@@ -1798,11 +1839,11 @@
             let guestData = [];
             if (!row || typeof row !== 'object') return guestData;
 
-            // Define candidates (Added more variations)
+            // 定義候選鍵值 (新增更多變化)
             const jsonKeys = ['guestList', 'guestJson', 'GuestJson', 'GuestList', 'guest_json', 'guest_list', '來賓資料JSON', '來賓資料', 'json', 'JSON', 'guests', 'Guests', 'extraData'];
             const nameKeys = ['guestName', 'GuestName', 'Guest Name', 'guest_name', 'Guest Names', 'Guest_Names', 'guestNames', 'guest_names', '來賓姓名', '來賓', 'Guest', 'guest', 'memo', 'Memo', '備註'];
 
-            // Fetch values using robust helper
+            // 使用強健的輔助函式取得數值
             let guestJson = findCaseInsensitiveValue(row, jsonKeys);
             let guestNameStr = findCaseInsensitiveValue(row, nameKeys);
 
@@ -1831,7 +1872,7 @@
                 }
             }
 
-            // 2. Fallback strategy
+            // 2. 備援策略
             // 若 JSON 解析失敗或為空，且 guestName 為空，嘗試使用 guestJson 當作字串 (若是純字串填入 guestList 欄位的情況)
             let sourceStr = guestNameStr;
             // 只有當 guestJson 看起來不像 JSON (不以 [ 或 { 開頭) 時，才把它當作普通字串處理
@@ -1840,10 +1881,10 @@
             }
 
             if (guestData.length === 0 && sourceStr && sourceStr !== '無') {
-                // Ensure string
+                // 確保為字串
                 sourceStr = String(sourceStr);
 
-                // Added newline \n support
+                // 新增換行符號支援
                 const guestEntries = sourceStr.split(/[,、;\n]\s*/);
                 guestEntries.forEach(g => {
                     if (!g.trim()) return;
@@ -1872,14 +1913,14 @@
         }
 
         /**
-         * Parses sponsor data from various formats
-         * Returns an array of sponsor strings
+         * 解析贊助資料（支援各種格式）
+         * 回傳贊助字串陣列
          */
         function parseSponsorData(input) {
             let list = [];
             if (!input || input === '無') return list;
 
-            // 1. Try JSON
+            // 1. 嘗試 JSON
             try {
                 const json = (typeof input === 'string' && (input.startsWith('[') || input.startsWith('{')))
                     ? JSON.parse(input)
@@ -1889,7 +1930,7 @@
                 }
             } catch (e) { /* Not JSON */ }
 
-            // 2. Fallback: Split string
+            // 2. 備援：分割字串
             if (typeof input === 'string') {
                 const items = input.split(/[,、;]\s*/);
                 items.forEach(item => {
@@ -1926,15 +1967,13 @@
             const current = appState.historyStack.pop();
             const prev = appState.historyStack[appState.historyStack.length - 1];
 
-            if (!prev || prev === 'home') {
+            // 簡化邏輯：由於活動列表已整合至首頁，所有返回操作都回到首頁
+            if (!prev || prev === 'home' || prev === 'list') {
                 document.getElementById('header-title').innerText = "活動與報名";
                 switchView('view-home');
                 appState.historyStack = ['home'];
                 appState.currentEvent = null;
-            } else if (prev === 'list') {
-                switchView('view-event-list');
-                document.getElementById('header-title').innerText = getCategoryTitle(appState.currentCategory);
-                appState.currentEvent = null;
+                // 重新渲染首頁活動列表
                 renderEventGrid(appState.currentCategory);
             }
         }
@@ -1943,13 +1982,14 @@
             const container = document.getElementById('history-list');
             const isHidden = container.classList.contains('hidden');
             const btnText = document.getElementById('history-btn-text');
-            const activeCats = document.getElementById('active-categories');
+            // 修正：改為控制活動列表區塊而非已刪除的 active-categories
+            const activeEventSection = document.getElementById('active-event-section');
             const createBtn = document.getElementById('btn-create-event');
 
             if (isHidden) {
                 // 切換到歷史模式
-                activeCats.classList.add('hidden');
-                createBtn.classList.add('hidden');
+                if (activeEventSection) activeEventSection.classList.add('hidden');
+                if (createBtn) createBtn.classList.add('hidden');
                 container.classList.remove('hidden');
                 btnText.innerText = "返回首頁";
 
@@ -1962,21 +2002,26 @@
                 if (history.length === 0) {
                     list.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">無歷史紀錄</div>';
                 } else {
+                    // 效能優化：使用 DocumentFragment 取代 innerHTML 累加
+                    const fragment = document.createDocumentFragment();
                     history.forEach(e => {
-                        list.innerHTML += `
-                            <div onclick="enterEventDetail('${e.id}')" class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50">
-                                <div>
-                                    <h4 class="font-bold text-gray-700">${e.name}</h4>
-                                    <div class="text-xs text-gray-400 mt-1">${formatDateShort(e.time)}</div>
-                                </div>
-                                <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">已結束</span>
-                            </div>`;
+                        const div = document.createElement('div');
+                        div.className = "bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50";
+                        div.onclick = () => enterEventDetail(e.id);
+                        div.innerHTML = `
+                            <div>
+                                <h4 class="font-bold text-gray-700">${e.name}</h4>
+                                <div class="text-xs text-gray-400 mt-1">${formatDateShort(e.time)}</div>
+                            </div>
+                            <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">已結束</span>`;
+                        fragment.appendChild(div);
                     });
+                    list.appendChild(fragment);
                 }
             } else {
                 // 切換回首頁模式
-                activeCats.classList.remove('hidden');
-                createBtn.classList.remove('hidden');
+                if (activeEventSection) activeEventSection.classList.remove('hidden');
+                if (createBtn) createBtn.classList.remove('hidden');
                 container.classList.add('hidden');
                 btnText.innerText = "查看歷史活動";
             }
@@ -2774,7 +2819,7 @@
 
         function validateForm() {
             // const type = document.querySelector('input[name="addSponsorType"]:checked').value;
-            // Add basic validation logic if needed
+            // 若需要可在此增加基本驗證邏輯
             return true;
         }
 
@@ -2786,7 +2831,7 @@
             const pickup = document.getElementById('add-guest-pickup').value;
             const room = document.getElementById('add-guest-room').value;
 
-            // Generate simple temp ID
+            // 產生簡易暫時 ID
             const id = 'g_' + Date.now() + Math.random().toString(36).substr(2, 5);
 
             appState.guestList.push({ id, name, count, pickup, room });
@@ -2805,9 +2850,9 @@
 
         function ensureManualCopyModalExists() {
             if (document.getElementById('manual-copy-modal')) return;
-            // Create the modal container
+            // 建立視窗容器
             const div = document.createElement('div');
-            // Using insertAdjacentHTML directly to body to avoid wrapper issues
+            // 直接使用 insertAdjacentHTML 插入 body 以避免外層包裝問題
             const html = `
 <div id="manual-copy-modal" class="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm hidden text-left" style="backdrop-filter: blur(4px);">
     <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl transform transition-all flex flex-col max-h-[80vh]">
@@ -2825,7 +2870,7 @@
                 <i data-lucide="info" class="w-4 h-4 mt-0.5 shrink-0"></i>
                 <div class="leading-relaxed">若自動複製失敗，請點選「點擊複製」按鈕，或長按下方文字框全選複製。</div>
             </div>
-            <!-- iOS Fix: Remove readonly, use inputmode="none", contenteditable -->
+            <!-- iOS 修正：移除 readonly，使用 inputmode="none" 與 contenteditable -->
             <textarea id="manual-copy-area" 
                 class="w-full h-48 border border-gray-200 rounded-xl p-3 text-sm font-mono bg-gray-50 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none text-gray-700" 
                 inputmode="none"
@@ -2846,7 +2891,7 @@
         function retryCopy() {
             const area = document.getElementById('manual-copy-area');
             const text = area.value;
-            // Try Async API first (now likely inside user gesture)
+            // 優先嘗試非同步 API（現應處於使用者操作觸發之情境）
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).then(() => {
                     showToast("已複製名單到剪貼簿");
@@ -2864,7 +2909,7 @@
             const area = document.getElementById('manual-copy-area');
             area.focus();
             area.select();
-            // iOS Fix
+            // iOS 修正
             area.setSelectionRange(0, 99999);
             try {
                 const successful = document.execCommand('copy');
@@ -2882,12 +2927,12 @@
         function copyTextToClipboard(text) {
             const manualFallback = () => openManualCopyModal(text);
 
-            // 1. First Fallback: Textarea (works on some mobile browsers if sync)
+            // 1. 第一備案：Textarea（部分手機瀏覽器支援同步執行）
             const fallbackCopy = (txt) => {
                 const textArea = document.createElement("textarea");
                 textArea.value = txt;
                 textArea.style.position = "fixed";
-                textArea.style.left = "-9999px"; // Avoid visual glitch
+                textArea.style.left = "-9999px"; // 避免視覺閃爍
                 document.body.appendChild(textArea);
                 textArea.focus();
                 textArea.select();
@@ -2954,7 +2999,7 @@
             if (area) {
                 setTimeout(() => {
                     area.select();
-                    area.setSelectionRange(0, 99999); // For mobile devices
+                    area.setSelectionRange(0, 99999); // 針對行動裝置
                 }, 100);
             }
         }
