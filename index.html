@@ -1107,6 +1107,7 @@
             appState.currentEvent = event;
             // 立即清除統計以避免顯示舊資料
             appState.currentStats = {};
+            appState.cachedDetails = null; // ★ 修正：切換活動時重置快取，避免分享舊資料
             document.getElementById('stat-total').innerText = "-";
             document.getElementById('stat-sec-val').innerText = "-";
 
@@ -2605,10 +2606,26 @@
         }
 
         // --- Share Modal Logic ---
-        function openShareModal() {
+        async function openShareModal() {
             const e = appState.currentEvent;
             const s = appState.currentStats;
             if (!e) return;
+
+            // ★ 修正：若無快取資料，先嘗試抓取
+            if (!appState.cachedDetails || appState.cachedDetails.length === 0) {
+                // 顯示讀取中 Toast
+                showToast("正在讀取名單...");
+                const details = await fetchDetails();
+                appState.cachedDetails = details;
+
+                // 若讀取後仍無資料 (或失敗)，提示使用者
+                if (!appState.cachedDetails || appState.cachedDetails.length === 0) {
+                    // 雖然無名單，但活動資訊仍可分享，故不阻擋，僅提示
+                    // showToast("目前無報名資料");
+                } else {
+                    showToast("名單讀取完成");
+                }
+            }
 
             // 重置 checkbox 狀態
             document.getElementById('share-opt-sponsor').checked = true;
