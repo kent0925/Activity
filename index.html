@@ -110,6 +110,10 @@
                 // 同步更新首頁標語文字
                 const sloganText = document.getElementById('slogan-text');
                 if (sloganText) sloganText.innerText = randomDesc;
+
+                // 同步更新 Loading 畫面語錄
+                const loadingQuote = document.getElementById('loading-quote');
+                if (loadingQuote) loadingQuote.innerText = randomDesc;
             });
         })();
     </script>
@@ -320,6 +324,20 @@
 </head>
 
 <body class="bg-gray-50 min-h-screen pb-safe">
+
+    <!-- 初始載入畫面 (Loading Overlay) -->
+    <div id="initial-load-overlay"
+        class="fixed inset-0 z-[100] bg-[#06c755] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="text-white text-3xl font-bold mb-6 animate-bounce">🍺 大老二兄弟會</div>
+        <div id="loading-quote"
+            class="text-white/90 text-base px-8 text-center max-w-sm font-medium leading-relaxed tracking-wide h-20 flex items-center justify-center">
+            載入中...</div>
+        <div class="mt-8 flex gap-2">
+            <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0s"></div>
+            <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+        </div>
+    </div>
 
     <header
         class="bg-[#06c755] text-white px-4 py-3 shadow-md sticky top-0 z-50 flex justify-between items-center h-14 lg:h-16">
@@ -956,7 +974,17 @@
             renderEventGrid('all');
 
             // 若在首頁則移除初始骨架屏
+            // 若在首頁則移除初始骨架屏
             document.getElementById('history-loading').classList.add('hidden');
+
+            // 移除初始載入畫面
+            const overlay = document.getElementById('initial-load-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.remove();
+                }, 500);
+            }
         };
 
         function updateUserProfileUI() {
