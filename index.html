@@ -2639,10 +2639,10 @@
             const totalPeople = appState.currentStats.totalPeople || 0;
             text += `👥 目前報名人數：${totalPeople} 人\n`;
 
-            // 加入 Google Map 連結（優化顯示）
+            // 加入 Google Map 連結（使用較短的 place 格式）
             if (e.address || e.location) {
                 const mapQuery = encodeURIComponent(e.address || e.location);
-                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+                const mapUrl = `https://www.google.com/maps/place/${mapQuery}`;
                 text += `\n🗺️ 點擊導航 👇\n${mapUrl}\n`;
             }
 
