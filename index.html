@@ -781,6 +781,10 @@
                         class="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-800 transition flex items-center gap-1 shadow-sm active:scale-95">
                         <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製名單
                     </button>
+                    <button onclick="sendToTelegram()"
+                        class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 transition flex items-center gap-1 shadow-sm active:scale-95">
+                        <i data-lucide="send" class="w-3.5 h-3.5"></i> 發送至 Telegram
+                    </button>
                     <button onclick="closeDetailsModal()"
                         class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition text-gray-600"><i
                             data-lucide="x" class="w-5 h-5"></i></button>
@@ -2733,6 +2737,29 @@
         // 舊按鈕 (名單視窗下方) 呼叫此函式：預設複製全部
         function copyDetailsToClipboard() {
             performCopy({ includeSponsor: true, includeTravel: true });
+        }
+
+        // --- Telegram 發送功能 ---
+        async function sendToTelegram() {
+            if (!appState.currentEvent) return;
+
+            showToast("正在發送至 Telegram...");
+
+            try {
+                const result = await apiSubmit({
+                    action: 'sendListToTelegram',
+                    eventId: appState.currentEvent.id
+                });
+
+                if (result.success) {
+                    showToast("✅ 名單已發送至 Telegram");
+                } else {
+                    showToast("❌ 發送失敗: " + (result.error || "未知錯誤"));
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("❌ 發送失敗，請檢查網路");
+            }
         }
 
         // 核心複製邏輯：支援參數與格式化
