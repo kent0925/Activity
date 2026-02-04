@@ -966,6 +966,10 @@
 
             // 抓取資料
             await Promise.all([fetchEvents(), fetchSettings(), fetchMyRegistrations()]);
+
+            // ★ 新增：套用名稱對應邏輯 (需在 fetchSettings 與 LIFF init 之後)
+            applyUserNameMapping();
+
             appState.isDataLoaded = true;
 
             // 首頁直接渲染活動列表（已移除分類頁導航邏輯）
@@ -985,6 +989,27 @@
                 }, 500);
             }
         };
+
+        function applyUserNameMapping() {
+            const userId = appState.user.userId;
+            const originalName = appState.user.displayName; // 原始 LINE 名稱
+            const mapping = appState.settings.userMapping || {};
+
+            // 優先順序：
+            // 1. 檢查 UserID 是否有對應設定
+            // 2. 檢查 LINE 顯示名稱是否有對應設定 (若 UserID 沒對到)
+            // 3. 維持原樣
+
+            if (userId && mapping[userId]) {
+                console.log(`[Name Mapping] UserID ${userId} mapped to ${mapping[userId]}`);
+                appState.user.displayName = mapping[userId];
+                updateUserProfileUI();
+            } else if (originalName && mapping[originalName]) {
+                console.log(`[Name Mapping] DisplayName ${originalName} mapped to ${mapping[originalName]}`);
+                appState.user.displayName = mapping[originalName];
+                updateUserProfileUI();
+            }
+        }
 
         function updateUserProfileUI() {
             // 更新使用者資訊（僅更新存在的元素）
