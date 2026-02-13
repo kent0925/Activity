@@ -979,6 +979,54 @@
                     <span class="text-sm font-medium text-gray-700">上車地點 / 房型</span>
                 </label>
 
+                <label
+                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-map">
+                    <div class="relative flex items-center">
+                        <input type="checkbox" id="share-opt-map" checked
+                            class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                        <i data-lucide="check"
+                            class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">Google 地圖連結</span>
+                </label>
+
+                <label
+                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-names">
+                    <div class="relative flex items-center">
+                        <input type="checkbox" id="share-opt-names" checked
+                            class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                        <i data-lucide="check"
+                            class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">詳細名單 (姓名/人數)</span>
+                </label>
+
+                <label
+                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-map">
+                    <div class="relative flex items-center">
+                        <input type="checkbox" id="share-opt-map" checked
+                            class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                        <i data-lucide="check"
+                            class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">Google 地圖連結</span>
+                </label>
+
+                <label
+                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-names">
+                    <div class="relative flex items-center">
+                        <input type="checkbox" id="share-opt-names" checked
+                            class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                        <i data-lucide="check"
+                            class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">詳細名單 (姓名/人數)</span>
+                </label>
+
                 <div id="share-no-opts" class="hidden text-center text-sm text-gray-400 py-2">
                     無額外資訊可選，將複製基本名單
                 </div>
@@ -2854,6 +2902,12 @@
             const noOptsEl = document.getElementById('share-no-opts');
             if (noOptsEl) noOptsEl.classList.add('hidden');
 
+            // 重置新增選項 (預設勾選)
+            const mapCheckbox = document.getElementById('share-opt-map');
+            const namesCheckbox = document.getElementById('share-opt-names');
+            if (mapCheckbox) mapCheckbox.checked = true;
+            if (namesCheckbox) namesCheckbox.checked = true;
+
             document.getElementById('share-modal').classList.remove('hidden');
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
@@ -2862,17 +2916,20 @@
             // 取得使用者勾選狀態
             const includeSponsor = document.getElementById('share-opt-sponsor').checked && !document.getElementById('opt-container-sponsor').classList.contains('hidden');
             const includeTravel = document.getElementById('share-opt-travel').checked && !document.getElementById('opt-container-travel').classList.contains('hidden');
+            const includeMap = document.getElementById('share-opt-map').checked;
+            const includeNames = document.getElementById('share-opt-names').checked;
 
             // 關閉視窗
             document.getElementById('share-modal').classList.add('hidden');
 
             // 執行複製，傳入參數
-            performCopy({ includeSponsor, includeTravel });
+            performCopy({ includeSponsor, includeTravel, includeMap, includeNames });
         }
 
         // 舊按鈕 (名單視窗下方) 呼叫此函式：預設複製全部
+        // 舊按鈕 (名單視窗下方) 呼叫此函式：現在統一呼叫 openShareModal 以提供選項
         function copyDetailsToClipboard() {
-            performCopy({ includeSponsor: true, includeTravel: true });
+            openShareModal();
         }
 
         // --- Telegram 發送功能 ---
@@ -2899,7 +2956,8 @@
         }
 
         // 核心複製邏輯：支援參數與格式化
-        function performCopy(options = { includeSponsor: true, includeTravel: true }) {
+        // 核心複製邏輯：支援參數與格式化
+        function performCopy(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true }) {
             // ★ 修改為同步讀取快取資料
             const data = appState.cachedDetails || [];
 
@@ -2928,91 +2986,105 @@
 
                 if (e.location) text += `📍 地點：${e.location}\n`;
                 if (e.address) text += `🚗 地址：${e.address}\n`;
+
+                // Google Map Link (Conditional)
+                if (options.includeMap !== false) {
+                    const mapQuery = encodeURIComponent(e.address || e.location);
+                    text += `🗺️ 地圖：https://www.google.com/maps/search/?api=1&query=${mapQuery}\n`;
+                }
+
+                text += `🔗 報名連結：${window.location.href}\n`;
                 text += `──────────────\n`;
 
 
 
-                let count = 0;
-                data.forEach((p, i) => {
-                    count++;
-                    const family = parseInt(p.family) || 0;
+                if (options.includeNames !== false) {
+                    let count = 0;
+                    data.forEach((p, i) => {
+                        count++;
+                        const family = parseInt(p.family) || 0;
 
-                    // ★ 使用統一函式解析，確保複製時來賓一定存在 ★
-                    const guestData = parseGuestData(p);
-                    // 處理舊版 guestCount 備用
-                    const guestCountFallback = parseInt(p.guestCount || p.GuestCount || p['GuestCount'] || p['來賓人數']) || 0;
+                        // ★ 使用統一函式解析，確保複製時來賓一定存在 ★
+                        const guestData = parseGuestData(p);
+                        // 處理舊版 guestCount 備用
+                        const guestCountFallback = parseInt(p.guestCount || p.GuestCount || p['GuestCount'] || p['來賓人數']) || 0;
 
-                    const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
-                    const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
-                    const total = 1 + family + finalGuestCount;
+                        const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
+                        const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
+                        const total = 1 + family + finalGuestCount;
 
-                    const num = count.toString().padStart(2, '0');
-                    const status = p.status || p.note || '';
-                    const prefix = status ? status : '';
+                        const num = count.toString().padStart(2, '0');
+                        const status = p.status || p.note || '';
+                        const prefix = status ? status : '';
 
-                    text += `${num}. ${prefix}${p.name}`;
-                    if (total > 1) text += ` *${total}`;
-                    text += `\n`;
+                        text += `${num}. ${prefix}${p.name}`;
+                        if (total > 1) text += ` *${total}`;
+                        text += `\n`;
 
-                    // ★ 修改：來賓名單整合為單行，顯示在下方 ★
-                    if (guestData.length > 0) {
-                        const guestParts = guestData.map(g => {
-                            return g.count > 1 ? `${g.name}*${g.count}` : g.name;
-                        });
-                        text += `      來賓：${guestParts.join('、')}\n`;
-                    } else {
-                        // 強制檢查所有可能欄位
-                        const guestNameStr = findCaseInsensitiveValue(p, ['guestName', 'GuestName', 'Guest Name', 'guest_name', 'Guest Names', '來賓姓名', '來賓', 'Guest', 'guest', 'memo', 'Memo', '備註']);
-                        if (guestNameStr && guestNameStr !== '無') {
-                            text += `      來賓：${guestNameStr}\n`;
-                        }
-                    }
+                        text += `\n`;
 
-                    if (options.includeSponsor) {
-                        let moneyLines = [];
-                        const tc = parseInt(p.tableCount) || 0;
-                        if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
-
-                        let sponsorList = [];
-                        if (p.sponsorList && Array.isArray(p.sponsorList)) {
-                            sponsorList = p.sponsorList;
-                        } else if (p.sponsor && p.sponsor !== '無') {
-                            try {
-                                const json = (typeof p.sponsor === 'string' && (p.sponsor.startsWith('[') || p.sponsor.startsWith('{'))) ? JSON.parse(p.sponsor) : p.sponsor;
-                                if (Array.isArray(json)) sponsorList = json;
-                                else sponsorList = [p.sponsor];
-                            } catch (e) {
-                                sponsorList = [p.sponsor];
+                        // ★ 修改：來賓名單整合為單行，顯示在下方 ★
+                        if (options.includeNames !== false) {
+                            if (guestData.length > 0) {
+                                const guestParts = guestData.map(g => {
+                                    return g.count > 1 ? `${g.name}*${g.count}` : g.name;
+                                });
+                                text += `      來賓：${guestParts.join('、')}\n`;
+                            } else {
+                                // 強制檢查所有可能欄位
+                                const guestNameStr = findCaseInsensitiveValue(p, ['guestName', 'GuestName', 'Guest Name', 'guest_name', 'Guest Names', '來賓姓名', '來賓', 'Guest', 'guest', 'memo', 'Memo', '備註']);
+                                if (guestNameStr && guestNameStr !== '無') {
+                                    text += `      來賓：${guestNameStr}\n`;
+                                }
                             }
                         }
 
-                        sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
+                        if (options.includeSponsor) {
+                            let moneyLines = [];
+                            const tc = parseInt(p.tableCount) || 0;
+                            if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
 
-                        if (moneyLines.length > 0) {
-                            moneyLines.forEach(l => text += `      ${l}\n`);
-                        }
-                    }
-
-                    if (options.includeTravel) {
-                        let travelLines = [];
-                        if (p.pickup && p.pickup !== '無') travelLines.push(`[主]車: ${p.pickup}`);
-                        if (p.room && p.room !== '無') travelLines.push(`[主]房: ${p.room}`);
-
-                        if (guestData.length > 0) {
-                            guestData.forEach(g => {
-                                let extras = [];
-                                if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
-                                if (g.room && g.room !== '無') extras.push(g.room);
-                                if (extras.length > 0) {
-                                    travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                            let sponsorList = [];
+                            if (p.sponsorList && Array.isArray(p.sponsorList)) {
+                                sponsorList = p.sponsorList;
+                            } else if (p.sponsor && p.sponsor !== '無') {
+                                try {
+                                    const json = (typeof p.sponsor === 'string' && (p.sponsor.startsWith('[') || p.sponsor.startsWith('{'))) ? JSON.parse(p.sponsor) : p.sponsor;
+                                    if (Array.isArray(json)) sponsorList = json;
+                                    else sponsorList = [p.sponsor];
+                                } catch (e) {
+                                    sponsorList = [p.sponsor];
                                 }
-                            });
+                            }
+
+                            sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
+
+                            if (moneyLines.length > 0) {
+                                moneyLines.forEach(l => text += `      ${l}\n`);
+                            }
                         }
-                        if (travelLines.length > 0) {
-                            travelLines.forEach(l => text += `      ${l}\n`);
+
+                        if (options.includeTravel) {
+                            let travelLines = [];
+                            if (p.pickup && p.pickup !== '無') travelLines.push(`[主]車: ${p.pickup}`);
+                            if (p.room && p.room !== '無') travelLines.push(`[主]房: ${p.room}`);
+
+                            if (guestData.length > 0) {
+                                guestData.forEach(g => {
+                                    let extras = [];
+                                    if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                                    if (g.room && g.room !== '無') extras.push(g.room);
+                                    if (extras.length > 0) {
+                                        travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                                    }
+                                });
+                            }
+                            if (travelLines.length > 0) {
+                                travelLines.forEach(l => text += `      ${l}\n`);
+                            }
                         }
-                    }
-                });
+                    });
+                }
 
                 text += `──────────────\n`;
                 text += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
