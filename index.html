@@ -2969,7 +2969,7 @@
                     text += `🗺️ 地圖：https://www.google.com/maps/search/?api=1&query=${mapQuery}\n`;
                 }
 
-                text += `🔗 報名連結：${window.location.href}\n`;
+                text += `🔗 報名連結：https://liff.line.me/${LIFF_ID}\n`;
                 text += `──────────────\n`;
 
 
@@ -3064,8 +3064,7 @@
 
                 text += `──────────────\n`;
                 text += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
-                text += `🔗 報名連結：\n`;
-                text += `https://liff.line.me/${LIFF_ID}\n`;
+                text += `🔗 報名連結：https://liff.line.me/${LIFF_ID}\n`;
 
                 copyTextToClipboard(text);
             }
