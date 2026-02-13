@@ -2946,8 +2946,8 @@
                 if (e.address) text += `🚗 地址：${e.address}\n`;
 
                 if (options.includeMap !== false) {
-                    const mapQuery = encodeURIComponent(e.address || e.location);
-                    text += `🗺️ 地圖：https://www.google.com/maps/search/?api=1&query=${mapQuery}\n`;
+                    const mapQuery = e.address || e.location;
+                    text += `🗺️ 地圖：https://www.google.com/maps/search/${mapQuery}\n`;
                 }
 
                 if (options.includeLink !== false) {
