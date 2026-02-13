@@ -2938,7 +2938,10 @@
 
                 const e = appState.currentEvent;
 
-                let text = `📅 ${e.name}\n`;
+                // 使用全域語錄陣列
+                const randomQuote = window.APP_QUOTES[Math.floor(Math.random() * window.APP_QUOTES.length)];
+                let text = `💬 ${randomQuote}\n\n`;
+                text += `📅 ${e.name}\n`;
                 // 判斷並加入活動資訊
                 if (e.organizer) text += `👤 主辦人：${e.organizer}\n`;
 
