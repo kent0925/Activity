@@ -1000,7 +1000,31 @@
                         <i data-lucide="check"
                             class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                     </div>
-                    <span class="text-sm font-medium text-gray-700">詳細名單 (姓名/人數)</span>
+                    <span class="text-sm font-medium text-gray-700">👥 詳細名單 (姓名/人數)</span>
+                </label>
+
+                <label
+                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-map">
+                    <div class="relative flex items-center">
+                        <input type="checkbox" id="share-opt-map" checked
+                            class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                        <i data-lucide="check"
+                            class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">🗺️ Google 地圖連結</span>
+                </label>
+
+                <label
+                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-link">
+                    <div class="relative flex items-center">
+                        <input type="checkbox" id="share-opt-link" checked
+                            class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                        <i data-lucide="check"
+                            class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">🔗 報名連結👇</span>
                 </label>
 
                 <div id="share-no-opts" class="hidden text-center text-sm text-gray-400 py-2">
@@ -2881,8 +2905,10 @@
             // 重置新增選項 (預設勾選)
             const mapCheckbox = document.getElementById('share-opt-map');
             const namesCheckbox = document.getElementById('share-opt-names');
+            const linkCheckbox = document.getElementById('share-opt-link');
             if (mapCheckbox) mapCheckbox.checked = true;
             if (namesCheckbox) namesCheckbox.checked = true;
+            if (linkCheckbox) linkCheckbox.checked = true;
 
             document.getElementById('share-modal').classList.remove('hidden');
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -2894,12 +2920,13 @@
             const includeTravel = document.getElementById('share-opt-travel').checked && !document.getElementById('opt-container-travel').classList.contains('hidden');
             const includeMap = document.getElementById('share-opt-map').checked;
             const includeNames = document.getElementById('share-opt-names').checked;
+            const includeLink = document.getElementById('share-opt-link').checked;
 
             // 關閉視窗
             document.getElementById('share-modal').classList.add('hidden');
 
             // 執行複製，傳入參數
-            performCopy({ includeSponsor, includeTravel, includeMap, includeNames });
+            performCopy({ includeSponsor, includeTravel, includeMap, includeNames, includeLink });
         }
 
         // 舊按鈕 (名單視窗下方) 呼叫此函式：預設複製全部
@@ -2933,7 +2960,7 @@
 
         // 核心複製邏輯：支援參數與格式化
         // 核心複製邏輯：支援參數與格式化
-        function performCopy(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true }) {
+        function performCopy(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true, includeLink: true }) {
             // ★ 修改為同步讀取快取資料
             const data = appState.cachedDetails || [];
 
@@ -2963,13 +2990,14 @@
                 if (e.location) text += `📍 地點：${e.location}\n`;
                 if (e.address) text += `🚗 地址：${e.address}\n`;
 
-                // Google Map Link (Conditional)
                 if (options.includeMap !== false) {
                     const mapQuery = encodeURIComponent(e.address || e.location);
                     text += `🗺️ 地圖：https://www.google.com/maps/search/?api=1&query=${mapQuery}\n`;
                 }
 
-                text += `🔗 報名連結：https://liff.line.me/${LIFF_ID}\n`;
+                if (options.includeLink !== false) {
+                    text += `🔗 報名連結👇：https://liff.line.me/${LIFF_ID}\n`;
+                }
                 text += `──────────────\n`;
 
 
@@ -3064,7 +3092,15 @@
 
                 text += `──────────────\n`;
                 text += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
-                text += `🔗 報名連結：https://liff.line.me/${LIFF_ID}\n`;
+
+                // 這裡的連結移除，改由上方統一控制，或視需求僅保留一個
+                // 用戶要求 "報名連結只要出現一次"，且為 "選項"
+                // 為了閱讀體驗，通常放在詳細名單之前或之後皆可
+                // 我們統一在上方顯示 (Line 2972 附近)，這裡就不重複顯示了
+                // 若用戶偏好在最下方，則改為保留這裡，移除上方。
+                // 依照 "報名連結、GOOGLE地圖、詳細名單" 的順序語感，可能是在上方資訊塊
+                // 但為了確認 "複製內容及表單都帶符號進入"，我們在上方的 includeLink 區塊已處理
+                // 故此處直接移除，避免重複。
 
                 copyTextToClipboard(text);
             }
