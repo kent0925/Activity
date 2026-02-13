@@ -441,7 +441,7 @@
             <h1 class="text-lg font-bold tracking-wide" id="header-title">活動與報名</h1>
         </div>
         <!-- 右上角快速分享按鈕 -->
-        <button id="btn-header-share" onclick="shareEventInfo()"
+        <button id="btn-header-share" onclick="openShareModal()"
             class="hidden p-2 hover:bg-white/20 rounded-full transition active:scale-90" title="分享活動資訊">
             <i data-lucide="share-2" class="w-5 h-5"></i>
         </button>
@@ -2799,50 +2799,12 @@
         // --- Share Modal Logic ---
 
         // 快速分享活動資訊 (右上角按鈕)
+        // 快速分享活動資訊 (右上角按鈕) - 改為統一開啟分享選項視窗
         function shareEventInfo() {
-            const e = appState.currentEvent;
-            if (!e) return;
-
-            // 使用全域語錄陣列
-            const randomQuote = window.APP_QUOTES[Math.floor(Math.random() * window.APP_QUOTES.length)];
-
-            // 格式化時間
-            let timeDisplay = e.time || '';
-            if (timeDisplay.includes('T')) {
-                // 使用 formatDate 包含星期幾
-                timeDisplay = formatDate(timeDisplay);
-            } else if (timeDisplay.includes('~')) {
-                // 旅遊活動的日期範圍格式，分別格式化起始與結束時間
-                const parts = timeDisplay.split('~');
-                const start = formatDateOnly(parts[0]);
-                const end = formatDateOnly(parts[1]);
-                timeDisplay = `${start} ~ ${end}`;
-            }
-
-            // 建立分享文字 - 隨機語錄在最上方
-            let text = `💬 ${randomQuote}\n\n`;
-            text += `📅 ${e.name}\n`;
-            if (e.organizer) text += `👤 主辦人：${e.organizer}\n`;
-            if (timeDisplay) text += `🕒 時間：${timeDisplay}\n`;
-            if (e.location) text += `📍 地點：${e.location}\n`;
-            if (e.address) text += `🚗 地址：${e.address}\n`;
-
-            // 加入目前報名人數
-            const totalPeople = appState.currentStats.totalPeople || 0;
-            text += `👥 目前報名人數：${totalPeople} 人\n`;
-
-            // 加入 Google Map 連結（保留中文顯示）
-            if (e.address || e.location) {
-                const mapQuery = e.address || e.location;
-                const mapUrl = `https://www.google.com/maps/place/${mapQuery}`;
-                text += `\n🗺️ 點擊導航 👇\n${mapUrl}\n`;
-            }
-
-            // 加入報名連結
-            text += `\n🔗 點擊報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
-
-            copyTextToClipboard(text);
+            openShareModal();
         }
+
+
 
         async function openShareModal() {
             const e = appState.currentEvent;
@@ -3023,8 +2985,6 @@
 
                         text += `${num}. ${prefix}${p.name}`;
                         if (total > 1) text += ` *${total}`;
-                        text += `\n`;
-
                         text += `\n`;
 
                         // ★ 修改：來賓名單整合為單行，顯示在下方 ★
