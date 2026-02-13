@@ -980,7 +980,6 @@
                 </label>
 
 
-
                 <label
                     class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
                     id="opt-container-names">
@@ -1217,7 +1216,7 @@
 
             if (forceRefresh) {
                 totalEl.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i>';
-                lucide.createIcons();
+                refreshIcons();
             }
 
             try {
@@ -1908,7 +1907,7 @@
                 // ★ 使用統一函式解析來賓，確保萬無一失 ★
                 const guestData = parseGuestData(row);
                 // 處理舊版 guestCount 備用
-                const guestCountFallback = parseInt(row.guestCount || row.GuestCount || row['GuestCount'] || row['來賓人數'] || row['GuestCount']) || 0;
+                const guestCountFallback = parseInt(row.guestCount || row.GuestCount || row['GuestCount'] || row['來賓人數']) || 0;
 
                 const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
                 const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
@@ -2310,7 +2309,6 @@
 
         function removeSponsor(i) { appState.sponsorList.splice(i, 1); renderSponsorList(); }
 
-        // Duplicate function restoreSponsorList removed
 
 
         // --- Helpers for Select Population ---
@@ -2399,16 +2397,7 @@
             document.getElementById('new-field-time-single').classList.toggle('hidden', isTravel);
             document.getElementById('new-field-time-range').classList.toggle('hidden', !isTravel);
             document.getElementById('new-field-itinerary').classList.toggle('hidden', !isTravel);
-
-            // 顯示/隱藏旅遊活動的提示訊息
-            const travelNotice = document.getElementById('travel-notice');
-            if (travelNotice) {
-                if (isTravel) {
-                    travelNotice.classList.remove('hidden');
-                } else {
-                    travelNotice.classList.add('hidden');
-                }
-            }
+            document.getElementById('travel-notice')?.classList.toggle('hidden', !isTravel);
         }
 
         function renderItinerary(str, timeStr) {
@@ -2615,14 +2604,7 @@
             }
         }
 
-        // --- 補回遺失的分類切換函式 ---
-
-        function enterCategory(type) {
-            appState.currentCategory = type;
-            // 已整合至首頁，直接在首頁切換分類
-            switchCategory(type);
-        }
-
+        // --- 分類切換函式 ---
         function switchCategory(type) {
             appState.currentCategory = type;
             // 移除所有 Tab 的 active 樣式
@@ -2632,11 +2614,6 @@
             if (tab) tab.classList.add('active');
 
             renderEventGrid(type);
-        }
-
-        function getCategoryTitle(t) {
-            const map = { 'general': '一般活動', 'banquet': '大型餐會', 'travel': '旅遊活動', 'all': '所有活動' };
-            return map[t] || '活動列表';
         }
 
         function showCreateView() {
@@ -2677,7 +2654,7 @@
             // 1. 鎖定按鈕避免重複點擊
             btn.disabled = true;
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 建立中...';
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            refreshIcons();
 
             // 2. 收集表單資料
             const type = document.getElementById('new-type').value;
@@ -2688,14 +2665,14 @@
                 const start = document.getElementById('new-date-start').value;
                 const end = document.getElementById('new-date-end').value;
                 if (!start || !end) {
-                    alert("旅遊活動請填寫出發與回程日期");
+                    showToast("旅遊活動請填寫出發與回程日期");
                     btn.disabled = false; btn.innerHTML = originalBtnHTML; return;
                 }
                 timeVal = `${start}~${end}`;
             } else {
                 timeVal = document.getElementById('new-time-single').value;
                 if (!timeVal) {
-                    alert("請填寫活動時間");
+                    showToast("請填寫活動時間");
                     btn.disabled = false; btn.innerHTML = originalBtnHTML; return;
                 }
             }
@@ -2732,7 +2709,7 @@
                 // 6. 復原按鈕狀態
                 btn.disabled = false;
                 btn.innerHTML = originalBtnHTML;
-                if (typeof lucide !== 'undefined') lucide.createIcons();
+                refreshIcons();
             }
         }
 
@@ -2744,7 +2721,7 @@
             // 1. 顯示讀取動畫
             btn.disabled = true;
             btn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> 處理中';
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            refreshIcons();
 
             // 2. 判斷目前狀態並決定新狀態
             // 目前是開放 -> 要改成 close
@@ -2787,12 +2764,6 @@
         }
 
         // --- Share Modal Logic ---
-
-        // 快速分享活動資訊 (右上角按鈕)
-        // 快速分享活動資訊 (右上角按鈕) - 改為統一開啟分享選項視窗
-        function shareEventInfo() {
-            openShareModal();
-        }
 
 
 
@@ -2863,7 +2834,7 @@
             if (linkCheckbox) linkCheckbox.checked = true;
 
             document.getElementById('share-modal').classList.remove('hidden');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            refreshIcons();
         }
 
         function confirmShareCopy() {
@@ -2881,8 +2852,7 @@
             performCopy({ includeSponsor, includeTravel, includeMap, includeNames, includeLink });
         }
 
-        // 舊按鈕 (名單視窗下方) 呼叫此函式：預設複製全部
-        // 舊按鈕 (名單視窗下方) 呼叫此函式：現在統一呼叫 openShareModal 以提供選項
+        // 舊按鈕 (名單視窗下方) 呼叫此函式：統一呼叫 openShareModal 以提供選項
         function copyDetailsToClipboard() {
             openShareModal();
         }
@@ -2910,7 +2880,6 @@
             }
         }
 
-        // 核心複製邏輯：支援參數與格式化
         // 核心複製邏輯：支援參數與格式化
         function performCopy(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true, includeLink: true }) {
             // ★ 修改為同步讀取快取資料
@@ -3176,7 +3145,7 @@
     </div>
 </div>`;
             document.body.insertAdjacentHTML('beforeend', html);
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            refreshIcons();
         }
 
         function retryCopy() {
@@ -3284,7 +3253,7 @@
                 modal.classList.remove('hidden');
             }
 
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            refreshIcons();
 
             // 嘗試選取文字，方便使用者直接複製
             if (area) {
