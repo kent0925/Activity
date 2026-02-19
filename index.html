@@ -1055,19 +1055,89 @@
             guestList: [],
             sponsorList: [],
             isDataLoaded: false,
-            myRegistrations: [] // Store IDs of registered events
+            myRegistrations: []
         };
+
+        // ==========================================
+        // 1.1 共用工具與常數
+        // ==========================================
+
+        /** HTML 跳脫：防止使用者輸入的 XSS 攻擊 */
+        function escapeHtml(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        /** 統一欄位鍵值映射表 */
+        const FIELD_KEYS = {
+            family: ['family', 'Family', '眷屬', '眷屬人數', 'FamilyCount'],
+            tableCount: ['tableCount', 'TableCount', 'Table Count', '認桌數量', '認桌'],
+            room: ['room', 'RoomType', 'Room Type', '房型'],
+            pickup: ['pickup', 'Pickup', '上車地點'],
+            sponsor: ['sponsorList', 'sponsor', 'Sponsorship', 'Sponsor', '贊助項目', '贊助'],
+            guestName: ['guestName', 'GuestName', 'Guest Name', 'guest_name', 'Guest Names', '來賓姓名', '來賓', 'Guest', 'guest', 'memo', 'Memo', '備註'],
+            guestCount: ['guestCount', 'GuestCount', '來賓人數'],
+        };
+
+        /** 透過統一映射表取值 */
+        function getField(row, fieldName) {
+            const keys = FIELD_KEYS[fieldName];
+            return keys ? findCaseInsensitiveValue(row, keys) : undefined;
+        }
+
+        /** 取得整數欄位值 */
+        function getIntField(row, fieldName) {
+            return parseInt(getField(row, fieldName)) || 0;
+        }
+
+        /** DOM 元素快取 */
+        const DOM = {};
+        function cacheDOM() {
+            DOM.statTotal = document.getElementById('stat-total');
+            DOM.statSecVal = document.getElementById('stat-sec-val');
+            DOM.statSecLabel = document.getElementById('stat-sec-label');
+            DOM.headerTitle = document.getElementById('header-title');
+            DOM.btnBack = document.getElementById('btn-back');
+            DOM.btnShare = document.getElementById('btn-header-share');
+            DOM.regForm = document.getElementById('regForm');
+            DOM.submitBtn = document.getElementById('submit-btn');
+            DOM.cancelBtn = document.getElementById('cancel-reg-btn');
+            DOM.formTitle = document.getElementById('form-title');
+            DOM.formAction = document.getElementById('formAction');
+            DOM.userName = document.getElementById('user-name');
+            DOM.userId = document.getElementById('user-id');
+            DOM.userPicture = document.getElementById('user-picture');
+            DOM.guestContainer = document.getElementById('guest-list-container');
+            DOM.sponsorContainer = document.getElementById('sponsor-list-container');
+            DOM.eventGrid = document.getElementById('event-grid-container');
+            DOM.noEventsMsg = document.getElementById('no-events-msg');
+            DOM.eventListLoading = document.getElementById('event-list-loading');
+            DOM.managerControls = document.getElementById('manager-controls');
+        }
+
+        /** 批次 Lucide 圖示刷新（避免同一幀多次呼叫） */
+        let _iconRafId = null;
+        function refreshIcons() {
+            if (_iconRafId) return;
+            _iconRafId = requestAnimationFrame(() => {
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                _iconRafId = null;
+            });
+        }
 
         // ==========================================
         // 2. INITIALIZATION (初始化)
         // ==========================================
         window.onload = async function () {
+            cacheDOM();
             lucide.createIcons();
             populateCountOptions();
             renderAddSponsorUI();
 
             // 介面初始化
-            document.getElementById('header-title').innerText = "活動與報名";
+            DOM.headerTitle.innerText = "活動與報名";
             switchView('view-home');
 
             // ★ 修改處：LIFF 初始化與強制登入邏輯
@@ -1157,16 +1227,10 @@
         }
 
         function updateUserProfileUI() {
-            // 更新使用者資訊（僅更新存在的元素）
-            const userName = document.getElementById('user-name');
-            const userId = document.getElementById('user-id');
-            const userPicture = document.getElementById('user-picture');
-
-            if (userName) userName.value = appState.user.displayName;
-            if (userId) userId.value = appState.user.userId;
-
-            if (appState.user.pictureUrl && userPicture) {
-                userPicture.src = appState.user.pictureUrl;
+            if (DOM.userName) DOM.userName.value = appState.user.displayName;
+            if (DOM.userId) DOM.userId.value = appState.user.userId;
+            if (appState.user.pictureUrl && DOM.userPicture) {
+                DOM.userPicture.src = appState.user.pictureUrl;
             }
         }
 
@@ -1207,30 +1271,21 @@
         }
 
         async function fetchStats(forceRefresh = false) {
-            // ★ 修改 1：先將 currentEvent 存入區域變數 e，避免非同步期間狀態改變導致錯誤
             const e = appState.currentEvent;
             if (!e || !GAS_URL) return;
 
-            const totalEl = document.getElementById('stat-total');
-            const secEl = document.getElementById('stat-sec-val');
-
             if (forceRefresh) {
-                totalEl.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i>';
+                DOM.statTotal.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i>';
                 refreshIcons();
             }
 
             try {
-                // ★ 修改 2：這裡改用變數 e 來取得 id
                 const res = await fetch(`${GAS_URL}?action=stats&eventId=${e.id}&_=${Date.now()}`);
                 appState.currentStats = await res.json();
 
-                // 更新 UI 數字
-                animateValue(totalEl, 0, appState.currentStats.totalPeople || 0, 500);
+                animateValue(DOM.statTotal, 0, appState.currentStats.totalPeople || 0, 500);
 
-                // 根據活動類型決定顯示哪個數字
                 let secValue = 0;
-
-                // ★ 修改 3：這裡改用變數 e 來判斷 type，確保不會因為 currentEvent 變成 null 而報錯
                 if (e.type === 'travel') {
                     secValue = appState.currentStats.totalRooms || 0;
                 } else if (e.type === 'banquet') {
@@ -1239,7 +1294,7 @@
                     secValue = appState.currentStats.secondary || 0;
                 }
 
-                animateValue(secEl, 0, secValue, 500);
+                animateValue(DOM.statSecVal, 0, secValue, 500);
             } catch (err) {
                 console.warn("Fetch Stats Failed", err);
             }
@@ -1277,17 +1332,15 @@
             appState.currentEvent = event;
             // 立即清除統計以避免顯示舊資料
             appState.currentStats = {};
-            appState.cachedDetails = null; // ★ 修正：切換活動時重置快取，避免分享舊資料
-            document.getElementById('stat-total').innerText = "-";
-            document.getElementById('stat-sec-val').innerText = "-";
+            appState.cachedDetails = null;
+            DOM.statTotal.innerText = "-";
+            DOM.statSecVal.innerText = "-";
 
-            // 1. 重置表單與 UI
             resetFormState();
 
-            // 2. 導航
             appState.historyStack.push('detail');
             switchView('view-activity-detail');
-            document.getElementById('header-title').innerText = event.name;
+            DOM.headerTitle.innerText = event.name;
 
             // 3. 渲染靜態資訊 (初始)
             renderEventStaticInfo();
@@ -1317,63 +1370,49 @@
         }
 
         function fillFormWithRecord(record) {
-            // 切換 UI 至更新模式
-            document.getElementById('formAction').value = 'update';
-            const btn = document.getElementById('submit-btn');
+            DOM.formAction.value = 'update';
 
-            // 檢查活動是否開放以決定按鈕狀態
             if (isEventOpen(appState.currentEvent)) {
-                btn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
-                btn.classList.replace('bg-[#06c755]', 'bg-blue-600');
-                btn.classList.replace('hover:bg-green-600', 'hover:bg-blue-700');
-                btn.disabled = false;
-                document.getElementById('cancel-reg-btn').classList.remove('hidden');
+                DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
+                DOM.submitBtn.classList.replace('bg-[#06c755]', 'bg-blue-600');
+                DOM.submitBtn.classList.replace('hover:bg-green-600', 'hover:bg-blue-700');
+                DOM.submitBtn.disabled = false;
+                DOM.cancelBtn.classList.remove('hidden');
             } else {
-                btn.innerText = "已報名 (活動已結束)";
-                btn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
-                btn.disabled = true;
-                document.getElementById('cancel-reg-btn').classList.add('hidden');
+                DOM.submitBtn.innerText = "已報名 (活動已結束)";
+                DOM.submitBtn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
+                DOM.submitBtn.disabled = true;
+                DOM.cancelBtn.classList.add('hidden');
             }
 
-            document.getElementById('form-title').innerText = "編輯您的報名";
+            DOM.formTitle.innerText = "編輯您的報名";
 
-            // 將後端鍵值映射至本地變數 (完整備援)
-            const family = parseInt(record.family || record.Family || record['眷屬'] || record['眷屬人數']) || 0;
-            const tableCount = parseInt(record.tableCount || record.TableCount || record['TableCount'] || record['Table Count'] || record['認桌數量'] || record['認桌']) || 0;
-            const room = record.room || record.RoomType || record['RoomType'] || record['Room Type'] || record['房型'];
-            const pickup = record.pickup || record.Pickup || record['上車地點'];
-            const guestJson = record.guestList || record.guestJson || record.GuestJson || record['GuestJson'] || record['來賓資料JSON'];
-            const guestName = record.guestName || record.GuestName || record['GuestName'] || record['Guest Name'] || record['來賓姓名'] || record['來賓'];
-            const guestCount = parseInt(record.guestCount || record.GuestCount || record['GuestCount'] || record['Guest Count'] || record['來賓人數']) || 0;
-            const sponsor = record.sponsorList || record.sponsor || record.Sponsorship || record.Sponsor || record['Sponsorship'] || record['贊助項目'] || record['贊助'];
-
-            console.log("FillForm Record:", record);
+            // 使用統一欄位映射取得欄位值
+            const family = getIntField(record, 'family');
+            const tableCount = getIntField(record, 'tableCount');
+            const room = getField(record, 'room');
+            const pickup = getField(record, 'pickup');
+            const guestCount = getIntField(record, 'guestCount');
+            const sponsor = getField(record, 'sponsor');
 
             // 填入欄位
             document.getElementById('family-count').value = family;
             if (tableCount) document.getElementById('table-count').value = tableCount;
 
-            // 旅遊欄位
             if (room && room !== '無') document.getElementById('room-type').value = room;
             if (pickup && pickup !== '無') document.getElementById('pickup-loc').value = pickup;
 
-            // 還原複雜列表 (來賓與贊助)
+            // 還原來賓列表
             appState.guestList = [];
-
-            // 完整鍵值映射 using helper
-            // 來賓處理：優先使用 JSON，其次為字串 > Count Fallback
-            // ★ 修改：直接傳入整個 record 讓 parseGuestData 統一處理
             const parsedGuests = parseGuestData(record);
 
             if (parsedGuests.length > 0) {
-                // 增加本地狀態用的 ID
                 appState.guestList = parsedGuests.map(g => ({
                     ...g,
                     id: g.id || ('g_' + Date.now() + Math.random().toString(36).substr(2, 5))
                 }));
                 renderGuestList();
             } else if (guestCount > 0) {
-                // 假資料備援
                 for (let i = 0; i < guestCount; i++) {
                     const id = 'g_' + Date.now() + Math.random().toString(36).substr(2, 5) + i;
                     appState.guestList.push({ id, name: `來賓 ${i + 1}`, count: 1, pickup: '', room: '' });
@@ -1382,30 +1421,27 @@
             }
 
             restoreSponsorList(sponsor);
-
             refreshIcons();
             showToast("已載入您的報名資料");
         }
 
         async function handleSubmit(e) {
             e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            const originalContent = btn.innerHTML;
+            const originalContent = DOM.submitBtn.innerHTML;
 
-            // 驗證
             if (!validateForm()) return;
 
-            btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 處理中...';
-            lucide.createIcons();
+            DOM.submitBtn.disabled = true;
+            DOM.submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 處理中...';
+            refreshIcons();
 
             const formData = {
-                action: document.getElementById('formAction').value,
+                action: DOM.formAction.value,
                 eventId: appState.currentEvent.id,
                 eventType: appState.currentEvent.type,
                 eventName: appState.currentEvent.name,
                 userId: appState.user.userId,
-                displayName: document.getElementById('user-name').value,
+                displayName: DOM.userName.value,
                 pictureUrl: appState.user.pictureUrl,
                 familyCount: document.getElementById('family-count').value,
                 guestList: JSON.stringify(appState.guestList),
@@ -1418,19 +1454,17 @@
             try {
                 await apiSubmit(formData);
                 showToast(formData.action === 'update' ? "更新成功！" : "報名成功！");
-                // 更新本地報名狀態
                 if (!appState.myRegistrations.includes(appState.currentEvent.id)) {
                     appState.myRegistrations.push(appState.currentEvent.id);
                 }
                 await fetchStats();
                 await checkMyRegistration();
-                // 重新渲染下拉選單統計
                 renderEventStaticInfo();
             } catch (err) {
                 showToast("發生錯誤，請重試");
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalContent;
+                DOM.submitBtn.disabled = false;
+                DOM.submitBtn.innerHTML = originalContent;
                 refreshIcons();
             }
         }
@@ -1439,9 +1473,8 @@
             const confirmed = await showConfirm("確定要取消此活動的報名嗎？<br>取消後名額將會釋出。");
             if (!confirmed) return;
 
-            const btn = document.getElementById('cancel-reg-btn');
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
-            lucide.createIcons();
+            DOM.cancelBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+            refreshIcons();
 
             try {
                 await apiSubmit({
@@ -1450,20 +1483,15 @@
                     userId: appState.user.userId
                 });
                 showToast("已取消報名");
-
-                // 從本地報名紀錄移除
                 appState.myRegistrations = appState.myRegistrations.filter(id => id !== appState.currentEvent.id);
-
-                // 重置為初始狀態
                 resetFormState();
                 await fetchStats();
-                renderEventStaticInfo(); // Update dropdowns
-
+                renderEventStaticInfo();
             } catch (err) {
                 showToast("取消失敗");
             } finally {
-                btn.innerHTML = '<i data-lucide="trash-2" class="w-5 h-5"></i>';
-                lucide.createIcons();
+                DOM.cancelBtn.innerHTML = '<i data-lucide="trash-2" class="w-5 h-5"></i>';
+                refreshIcons();
             }
         }
 
@@ -1473,26 +1501,21 @@
         function resetFormState() {
             appState.guestList = [];
             appState.sponsorList = [];
-            document.getElementById('regForm').reset();
-            document.getElementById('guest-list-container').innerHTML = '';
-            document.getElementById('sponsor-list-container').innerHTML = '';
+            DOM.regForm.reset();
+            DOM.guestContainer.innerHTML = '';
+            DOM.sponsorContainer.innerHTML = '';
 
-            // 重新啟用表單欄位
             const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button');
             formInputs.forEach(el => el.disabled = false);
 
-            // 重置按鈕為報名模式
-            document.getElementById('formAction').value = 'register';
-            const btn = document.getElementById('submit-btn');
-            btn.innerHTML = '<span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>';
-            btn.className = "flex-1 bg-[#06c755] text-white font-bold py-3.5 rounded-xl hover:bg-green-600 transition shadow-md active:scale-95 flex justify-center items-center gap-2";
-            btn.disabled = false;
+            DOM.formAction.value = 'register';
+            DOM.submitBtn.innerHTML = '<span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>';
+            DOM.submitBtn.className = "flex-1 bg-[#06c755] text-white font-bold py-3.5 rounded-xl hover:bg-green-600 transition shadow-md active:scale-95 flex justify-center items-center gap-2";
+            DOM.submitBtn.disabled = false;
 
-            document.getElementById('cancel-reg-btn').classList.add('hidden');
-            document.getElementById('form-title').innerText = "填寫報名資料";
-
-            // 還原使用者名稱
-            document.getElementById('user-name').value = appState.user.displayName;
+            DOM.cancelBtn.classList.add('hidden');
+            DOM.formTitle.innerText = "填寫報名資料";
+            DOM.userName.value = appState.user.displayName;
         }
 
         function renderEventStaticInfo() {
@@ -1524,10 +1547,9 @@
                 const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button');
                 formInputs.forEach(el => el.disabled = true);
 
-                const btn = document.getElementById('submit-btn');
-                btn.innerText = "活動已結束";
-                btn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
-                btn.disabled = true;
+                DOM.submitBtn.innerText = "活動已結束";
+                DOM.submitBtn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
+                DOM.submitBtn.disabled = true;
             }
 
             // 截止日期
@@ -1537,20 +1559,18 @@
                 timeDiv.innerHTML += `<div class="mt-1 pt-1 border-t border-gray-100 text-xs ${color} flex items-center gap-1"><i data-lucide="hourglass" class="w-3 h-3"></i> 截止：${formatDate(e.deadline)}</div>`;
 
                 if (isExpired && isOpen) { // 僅在活動仍開放但已過截止時間時顯示
-                    const btn = document.getElementById('submit-btn');
-                    btn.disabled = true;
-                    btn.innerText = "報名已截止";
-                    btn.classList.add('bg-gray-400', 'cursor-not-allowed');
-                    btn.classList.remove('bg-[#06c755]', 'hover:bg-green-600');
+                    DOM.submitBtn.disabled = true;
+                    DOM.submitBtn.innerText = "報名已截止";
+                    DOM.submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                    DOM.submitBtn.classList.remove('bg-[#06c755]', 'hover:bg-green-600');
                 }
             }
 
             // 狀態切換按鈕 - 權限檢查
-            const managerControls = document.getElementById('manager-controls');
             if (appState.user.userId && e.creatorId && appState.user.userId === e.creatorId) {
-                managerControls.classList.remove('hidden');
+                DOM.managerControls.classList.remove('hidden');
             } else {
-                managerControls.classList.add('hidden');
+                DOM.managerControls.classList.add('hidden');
             }
 
             const statusBtn = document.getElementById('btn-status-toggle');
@@ -1567,8 +1587,7 @@
 
             // 重置
             Object.values(fields).forEach(el => el.classList.add('hidden'));
-            // ★ 修改這裡：預設標籤
-            document.getElementById('stat-sec-label').innerText = "贊助筆數";
+            DOM.statSecLabel.innerText = "贊助筆數";
 
             if (e.type === 'travel') {
                 fields.travel.classList.remove('hidden');
@@ -1577,8 +1596,7 @@
                     fields.itinerary.classList.remove('hidden');
                     renderItinerary(e.itinerary, e.time);
                 }
-                // ★ 修改這裡：如果是旅遊，標籤顯示「已訂房數」
-                document.getElementById('stat-sec-label').innerText = "已訂房數";
+                DOM.statSecLabel.innerText = "已訂房數";
 
                 // 填入選項
                 populateSelect('pickup-loc', e.pickupOpts);
@@ -1588,7 +1606,7 @@
 
             } else if (e.type === 'banquet') {
                 fields.banquet.classList.remove('hidden');
-                document.getElementById('stat-sec-label').innerText = "預訂桌數";
+                DOM.statSecLabel.innerText = "預訂桌數";
             }
 
             refreshIcons();
@@ -1596,21 +1614,19 @@
 
         // --- 渲染列表 ---
         function renderGuestList() {
-            const container = document.getElementById('guest-list-container');
-            container.innerHTML = '';
+            DOM.guestContainer.innerHTML = '';
             appState.guestList.forEach((g, i) => {
                 let details = [];
                 if (g.count > 1) details.push(`${g.count}人`);
-                if (g.pickup) details.push(g.pickup);
-                if (g.room) details.push(g.room);
+                if (g.pickup) details.push(escapeHtml(g.pickup));
+                if (g.room) details.push(escapeHtml(g.room));
                 const subtext = details.length > 0 ? `<span class="text-xs text-gray-400 ml-1">(${details.join(', ')})</span>` : '';
 
-                // 使用 g.id 進行移除
-                container.innerHTML += `
+                DOM.guestContainer.innerHTML += `
                     <div class="flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in">
                         <div class="flex items-center gap-2">
                             <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
-                            <span class="font-medium text-gray-700">${g.name} ${subtext}</span>
+                            <span class="font-medium text-gray-700">${escapeHtml(g.name)} ${subtext}</span>
                         </div>
                         <div class="flex gap-2 items-center">
                             <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editGuest(${i})"></i>
@@ -1622,14 +1638,13 @@
         }
 
         function renderSponsorList() {
-            const container = document.getElementById('sponsor-list-container');
-            container.innerHTML = '';
+            DOM.sponsorContainer.innerHTML = '';
             appState.sponsorList.forEach((s, i) => {
-                container.innerHTML += `
+                DOM.sponsorContainer.innerHTML += `
                     <div class="flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in">
                         <div class="flex items-center gap-2">
                             <i data-lucide="gift" class="w-3.5 h-3.5 text-purple-500"></i>
-                            <span class="font-medium text-gray-700">${s}</span>
+                            <span class="font-medium text-gray-700">${escapeHtml(s)}</span>
                         </div>
                         <div class="flex gap-2 items-center">
                             <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editSponsor(${i})"></i>
@@ -1717,9 +1732,9 @@
             });
 
             if (filtered.length === 0) {
-                document.getElementById('no-events-msg').classList.remove('hidden');
+                DOM.noEventsMsg.classList.remove('hidden');
             } else {
-                document.getElementById('no-events-msg').classList.add('hidden');
+                DOM.noEventsMsg.classList.add('hidden');
                 filtered.forEach(e => {
                     const card = document.createElement('div');
                     card.className = "bg-white p-4 rounded-2xl shadow-sm border border-gray-100 card-hover cursor-pointer flex items-center gap-4 relative overflow-hidden group";
@@ -1747,11 +1762,11 @@
                             <i data-lucide="${icon}" class="w-6 h-6"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h3 class="font-bold text-gray-800 text-lg mb-1 leading-snug">${e.name}</h3>
-                            <div class="text-xs text-gray-500 mb-2 break-words">主辦: ${e.organizer}</div>
+                            <h3 class="font-bold text-gray-800 text-lg mb-1 leading-snug">${escapeHtml(e.name)}</h3>
+                            <div class="text-xs text-gray-500 mb-2 break-words">主辦: ${escapeHtml(e.organizer)}</div>
                             <div class="flex items-center gap-3 text-xs text-gray-500">
                                 <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> ${formatDateShort(e.time)}</span>
-                                <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${e.location}</span>
+                                <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${escapeHtml(e.location)}</span>
                             </div>
                         </div>
                         <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300"></i>
@@ -1786,7 +1801,7 @@
             } else {
                 titleEl.innerHTML = '<i data-lucide="list" class="w-5 h-5 text-gray-600"></i> 詳細名單';
             }
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            refreshIcons();
 
             // 填入摘要
             const sumDiv = document.getElementById('modal-summary');
@@ -1889,25 +1904,14 @@
             let hasTravel = false;
             let hasItems = false;
 
-            if (data.length > 0) {
-                // 除錯：顯示第一筆項目的鍵值以除錯遺失資料
-                const firstItem = data[0];
-                const keys = Object.keys(firstItem).join(", ");
-                console.log("Debug Keys:", keys);
-            }
 
             data.forEach((row, idx) => {
-
-                // 全面性鍵值映射
-                // ★ 新增 UserName 支援
                 const name = findCaseInsensitiveValue(row, ['name', 'Name', '姓名', 'UserName', 'username']) || 'Unknown';
-                const family = parseInt(row.family || row.Family || row['眷屬'] || row['眷屬人數'] || row['FamilyCount']) || 0;
+                const safeName = escapeHtml(name);
+                const family = getIntField(row, 'family');
 
-                // 來賓處理：優先使用 JSON，其次為字串
-                // ★ 使用統一函式解析來賓，確保萬無一失 ★
                 const guestData = parseGuestData(row);
-                // 處理舊版 guestCount 備用
-                const guestCountFallback = parseInt(row.guestCount || row.GuestCount || row['GuestCount'] || row['來賓人數']) || 0;
+                const guestCountFallback = getIntField(row, 'guestCount');
 
                 const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
                 const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
@@ -1919,32 +1923,19 @@
                 }
 
                 let subHtml = '';
-                // 優先使用解析出的詳細來賓名單
                 if (guestData.length > 0) {
-                    let guestLines = [];
-                    guestData.forEach(g => {
-                        let str = `<div class="pl-8 text-gray-600 text-sm mt-0.5">來賓：${g.name}</div>`;
-                        guestLines.push(str);
-                    });
-                    subHtml = guestLines.join('');
-                }
-                // 其次嘗試顯示舊版純文字來賓
-                else {
-                    const guestNameStr = findCaseInsensitiveValue(row, ['guestName', 'GuestName', 'Guest Name', '來賓姓名', '來賓']);
+                    subHtml = guestData.map(g => `<div class="pl-8 text-gray-600 text-sm mt-0.5">來賓：${escapeHtml(g.name)}</div>`).join('');
+                } else {
+                    const guestNameStr = getField(row, 'guestName');
                     if (guestNameStr && guestNameStr !== '無') {
-                        subHtml = `<div class="pl-8 text-gray-600 text-sm mt-0.5">來賓：${guestNameStr}</div>`;
+                        subHtml = `<div class="pl-8 text-gray-600 text-sm mt-0.5">來賓：${escapeHtml(guestNameStr)}</div>`;
                     }
                 }
 
-                // 重新提取主要人員的旅遊資訊
-                const pickup = row.pickup || row.Pickup || row['上車地點'];
-                const room = row.room || row.RoomType || row['RoomType'] || row['房型'];
-
-                // 認桌：嘗試各種命名欄位
-                const tableCount = parseInt(row.tableCount || row.TableCount || row['TableCount'] || row['Table Count'] || row['認桌數量'] || row['認桌']) || 0;
-
-                // 贊助：嘗試各種命名欄位
-                const sponsor = row.sponsorList || row.sponsor || row.Sponsorship || row.Sponsor || row['Sponsorship'] || row['贊助項目'] || row['贊助'];
+                const pickup = getField(row, 'pickup');
+                const room = getField(row, 'room');
+                const tableCount = getIntField(row, 'tableCount');
+                const sponsor = getField(row, 'sponsor');
 
                 const num = (idx + 1).toString().padStart(2, '0');
 
@@ -1952,7 +1943,7 @@
                     <li class="px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-gray-400 font-mono text-sm">${num}.</span>
-                            <span class="font-bold text-gray-800 text-base">${name}${nameSuffix}</span>
+                            <span class="font-bold text-gray-800 text-base">${safeName}${nameSuffix}</span>
                         </div>
                         ${subHtml}
                     </li>`;
@@ -1963,10 +1954,10 @@
                         hasTravel = true;
                         listT.innerHTML += `
                             <li class="px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm">
-                                <span class="font-medium text-gray-700">${name}</span>
+                                <span class="font-medium text-gray-700">${safeName}</span>
                                 <div class="text-right text-xs text-gray-500">
-                                    ${pickup && pickup !== '無' ? `<div class="text-blue-600">${pickup}</div>` : ''}
-                                    ${room && room !== '無' ? `<div class="text-orange-600">${room}</div>` : ''}
+                                    ${pickup && pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(pickup)}</div>` : ''}
+                                    ${room && room !== '無' ? `<div class="text-orange-600">${escapeHtml(room)}</div>` : ''}
                                 </div>
                             </li>`;
                     }
@@ -1977,10 +1968,10 @@
                             hasTravel = true;
                             listT.innerHTML += `
                                 <li class="px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm">
-                                    <span class="font-medium text-gray-700"><span class="text-xs text-gray-400 mr-1">賓</span>${g.name}</span>
+                                    <span class="font-medium text-gray-700"><span class="text-xs text-gray-400 mr-1">賓</span>${escapeHtml(g.name)}</span>
                                     <div class="text-right text-xs text-gray-500">
-                                        ${g.pickup && g.pickup !== '無' ? `<div class="text-blue-600">${g.pickup}</div>` : ''}
-                                        ${g.room && g.room !== '無' ? `<div class="text-orange-600">${g.room}</div>` : ''}
+                                        ${g.pickup && g.pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(g.pickup)}</div>` : ''}
+                                        ${g.room && g.room !== '無' ? `<div class="text-orange-600">${escapeHtml(g.room)}</div>` : ''}
                                     </div>
                                 </li>`;
                         }
@@ -2001,7 +1992,7 @@
                     listI.innerHTML += `
                         <li class="px-4 py-3 hover:bg-gray-50">
                             <div class="flex justify-between items-start">
-                                <span class="font-medium text-gray-800 text-sm">${name}</span>
+                                <span class="font-medium text-gray-800 text-sm">${safeName}</span>
                                 <div class="text-right flex-1 pl-4">
                                     ${items.map(i => `<div class="text-xs text-purple-600 bg-purple-50 inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
                                 </div>
@@ -2138,29 +2129,22 @@
             return list;
         }
 
-        function refreshIcons() {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        }
+        // refreshIcons 已在 script 頂部定義（批次版本）
 
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
 
-            const backBtn = document.getElementById('btn-back');
-            const shareBtn = document.getElementById('btn-header-share');
-
             if (viewId === 'view-home') {
-                backBtn.classList.add('hidden');
-                shareBtn.classList.add('hidden');
+                DOM.btnBack.classList.add('hidden');
+                DOM.btnShare.classList.add('hidden');
                 appState.historyStack = ['home'];
             } else if (viewId === 'view-activity-detail') {
-                backBtn.classList.remove('hidden');
-                shareBtn.classList.remove('hidden');
+                DOM.btnBack.classList.remove('hidden');
+                DOM.btnShare.classList.remove('hidden');
             } else {
-                backBtn.classList.remove('hidden');
-                shareBtn.classList.add('hidden');
+                DOM.btnBack.classList.remove('hidden');
+                DOM.btnShare.classList.add('hidden');
             }
             window.scrollTo(0, 0);
         }
@@ -2169,13 +2153,11 @@
             const current = appState.historyStack.pop();
             const prev = appState.historyStack[appState.historyStack.length - 1];
 
-            // 簡化邏輯：由於活動列表已整合至首頁，所有返回操作都回到首頁
             if (!prev || prev === 'home' || prev === 'list') {
-                document.getElementById('header-title').innerText = "活動與報名";
+                DOM.headerTitle.innerText = "活動與報名";
                 switchView('view-home');
                 appState.historyStack = ['home'];
                 appState.currentEvent = null;
-                // 重新渲染首頁活動列表
                 renderEventGrid(appState.currentCategory);
             }
         }
@@ -2373,11 +2355,7 @@
                 g.add(new Option(`${i} 人`, i));
             }
         }
-        function onLocationChange() {
-            const val = document.getElementById('new-location-select').value;
-            const loc = appState.settings.locations.find(l => l.name === val);
-            document.getElementById('new-address').value = loc ? loc.address : '';
-        }
+        // onLocationChange 已移除：引用的 'new-location-select' 元素不存在
         function updatePickupMap() {
             const val = document.getElementById('pickup-loc').value;
             const btn = document.getElementById('pickup-map-btn');
@@ -2617,31 +2595,23 @@
         }
 
         function showCreateView() {
-            // 1. 切換歷史堆疊
             appState.historyStack.push('create');
-
-            // 2. 切換畫面
             switchView('view-create');
+            DOM.headerTitle.innerText = "建立新活動";
 
-            // 3. 更新標題
-            document.getElementById('header-title').innerText = "建立新活動";
-
-            // 4. 重置表單
             document.getElementById('new-name').value = '';
             document.getElementById('new-time-single').value = '';
-            // 清空日期範圍欄位
-            if (document.getElementById('new-date-start')) document.getElementById('new-date-start').value = '';
-            if (document.getElementById('new-date-end')) document.getElementById('new-date-end').value = '';
+            const dateStart = document.getElementById('new-date-start');
+            const dateEnd = document.getElementById('new-date-end');
+            if (dateStart) dateStart.value = '';
+            if (dateEnd) dateEnd.value = '';
 
             document.getElementById('new-location').value = '';
             document.getElementById('new-address').value = '';
             document.getElementById('new-deadline').value = '';
             document.getElementById('new-itinerary').value = '';
-
-            // 自動填入主辦人 (抓取當前使用者名稱)
             document.getElementById('new-organizer').value = appState.user.displayName;
 
-            // 預設觸發一次以更新欄位顯示狀態 (例如隱藏/顯示旅遊選項)
             toggleCreateFields();
         }
 
@@ -2930,12 +2900,10 @@
                     let count = 0;
                     data.forEach((p, i) => {
                         count++;
-                        const family = parseInt(p.family) || 0;
+                        const family = getIntField(p, 'family');
 
-                        // ★ 使用統一函式解析，確保複製時來賓一定存在 ★
                         const guestData = parseGuestData(p);
-                        // 處理舊版 guestCount 備用
-                        const guestCountFallback = parseInt(p.guestCount || p.GuestCount || p['GuestCount'] || p['來賓人數']) || 0;
+                        const guestCountFallback = getIntField(p, 'guestCount');
 
                         const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
                         const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
@@ -2957,8 +2925,7 @@
                                 });
                                 text += `      來賓：${guestParts.join('、')}\n`;
                             } else {
-                                // 強制檢查所有可能欄位
-                                const guestNameStr = findCaseInsensitiveValue(p, ['guestName', 'GuestName', 'Guest Name', 'guest_name', 'Guest Names', '來賓姓名', '來賓', 'Guest', 'guest', 'memo', 'Memo', '備註']);
+                                const guestNameStr = getField(p, 'guestName');
                                 if (guestNameStr && guestNameStr !== '無') {
                                     text += `      來賓：${guestNameStr}\n`;
                                 }
@@ -3078,8 +3045,10 @@
         }
 
         function validateForm() {
-            // const type = document.querySelector('input[name="addSponsorType"]:checked').value;
-            // 若需要可在此增加基本驗證邏輯
+            if (!DOM.userName || !DOM.userName.value.trim()) {
+                showToast('請填寫姓名');
+                return false;
+            }
             return true;
         }
 
