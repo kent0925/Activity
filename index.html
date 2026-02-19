@@ -16,69 +16,35 @@
     <meta name="twitter:card" content="summary_large_image">
     <!-- 隨機 Meta 描述初始化 -->
     <script>
-        // 六十甲子籤詩資料
-        window.SIXTY_JIAZI = [
-            { id: 1, term: "甲子", poem: "日出便見風雲散，光明清淨照世間。\n一向前途通大道，萬事清吉保平安。", meaning: "運勢：大吉。求財：有。婚姻：成。" },
-            { id: 2, term: "甲寅", poem: "於今此景正當時，看看欲吐百花魁。\n若能遇得春色到，一灑清吉脫塵埃。", meaning: "運勢：中吉。求財：有。婚姻：好。" },
-            { id: 3, term: "甲辰", poem: "勸君把定心莫虛，天註衣祿自有餘。\n和合重重常吉慶，時來終遇得明珠。", meaning: "運勢：吉。求財：有些。婚姻：成。" },
-            { id: 4, term: "甲午", poem: "風恬浪靜可行船，恰是中秋月一輪。\n凡事不須多憂慮，福祿自有慶家門。", meaning: "運勢：上吉。求財：有。婚姻：成。" },
-            { id: 5, term: "甲申", poem: "只恐前途明有變，勸君作急可宜先。\n且守長江無大事，命逢太白守身邊。", meaning: "運勢：平平。求財：微。婚姻：難。" },
-            { id: 6, term: "甲戌", poem: "風雲致雨落洋洋，天災時氣必有傷。\n命內此事難和合，更逢一足出外鄉。", meaning: "運勢：不吉。求財：無。婚姻：不合。" },
-            { id: 7, term: "乙丑", poem: "雲開月出正分明，不須進退問前程。\n婚姻皆由天註定，和合清吉萬事成。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 8, term: "乙卯", poem: "禾稻看看結成完，此事必定兩相全。\n回到家中寬心坐，妻兒鼓舞樂團圓。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 9, term: "乙巳", poem: "龍虎相隨在深山，君爾何須背後看。\n不知此去相愛愉，他日與我卻無干。", meaning: "運勢：凶。求財：無。婚姻：不可。" },
-            { id: 10, term: "乙未", poem: "花開結子一半枯，可惜今年汝虛度。\n漸漸日落西山去，勸君不用向前途。", meaning: "運勢：凶。求財：無。婚姻：不可。" },
-            { id: 11, term: "乙酉", poem: "靈雞漸漸見分明，凡事且看子丑寅。\n雲開月出照天下，郎君即便見太平。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 12, term: "乙亥", poem: "長江風浪漸漸靜，于今得進可安寧。\n比得巨船尋有路，老有貴人相扶持。", meaning: "運勢：中吉。求財：有。婚姻：成。" },
-            { id: 13, term: "丙子", poem: "命中正逢羅孛關，用盡心機總未休。\n作福問神難得過，恰是行舟上高灘。", meaning: "運勢：凶。求財：無。婚姻：不吉。" },
-            { id: 14, term: "丙寅", poem: "財中漸漸見分明，花開花謝結子成。\n寬心且看月中桂，郎君即便見太平。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 15, term: "丙辰", poem: "八十原來是太公，看看晚景遇文王。\n目下緊事休相問，勸君且守待運通。", meaning: "運勢：平。求財：無。婚姻：慢。" },
-            { id: 16, term: "丙午", poem: "不須作福不須求，用盡心機總未休。\n陽世不知陰世事，官法如爐不自由。", meaning: "運勢：凶。求財：無。婚姻：不吉。" },
-            { id: 17, term: "丙申", poem: "舊恨重重未改為，家中禍患不臨身。\n須當謹防宜作福，龍蛇交會得和合。", meaning: "運勢：平。求財：微。婚姻：阻。" },
-            { id: 18, term: "丙戌", poem: "君問中間此言因，看看祿馬拱前程。\n若得貴人多得利，和合自有兩分明。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 19, term: "丁丑", poem: "富貴由命天註定，心高必然誤君期。\n不然且回依舊路，雲開月出自分明。", meaning: "運勢：平。求財：無。婚姻：不可。" },
-            { id: 20, term: "丁卯", poem: "前途功名未得意，只恐命內有交加。\n兩家必定防損失，勸君且退莫咨嗟。", meaning: "運勢：凶。求財：無。婚姻：難。" },
-            { id: 21, term: "丁巳", poem: "十方佛法有靈通，大難禍患不相同。\n紅日當空常照耀，還有貴人到家堂。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 22, term: "丁未", poem: "太公家業八十成，月出光輝四海明。\n命內自然逢大吉，茅屋中間百事亨。", meaning: "運勢：大吉。求財：有。婚姻：成。" },
-            { id: 23, term: "丁酉", poem: "欲去長江水闊茫，前途未遂運未通。\n如今絲綸常在手，只恐魚水不相逢。", meaning: "運勢：凶。求財：無。婚姻：不可。" },
-            { id: 24, term: "丁亥", poem: "月出光輝四海明，前途祿位見太平。\n浮雲散退終無事，可保禍患不臨身。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 25, term: "戊子", poem: "總是前途莫心勞，求神問聖枉是多。\n但看雞犬日過後，不須作福事如何。", meaning: "運勢：平。求財：微。婚姻：不可。" },
-            { id: 26, term: "戊寅", poem: "選出牡丹第一枝，勸君折取莫遲疑。\n世間若問相知處，萬事逢春正及時。", meaning: "運勢：上吉。求財：有。婚姻：成。" },
-            { id: 27, term: "戊辰", poem: "君爾寬心且自由，門庭清吉家無憂。\n財寶自然終吉利，凡事無傷不用求。", meaning: "運勢：大吉。求財：有。婚姻：成。" },
-            { id: 28, term: "戊午", poem: "於今莫作此當時，虎落平陽被犬欺。\n世間凡事何難定，千山萬水也遲疑。", meaning: "運勢：凶。求財：無。婚姻：不吉。" },
-            { id: 29, term: "戊申", poem: "枯木可惜未逢春，如今反在暗中藏。\n寬心且守風霜退，還君依舊作乾坤。", meaning: "運勢：平。求財：無。婚姻：不可。" },
-            { id: 30, term: "戊戌", poem: "漸漸看此月中和，過後須防未得高。\n改變顏色前途去，凡事必定見重勞。", meaning: "運勢：凶。求財：無。婚姻：不可。" },
-            { id: 31, term: "己丑", poem: "綠柳蒼蒼正當時，任君此去作乾坤。\n花果結實無殘謝，福祿自有慶家門。", meaning: "運勢：大吉。求財：有。婚姻：成。" },
-            { id: 32, term: "己卯", poem: "龍虎相交在門前，此事必定兩相連。\n黃金忽然變成鐵，何用作福問神仙。", meaning: "運勢：凶。求財：無。婚姻：不可。" },
-            { id: 33, term: "己巳", poem: "欲去長江水闊茫，行舟把定未遭風。\n戶內用心再作福，看看魚水得相逢。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 34, term: "己未", poem: "危險高山行過盡，莫嫌此路有重重。\n若見蘭桂漸漸發，去蛇反轉變成龍。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 35, term: "己酉", poem: "此事何須用心機，前途變怪自然知。\n看看此去得和合，漸漸脫出見太平。", meaning: "運勢：中吉。求財：有。婚姻：成。" },
-            { id: 36, term: "己亥", poem: "福如東海壽如山，君爾何須嘆苦難。\n命內自然逢大吉，祈保分明得平安。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 37, term: "庚子", poem: "運逢得意身顯變，君爾身中皆有益。\n一向前途無難事，決意之中保清吉。", meaning: "運勢：中吉。求財：有。婚姻：成。" },
-            { id: 38, term: "庚寅", poem: "名顯有意在中間，不須祈禱心自安。\n看看早晚日過後，即時得意在中間。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 39, term: "庚辰", poem: "意中若問神仙路，勸君且退望高樓。\n寬心且守寬心坐，必然遇得貴人扶。", meaning: "運勢：平。求財：無。婚姻：不可。" },
-            { id: 40, term: "庚午", poem: "平生富貴成祿位，君家門戶定光輝。\n此中必定無損失，夫妻百歲喜相隨。", meaning: "運勢：大吉。求財：有。婚姻：成。" },
-            { id: 41, term: "庚申", poem: "今行到手實難推，歌歌暢飲自徘徊。\n雞犬相聞消息近，婚姻夙世結成雙。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 42, term: "庚戌", poem: "一重江水一重山，誰知此去路又難。\n任他改求終不過，是非到底未得安。", meaning: "運勢：凶。求財：無。婚姻：不可。" },
-            { id: 43, term: "辛丑", poem: "一年作事急如飛，君爾寬心莫遲疑。\n貴人還在千里外，音信月中漸漸知。", meaning: "運勢：平。求財：微。婚姻：慢。" },
-            { id: 44, term: "辛卯", poem: "客到前途多得利，君爾何故兩相疑。\n雖是中間逢進退，月出光輝得運時。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 45, term: "辛巳", poem: "花開今已結成果，富貴榮華終到老。\n君子小人相會合，萬事清吉莫煩惱。", meaning: "運勢：大吉。求財：有。婚姻：成。" },
-            { id: 46, term: "辛未", poem: "功名得位與君顯，前途富貴喜安然。\n若遇一輪明月照，十五團圓光滿天。", meaning: "運勢：大吉。求財：有。婚姻：成。" },
-            { id: 47, term: "辛酉", poem: "君爾何須問聖跡，自己心中皆有益。\n于今且看月中桂，凶事脫出化成吉。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 48, term: "辛亥", poem: "陽世作事未和同，雲遮月色正朦朧。\n心中意欲前途去，只恐前途運未通。", meaning: "運勢：凶。求財：無。婚姻：不可。" },
-            { id: 49, term: "壬子", poem: "言語雖多不可從，風雲靜處未行龍。\n暗中終得明消息，君爾何須問重重。", meaning: "運勢：平。求財：微。婚姻：不可。" },
-            { id: 50, term: "壬寅", poem: "佛前發誓無異心，且看前途得好音。\n此物原來本是鐵，也能變化得成金。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 51, term: "壬辰", poem: "東西南北不堪行，前途此事正可當。\n勸君把定莫怨恨，家門喜氣事昌莊。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 52, term: "壬午", poem: "功名事業本由天，不須掛念意懸懸。\n若問中間遲與速，風雲際會在眼前。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 53, term: "壬申", poem: "看君來問心中事，積善之家慶有餘。\n運亨財子雙雙至，指日喜氣溢門閭。", meaning: "運勢：上吉。求財：有。婚姻：成。" },
-            { id: 54, term: "壬戌", poem: "孤燈寂寂夜沉沉，萬事清吉萬事成。\n若逢陰中有善果，燒得好香達神明。", meaning: "運勢：中吉。求財：有。婚姻：成。" },
-            { id: 55, term: "癸丑", poem: "須知進退總虛言，看看發暗未必全。\n珠玉深藏還未變，心中但得枉徒然。", meaning: "運勢：凶。求財：無。婚姻：不可。" },
-            { id: 56, term: "癸卯", poem: "病中若得苦心勞，到底完全總未遭。\n去後不須回頭問，心中事務盡消磨。", meaning: "運勢：凶。求財：無。婚姻：不吉。" },
-            { id: 57, term: "癸巳", poem: "勸君把定心莫虛，前途清吉得運時。\n到底中間無大事，又遇神仙守安居。", meaning: "運勢：吉。求財：有。婚姻：成。" },
-            { id: 58, term: "癸未", poem: "蛇身意欲變成龍，只恐命內運未通。\n久病且作寬心坐，言語雖多不可從。", meaning: "運勢：凶。求財：無。婚姻：不可。" },
-            { id: 59, term: "癸酉", poem: "有心作福莫遲疑，求名清吉正當時。\n此事必能成會合，財寶自然喜相隨。", meaning: "運勢：上吉。求財：有。婚姻：成。" },
-            { id: 60, term: "癸亥", poem: "月出光輝本清吉，浮雲總是蔽蔭色。\n戶內用心再作福，當官分理便有益。", meaning: "運勢：平。求財：微。婚姻：難。" }
-        ];
+        // 迷你老虎機資料
+        window.SLOT_CONFIG = {
+            symbols: ['🍺', '🎉', '💀', '🍷', '🎲', '👑', '🔥', '💰'],
+            jackpots: {
+                '🍺🍺🍺': '恭喜！今晚你是買單王 👑',
+                '🎉🎉🎉': '酒神附身，戰力全開！💪',
+                '💀💀💀': '建議你今晚低調一點… 😇',
+                '🍷🍷🍷': '品味非凡！今晚紅酒之夜 🥂',
+                '🎲🎲🎲': '賭神降臨！手氣爆棚 🃏',
+                '👑👑👑': '今晚你就是王！全場焦點 ✨',
+                '🔥🔥🔥': '火力全開！誰都擋不住 🚀',
+                '💰💰💰': '財神來了！今晚大贏家 💵',
+            },
+            pairMsgs: [
+                '還不錯嘛，值得乾一杯！🍻',
+                '差一點就中大獎了！再喝一杯壓壓驚 🫣',
+                '運氣普普，酒量來補！💪',
+                '有點意思，今晚有戲！🎭',
+                '小中獎！獎品是幫大家倒酒 🫗',
+            ],
+            missMsgs: [
+                '沒中？沒關係，喝了再說！🍺',
+                '手氣差就用酒量補回來 💪',
+                '別氣餒，你的運氣都留給酒桌了 🎯',
+                '今晚注定靠實力（喝）🏆',
+                '槓龜也是一種才華 ✨',
+                '佛系喝酒，隨緣中獎 🧘',
+            ]
+        };
 
         // 全域語錄陣列 (供分享功能共用)
         window.APP_QUOTES = [
@@ -154,59 +120,96 @@
 
 
         (function () {
-            // 隨機選擇一支籤 (Loading 畫面專用)
-            const randomFortuneIndex = Math.floor(Math.random() * window.SIXTY_JIAZI.length);
-            const fortune = window.SIXTY_JIAZI[randomFortuneIndex];
-
-            // 隨機選擇一句語錄 (首頁、Meta、分享專用)
+            // 隨機選擇語錄 (首頁、Meta 專用)
             const randomQuote = window.APP_QUOTES[Math.floor(Math.random() * window.APP_QUOTES.length)];
 
-            // 將籤詩物件暫存全域，供後續分享使用 (若需要)
-            window.CURRENT_FORTUNE = fortune;
-
             document.addEventListener('DOMContentLoaded', function () {
-                // 更新 Meta 標籤 (改回使用語錄)
-                // const metaTitle = `大老二兄弟會 - ${fortune.term}籤`;
-                // const metaDescContent = `${fortune.poem.replace(/\n/g, ' ')} | ${fortune.meaning}`;
-
-                // const ogTitle = document.querySelector('meta[property="og:title"]');
                 const ogDesc = document.getElementById('og-description');
                 const metaDesc = document.getElementById('meta-description');
-
-                // if (ogTitle) ogTitle.setAttribute('content', metaTitle); // 可選：不一定改標題
                 if (ogDesc) ogDesc.setAttribute('content', randomQuote);
                 if (metaDesc) metaDesc.setAttribute('content', randomQuote);
 
-                // 同步更新首頁標語文字 (改回使用語錄)
                 const sloganText = document.getElementById('slogan-text');
                 if (sloganText) sloganText.innerText = randomQuote;
 
-                // ★ 重點：更新 Loading 畫面籤詩
-                const loadingQuote = document.getElementById('loading-quote');
-                if (loadingQuote) {
-                    // 清空並重組 HTML
-                    loadingQuote.innerHTML = '';
-                    loadingQuote.className = "flex flex-col items-center justify-center h-auto text-white/95 px-6 pb-4"; // 調整樣式以適應高度
-
-                    // 1. 籤號與干支
-                    const titleDiv = document.createElement('div');
-                    titleDiv.className = "text-xl font-bold mb-3 tracking-widest text-[#f59e0b]";
-                    titleDiv.innerText = `第${fortune.id}籤 • ${fortune.term}`;
-                    loadingQuote.appendChild(titleDiv);
-
-                    // 2. 詩句 (直式或橫式? 這裡用置中橫式多行)
-                    const poemDiv = document.createElement('div');
-                    poemDiv.className = "text-lg font-medium leading-loose text-center whitespace-pre-line font-serif opacity-90 mb-3";
-                    poemDiv.innerText = fortune.poem;
-                    loadingQuote.appendChild(poemDiv);
-
-                    // 3. 解籤
-                    const meaningDiv = document.createElement('div');
-                    meaningDiv.className = "text-sm text-green-100 bg-white/10 px-3 py-1 rounded-full mt-1 border border-white/20";
-                    meaningDiv.innerText = fortune.meaning;
-                    loadingQuote.appendChild(meaningDiv);
-                }
+                // ★ 啟動迷你老虎機
+                startSlotMachine();
             });
+
+            function startSlotMachine() {
+                const config = window.SLOT_CONFIG;
+                if (!config) return;
+                const symbols = config.symbols;
+                const reels = [
+                    document.getElementById('slot-1'),
+                    document.getElementById('slot-2'),
+                    document.getElementById('slot-3')
+                ];
+                const resultEl = document.getElementById('slot-result');
+                if (!reels[0] || !reels[1] || !reels[2] || !resultEl) return;
+
+                // 開始旋轉：快速隨機切換符號
+                const intervals = reels.map(reel => {
+                    return setInterval(() => {
+                        reel.querySelector('.slot-symbol').textContent =
+                            symbols[Math.floor(Math.random() * symbols.length)];
+                    }, 80);
+                });
+
+                const finalSymbols = [];
+
+                // 第一輪停止
+                setTimeout(() => {
+                    clearInterval(intervals[0]);
+                    const sym = symbols[Math.floor(Math.random() * symbols.length)];
+                    reels[0].querySelector('.slot-symbol').textContent = sym;
+                    reels[0].classList.remove('spinning');
+                    reels[0].classList.add('stopped');
+                    finalSymbols.push(sym);
+                }, 800);
+
+                // 第二輪停止
+                setTimeout(() => {
+                    clearInterval(intervals[1]);
+                    const sym = symbols[Math.floor(Math.random() * symbols.length)];
+                    reels[1].querySelector('.slot-symbol').textContent = sym;
+                    reels[1].classList.remove('spinning');
+                    reels[1].classList.add('stopped');
+                    finalSymbols.push(sym);
+                }, 1400);
+
+                // 第三輪停止 + 顯示結果
+                setTimeout(() => {
+                    clearInterval(intervals[2]);
+                    const sym = symbols[Math.floor(Math.random() * symbols.length)];
+                    reels[2].querySelector('.slot-symbol').textContent = sym;
+                    reels[2].classList.remove('spinning');
+                    reels[2].classList.add('stopped');
+                    finalSymbols.push(sym);
+
+                    // 判斷結果
+                    const key = finalSymbols.join('');
+                    let msg = '';
+                    let isJackpot = false;
+
+                    if (config.jackpots[key]) {
+                        msg = config.jackpots[key];
+                        isJackpot = true;
+                    } else if (
+                        finalSymbols[0] === finalSymbols[1] ||
+                        finalSymbols[1] === finalSymbols[2] ||
+                        finalSymbols[0] === finalSymbols[2]
+                    ) {
+                        msg = config.pairMsgs[Math.floor(Math.random() * config.pairMsgs.length)];
+                    } else {
+                        msg = config.missMsgs[Math.floor(Math.random() * config.missMsgs.length)];
+                    }
+
+                    resultEl.textContent = msg;
+                    resultEl.classList.add('show');
+                    if (isJackpot) resultEl.classList.add('jackpot');
+                }, 2000);
+            }
         })();
     </script>
 
@@ -412,6 +415,105 @@
                 transform: translateY(0);
             }
         }
+
+        /* 迷你老虎機 */
+        .slot-machine-container {
+            text-align: center;
+        }
+
+        .slot-machine {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slot-reel {
+            width: 72px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .slot-reel.spinning {
+            animation: reelShake 0.1s linear infinite;
+        }
+
+        .slot-reel.stopped {
+            animation: reelStop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        @keyframes reelShake {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            25% {
+                transform: translateY(-2px);
+            }
+
+            75% {
+                transform: translateY(2px);
+            }
+        }
+
+        @keyframes reelStop {
+            0% {
+                transform: scale(1.2);
+            }
+
+            60% {
+                transform: scale(0.95);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .slot-result {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-height: 24px;
+        }
+
+        .slot-result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes jackpotPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+
+            50% {
+                transform: scale(1.05);
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        .slot-result.jackpot {
+            animation: jackpotPulse 1s ease-in-out infinite;
+            color: #fbbf24;
+        }
     </style>
 </head>
 
@@ -420,11 +522,20 @@
     <!-- 初始載入畫面 (Loading Overlay) -->
     <div id="initial-load-overlay"
         class="fixed inset-0 z-[100] bg-[#06c755] flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="text-white text-3xl font-bold mb-6 animate-bounce">🍺 大老二兄弟會</div>
-        <div id="loading-quote"
-            class="text-white/90 text-base px-8 text-center max-w-sm font-medium leading-relaxed tracking-wide h-20 flex items-center justify-center">
-            載入中...</div>
-        <div class="mt-8 flex gap-2">
+        <div class="text-white text-3xl font-bold mb-4 animate-bounce">🍺 大老二兄弟會</div>
+        <!-- 迷你老虎機 -->
+        <div class="slot-machine-container">
+            <div class="text-white/70 text-xs font-bold tracking-widest mb-3 text-center">🎰 今晚運勢</div>
+            <div class="slot-machine">
+                <div class="slot-reel spinning" id="slot-1"><span class="slot-symbol">🎲</span></div>
+                <div class="slot-reel spinning" id="slot-2"><span class="slot-symbol">🎲</span></div>
+                <div class="slot-reel spinning" id="slot-3"><span class="slot-symbol">🎲</span></div>
+            </div>
+            <div id="slot-result"
+                class="slot-result text-white text-sm font-bold text-center mt-4 px-6 max-w-xs mx-auto min-h-[24px]">
+                拉霸中...</div>
+        </div>
+        <div class="mt-6 flex gap-2">
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0s"></div>
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
@@ -2867,10 +2978,7 @@
 
                 const e = appState.currentEvent;
 
-                // 使用全域語錄陣列
-                const randomQuote = window.APP_QUOTES[Math.floor(Math.random() * window.APP_QUOTES.length)];
-                let text = `💬 ${randomQuote}\n\n`;
-                text += `📅 ${e.name}\n`;
+                let text = `📅 ${e.name}\n`;
                 // 判斷並加入活動資訊
                 if (e.organizer) text += `👤 主辦人：${e.organizer}\n`;
 
