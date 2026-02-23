@@ -1067,15 +1067,15 @@
 
             <div class="space-y-3 mb-6">
                 <label
-                    class="hidden flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
-                    id="opt-container-sponsor">
+                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-names">
                     <div class="relative flex items-center">
-                        <input type="checkbox" id="share-opt-sponsor" checked
+                        <input type="checkbox" id="share-opt-names" checked
                             class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
                         <i data-lucide="check"
                             class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                     </div>
-                    <span class="text-sm font-medium text-gray-700">贊助 / 認桌資訊</span>
+                    <span class="text-sm font-medium text-gray-700">👥 詳細名單 (姓名/人數)</span>
                 </label>
 
                 <label
@@ -1090,17 +1090,16 @@
                     <span class="text-sm font-medium text-gray-700">上車地點 / 房型</span>
                 </label>
 
-
                 <label
-                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
-                    id="opt-container-names">
+                    class="hidden flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-sponsor">
                     <div class="relative flex items-center">
-                        <input type="checkbox" id="share-opt-names" checked
+                        <input type="checkbox" id="share-opt-sponsor" checked
                             class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
                         <i data-lucide="check"
                             class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                     </div>
-                    <span class="text-sm font-medium text-gray-700">👥 詳細名單 (姓名/人數)</span>
+                    <span class="text-sm font-medium text-gray-700">贊助 / 認桌資訊</span>
                 </label>
 
                 <label
@@ -2875,7 +2874,14 @@
 
             // 判斷是否顯示「贊助/認桌」選項
             const hasTable = s.tableCount && s.tableCount > 0;
-            const hasSponsor = hasTable || (e.type !== 'travel' && s.secondary > 0);
+            // 除了檢查統計數據，也從快取名單實際檢查是否有人有贊助資料
+            const detailsHasSponsor = (appState.cachedDetails || []).some(p => {
+                const tc = getIntField(p, 'tableCount');
+                const spRaw = getField(p, 'sponsor');
+                const spList = parseSponsorData(spRaw);
+                return tc > 0 || spList.length > 0;
+            });
+            const hasSponsor = hasTable || detailsHasSponsor || (e.type !== 'travel' && s.secondary > 0);
 
             const sponsorEl = document.getElementById('opt-container-sponsor');
             if (hasSponsor) {
@@ -3042,21 +3048,12 @@
 
                         if (options.includeSponsor) {
                             let moneyLines = [];
-                            const tc = parseInt(p.tableCount) || 0;
+                            const tc = getIntField(p, 'tableCount');
                             if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
 
-                            let sponsorList = [];
-                            if (p.sponsorList && Array.isArray(p.sponsorList)) {
-                                sponsorList = p.sponsorList;
-                            } else if (p.sponsor && p.sponsor !== '無') {
-                                try {
-                                    const json = (typeof p.sponsor === 'string' && (p.sponsor.startsWith('[') || p.sponsor.startsWith('{'))) ? JSON.parse(p.sponsor) : p.sponsor;
-                                    if (Array.isArray(json)) sponsorList = json;
-                                    else sponsorList = [p.sponsor];
-                                } catch (e) {
-                                    sponsorList = [p.sponsor];
-                                }
-                            }
+                            // 使用統一的 getField + parseSponsorData 解析贊助資料（與 renderDetailLists 一致）
+                            const sponsorRaw = getField(p, 'sponsor');
+                            const sponsorList = parseSponsorData(sponsorRaw);
 
                             sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
 
