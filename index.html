@@ -2912,12 +2912,12 @@
             const noOptsEl = document.getElementById('share-no-opts');
             if (noOptsEl) noOptsEl.classList.add('hidden');
 
-            // 重置新增選項 (預設勾選)
+            // 重置選項預設狀態（僅勾選贊助/認桌及報名連結）
             const mapCheckbox = document.getElementById('share-opt-map');
             const namesCheckbox = document.getElementById('share-opt-names');
             const linkCheckbox = document.getElementById('share-opt-link');
-            if (mapCheckbox) mapCheckbox.checked = true;
-            if (namesCheckbox) namesCheckbox.checked = true;
+            if (mapCheckbox) mapCheckbox.checked = false;
+            if (namesCheckbox) namesCheckbox.checked = false;
             if (linkCheckbox) linkCheckbox.checked = true;
 
             document.getElementById('share-modal').classList.remove('hidden');
