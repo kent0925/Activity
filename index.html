@@ -3032,29 +3032,26 @@
                         text += `\n`;
 
                         // ★ 修改：來賓名單整合為單行，顯示在下方 ★
-                        if (options.includeNames !== false) {
-                            if (guestData.length > 0) {
-                                const guestParts = guestData.map(g => {
-                                    return g.count > 1 ? `${g.name}*${g.count}` : g.name;
-                                });
-                                text += `      來賓：${guestParts.join('、')}\n`;
-                            } else {
-                                const guestNameStr = getField(p, 'guestName');
-                                if (guestNameStr && guestNameStr !== '無') {
-                                    text += `      來賓：${guestNameStr}\n`;
-                                }
+                        if (guestData.length > 0) {
+                            const guestParts = guestData.map(g => {
+                                return g.count > 1 ? `${g.name}*${g.count}` : g.name;
+                            });
+                            text += `      來賓：${guestParts.join('、')}\n`;
+                        } else {
+                            const guestNameStr = getField(p, 'guestName');
+                            if (guestNameStr && guestNameStr !== '無') {
+                                text += `      來賓：${guestNameStr}\n`;
                             }
                         }
 
+                        // 贊助/認桌附在人名下方（詳細名單已勾選時）
                         if (options.includeSponsor) {
                             let moneyLines = [];
                             const tc = getIntField(p, 'tableCount');
                             if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
 
-                            // 使用統一的 getField + parseSponsorData 解析贊助資料（與 renderDetailLists 一致）
                             const sponsorRaw = getField(p, 'sponsor');
                             const sponsorList = parseSponsorData(sponsorRaw);
-
                             sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
 
                             if (moneyLines.length > 0) {
@@ -3082,6 +3079,27 @@
                             }
                         }
                     });
+                } else if (options.includeSponsor) {
+                    // ★ 未勾選詳細名單但勾選贊助時，獨立顯示贊助/認桌區塊
+                    let hasSponsorData = false;
+                    let sponsorText = '';
+                    data.forEach(p => {
+                        let moneyLines = [];
+                        const tc = getIntField(p, 'tableCount');
+                        if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
+
+                        const sponsorRaw = getField(p, 'sponsor');
+                        const sponsorList = parseSponsorData(sponsorRaw);
+                        sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
+
+                        if (moneyLines.length > 0) {
+                            hasSponsorData = true;
+                            sponsorText += `${p.name}：${moneyLines.join('、')}\n`;
+                        }
+                    });
+                    if (hasSponsorData) {
+                        text += `【贊助/認桌】\n${sponsorText}`;
+                    }
                 }
 
                 text += `──────────────\n`;
