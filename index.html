@@ -3126,10 +3126,27 @@
 
                     if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                         try {
+                            let shareText = `📅 ${e.name}\n`;
+                            if (e.organizer) shareText += `👤 主辦人：${e.organizer}\n`;
+                            let timeDisplay = e.time;
+                            if (timeDisplay) {
+                                const d = new Date(timeDisplay);
+                                if (!isNaN(d.getTime())) {
+                                    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+                                    timeDisplay = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}(${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+                                }
+                            }
+                            if (timeDisplay) shareText += `🕒 時間：${timeDisplay}\n`;
+                            if (e.location) shareText += `📍 地點：${e.location}\n`;
+                            if (e.address) shareText += `🚗 地址：${e.address}\n`;
+                            shareText += `---------------------\n`;
+                            shareText += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
+                            shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
+
                             await navigator.share({
                                 files: [file],
                                 title: e.name,
-                                text: `📅 ${e.name}\n👤 主辦人：${e.organizer}\n🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`
+                                text: shareText
                             });
                             showToast('圖片分享成功！');
                         } catch (err) {
@@ -3207,29 +3224,20 @@
                 // 判斷並加入活動資訊
                 if (e.organizer) text += `👤 主辦人：${e.organizer}\n`;
 
-                // 時間處理：加入星期顯示
+                // 時間處理：加入(星期X)格式
                 let timeDisplay = e.time;
                 if (timeDisplay) {
                     const d = new Date(timeDisplay);
                     if (!isNaN(d.getTime())) {
                         const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-                        timeDisplay = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+                        timeDisplay = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}(${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
                     }
                 }
-                if (timeDisplay) text += `${timeDisplay}\n`;
+                if (timeDisplay) text += `🕒 時間：${timeDisplay}\n`;
 
-                if (e.location) text += `${e.location}\n`;
-                if (e.address) text += `${e.address}\n`;
-
-                if (options.includeMap !== false) {
-                    const mapQuery = e.address || e.location;
-                    text += `🗺️ 地圖：https://www.google.com/maps/search/${mapQuery}\n`;
-                }
-
-                if (options.includeLink !== false) {
-                    text += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
-                }
-                text += `──────────────\n`;
+                if (e.location) text += `📍 地點：${e.location}\n`;
+                if (e.address) text += `🚗 地址：${e.address}\n`;
+                text += `---------------------\n`;
 
 
 
@@ -3314,17 +3322,12 @@
                     }
                 }
 
-                text += `──────────────\n`;
+                text += `---------------------\n`;
                 text += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
 
-                // 這裡的連結移除，改由上方統一控制，或視需求僅保留一個
-                // 用戶要求 "報名連結只要出現一次"，且為 "選項"
-                // 為了閱讀體驗，通常放在詳細名單之前或之後皆可
-                // 我們統一在上方顯示 (Line 2972 附近)，這裡就不重複顯示了
-                // 若用戶偏好在最下方，則改為保留這裡，移除上方。
-                // 依照 "報名連結、GOOGLE地圖、詳細名單" 的順序語感，可能是在上方資訊塊
-                // 但為了確認 "複製內容及表單都帶符號進入"，我們在上方的 includeLink 區塊已處理
-                // 故此處直接移除，避免重複。
+                if (options.includeLink !== false) {
+                    text += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+                }
 
                 copyTextToClipboard(text);
             }
