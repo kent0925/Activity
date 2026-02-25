@@ -2966,11 +2966,11 @@
             refreshIcons();
 
             // 圖片分享為固定內容，不依照勾選（只有複製文字才依勾選）
-            const includeSponsor = true;
+            const includeSponsor = false; // 名單內不顯示贊助，改由下方獨立區塊顯示
             const includeTravel = true;
-            const includeMap = true;
+            const includeMap = false;  // 圖片不含地圖連結
             const includeNames = true;
-            const includeLink = true;
+            const includeLink = false; // 圖片不含報名連結
 
             try {
                 // --- 1. 動態產生分享卡片 HTML ---
@@ -2980,12 +2980,12 @@
                 // 活動標題區
                 let html = '';
                 html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
-                html += `<div style="font-size:22px;font-weight:800;margin-bottom:6px;">📅 ${e.name}</div>`;
-                if (e.organizer) html += `<div style="font-size:14px;opacity:0.9;">👤 主辦人：${e.organizer}</div>`;
+                html += `<div style="font-size:22px;font-weight:800;">${e.name}</div>`;
                 html += '</div>';
 
                 // 活動資訊區
                 html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${e.organizer}</div>`;
                 let timeDisplay = e.time;
                 if (timeDisplay && timeDisplay.includes('T')) timeDisplay = timeDisplay.replace('T', ' ');
                 if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${timeDisplay}</div>`;
