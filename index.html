@@ -2965,12 +2965,12 @@
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
             refreshIcons();
 
-            // 讀取使用者勾選的選項
-            const includeSponsor = document.getElementById('share-opt-sponsor').checked && !document.getElementById('opt-container-sponsor').classList.contains('hidden');
-            const includeTravel = document.getElementById('share-opt-travel').checked && !document.getElementById('opt-container-travel').classList.contains('hidden');
-            const includeMap = document.getElementById('share-opt-map').checked;
-            const includeNames = document.getElementById('share-opt-names').checked;
-            const includeLink = document.getElementById('share-opt-link').checked;
+            // 圖片分享為固定內容，不依照勾選（只有複製文字才依勾選）
+            const includeSponsor = true;
+            const includeTravel = true;
+            const includeMap = true;
+            const includeNames = true;
+            const includeLink = true;
 
             try {
                 // --- 1. 動態產生分享卡片 HTML ---
@@ -3065,6 +3065,28 @@
                         }
                     });
                     html += '</div>';
+                }
+
+                // 贊助/認桌彙總區（獨立區塊，不論是否勾選名單都會顯示）
+                if (data.length > 0) {
+                    let sponsorHtml = '';
+                    data.forEach(p => {
+                        let moneyParts = [];
+                        const tc = getIntField(p, 'tableCount');
+                        if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+                        const sponsorRaw = getField(p, 'sponsor');
+                        const sponsorList = parseSponsorData(sponsorRaw);
+                        sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+                        if (moneyParts.length > 0) {
+                            sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+                        }
+                    });
+                    if (sponsorHtml) {
+                        html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                        html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
+                        html += sponsorHtml;
+                        html += '</div>';
+                    }
                 }
 
                 // 統計區
