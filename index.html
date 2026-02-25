@@ -1132,21 +1132,20 @@
                 </div>
             </div>
 
-            <!-- 分享按鈕區域，分為文字與圖片兩種操作 -->
+            <!-- 分享按鈕區域 -->
             <div class="space-y-3">
                 <div class="flex gap-3">
-                    <button onclick="document.getElementById('share-modal').classList.add('hidden')"
-                        class="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition">取消</button>
+                    <button onclick="shareAsImage()" id="btn-share-image"
+                        class="flex-1 py-2.5 rounded-xl bg-green-500 text-white font-bold text-sm hover:bg-green-600 shadow-lg flex justify-center items-center gap-2 transition active:scale-95">
+                        <i data-lucide="image" class="w-4 h-4"></i> 分享圖片
+                    </button>
                     <button onclick="confirmShareCopy()"
                         class="flex-1 py-2.5 rounded-xl bg-gray-900 text-white font-bold text-sm hover:bg-gray-800 shadow-lg flex justify-center items-center gap-2 transition active:scale-95">
                         <i data-lucide="copy" class="w-4 h-4"></i> 分享文字
                     </button>
                 </div>
-
-                <button onclick="shareAsImage()" id="btn-share-image"
-                    class="w-full py-2.5 rounded-xl bg-green-500 text-white font-bold text-sm hover:bg-green-600 shadow-lg flex justify-center items-center gap-2 transition active:scale-95">
-                    <i data-lucide="image" class="w-4 h-4"></i> 產生分享圖片
-                </button>
+                <button onclick="document.getElementById('share-modal').classList.add('hidden')"
+                    class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition">取消</button>
             </div>
         </div>
     </div>
@@ -2980,7 +2979,7 @@
                 // 活動標題區
                 let html = '';
                 html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
-                html += `<div style="font-size:22px;font-weight:800;">${e.name}</div>`;
+                html += `<div style="font-size:22px;font-weight:800;">📅 ${e.name}</div>`;
                 html += '</div>';
 
                 // 活動資訊區
@@ -3124,7 +3123,7 @@
                             await navigator.share({
                                 files: [file],
                                 title: e.name,
-                                text: `${e.name} - 活動名單`
+                                text: `${e.name}\n🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`
                             });
                             showToast('圖片分享成功！');
                         } catch (err) {
