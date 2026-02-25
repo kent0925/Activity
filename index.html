@@ -2986,7 +2986,13 @@
                 html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                 if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${e.organizer}</div>`;
                 let timeDisplay = e.time;
-                if (timeDisplay && timeDisplay.includes('T')) timeDisplay = timeDisplay.replace('T', ' ');
+                if (timeDisplay) {
+                    const d = new Date(timeDisplay);
+                    if (!isNaN(d.getTime())) {
+                        const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+                        timeDisplay = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+                    }
+                }
                 if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${timeDisplay}</div>`;
                 if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${e.location}</div>`;
                 if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${e.address}</div>`;
@@ -3201,10 +3207,14 @@
                 // 判斷並加入活動資訊
                 if (e.organizer) text += `👤 主辦人：${e.organizer}\n`;
 
-                // 時間處理：如果是 T 結尾的 ISO 格式就簡單修飾，否則直接顯示
+                // 時間處理：加入星期顯示
                 let timeDisplay = e.time;
-                if (timeDisplay && timeDisplay.includes('T')) {
-                    timeDisplay = timeDisplay.replace('T', ' ');
+                if (timeDisplay) {
+                    const d = new Date(timeDisplay);
+                    if (!isNaN(d.getTime())) {
+                        const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+                        timeDisplay = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+                    }
                 }
                 if (timeDisplay) text += `🕒 時間：${timeDisplay}\n`;
 
@@ -3257,20 +3267,7 @@
                             }
                         }
 
-                        // 贊助/認桌附在人名下方（詳細名單已勾選時）
-                        if (options.includeSponsor) {
-                            let moneyLines = [];
-                            const tc = getIntField(p, 'tableCount');
-                            if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
-
-                            const sponsorRaw = getField(p, 'sponsor');
-                            const sponsorList = parseSponsorData(sponsorRaw);
-                            sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
-
-                            if (moneyLines.length > 0) {
-                                moneyLines.forEach(l => text += `      ${l}\n`);
-                            }
-                        }
+                        // 贊助/認桌不在名單內顯示，改由下方獨立區塊統一列出
 
                         if (options.includeTravel) {
                             let travelLines = [];
@@ -3292,8 +3289,10 @@
                             }
                         }
                     });
-                } else if (options.includeSponsor) {
-                    // ★ 未勾選詳細名單但勾選贊助時，獨立顯示贊助/認桌區塊
+                }
+
+                // ★ 贊助/認桌獨立區塊（不論是否勾選名單，只要有資料就顯示）
+                if (options.includeSponsor) {
                     let hasSponsorData = false;
                     let sponsorText = '';
                     data.forEach(p => {
