@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>大老二兄弟會活動報名系統</title>
     <meta property="og:title" content="大老二兄弟會活動報名系統" />
-    <meta property="og:description" id="og-description" content="清醒的你太無聊，喝醉的你才像個人。" />
+    <meta property="og:description" id="og-description" content="地球有 70% 是水，你身體有 70% 是酒精，這才叫天人合一。" />
     <meta property="og:image" content="https://kent0925.github.io/test/logo.jpg" />
     <meta property="og:type" content="website" />
     <!-- 新增 SEO 與品牌標籤 -->
-    <meta name="description" id="meta-description" content="清醒的你太無聊，喝醉的你才像個人。" />
+    <meta name="description" id="meta-description" content="地球有 70% 是水，你身體有 70% 是酒精，這才叫天人合一。" />
     <meta name="theme-color" content="#06c755">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -3129,7 +3129,7 @@
                             await navigator.share({
                                 files: [file],
                                 title: e.name,
-                                text: `${e.name}\n🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`
+                                text: `📅 ${e.name}\n👤 主辦人：${e.organizer}\n🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`
                             });
                             showToast('圖片分享成功！');
                         } catch (err) {
@@ -3216,10 +3216,10 @@
                         timeDisplay = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
                     }
                 }
-                if (timeDisplay) text += `🕒 時間：${timeDisplay}\n`;
+                if (timeDisplay) text += `${timeDisplay}\n`;
 
-                if (e.location) text += `📍 地點：${e.location}\n`;
-                if (e.address) text += `🚗 地址：${e.address}\n`;
+                if (e.location) text += `${e.location}\n`;
+                if (e.address) text += `${e.address}\n`;
 
                 if (options.includeMap !== false) {
                     const mapQuery = e.address || e.location;
