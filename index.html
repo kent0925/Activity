@@ -2957,6 +2957,7 @@
         async function shareAsImage() {
             const e = appState.currentEvent;
             if (!e) return;
+            const data = appState.cachedDetails || [];
 
             const btn = document.getElementById('btn-share-image');
             const origHtml = btn.innerHTML;
@@ -2964,22 +2965,136 @@
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
             refreshIcons();
 
-            try {
-                // 1. 取得要截圖的目標元素 (這裡使用包含頭部和名單的整個容器，或是主要的內容區塊)
-                const targetNode = document.getElementById('view-activity-detail');
+            // 讀取使用者勾選的選項
+            const includeSponsor = document.getElementById('share-opt-sponsor').checked && !document.getElementById('opt-container-sponsor').classList.contains('hidden');
+            const includeTravel = document.getElementById('share-opt-travel').checked && !document.getElementById('opt-container-travel').classList.contains('hidden');
+            const includeMap = document.getElementById('share-opt-map').checked;
+            const includeNames = document.getElementById('share-opt-names').checked;
+            const includeLink = document.getElementById('share-opt-link').checked;
 
-                // 執行截圖
-                const canvas = await html2canvas(targetNode, {
-                    scale: 2, // 提高解析度
+            try {
+                // --- 1. 動態產生分享卡片 HTML ---
+                const card = document.createElement('div');
+                card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#1f2937;z-index:-1;';
+
+                // 活動標題區
+                let html = '';
+                html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
+                html += `<div style="font-size:22px;font-weight:800;margin-bottom:6px;">📅 ${e.name}</div>`;
+                if (e.organizer) html += `<div style="font-size:14px;opacity:0.9;">👤 主辦人：${e.organizer}</div>`;
+                html += '</div>';
+
+                // 活動資訊區
+                html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                let timeDisplay = e.time;
+                if (timeDisplay && timeDisplay.includes('T')) timeDisplay = timeDisplay.replace('T', ' ');
+                if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${timeDisplay}</div>`;
+                if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${e.location}</div>`;
+                if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${e.address}</div>`;
+                if (includeMap) {
+                    const mapQuery = e.address || e.location;
+                    html += `<div style="font-size:13px;margin-bottom:4px;color:#2563eb;">🗺️ 地圖：https://www.google.com/maps/search/${encodeURIComponent(mapQuery)}</div>`;
+                }
+                if (includeLink) {
+                    html += `<div style="font-size:13px;color:#2563eb;">🔗 報名：https://liff.line.me/${LIFF_ID}</div>`;
+                }
+                html += '</div>';
+
+                // 名單區
+                if (includeNames && data.length > 0) {
+                    html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                    html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
+                    let count = 0;
+                    data.forEach(p => {
+                        count++;
+                        const family = getIntField(p, 'family');
+                        const guestData = parseGuestData(p);
+                        const guestCountFallback = getIntField(p, 'guestCount');
+                        const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
+                        const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
+                        const total = 1 + family + finalGuestCount;
+                        const num = count.toString().padStart(2, '0');
+                        const status = p.status || p.note || '';
+                        const prefix = status ? status : '';
+
+                        html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;">`;
+                        html += `<span style="color:#06c755;font-weight:700;">${num}.</span> ${prefix}${p.name}`;
+                        if (total > 1) html += ` <span style="color:#f59e0b;font-weight:600;">×${total}</span>`;
+                        html += '</div>';
+
+                        // 來賓
+                        if (guestData.length > 0) {
+                            const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
+                            html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+                        } else {
+                            const guestNameStr = getField(p, 'guestName');
+                            if (guestNameStr && guestNameStr !== '無') {
+                                html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                            }
+                        }
+
+                        // 贊助
+                        if (includeSponsor) {
+                            let moneyLines = [];
+                            const tc = getIntField(p, 'tableCount');
+                            if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
+                            const sponsorRaw = getField(p, 'sponsor');
+                            const sponsorList = parseSponsorData(sponsorRaw);
+                            sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
+                            if (moneyLines.length > 0) {
+                                html += `<div style="font-size:12px;color:#d97706;padding:2px 0 4px 20px;">${moneyLines.join('、')}</div>`;
+                            }
+                        }
+
+                        // 上車/房型
+                        if (includeTravel) {
+                            let travelLines = [];
+                            if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
+                            if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                            if (guestData.length > 0) {
+                                guestData.forEach(g => {
+                                    let extras = [];
+                                    if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                                    if (g.room && g.room !== '無') extras.push(g.room);
+                                    if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                                });
+                            }
+                            if (travelLines.length > 0) {
+                                html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+                            }
+                        }
+                    });
+                    html += '</div>';
+                }
+
+                // 統計區
+                html += '<div style="text-align:center;font-size:14px;font-weight:700;color:#374151;padding:8px 0;">';
+                html += `共 ${appState.currentStats.totalPeople || 0} 人報名`;
+                html += '</div>';
+
+                // 浮水印
+                html += '<div style="text-align:center;font-size:11px;color:#9ca3af;margin-top:8px;">大老二兄弟會 活動報名系統</div>';
+
+                card.innerHTML = html;
+                document.body.appendChild(card);
+
+                // --- 2. 使用 html2canvas 截取卡片 ---
+                const canvas = await html2canvas(card, {
+                    scale: 2,
                     useCORS: true,
-                    backgroundColor: "#f9fafb" // `--bg-gray`
+                    backgroundColor: null,
+                    width: card.scrollWidth,
+                    height: card.scrollHeight
                 });
 
-                // 將 canvas 轉為 blob
-                canvas.toBlob(async (blob) => {
-                    const file = new File([blob], `event_${e.id}.png`, { type: 'image/png' });
+                // 移除暫時卡片
+                document.body.removeChild(card);
 
-                    // 判斷是否為手機裝置
+                // --- 3. 轉為 blob 並分享或下載 ---
+                canvas.toBlob(async (blob) => {
+                    if (!blob) { showToast('圖片產生失敗'); return; }
+                    const file = new File([blob], `${e.name}_名單.png`, { type: 'image/png' });
+
                     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
                     if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -2992,22 +3107,20 @@
                             showToast('圖片分享成功！');
                         } catch (err) {
                             if (err.name !== 'AbortError') {
-                                console.error('Share failed:', err);
+                                console.error('圖片分享失敗:', err);
                                 fallbackDownloadImage(canvas, e.name);
                             }
                         }
                     } else {
-                        // 電腦版或不支援圖片分享，直接下載
                         fallbackDownloadImage(canvas, e.name);
                     }
 
-                    // 關閉 Modal
                     document.getElementById('share-modal').classList.add('hidden');
                 }, 'image/png');
 
             } catch (err) {
-                console.error('Image generation failed', err);
-                showToast('產生圖片失敗');
+                console.error('圖片產生失敗', err);
+                showToast('產生圖片失敗：' + err.message);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = origHtml;
