@@ -2966,8 +2966,8 @@
 
             try {
                 // 1. 取得要截圖的目標元素 (這裡使用包含頭部和名單的整個容器，或是主要的內容區塊)
-                // 為了排版美觀，我們暫時複製一份 view-details 的內容並覆蓋在畫面上方進行隱藏渲染
-                const targetNode = document.getElementById('view-details');
+                // 為了排版美觀，我們暫時複製一份 view-activity-details 的內容並覆蓋在畫面上方進行隱藏渲染
+                const targetNode = document.getElementById('view-activity-details');
 
                 // 執行截圖
                 const canvas = await html2canvas(targetNode, {
