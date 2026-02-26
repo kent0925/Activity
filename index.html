@@ -2068,7 +2068,7 @@
                     <li class="px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0">
                         <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
                             <span class="text-gray-400 font-mono text-sm">${num}.</span>
-                            <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap">${safeName}${tagHtml}${nameSuffix}</span>
+                            <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap">${safeName}&nbsp;${tagHtml}${nameSuffix}</span>
                         </div>
                         ${subHtml}
                     </li>`;
@@ -3073,12 +3073,12 @@
                         const roles = getParticipantRoles(p.name, e);
                         let tagHtml = '';
                         if (roles.length > 0) {
-                            tagHtml = roles.map(r => `<span style="background:${r.color};color:white;font-size:11px;font-weight:bold;padding:2px 6px;border-radius:6px;margin-right:6px;display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;vertical-align:middle;">${r.label}</span>`).join('');
+                            tagHtml = roles.map(r => `<span style="background:${r.color};color:white;font-size:11px;font-weight:bold;padding:4px 6px;border-radius:6px;margin-left:6px;display:inline-block;vertical-align:middle;line-height:1;">${r.label}</span>`).join('');
                         }
 
-                        html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;">`;
-                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> ${tagHtml}${prefix}${p.name}`;
-                        if (total > 1) html += ` <span style="color:#f59e0b;font-weight:600;">×${total}</span>`;
+                        html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> ${prefix}${p.name}${tagHtml}`;
+                        if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
                         html += '</div>';
 
                         // 來賓
@@ -3316,10 +3316,10 @@
                         const roles = getParticipantRoles(p.name, e);
                         let textTags = '';
                         if (roles.length > 0) {
-                            textTags = roles.map(r => r.textLabel).join('') + ' ';
+                            textTags = ' ' + roles.map(r => r.textLabel).join('');
                         }
 
-                        text += `${num}. ${textTags}${prefix}${p.name}`;
+                        text += `${num}. ${prefix}${p.name}${textTags}`;
                         if (total > 1) text += ` *${total}`;
                         text += `\n`;
 
