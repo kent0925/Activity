@@ -2061,7 +2061,7 @@
                 const roles = getParticipantRoles(name, appState.currentEvent);
                 let tagHtml = '';
                 if (roles.length > 0) {
-                    tagHtml = roles.map(r => `<span class="text-white text-[10px] font-bold px-1.5 pt-0 pb-0.5 rounded ml-1.5 flex items-center" style="background-color:${r.color};">${r.label}</span>`).join('');
+                    tagHtml = roles.map(r => `<span class="text-[12px] font-bold ml-1.5 flex items-center" style="color:${r.color};">${r.label}</span>`).join('');
                 }
 
                 listP.innerHTML += `
@@ -2867,11 +2867,11 @@
             const special = (appState.settings && appState.settings.specialRoles) ? appState.settings.specialRoles : {};
 
             if (special.president && cleanName === special.president) {
-                roles.push({ type: 'president', label: '👑 會長', textLabel: '[👑會長]', color: '#fbbf24' });
+                roles.push({ type: 'president', label: '👑 會長', textLabel: '[👑會長]', color: '#d97706' });
             }
 
             if (special.vicePresident && cleanName === special.vicePresident) {
-                roles.push({ type: 'vicePresident', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#a855f7' });
+                roles.push({ type: 'vicePresident', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#9333ea' });
             }
 
             if (event && event.organizer) {
@@ -2892,7 +2892,7 @@
 
                 if (month && special.birthdays && special.birthdays[month]) {
                     if (special.birthdays[month].includes(cleanName)) {
-                        roles.push({ type: 'birthday', label: `🎂 ${month}月壽星`, textLabel: `[🎂${month}月壽星]`, color: '#f472b6' });
+                        roles.push({ type: 'birthday', label: `🎂 ${month}月壽星`, textLabel: `[🎂${month}月壽星]`, color: '#db2777' });
                     }
                 }
             }
@@ -3073,8 +3073,8 @@
                         const roles = getParticipantRoles(p.name, e);
                         let tagHtml = '';
                         if (roles.length > 0) {
-                            // 改為利用 inline-flex 與 items-center 來垂直置中，並微調 padding 避免底部截斷
-                            tagHtml = roles.map(r => `<span style="background:${r.color};color:white;font-size:11px;font-weight:bold;padding:0px 4px 1px 4px;border-radius:4px;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
+                            // 改為純文字顏色變化，不使用背板色塊
+                            tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
                         }
 
                         html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
