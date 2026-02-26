@@ -2874,8 +2874,11 @@
                 roles.push({ type: 'vicePresident', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#a855f7' });
             }
 
-            if (event && event.organizer && cleanName === event.organizer.trim()) {
-                roles.push({ type: 'host', label: '🍻 爐主', textLabel: '[🍻爐主]', color: '#ea580c' });
+            if (event && event.organizer) {
+                const organizers = event.organizer.split(/[、,，\s]+/).map(o => o.trim()).filter(Boolean);
+                if (organizers.includes(cleanName)) {
+                    roles.push({ type: 'host', label: '🍻 爐主', textLabel: '[🍻爐主]', color: '#ea580c' });
+                }
             }
 
             if (event && event.time) {
@@ -3070,7 +3073,7 @@
                         const roles = getParticipantRoles(p.name, e);
                         let tagHtml = '';
                         if (roles.length > 0) {
-                            tagHtml = roles.map(r => `<span style="background:${r.color};color:white;font-size:11px;font-weight:bold;padding:2px 6px;border-radius:6px;margin-right:6px;display:inline-block;vertical-align:middle;">${r.label}</span>`).join('');
+                            tagHtml = roles.map(r => `<span style="background:${r.color};color:white;font-size:11px;font-weight:bold;padding:2px 6px;border-radius:6px;margin-right:6px;display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;vertical-align:middle;">${r.label}</span>`).join('');
                         }
 
                         html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;">`;
