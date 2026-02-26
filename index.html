@@ -3387,6 +3387,10 @@
                 text += `---------------------\n`;
                 text += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
 
+                if (options.includeMap && e.address) {
+                    text += `🗺️ Google 地圖：\nhttps://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.address)}\n`;
+                }
+
                 if (options.includeLink !== false) {
                     text += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
                 }
