@@ -3388,7 +3388,7 @@
                 text += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
 
                 if (options.includeMap && e.address) {
-                    text += `🗺️ Google 地圖：\nhttps://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.address)}\n`;
+                    text += `🗺️ Google 地圖：\nhttps://www.google.com/maps/search/?api=1&query=${e.address}\n`;
                 }
 
                 if (options.includeLink !== false) {
