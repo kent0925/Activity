@@ -2057,11 +2057,18 @@
 
                 const num = (idx + 1).toString().padStart(2, '0');
 
+                // ★ 新增：取得角色標籤
+                const roles = getParticipantRoles(name, appState.currentEvent);
+                let tagHtml = '';
+                if (roles.length > 0) {
+                    tagHtml = roles.map(r => `<span class="text-white text-[10px] font-bold px-1.5 py-0.5 rounded ml-1.5 relative -top-[1px]" style="background-color:${r.color};">${r.label}</span>`).join('');
+                }
+
                 listP.innerHTML += `
                     <li class="px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0">
-                        <div class="flex items-center gap-2 mb-0.5">
+                        <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
                             <span class="text-gray-400 font-mono text-sm">${num}.</span>
-                            <span class="font-bold text-gray-800 text-base">${safeName}${nameSuffix}</span>
+                            <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap">${safeName}${tagHtml}${nameSuffix}</span>
                         </div>
                         ${subHtml}
                     </li>`;
@@ -2851,9 +2858,46 @@
             return t;
         }
 
+        // --- Role Helper ---
+        // ★ 新增：統一取得特殊身分屬性 (會長/輔導會長/爐主/壽星)
+        function getParticipantRoles(pName, event) {
+            if (!pName) return [];
+            const cleanName = pName.trim();
+            const roles = [];
+            const special = (appState.settings && appState.settings.specialRoles) ? appState.settings.specialRoles : {};
+
+            if (special.president && cleanName === special.president) {
+                roles.push({ type: 'president', label: '👑 會長', textLabel: '[👑會長]', color: '#fbbf24' });
+            }
+
+            if (special.vicePresident && cleanName === special.vicePresident) {
+                roles.push({ type: 'vicePresident', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#a855f7' });
+            }
+
+            if (event && event.organizer && cleanName === event.organizer.trim()) {
+                roles.push({ type: 'host', label: '🍻 爐主', textLabel: '[🍻爐主]', color: '#ea580c' });
+            }
+
+            if (event && event.time) {
+                let month = null;
+                let timeStr = event.time;
+                if (timeStr.includes('~')) timeStr = timeStr.split('~')[0];
+                const d = new Date(timeStr);
+                if (!isNaN(d.getTime())) {
+                    month = d.getMonth() + 1;
+                }
+
+                if (month && special.birthdays && special.birthdays[month]) {
+                    if (special.birthdays[month].includes(cleanName)) {
+                        roles.push({ type: 'birthday', label: `🎂 ${month}月壽星`, textLabel: `[🎂${month}月壽星]`, color: '#f472b6' });
+                    }
+                }
+            }
+
+            return roles;
+        }
+
         // --- Share Modal Logic ---
-
-
 
         async function openShareModal() {
             const e = appState.currentEvent;
@@ -3020,10 +3064,17 @@
                         const total = 1 + family + finalGuestCount;
                         const num = count.toString().padStart(2, '0');
                         const status = p.status || p.note || '';
-                        const prefix = status ? status : '';
+                        let prefix = status ? status : '';
+
+                        // ★ 新增：取得角色標籤並轉換為 HTML
+                        const roles = getParticipantRoles(p.name, e);
+                        let tagHtml = '';
+                        if (roles.length > 0) {
+                            tagHtml = roles.map(r => `<span style="background:${r.color};color:white;font-size:11px;font-weight:bold;padding:2px 6px;border-radius:6px;margin-right:6px;display:inline-block;vertical-align:middle;">${r.label}</span>`).join('');
+                        }
 
                         html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;">`;
-                        html += `<span style="color:#06c755;font-weight:700;">${num}.</span> ${prefix}${p.name}`;
+                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> ${tagHtml}${prefix}${p.name}`;
                         if (total > 1) html += ` <span style="color:#f59e0b;font-weight:600;">×${total}</span>`;
                         html += '</div>';
 
@@ -3258,7 +3309,14 @@
                         const status = p.status || p.note || '';
                         const prefix = status ? status : '';
 
-                        text += `${num}. ${prefix}${p.name}`;
+                        // ★ 新增：純文字複製時附加文字標籤
+                        const roles = getParticipantRoles(p.name, e);
+                        let textTags = '';
+                        if (roles.length > 0) {
+                            textTags = roles.map(r => r.textLabel).join('') + ' ';
+                        }
+
+                        text += `${num}. ${textTags}${prefix}${p.name}`;
                         if (total > 1) text += ` *${total}`;
                         text += `\n`;
 
