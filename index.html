@@ -3073,11 +3073,12 @@
                         const roles = getParticipantRoles(p.name, e);
                         let tagHtml = '';
                         if (roles.length > 0) {
-                            tagHtml = roles.map(r => `<span style="background:${r.color};color:white;font-size:11px;font-weight:bold;padding:4px 6px;border-radius:6px;margin-left:6px;display:inline-block;vertical-align:middle;line-height:1;">${r.label}</span>`).join('');
+                            // 使方塊上下緣與字體對齊：固定高度、行高與字體垂直置中
+                            tagHtml = roles.map(r => `<span style="background:${r.color};color:white;font-size:11px;font-weight:bold;height:16px;line-height:16px;padding:0 6px;border-radius:4px;margin-left:6px;display:inline-block;vertical-align:text-bottom;">${r.label}</span>`).join('');
                         }
 
                         html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
-                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> ${prefix}${p.name}${tagHtml}`;
+                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="line-height:16px;">${prefix}${p.name}</span>${tagHtml}`;
                         if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
                         html += '</div>';
 
