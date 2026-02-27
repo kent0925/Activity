@@ -2329,6 +2329,7 @@
                         div.innerHTML = `
                             <div>
                                 <h4 class="font-bold text-gray-700">${e.name}</h4>
+                                <div class="text-xs text-gray-500 mt-0.5">主辦：${e.organizer || '未指定'}</div>
                                 <div class="text-xs text-gray-400 mt-1">${formatDateShort(e.time)}</div>
                             </div>
                             <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">已結束</span>`;
