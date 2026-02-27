@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>大老二兄弟會活動報名系統</title>
     <meta property="og:title" content="大老二兄弟會活動報名系統" />
-    <meta property="og:description" id="og-description" content="清醒的你太無聊，喝醉的你才像個人。" />
+    <meta property="og:description" id="og-description" content="錢放在口袋會咬人，把它變成酒精就不痛了。" />
     <meta property="og:image" content="https://kent0925.github.io/test/logo.jpg" />
     <meta property="og:type" content="website" />
     <!-- 新增 SEO 與品牌標籤 -->
-    <meta name="description" id="meta-description" content="清醒的你太無聊，喝醉的你才像個人。" />
+    <meta name="description" id="meta-description" content="錢放在口袋會咬人，把它變成酒精就不痛了。" />
     <meta name="theme-color" content="#06c755">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -222,7 +222,8 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js" defer></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+    <script src="https://unpkg.com/lucide@0.575.0/dist/umd/lucide.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
     <style>
         :root {
             --primary: #06c755;
@@ -1067,15 +1068,15 @@
 
             <div class="space-y-3 mb-6">
                 <label
-                    class="hidden flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
-                    id="opt-container-sponsor">
+                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-names">
                     <div class="relative flex items-center">
-                        <input type="checkbox" id="share-opt-sponsor" checked
+                        <input type="checkbox" id="share-opt-names" checked
                             class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
                         <i data-lucide="check"
                             class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                     </div>
-                    <span class="text-sm font-medium text-gray-700">贊助 / 認桌資訊</span>
+                    <span class="text-sm font-medium text-gray-700">👥 詳細名單 (姓名/人數)</span>
                 </label>
 
                 <label
@@ -1090,17 +1091,16 @@
                     <span class="text-sm font-medium text-gray-700">上車地點 / 房型</span>
                 </label>
 
-
                 <label
-                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
-                    id="opt-container-names">
+                    class="hidden flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                    id="opt-container-sponsor">
                     <div class="relative flex items-center">
-                        <input type="checkbox" id="share-opt-names" checked
+                        <input type="checkbox" id="share-opt-sponsor" checked
                             class="peer w-5 h-5 rounded text-green-500 focus:ring-green-500 border-gray-300">
                         <i data-lucide="check"
                             class="absolute w-3.5 h-3.5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                     </div>
-                    <span class="text-sm font-medium text-gray-700">👥 詳細名單 (姓名/人數)</span>
+                    <span class="text-sm font-medium text-gray-700">贊助 / 認桌資訊</span>
                 </label>
 
                 <label
@@ -1132,13 +1132,20 @@
                 </div>
             </div>
 
-            <div class="flex gap-3">
+            <!-- 分享按鈕區域 -->
+            <div class="space-y-3">
+                <div class="flex gap-3">
+                    <button onclick="shareAsImage()" id="btn-share-image"
+                        class="flex-1 py-2.5 rounded-xl bg-green-500 text-white font-bold text-sm hover:bg-green-600 shadow-lg flex justify-center items-center gap-2 transition active:scale-95">
+                        <i data-lucide="image" class="w-4 h-4"></i> 分享圖片
+                    </button>
+                    <button onclick="confirmShareCopy()"
+                        class="flex-1 py-2.5 rounded-xl bg-gray-900 text-white font-bold text-sm hover:bg-gray-800 shadow-lg flex justify-center items-center gap-2 transition active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> 分享文字
+                    </button>
+                </div>
                 <button onclick="document.getElementById('share-modal').classList.add('hidden')"
-                    class="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition">取消</button>
-                <button onclick="confirmShareCopy()"
-                    class="flex-1 py-2.5 rounded-xl bg-gray-900 text-white font-bold text-sm hover:bg-gray-800 shadow-lg flex justify-center items-center gap-2 transition active:scale-95">
-                    <i data-lucide="copy" class="w-4 h-4"></i> 確認複製
-                </button>
+                    class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition">取消</button>
             </div>
         </div>
     </div>
@@ -1319,21 +1326,13 @@
             // 3. 維持原樣
 
             if (userId && mapping[userId]) {
-                console.log(`[Name Mapping] UserID ${userId} mapped to ${mapping[userId]}`);
                 appState.user.displayName = mapping[userId];
                 updateUserProfileUI();
-                // alert(`成功對應！\nID: ${userId}\n原本: ${originalName}\n對應: ${mapping[userId]}`); // Debug
             } else if (originalName && mapping[originalName]) {
-                console.log(`[Name Mapping] DisplayName ${originalName} mapped to ${mapping[originalName]}`);
                 appState.user.displayName = mapping[originalName];
                 updateUserProfileUI();
-                // alert(`成功對應 (依暱稱)！\n原本: ${originalName}\n對應: ${mapping[originalName]}`); // Debug
             } else {
-                // 若找不到對應，跳出提示 (除錯用)
-                // 請確認 GAS 是否有發布新版本，以及 Google Sheet 表格設定是否正確
-                const keys = Object.keys(mapping);
-                console.log("Mapping keys:", keys);
-                // alert(`[除錯資訊]\n\n您的 ID: ${userId}\n您的暱稱: ${originalName}\n\n系統目前讀到的設定檔筆數: ${keys.length}\n\n若筆數為 0，代表前端沒讀到設定 (請檢查 GAS 發布)。\n若有筆數但沒變，代表 ID 或暱稱沒對到。`);
+                // No mapping found, keep original name
             }
         }
 
@@ -1520,12 +1519,12 @@
             if (parsedGuests.length > 0) {
                 appState.guestList = parsedGuests.map(g => ({
                     ...g,
-                    id: g.id || ('g_' + Date.now() + Math.random().toString(36).substr(2, 5))
+                    id: g.id || ('g_' + Date.now() + Math.random().toString(36).substring(2, 7))
                 }));
                 renderGuestList();
             } else if (guestCount > 0) {
                 for (let i = 0; i < guestCount; i++) {
-                    const id = 'g_' + Date.now() + Math.random().toString(36).substr(2, 5) + i;
+                    const id = 'g_' + Date.now() + Math.random().toString(36).substring(2, 7) + i;
                     appState.guestList.push({ id, name: `來賓 ${i + 1}`, count: 1, pickup: '', room: '' });
                 }
                 renderGuestList();
@@ -1726,6 +1725,7 @@
         // --- 渲染列表 ---
         function renderGuestList() {
             DOM.guestContainer.innerHTML = '';
+            const fragment = document.createDocumentFragment();
             appState.guestList.forEach((g, i) => {
                 let details = [];
                 if (g.count > 1) details.push(`${g.count}人`);
@@ -1733,36 +1733,41 @@
                 if (g.room) details.push(escapeHtml(g.room));
                 const subtext = details.length > 0 ? `<span class="text-xs text-gray-400 ml-1">(${details.join(', ')})</span>` : '';
 
-                DOM.guestContainer.innerHTML += `
-                    <div class="flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in">
-                        <div class="flex items-center gap-2">
-                            <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
-                            <span class="font-medium text-gray-700">${escapeHtml(g.name)} ${subtext}</span>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editGuest(${i})"></i>
-                            <i data-lucide="x" class="w-4 h-4 tag-action tag-remove" onclick="removeGuest('${g.id}')"></i>
-                        </div>
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
+                        <span class="font-medium text-gray-700">${escapeHtml(g.name)} ${subtext}</span>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editGuest(${i})"></i>
+                        <i data-lucide="x" class="w-4 h-4 tag-action tag-remove" onclick="removeGuest('${g.id}')"></i>
                     </div>`;
+                fragment.appendChild(div);
             });
+            DOM.guestContainer.appendChild(fragment);
             refreshIcons();
         }
 
         function renderSponsorList() {
             DOM.sponsorContainer.innerHTML = '';
+            const fragment = document.createDocumentFragment();
             appState.sponsorList.forEach((s, i) => {
-                DOM.sponsorContainer.innerHTML += `
-                    <div class="flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="gift" class="w-3.5 h-3.5 text-purple-500"></i>
-                            <span class="font-medium text-gray-700">${escapeHtml(s)}</span>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editSponsor(${i})"></i>
-                            <i data-lucide="x" class="w-4 h-4 tag-action tag-remove" onclick="removeSponsor(${i})"></i>
-                        </div>
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="gift" class="w-3.5 h-3.5 text-purple-500"></i>
+                        <span class="font-medium text-gray-700">${escapeHtml(s)}</span>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editSponsor(${i})"></i>
+                        <i data-lucide="x" class="w-4 h-4 tag-action tag-remove" onclick="removeSponsor(${i})"></i>
                     </div>`;
+                fragment.appendChild(div);
             });
+            DOM.sponsorContainer.appendChild(fragment);
             refreshIcons();
         }
 
@@ -2015,6 +2020,9 @@
             let hasTravel = false;
             let hasItems = false;
 
+            const fragP = document.createDocumentFragment();
+            const fragT = document.createDocumentFragment();
+            const fragI = document.createDocumentFragment();
 
             data.forEach((row, idx) => {
                 const name = findCaseInsensitiveValue(row, ['name', 'Name', '姓名', 'UserName', 'username']) || 'Unknown';
@@ -2050,41 +2058,51 @@
 
                 const num = (idx + 1).toString().padStart(2, '0');
 
-                listP.innerHTML += `
-                    <li class="px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0">
-                        <div class="flex items-center gap-2 mb-0.5">
-                            <span class="text-gray-400 font-mono text-sm">${num}.</span>
-                            <span class="font-bold text-gray-800 text-base">${safeName}${nameSuffix}</span>
-                        </div>
-                        ${subHtml}
-                    </li>`;
+                // 取得角色標籤
+                const roles = getParticipantRoles(name, appState.currentEvent);
+                let tagHtml = '';
+                if (roles.length > 0) {
+                    tagHtml = roles.map(r => `<span class="text-[12px] font-bold ml-1.5 flex items-center" style="color:${r.color};">${r.label}</span>`).join('');
+                }
+
+                const liP = document.createElement('li');
+                liP.className = 'px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0';
+                liP.innerHTML = `
+                    <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                        <span class="text-gray-400 font-mono text-sm">${num}.</span>
+                        <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap">${safeName}${tagHtml}${nameSuffix}</span>
+                    </div>
+                    ${subHtml}`;
+                fragP.appendChild(liP);
 
                 if (appState.currentEvent.type === 'travel') {
                     // 檢查主要人員
                     if ((pickup && pickup !== '無') || (room && room !== '無')) {
                         hasTravel = true;
-                        listT.innerHTML += `
-                            <li class="px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm">
-                                <span class="font-medium text-gray-700">${safeName}</span>
-                                <div class="text-right text-xs text-gray-500">
-                                    ${pickup && pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(pickup)}</div>` : ''}
-                                    ${room && room !== '無' ? `<div class="text-orange-600">${escapeHtml(room)}</div>` : ''}
-                                </div>
-                            </li>`;
+                        const liT = document.createElement('li');
+                        liT.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
+                        liT.innerHTML = `
+                            <span class="font-medium text-gray-700">${safeName}</span>
+                            <div class="text-right text-xs text-gray-500">
+                                ${pickup && pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(pickup)}</div>` : ''}
+                                ${room && room !== '無' ? `<div class="text-orange-600">${escapeHtml(room)}</div>` : ''}
+                            </div>`;
+                        fragT.appendChild(liT);
                     }
 
                     // 檢查來賓
                     guestData.forEach(g => {
                         if ((g.pickup && g.pickup !== '無') || (g.room && g.room !== '無')) {
                             hasTravel = true;
-                            listT.innerHTML += `
-                                <li class="px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm">
-                                    <span class="font-medium text-gray-700"><span class="text-xs text-gray-400 mr-1">賓</span>${escapeHtml(g.name)}</span>
-                                    <div class="text-right text-xs text-gray-500">
-                                        ${g.pickup && g.pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(g.pickup)}</div>` : ''}
-                                        ${g.room && g.room !== '無' ? `<div class="text-orange-600">${escapeHtml(g.room)}</div>` : ''}
-                                    </div>
-                                </li>`;
+                            const liTG = document.createElement('li');
+                            liTG.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
+                            liTG.innerHTML = `
+                                <span class="font-medium text-gray-700"><span class="text-xs text-gray-400 mr-1">賓</span>${escapeHtml(g.name)}</span>
+                                <div class="text-right text-xs text-gray-500">
+                                    ${g.pickup && g.pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(g.pickup)}</div>` : ''}
+                                    ${g.room && g.room !== '無' ? `<div class="text-orange-600">${escapeHtml(g.room)}</div>` : ''}
+                                </div>`;
+                            fragT.appendChild(liTG);
                         }
                     });
                 }
@@ -2100,17 +2118,22 @@
 
                 if (items.length > 0) {
                     hasItems = true;
-                    listI.innerHTML += `
-                        <li class="px-4 py-3 hover:bg-gray-50">
-                            <div class="flex justify-between items-start">
-                                <span class="font-medium text-gray-800 text-sm">${safeName}</span>
-                                <div class="text-right flex-1 pl-4">
-                                    ${items.map(i => `<div class="text-xs text-purple-600 bg-purple-50 inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
-                                </div>
+                    const liI = document.createElement('li');
+                    liI.className = 'px-4 py-3 hover:bg-gray-50';
+                    liI.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <span class="font-medium text-gray-800 text-sm">${safeName}</span>
+                            <div class="text-right flex-1 pl-4">
+                                ${items.map(i => `<div class="text-xs text-purple-600 bg-purple-50 inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
                             </div>
-                        </li>`;
+                        </div>`;
+                    fragI.appendChild(liI);
                 }
             });
+
+            listP.appendChild(fragP);
+            listT.appendChild(fragT);
+            listI.appendChild(fragI);
 
             if (hasTravel) {
                 document.getElementById('travel-separator').classList.remove('hidden');
@@ -2844,9 +2867,49 @@
             return t;
         }
 
+        // --- Role Helper ---
+        // ★ 新增：統一取得特殊身分屬性 (會長/輔導會長/爐主/壽星)
+        function getParticipantRoles(pName, event) {
+            if (!pName) return [];
+            const cleanName = pName.trim();
+            const roles = [];
+            const special = (appState.settings && appState.settings.specialRoles) ? appState.settings.specialRoles : {};
+
+            if (special.president && cleanName === special.president) {
+                roles.push({ type: 'president', label: '👑 會長', textLabel: '[👑會長]', color: '#d97706' });
+            }
+
+            if (special.vicePresident && cleanName === special.vicePresident) {
+                roles.push({ type: 'vicePresident', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#9333ea' });
+            }
+
+            if (event && event.organizer) {
+                const organizers = event.organizer.split(/[、,，\s]+/).map(o => o.trim()).filter(Boolean);
+                if (organizers.includes(cleanName)) {
+                    roles.push({ type: 'host', label: '🍻 爐主', textLabel: '[🍻爐主]', color: '#ea580c' });
+                }
+            }
+
+            if (event && event.time) {
+                let month = null;
+                let timeStr = event.time;
+                if (timeStr.includes('~')) timeStr = timeStr.split('~')[0];
+                const d = new Date(timeStr);
+                if (!isNaN(d.getTime())) {
+                    month = d.getMonth() + 1;
+                }
+
+                if (month && special.birthdays && special.birthdays[month]) {
+                    if (special.birthdays[month].includes(cleanName)) {
+                        roles.push({ type: 'birthday', label: `🎂 ${month}月壽星`, textLabel: `[🎂${month}月壽星]`, color: '#db2777' });
+                    }
+                }
+            }
+
+            return roles;
+        }
+
         // --- Share Modal Logic ---
-
-
 
         async function openShareModal() {
             const e = appState.currentEvent;
@@ -2875,7 +2938,14 @@
 
             // 判斷是否顯示「贊助/認桌」選項
             const hasTable = s.tableCount && s.tableCount > 0;
-            const hasSponsor = hasTable || (e.type !== 'travel' && s.secondary > 0);
+            // 除了檢查統計數據，也從快取名單實際檢查是否有人有贊助資料
+            const detailsHasSponsor = (appState.cachedDetails || []).some(p => {
+                const tc = getIntField(p, 'tableCount');
+                const spRaw = getField(p, 'sponsor');
+                const spList = parseSponsorData(spRaw);
+                return tc > 0 || spList.length > 0;
+            });
+            const hasSponsor = hasTable || detailsHasSponsor || (e.type !== 'travel' && s.secondary > 0);
 
             const sponsorEl = document.getElementById('opt-container-sponsor');
             if (hasSponsor) {
@@ -2906,12 +2976,12 @@
             const noOptsEl = document.getElementById('share-no-opts');
             if (noOptsEl) noOptsEl.classList.add('hidden');
 
-            // 重置新增選項 (預設勾選)
+            // 重置選項預設狀態（僅勾選贊助/認桌及報名連結）
             const mapCheckbox = document.getElementById('share-opt-map');
             const namesCheckbox = document.getElementById('share-opt-names');
             const linkCheckbox = document.getElementById('share-opt-link');
-            if (mapCheckbox) mapCheckbox.checked = true;
-            if (namesCheckbox) namesCheckbox.checked = true;
+            if (mapCheckbox) mapCheckbox.checked = false;
+            if (namesCheckbox) namesCheckbox.checked = false;
             if (linkCheckbox) linkCheckbox.checked = true;
 
             document.getElementById('share-modal').classList.remove('hidden');
@@ -2936,6 +3006,248 @@
         // 舊按鈕 (名單視窗下方) 呼叫此函式：統一呼叫 openShareModal 以提供選項
         function copyDetailsToClipboard() {
             openShareModal();
+        }
+
+        // --- 圖片分享功能 ---
+        async function shareAsImage() {
+            const e = appState.currentEvent;
+            if (!e) return;
+            const data = appState.cachedDetails || [];
+
+            const btn = document.getElementById('btn-share-image');
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
+            refreshIcons();
+
+            // 圖片分享為固定內容，不依照勾選（只有複製文字才依勾選）
+            const includeSponsor = false; // 名單內不顯示贊助，改由下方獨立區塊顯示
+            const includeTravel = true;
+            const includeMap = false;  // 圖片不含地圖連結
+            const includeNames = true;
+            const includeLink = false; // 圖片不含報名連結
+
+            try {
+                // --- 1. 動態產生分享卡片 HTML ---
+                const card = document.createElement('div');
+                card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#1f2937;z-index:-1;';
+
+                // 活動標題區
+                let html = '';
+                html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
+                html += `<div style="font-size:22px;font-weight:800;">📅 ${escapeHtml(e.name)}</div>`;
+                html += '</div>';
+
+                // 活動資訊區
+                html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
+                let timeDisplay = e.time;
+                if (timeDisplay) {
+                    if (timeDisplay.includes('~')) {
+                        // 旅遊活動：顯示日期範圍
+                        const [start, end] = timeDisplay.split('~');
+                        timeDisplay = `${formatDateOnly(start)} ~ ${formatDateOnly(end)}`;
+                    } else {
+                        const d = new Date(timeDisplay);
+                        if (!isNaN(d.getTime())) {
+                            const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+                            timeDisplay = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+                        }
+                    }
+                }
+                if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${escapeHtml(timeDisplay)}</div>`;
+                if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${escapeHtml(e.location)}</div>`;
+                if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${escapeHtml(e.address)}</div>`;
+                if (includeMap) {
+                    const mapQuery = e.address || e.location;
+                    html += `<div style="font-size:13px;margin-bottom:4px;color:#2563eb;">🗺️ 地圖：https://www.google.com/maps/search/${encodeURIComponent(mapQuery)}</div>`;
+                }
+                if (includeLink) {
+                    html += `<div style="font-size:13px;color:#2563eb;">🔗 報名：https://liff.line.me/${LIFF_ID}</div>`;
+                }
+                html += '</div>';
+
+                // 名單區
+                if (includeNames && data.length > 0) {
+                    html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                    html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
+                    let count = 0;
+                    data.forEach(p => {
+                        count++;
+                        const family = getIntField(p, 'family');
+                        const guestData = parseGuestData(p);
+                        const guestCountFallback = getIntField(p, 'guestCount');
+                        const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
+                        const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
+                        const total = 1 + family + finalGuestCount;
+                        const num = count.toString().padStart(2, '0');
+                        const status = p.status || p.note || '';
+                        let prefix = status ? status : '';
+
+                        // ★ 新增：取得角色標籤並轉換為 HTML
+                        const roles = getParticipantRoles(p.name, e);
+                        let tagHtml = '';
+                        if (roles.length > 0) {
+                            // 改為純文字顏色變化，不使用背板色塊
+                            tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
+                        }
+
+                        html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;">${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
+                        if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
+                        html += '</div>';
+
+                        // 來賓
+                        if (guestData.length > 0) {
+                            const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
+                            html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+                        } else {
+                            const guestNameStr = getField(p, 'guestName');
+                            if (guestNameStr && guestNameStr !== '無') {
+                                html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                            }
+                        }
+
+                        // 贊助
+                        if (includeSponsor) {
+                            let moneyLines = [];
+                            const tc = getIntField(p, 'tableCount');
+                            if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
+                            const sponsorRaw = getField(p, 'sponsor');
+                            const sponsorList = parseSponsorData(sponsorRaw);
+                            sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
+                            if (moneyLines.length > 0) {
+                                html += `<div style="font-size:12px;color:#d97706;padding:2px 0 4px 20px;">${moneyLines.join('、')}</div>`;
+                            }
+                        }
+
+                        // 上車/房型
+                        if (includeTravel) {
+                            let travelLines = [];
+                            if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
+                            if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                            if (guestData.length > 0) {
+                                guestData.forEach(g => {
+                                    let extras = [];
+                                    if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                                    if (g.room && g.room !== '無') extras.push(g.room);
+                                    if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                                });
+                            }
+                            if (travelLines.length > 0) {
+                                html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+                            }
+                        }
+                    });
+                    html += '</div>';
+                }
+
+                // 贊助/認桌彙總區（獨立區塊，不論是否勾選名單都會顯示）
+                if (data.length > 0) {
+                    let sponsorHtml = '';
+                    data.forEach(p => {
+                        let moneyParts = [];
+                        const tc = getIntField(p, 'tableCount');
+                        if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+                        const sponsorRaw = getField(p, 'sponsor');
+                        const sponsorList = parseSponsorData(sponsorRaw);
+                        sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+                        if (moneyParts.length > 0) {
+                            sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+                        }
+                    });
+                    if (sponsorHtml) {
+                        html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                        html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
+                        html += sponsorHtml;
+                        html += '</div>';
+                    }
+                }
+
+                // 統計區
+                html += '<div style="text-align:center;font-size:14px;font-weight:700;color:#374151;padding:8px 0;">';
+                html += `共 ${appState.currentStats.totalPeople || 0} 人報名`;
+                html += '</div>';
+
+                // 浮水印
+                html += '<div style="text-align:center;font-size:11px;color:#9ca3af;margin-top:8px;">大老二兄弟會 活動報名系統</div>';
+
+                card.innerHTML = html;
+                document.body.appendChild(card);
+
+                // --- 2. 使用 html2canvas 截取卡片 ---
+                const canvas = await html2canvas(card, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: null,
+                    width: card.scrollWidth,
+                    height: card.scrollHeight
+                });
+
+                // 移除暫時卡片
+                document.body.removeChild(card);
+
+                // --- 3. 轉為 blob 並分享或下載 ---
+                canvas.toBlob(async (blob) => {
+                    if (!blob) { showToast('圖片產生失敗'); return; }
+                    const file = new File([blob], `${e.name}_名單.png`, { type: 'image/png' });
+
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+                    if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            let shareText = `📅 ${e.name}\n`;
+                            if (e.organizer) shareText += `👤 主辦人：${e.organizer}\n`;
+                            let timeDisplay = e.time;
+                            if (timeDisplay) {
+                                const d = new Date(timeDisplay);
+                                if (!isNaN(d.getTime())) {
+                                    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+                                    timeDisplay = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}(${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+                                }
+                            }
+                            if (timeDisplay) shareText += `🕒 時間：${timeDisplay}\n`;
+                            if (e.location) shareText += `📍 地點：${e.location}\n`;
+                            if (e.address) shareText += `🚗 地址：${e.address}\n`;
+                            shareText += `---------------------\n`;
+                            shareText += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
+                            shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
+
+                            await navigator.share({
+                                files: [file],
+                                title: e.name,
+                                text: shareText
+                            });
+                            showToast('圖片分享成功！');
+                        } catch (err) {
+                            if (err.name !== 'AbortError') {
+                                console.error('圖片分享失敗:', err);
+                                fallbackDownloadImage(canvas, e.name);
+                            }
+                        }
+                    } else {
+                        fallbackDownloadImage(canvas, e.name);
+                    }
+
+                    document.getElementById('share-modal').classList.add('hidden');
+                }, 'image/png');
+
+            } catch (err) {
+                console.error('圖片產生失敗', err);
+                showToast('產生圖片失敗：' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+                refreshIcons();
+            }
+        }
+
+        function fallbackDownloadImage(canvas, evtName) {
+            const link = document.createElement('a');
+            link.download = `${evtName || '活動'}_名單.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('已下載名單圖片！');
         }
 
         // --- Telegram 發送功能 ---
@@ -2982,25 +3294,20 @@
                 // 判斷並加入活動資訊
                 if (e.organizer) text += `👤 主辦人：${e.organizer}\n`;
 
-                // 時間處理：如果是 T 結尾的 ISO 格式就簡單修飾，否則直接顯示
+                // 時間處理：加入(星期X)格式
                 let timeDisplay = e.time;
-                if (timeDisplay && timeDisplay.includes('T')) {
-                    timeDisplay = timeDisplay.replace('T', ' ');
+                if (timeDisplay) {
+                    const d = new Date(timeDisplay);
+                    if (!isNaN(d.getTime())) {
+                        const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+                        timeDisplay = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}(${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+                    }
                 }
                 if (timeDisplay) text += `🕒 時間：${timeDisplay}\n`;
 
                 if (e.location) text += `📍 地點：${e.location}\n`;
                 if (e.address) text += `🚗 地址：${e.address}\n`;
-
-                if (options.includeMap !== false) {
-                    const mapQuery = e.address || e.location;
-                    text += `🗺️ 地圖：https://www.google.com/maps/search/${mapQuery}\n`;
-                }
-
-                if (options.includeLink !== false) {
-                    text += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
-                }
-                text += `──────────────\n`;
+                text += `---------------------\n`;
 
 
 
@@ -3021,49 +3328,31 @@
                         const status = p.status || p.note || '';
                         const prefix = status ? status : '';
 
-                        text += `${num}. ${prefix}${p.name}`;
+                        // ★ 新增：純文字複製時附加文字標籤
+                        const roles = getParticipantRoles(p.name, e);
+                        let textTags = '';
+                        if (roles.length > 0) {
+                            textTags = ' ' + roles.map(r => r.textLabel).join('');
+                        }
+
+                        text += `${num}. ${prefix}${p.name}${textTags}`;
                         if (total > 1) text += ` *${total}`;
                         text += `\n`;
 
                         // ★ 修改：來賓名單整合為單行，顯示在下方 ★
-                        if (options.includeNames !== false) {
-                            if (guestData.length > 0) {
-                                const guestParts = guestData.map(g => {
-                                    return g.count > 1 ? `${g.name}*${g.count}` : g.name;
-                                });
-                                text += `      來賓：${guestParts.join('、')}\n`;
-                            } else {
-                                const guestNameStr = getField(p, 'guestName');
-                                if (guestNameStr && guestNameStr !== '無') {
-                                    text += `      來賓：${guestNameStr}\n`;
-                                }
+                        if (guestData.length > 0) {
+                            const guestParts = guestData.map(g => {
+                                return g.count > 1 ? `${g.name}*${g.count}` : g.name;
+                            });
+                            text += `      來賓：${guestParts.join('、')}\n`;
+                        } else {
+                            const guestNameStr = getField(p, 'guestName');
+                            if (guestNameStr && guestNameStr !== '無') {
+                                text += `      來賓：${guestNameStr}\n`;
                             }
                         }
 
-                        if (options.includeSponsor) {
-                            let moneyLines = [];
-                            const tc = parseInt(p.tableCount) || 0;
-                            if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
-
-                            let sponsorList = [];
-                            if (p.sponsorList && Array.isArray(p.sponsorList)) {
-                                sponsorList = p.sponsorList;
-                            } else if (p.sponsor && p.sponsor !== '無') {
-                                try {
-                                    const json = (typeof p.sponsor === 'string' && (p.sponsor.startsWith('[') || p.sponsor.startsWith('{'))) ? JSON.parse(p.sponsor) : p.sponsor;
-                                    if (Array.isArray(json)) sponsorList = json;
-                                    else sponsorList = [p.sponsor];
-                                } catch (e) {
-                                    sponsorList = [p.sponsor];
-                                }
-                            }
-
-                            sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
-
-                            if (moneyLines.length > 0) {
-                                moneyLines.forEach(l => text += `      ${l}\n`);
-                            }
-                        }
+                        // 贊助/認桌不在名單內顯示，改由下方獨立區塊統一列出
 
                         if (options.includeTravel) {
                             let travelLines = [];
@@ -3087,17 +3376,39 @@
                     });
                 }
 
-                text += `──────────────\n`;
+                // ★ 贊助/認桌獨立區塊（不論是否勾選名單，只要有資料就顯示）
+                if (options.includeSponsor) {
+                    let hasSponsorData = false;
+                    let sponsorText = '';
+                    data.forEach(p => {
+                        let moneyLines = [];
+                        const tc = getIntField(p, 'tableCount');
+                        if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
+
+                        const sponsorRaw = getField(p, 'sponsor');
+                        const sponsorList = parseSponsorData(sponsorRaw);
+                        sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
+
+                        if (moneyLines.length > 0) {
+                            hasSponsorData = true;
+                            sponsorText += `${p.name}：${moneyLines.join('、')}\n`;
+                        }
+                    });
+                    if (hasSponsorData) {
+                        text += `【贊助/認桌】\n${sponsorText}`;
+                    }
+                }
+
+                text += `---------------------\n`;
                 text += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
 
-                // 這裡的連結移除，改由上方統一控制，或視需求僅保留一個
-                // 用戶要求 "報名連結只要出現一次"，且為 "選項"
-                // 為了閱讀體驗，通常放在詳細名單之前或之後皆可
-                // 我們統一在上方顯示 (Line 2972 附近)，這裡就不重複顯示了
-                // 若用戶偏好在最下方，則改為保留這裡，移除上方。
-                // 依照 "報名連結、GOOGLE地圖、詳細名單" 的順序語感，可能是在上方資訊塊
-                // 但為了確認 "複製內容及表單都帶符號進入"，我們在上方的 includeLink 區塊已處理
-                // 故此處直接移除，避免重複。
+                if (options.includeMap && e.address) {
+                    text += `🗺️ Google 地圖：\nhttps://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.address)}\n`;
+                }
+
+                if (options.includeLink !== false) {
+                    text += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+                }
 
                 copyTextToClipboard(text);
             }
@@ -3169,7 +3480,7 @@
             const room = document.getElementById('add-guest-room').value;
 
             // 產生簡易暫時 ID
-            const id = 'g_' + Date.now() + Math.random().toString(36).substr(2, 5);
+            const id = 'g_' + Date.now() + Math.random().toString(36).substring(2, 7);
 
             appState.guestList.push({ id, name, count, pickup, room });
             document.getElementById('add-guest-name').value = '';
@@ -3302,14 +3613,39 @@
                 }
             };
 
-            if (typeof liff !== 'undefined' && liff.isApiAvailable('shareTargetPicker')) {
-                liff.shareTargetPicker([{ type: "text", text: text }])
-                    .then((res) => {
-                        if (!res) directCopy(text);
-                    })
-                    .catch(() => directCopy(text));
+            const tryLiffOrCopy = () => {
+                if (typeof liff !== 'undefined' && liff.isApiAvailable('shareTargetPicker')) {
+                    liff.shareTargetPicker([{ type: "text", text: text }])
+                        .then((res) => {
+                            if (!res) directCopy(text);
+                        })
+                        .catch(() => directCopy(text));
+                } else {
+                    directCopy(text);
+                }
+            };
+
+            // 判斷是否為手機裝置
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            // 若為手機，優先嘗試使用系統原生分享 API (支援傳送至 LINE、MMS 等)
+            if (isMobile && navigator.share) {
+                const e = appState.currentEvent;
+                navigator.share({
+                    title: e ? e.name : '活動分享',
+                    text: text
+                }).then(() => {
+                    console.log('分享成功');
+                }).catch((err) => {
+                    // 若使用者主動取消分享，會回傳 AbortError，此時不須執行複製
+                    if (err.name !== 'AbortError') {
+                        console.warn("原生分享發生錯誤，改為複製文字", err);
+                        tryLiffOrCopy();
+                    }
+                });
             } else {
-                directCopy(text);
+                // 電腦版或不支援原生分享的裝置，則單純複製文字
+                tryLiffOrCopy();
             }
         }
 
