@@ -2357,14 +2357,13 @@
             showToast('正在產生歷史圖卡...');
 
             try {
-                // 抓取報名資料與統計
-                const url = `${GAS_URL}?action=getRegistrations&eventId=${encodeURIComponent(eventId)}`;
-                const resp = await fetch(url);
-                const result = await resp.json();
-                if (result.status === 'success') {
-                    appState.cachedDetails = result.data || [];
-                    appState.currentStats = result.stats || {};
-                }
+                // 抓取報名資料（使用與 fetchDetails 相同的 API）
+                const detailRes = await fetch(`${GAS_URL}?action=getDetails&eventId=${encodeURIComponent(eventId)}`);
+                appState.cachedDetails = await detailRes.json();
+
+                // 抓取統計資料（使用與 fetchStats 相同的 API）
+                const statsRes = await fetch(`${GAS_URL}?action=stats&eventId=${encodeURIComponent(eventId)}&_=${Date.now()}`);
+                appState.currentStats = await statsRes.json();
             } catch (err) {
                 console.error('抓取歷史報名資料失敗:', err);
             }
