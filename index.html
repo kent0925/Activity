@@ -2325,7 +2325,7 @@
                     history.forEach(e => {
                         const div = document.createElement('div');
                         div.className = "bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50";
-                        div.onclick = () => enterEventDetail(e.id);
+                        div.onclick = () => openHistoryImage(e.id);
                         div.innerHTML = `
                             <div>
                                 <h4 class="font-bold text-gray-700">${e.name}</h4>
@@ -2343,6 +2343,199 @@
                 container.classList.add('hidden');
                 btnText.innerText = "查看歷史活動";
             }
+        }
+
+        // --- 歷史活動點擊直接產生圖片 ---
+        async function openHistoryImage(eventId) {
+            const event = appState.events.find(e => e.id === eventId);
+            if (!event) return;
+
+            appState.currentEvent = event;
+            appState.cachedDetails = null;
+            appState.currentStats = {};
+
+            showToast('正在產生歷史圖卡...');
+
+            try {
+                // 抓取報名資料與統計
+                const url = `${GAS_URL}?action=getRegistrations&eventId=${encodeURIComponent(eventId)}`;
+                const resp = await fetch(url);
+                const result = await resp.json();
+                if (result.status === 'success') {
+                    appState.cachedDetails = result.data || [];
+                    appState.currentStats = result.stats || {};
+                }
+            } catch (err) {
+                console.error('抓取歷史報名資料失敗:', err);
+            }
+
+            const e = appState.currentEvent;
+            const data = appState.cachedDetails || [];
+
+            try {
+                // 產生圖卡 HTML（與 shareAsImage 相同邏輯）
+                const card = document.createElement('div');
+                card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#1f2937;z-index:-1;';
+
+                let html = '';
+                html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
+                html += `<div style="font-size:22px;font-weight:800;">📅 ${escapeHtml(e.name)}</div>`;
+                html += '<div style="font-size:12px;margin-top:6px;opacity:0.8;">已結束</div>';
+                html += '</div>';
+
+                // 活動資訊區
+                html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
+                let timeDisplay = e.time;
+                if (timeDisplay) {
+                    if (timeDisplay.includes('~')) {
+                        const [start, end] = timeDisplay.split('~');
+                        timeDisplay = `${formatDateOnly(start)} ~ ${formatDateOnly(end)}`;
+                    } else {
+                        const d = new Date(timeDisplay);
+                        if (!isNaN(d.getTime())) {
+                            const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+                            timeDisplay = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+                        }
+                    }
+                }
+                if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${escapeHtml(timeDisplay)}</div>`;
+                if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${escapeHtml(e.location)}</div>`;
+                if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${escapeHtml(e.address)}</div>`;
+                html += '</div>';
+
+                // 名單區
+                if (data.length > 0) {
+                    html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                    html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
+                    let count = 0;
+                    data.forEach(p => {
+                        count++;
+                        const family = getIntField(p, 'family');
+                        const guestData = parseGuestData(p);
+                        const guestCountFallback = getIntField(p, 'guestCount');
+                        const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
+                        const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
+                        const total = 1 + family + finalGuestCount;
+                        const num = count.toString().padStart(2, '0');
+                        const status = p.status || p.note || '';
+                        let prefix = status ? status : '';
+                        const roles = getParticipantRoles(p.name, e);
+                        let tagHtml = '';
+                        if (roles.length > 0) {
+                            tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
+                        }
+                        html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;">${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
+                        if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
+                        html += '</div>';
+                        if (guestData.length > 0) {
+                            const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
+                            html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+                        } else {
+                            const guestNameStr = getField(p, 'guestName');
+                            if (guestNameStr && guestNameStr !== '無') {
+                                html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                            }
+                        }
+
+                        // 上車/房型
+                        {
+                            let travelLines = [];
+                            if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
+                            if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                            if (guestData.length > 0) {
+                                guestData.forEach(g => {
+                                    let extras = [];
+                                    if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                                    if (g.room && g.room !== '無') extras.push(g.room);
+                                    if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                                });
+                            }
+                            if (travelLines.length > 0) {
+                                html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+                            }
+                        }
+                    });
+                    html += '</div>';
+                }
+
+                // 贊助/認桌彙總區（獨立區塊）
+                if (data.length > 0) {
+                    let sponsorHtml = '';
+                    data.forEach(p => {
+                        let moneyParts = [];
+                        const tc = getIntField(p, 'tableCount');
+                        if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+                        const sponsorRaw = getField(p, 'sponsor');
+                        const sponsorList = parseSponsorData(sponsorRaw);
+                        sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+                        if (moneyParts.length > 0) {
+                            sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+                        }
+                    });
+                    if (sponsorHtml) {
+                        html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                        html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
+                        html += sponsorHtml;
+                        html += '</div>';
+                    }
+                }
+
+                // 統計區
+                html += '<div style="text-align:center;font-size:14px;font-weight:700;color:#374151;padding:8px 0;">';
+                html += `共 ${appState.currentStats.totalPeople || 0} 人報名`;
+                html += '</div>';
+                html += '<div style="text-align:center;font-size:11px;color:#9ca3af;margin-top:8px;">大老二兄弟會 活動報名系統</div>';
+
+                card.innerHTML = html;
+                document.body.appendChild(card);
+
+                const canvas = await html2canvas(card, {
+                    scale: 2, useCORS: true, backgroundColor: null,
+                    width: card.scrollWidth, height: card.scrollHeight
+                });
+                document.body.removeChild(card);
+
+                // 產生圖片 URL
+                const imgUrl = canvas.toDataURL('image/png');
+
+                // 建立全螢幕彈窗顯示圖片
+                const overlay = document.createElement('div');
+                overlay.id = 'history-image-overlay';
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;animation:fadeIn 0.3s ease;';
+                overlay.innerHTML = `
+                    <div style="max-width:420px;width:100%;max-height:75vh;overflow-y:auto;border-radius:16px;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+                        <img src="${imgUrl}" style="width:100%;display:block;border-radius:16px;" alt="歷史活動圖卡">
+                    </div>
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button onclick="saveHistoryImage()" style="background:#06c755;color:white;padding:12px 28px;border-radius:12px;font-weight:700;font-size:15px;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(6,199,85,0.4);">📥 存入相片</button>
+                        <button onclick="closeHistoryImage()" style="background:rgba(255,255,255,0.15);color:white;padding:12px 28px;border-radius:12px;font-weight:700;font-size:15px;border:1px solid rgba(255,255,255,0.3);cursor:pointer;backdrop-filter:blur(8px);">✕ 關閉</button>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+
+            } catch (err) {
+                console.error('歷史圖卡產生失敗', err);
+                showToast('產生歷史圖卡失敗：' + err.message);
+            }
+        }
+
+        function closeHistoryImage() {
+            const overlay = document.getElementById('history-image-overlay');
+            if (overlay) overlay.remove();
+        }
+
+        function saveHistoryImage() {
+            const overlay = document.getElementById('history-image-overlay');
+            if (!overlay) return;
+            const img = overlay.querySelector('img');
+            if (!img) return;
+            const link = document.createElement('a');
+            link.download = `${appState.currentEvent.name}_歷史紀錄.png`;
+            link.href = img.src;
+            link.click();
+            showToast('圖片已下載！');
         }
 
         function showToast(msg) {
@@ -3424,7 +3617,7 @@
                 const d = new Date(start);
                 // 如果日期無效，回傳原始字串
                 if (isNaN(d.getTime())) return start;
-                return `${d.getMonth() + 1}/${d.getDate()}...`;
+                return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}...`;
             }
 
             const d = new Date(isoStr);
@@ -3433,7 +3626,7 @@
 
             const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
             // 回傳格式: 月/日 (星期)
-            return `${d.getMonth() + 1}/${d.getDate()} (${week})`;
+            return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} (${week})`;
         }
 
         function formatDate(isoStr) {
