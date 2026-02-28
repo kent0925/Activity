@@ -3534,7 +3534,37 @@
                             if (e.address) shareText += `🚗 地址：${e.address}\n`;
                             shareText += `---------------------\n`;
                             shareText += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
-                            shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
+
+                            // ★ 活動日當天顯示 Google 地圖連結，非活動日顯示報名連結
+                            const today = new Date();
+                            const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+                            let isEventDay = false;
+
+                            if (e.time) {
+                                if (typeof e.time === 'string' && e.time.includes('~')) {
+                                    // 旅遊活動：日期範圍
+                                    const [startStr, endStr] = e.time.split('~').map(s => s.trim());
+                                    const startD = new Date(startStr);
+                                    const endD = new Date(endStr);
+                                    if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
+                                        const todayD = new Date(todayStr);
+                                        isEventDay = todayD >= new Date(startD.toDateString()) && todayD <= new Date(endD.toDateString());
+                                    }
+                                } else {
+                                    const eventDate = new Date(e.time);
+                                    if (!isNaN(eventDate.getTime())) {
+                                        const eventStr = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, '0')}-${eventDate.getDate().toString().padStart(2, '0')}`;
+                                        isEventDay = (todayStr === eventStr);
+                                    }
+                                }
+                            }
+
+                            if (isEventDay && (e.address || e.location)) {
+                                const mapQuery = e.address || e.location;
+                                shareText += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+                            } else {
+                                shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
+                            }
 
                             await navigator.share({
                                 files: [file],
