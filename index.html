@@ -1274,6 +1274,49 @@
                 setTimeout(() => processOfflineQueue(), 3000);
             }
 
+            // ★ 下拉刷新 (Pull-to-Refresh)
+            {
+                const homeView = document.getElementById('view-home');
+                let _pullStartY = 0;
+                let _isPulling = false;
+                let _pullIndicator = null;
+
+                homeView.addEventListener('touchstart', (ev) => {
+                    if (homeView.scrollTop === 0 || window.scrollY === 0) {
+                        _pullStartY = ev.touches[0].clientY;
+                        _isPulling = true;
+                    }
+                }, { passive: true });
+
+                homeView.addEventListener('touchmove', (ev) => {
+                    if (!_isPulling) return;
+                    const pullDist = ev.touches[0].clientY - _pullStartY;
+                    if (pullDist > 60 && !_pullIndicator) {
+                        _pullIndicator = document.createElement('div');
+                        _pullIndicator.id = 'pull-refresh-indicator';
+                        _pullIndicator.style.cssText = 'text-align:center;padding:10px;font-size:13px;color:#06c755;font-weight:600;';
+                        _pullIndicator.textContent = '⎆ 釋放刷新活動列表';
+                        homeView.insertBefore(_pullIndicator, homeView.firstChild);
+                    }
+                }, { passive: true });
+
+                homeView.addEventListener('touchend', async () => {
+                    if (_pullIndicator) {
+                        _pullIndicator.textContent = '… 刷新中';
+                        try {
+                            await fetchEvents();
+                            renderEventGrid(appState.currentCategory || 'all');
+                            showToast('✅ 已刷新');
+                        } catch (e) {
+                            showToast('刷新失敗');
+                        }
+                        _pullIndicator.remove();
+                        _pullIndicator = null;
+                    }
+                    _isPulling = false;
+                }, { passive: true });
+            }
+
             // ★ 修改處：LIFF 初始化與強制登入邏輯
             if (LIFF_ID && LIFF_ID !== "YOUR_LIFF_ID") {
                 try {
@@ -1683,6 +1726,8 @@
                     await fetchStats();
                     await checkMyRegistration();
                     renderEventStaticInfo();
+                    // ★ 即時更新首頁卡片「已報名」標記
+                    renderEventGrid(appState.currentCategory || 'all');
                 }
             } catch (err) {
                 showToast("發生錯誤，請重試");
@@ -1722,6 +1767,8 @@
                     resetFormState();
                     await fetchStats();
                     renderEventStaticInfo();
+                    // ★ 即時更新首頁卡片標記
+                    renderEventGrid(appState.currentCategory || 'all');
                 }
             } catch (err) {
                 showToast("取消失敗");
@@ -1999,6 +2046,30 @@
                         badge = '<span class="absolute top-0 right-0 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-bl-lg font-bold">已截止</span>';
                     }
 
+                    // ★ 倒數標記：距離活動還有幾天
+                    let countdownBadge = '';
+                    if (e.time) {
+                        const now = new Date();
+                        const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        let eventStart;
+                        if (typeof e.time === 'string' && e.time.includes('~')) {
+                            eventStart = new Date(e.time.split('~')[0].trim());
+                        } else {
+                            eventStart = new Date(e.time);
+                        }
+                        if (!isNaN(eventStart.getTime())) {
+                            const eventMid = new Date(eventStart.getFullYear(), eventStart.getMonth(), eventStart.getDate());
+                            const diffDays = Math.round((eventMid - todayMid) / (1000 * 60 * 60 * 24));
+                            if (diffDays === 0) {
+                                countdownBadge = '<span class="inline-flex items-center gap-0.5 text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded-full font-bold">🔴 今天！</span>';
+                            } else if (diffDays === 1) {
+                                countdownBadge = '<span class="inline-flex items-center gap-0.5 text-[10px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-full font-bold">⏰ 明天</span>';
+                            } else if (diffDays > 1 && diffDays <= 7) {
+                                countdownBadge = `<span class="inline-flex items-center gap-0.5 text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-bold">📆 還有 ${diffDays} 天</span>`;
+                            }
+                        }
+                    }
+
                     card.innerHTML = `
                         ${badge}
                         <div class="${bgClass} w-12 h-12 rounded-2xl flex items-center justify-center ${colorClass} shrink-0 group-hover:scale-110 transition-transform">
@@ -2010,6 +2081,7 @@
                             <div class="flex items-center gap-3 text-xs text-gray-500">
                                 <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> ${formatDateShort(e.time)}</span>
                                 <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${escapeHtml(e.location)}</span>
+                                ${countdownBadge}
                             </div>
                         </div>
                         <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300"></i>
@@ -3119,15 +3191,21 @@
 
             try {
                 // 4. 發送至後端
-                await apiSubmit(payload);
+                const result = await apiSubmit(payload);
 
-                showToast("活動建立成功！");
+                // ★ 檢查後端回傳是否包含錯誤
+                if (result && result.error) {
+                    showToast('⚠️ ' + result.error);
+                } else if (result && result.queued) {
+                    showToast('⚠️ 目前離線，建立請求已暫存');
+                } else {
+                    showToast("活動建立成功！");
 
-                // 5. 重新讀取活動列表並回到首頁
-                await fetchEvents();
-                appState.historyStack = ['home'];
-                handleBackNav();
-
+                    // 5. 重新讀取活動列表並回到首頁
+                    await fetchEvents();
+                    appState.historyStack = ['home'];
+                    handleBackNav();
+                }
             } catch (err) {
                 console.error(err);
                 showToast("建立失敗，請檢查網路或稍後再試");
@@ -3759,8 +3837,36 @@
                     text += `🗺️ Google 地圖：\nhttps://www.google.com/maps/search/?api=1&query=${e.address}\n`;
                 }
 
+                // ★ 活動日當天自動替換：報名連結 → Google 地圖連結
                 if (options.includeLink !== false) {
-                    text += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+                    const today = new Date();
+                    const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+                    let isEventDay = false;
+
+                    if (e.time) {
+                        if (typeof e.time === 'string' && e.time.includes('~')) {
+                            const [startStr, endStr] = e.time.split('~').map(s => s.trim());
+                            const startD = new Date(startStr);
+                            const endD = new Date(endStr);
+                            if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
+                                const todayD = new Date(todayStr);
+                                isEventDay = todayD >= new Date(startD.toDateString()) && todayD <= new Date(endD.toDateString());
+                            }
+                        } else {
+                            const eventDate = new Date(e.time);
+                            if (!isNaN(eventDate.getTime())) {
+                                const eventStr = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, '0')}-${eventDate.getDate().toString().padStart(2, '0')}`;
+                                isEventDay = (todayStr === eventStr);
+                            }
+                        }
+                    }
+
+                    if (isEventDay && (e.address || e.location)) {
+                        const mapQuery = e.address || e.location;
+                        text += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}\n`;
+                    } else {
+                        text += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+                    }
                 }
 
                 copyTextToClipboard(text);
