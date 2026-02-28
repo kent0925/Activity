@@ -1176,6 +1176,11 @@
             myRegistrations: []
         };
 
+        // ★ 防重複提交鎖 + 離線佇列常數
+        let _isSubmitting = false;
+        const OFFLINE_QUEUE_KEY = 'offlineSubmitQueue';
+        const OFFLINE_QUEUE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 小時過期
+
         // ==========================================
         // 1.1 共用工具與常數
         // ==========================================
@@ -1257,6 +1262,17 @@
             // 介面初始化
             DOM.headerTitle.innerText = "活動與報名";
             switchView('view-home');
+
+            // ★ 離線偵測與佇列處理
+            window.addEventListener('offline', () => showToast('⚠️ 網路已斷開，報名將暫存'));
+            window.addEventListener('online', () => {
+                showToast('✅ 網路已恢復');
+                setTimeout(() => processOfflineQueue(), 1500);
+            });
+            // 頁面載入時也檢查是否有殘留佇列
+            if (navigator.onLine) {
+                setTimeout(() => processOfflineQueue(), 3000);
+            }
 
             // ★ 修改處：LIFF 初始化與強制登入邏輯
             if (LIFF_ID && LIFF_ID !== "YOUR_LIFF_ID") {
@@ -1419,13 +1435,102 @@
         }
 
         async function apiSubmit(data) {
-            if (GAS_URL) {
+            if (!GAS_URL) return;
+
+            // ★ 自動附加 idempotency key（防重複）
+            if (!data._idempotencyKey) {
+                data._idempotencyKey = (typeof crypto !== 'undefined' && crypto.randomUUID)
+                    ? crypto.randomUUID()
+                    : Date.now() + '-' + Math.random().toString(36).slice(2);
+            }
+
+            // ★ 離線偵測：直接存入佇列，不嘗試 fetch
+            if (!navigator.onLine) {
+                enqueueOffline(data);
+                showToast('⚠️ 目前離線，資料已暫存，待網路恢復後自動送出');
+                return { queued: true };
+            }
+
+            try {
                 const res = await fetch(GAS_URL, {
                     method: 'POST',
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(data)
                 });
                 return await res.json();
+            } catch (err) {
+                // ★ 網路錯誤時存入離線佇列
+                if (err.name === 'TypeError' || err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+                    enqueueOffline(data);
+                    showToast('⚠️ 網路異常，資料已暫存，待恢復後自動送出');
+                    return { queued: true };
+                }
+                throw err;
+            }
+        }
+
+        // ★ 離線佇列：存入
+        function enqueueOffline(data) {
+            try {
+                const queue = JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]');
+                queue.push({ data: data, timestamp: Date.now() });
+                localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue));
+            } catch (e) {
+                console.warn('離線佇列儲存失敗', e);
+            }
+        }
+
+        // ★ 離線佇列：恢復連線時自動重送
+        async function processOfflineQueue() {
+            let queue;
+            try {
+                queue = JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]');
+            } catch (e) { return; }
+
+            if (queue.length === 0) return;
+
+            // 過濾掉超過 24 小時的過期項目
+            const now = Date.now();
+            const validQueue = queue.filter(item => (now - item.timestamp) < OFFLINE_QUEUE_MAX_AGE_MS);
+            const expiredCount = queue.length - validQueue.length;
+
+            if (validQueue.length === 0) {
+                localStorage.removeItem(OFFLINE_QUEUE_KEY);
+                if (expiredCount > 0) showToast(`已清除 ${expiredCount} 筆過期暫存資料`);
+                return;
+            }
+
+            showToast(`📤 正在送出 ${validQueue.length} 筆暫存資料...`);
+
+            const remaining = [];
+            let successCount = 0;
+
+            for (const item of validQueue) {
+                try {
+                    const res = await fetch(GAS_URL, {
+                        method: 'POST',
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify(item.data)
+                    });
+                    await res.json();
+                    successCount++;
+                } catch (err) {
+                    // 送出失敗，保留在佇列中等下次重試
+                    remaining.push(item);
+                }
+            }
+
+            if (remaining.length > 0) {
+                localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(remaining));
+                showToast(`✅ 已送出 ${successCount} 筆，${remaining.length} 筆待重試`);
+            } else {
+                localStorage.removeItem(OFFLINE_QUEUE_KEY);
+                showToast(`✅ ${successCount} 筆暫存資料已全部送出！`);
+            }
+
+            // 刷新統計
+            if (appState.currentEvent) {
+                await fetchStats();
             }
         }
 
@@ -1537,9 +1642,11 @@
 
         async function handleSubmit(e) {
             e.preventDefault();
+            if (_isSubmitting) return; // ★ 防重複提交鎖
             const originalContent = DOM.submitBtn.innerHTML;
 
             if (!validateForm()) return;
+            _isSubmitting = true;
 
             DOM.submitBtn.disabled = true;
             DOM.submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 處理中...';
@@ -1562,17 +1669,25 @@
             };
 
             try {
-                await apiSubmit(formData);
-                showToast(formData.action === 'update' ? "更新成功！" : "報名成功！");
-                if (!appState.myRegistrations.includes(appState.currentEvent.id)) {
-                    appState.myRegistrations.push(appState.currentEvent.id);
+                const result = await apiSubmit(formData);
+                // ★ 檢查後端回傳是否包含錯誤
+                if (result && result.error) {
+                    showToast('⚠️ ' + result.error);
+                } else if (result && result.queued) {
+                    // 離線佇列已處理，Toast 已在 apiSubmit 顯示
+                } else {
+                    showToast(formData.action === 'update' ? "更新成功！" : "報名成功！");
+                    if (!appState.myRegistrations.includes(appState.currentEvent.id)) {
+                        appState.myRegistrations.push(appState.currentEvent.id);
+                    }
+                    await fetchStats();
+                    await checkMyRegistration();
+                    renderEventStaticInfo();
                 }
-                await fetchStats();
-                await checkMyRegistration();
-                renderEventStaticInfo();
             } catch (err) {
                 showToast("發生錯誤，請重試");
             } finally {
+                _isSubmitting = false; // ★ 解鎖
                 DOM.submitBtn.disabled = false;
                 DOM.submitBtn.innerHTML = originalContent;
                 refreshIcons();
@@ -1580,26 +1695,38 @@
         }
 
         async function handleCancel() {
+            if (_isSubmitting) return; // ★ 防重複提交鎖
             const confirmed = await showConfirm("確定要取消此活動的報名嗎？<br>取消後名額將會釋出。");
             if (!confirmed) return;
+            _isSubmitting = true;
 
             DOM.cancelBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
             refreshIcons();
 
             try {
-                await apiSubmit({
+                const result = await apiSubmit({
                     action: 'cancel',
                     eventId: appState.currentEvent.id,
-                    userId: appState.user.userId
+                    eventName: appState.currentEvent.name,
+                    userId: appState.user.userId,
+                    displayName: appState.user.displayName
                 });
-                showToast("已取消報名");
-                appState.myRegistrations = appState.myRegistrations.filter(id => id !== appState.currentEvent.id);
-                resetFormState();
-                await fetchStats();
-                renderEventStaticInfo();
+                // ★ 檢查後端回傳是否包含錯誤
+                if (result && result.error) {
+                    showToast('⚠️ ' + result.error);
+                } else if (result && result.queued) {
+                    // 離線佇列
+                } else {
+                    showToast("已取消報名");
+                    appState.myRegistrations = appState.myRegistrations.filter(id => id !== appState.currentEvent.id);
+                    resetFormState();
+                    await fetchStats();
+                    renderEventStaticInfo();
+                }
             } catch (err) {
                 showToast("取消失敗");
             } finally {
+                _isSubmitting = false; // ★ 解鎖
                 DOM.cancelBtn.innerHTML = '<i data-lucide="trash-2" class="w-5 h-5"></i>';
                 refreshIcons();
             }
@@ -2945,10 +3072,12 @@
         // --- Create Event (Real Submit) ---
         async function handleCreateEvent(e) {
             e.preventDefault();
+            if (_isSubmitting) return; // ★ 防重複提交鎖
             const btn = document.getElementById('create-btn');
             const originalBtnHTML = btn.innerHTML; // 保存原始按鈕內容
 
             // 1. 鎖定按鈕避免重複點擊
+            _isSubmitting = true;
             btn.disabled = true;
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 建立中...';
             refreshIcons();
@@ -3004,6 +3133,7 @@
                 showToast("建立失敗，請檢查網路或稍後再試");
             } finally {
                 // 6. 復原按鈕狀態
+                _isSubmitting = false; // ★ 解鎖
                 btn.disabled = false;
                 btn.innerHTML = originalBtnHTML;
                 refreshIcons();
