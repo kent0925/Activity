@@ -132,9 +132,76 @@
                 const sloganText = document.getElementById('slogan-text');
                 if (sloganText) sloganText.innerText = randomQuote;
 
+                // ★ 取得並顯示拉霸大獎 Top 3
+                fetchJackpotTop3();
+
                 // ★ 啟動迷你老虎機
                 startSlotMachine();
             });
+
+            // 新增：抓取拉霸 Top 3 數據 (優化版：先顯後更)
+            async function fetchJackpotTop3() {
+                const container = document.getElementById('jackpot-top3-container');
+                const listEl = document.getElementById('jackpot-top3-list');
+                if (!container || !listEl) return;
+
+                // 1. 先嘗試從 LocalStorage 讀取快取
+                const cacheKey = 'jackpot_top3_cache';
+                const cachedData = localStorage.getItem(cacheKey);
+                if (cachedData) {
+                    try {
+                        const top3 = JSON.parse(cachedData);
+                        renderJackpotTop3(top3);
+                        container.classList.remove('opacity-0', 'translate-y-4');
+                    } catch (e) {
+                        console.warn("Parse cache failed", e);
+                    }
+                }
+
+                // 2. 背景呼叫 API 更新數據
+                try {
+                    const res = await fetch(`${GAS_URL}?action=getJackpotTop3&_=${Date.now()}`);
+                    const top3 = await res.json();
+
+                    if (Array.isArray(top3) && top3.length > 0) {
+                        // 更新快取
+                        localStorage.setItem(cacheKey, JSON.stringify(top3));
+                        // 重新渲染最新數據
+                        renderJackpotTop3(top3);
+                        container.classList.remove('opacity-0', 'translate-y-4');
+                    } else if (!cachedData) {
+                        container.classList.add('hidden');
+                    }
+                } catch (e) {
+                    console.warn("Fetch Top 3 failed", e);
+                    if (!cachedData) container.classList.add('hidden');
+                }
+            }
+
+            function renderJackpotTop3(data) {
+                const listEl = document.getElementById('jackpot-top3-list');
+                const medals = ['🥈', '🥇', '🥉']; // 排序通常是 2, 1, 3 視覺較好
+                const displayOrder = data.length >= 3 ? [1, 0, 2] : (data.length === 2 ? [0, 1] : [0]);
+
+                let html = '';
+                displayOrder.forEach(idx => {
+                    if (!data[idx]) return;
+                    const p = data[idx];
+                    const isFirst = idx === 0;
+                    const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
+                    const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-90 opacity-80';
+                    const colorClass = isFirst ? 'text-amber-300' : (idx === 1 ? 'text-gray-300' : 'text-orange-300');
+
+                    html += `
+                        <div class="flex flex-col items-center ${sizeClass} transition-transform duration-500">
+                            <span class="text-lg mb-0.5">${medal}</span>
+                            <span class="text-[11px] font-bold text-white truncate max-w-[60px]">${p.name}</span>
+                            <span class="${colorClass} text-[9px] font-black">${p.count} 次</span>
+                        </div>
+                    `;
+                });
+                listEl.innerHTML = html;
+            }
 
             function startSlotMachine() {
                 const config = window.SLOT_CONFIG;
@@ -207,8 +274,30 @@
 
                     resultEl.textContent = msg;
                     resultEl.classList.add('show');
-                    if (isJackpot) resultEl.classList.add('jackpot');
+                    if (isJackpot) {
+                        resultEl.classList.add('jackpot');
+                        // ★ 新增：自動紀錄大獎
+                        recordJackpotResult(key);
+                    }
                 }, 2000);
+            }
+
+            // 新增：紀錄大獎結果
+            async function recordJackpotResult(symbolKey) {
+                // 必須是登入狀態且有 UserID 才能紀錄
+                if (!appState.user || !appState.user.userId || appState.user.userId === '') return;
+
+                try {
+                    await apiSubmit({
+                        action: 'recordJackpot',
+                        userId: appState.user.userId,
+                        name: appState.user.displayName,
+                        symbol: symbolKey
+                    });
+                    console.log("Jackpot recorded!");
+                } catch (e) {
+                    console.error("Failed to record jackpot", e);
+                }
             }
         })();
     </script>
@@ -221,9 +310,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js" defer></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" defer></script>
     <script src="https://unpkg.com/lucide@0.575.0/dist/umd/lucide.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <!-- 新增：引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <style>
         :root {
             --primary: #06c755;
@@ -535,6 +626,20 @@
             <div id="slot-result"
                 class="slot-result text-white text-sm font-bold text-center mt-4 px-6 max-w-xs mx-auto min-h-[24px]">
                 拉霸中...</div>
+            <!-- 新增：拉霸大獎 Top 3 英雄榜容器 -->
+            <div id="jackpot-top3-container"
+                class="mt-8 space-y-3 opacity-0 transition-all duration-1000 transform translate-y-4">
+                <div
+                    class="text-white/40 text-[10px] font-black tracking-[0.2em] uppercase text-center flex items-center justify-center gap-2">
+                    <span class="w-8 h-px bg-white/10"></span>
+                    JACKPOT HEROES
+                    <span class="w-8 h-px bg-white/10"></span>
+                </div>
+                <div id="jackpot-top3-list"
+                    class="flex justify-center items-end gap-2 px-4 shadow-inner py-1 rounded-2xl">
+                    <div class="text-white/30 text-[10px] animate-pulse">載入英雄榜...</div>
+                </div>
+            </div>
         </div>
         <div class="mt-6 flex gap-2">
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0s"></div>
@@ -577,6 +682,20 @@
                         <span id="history-btn-text">查看歷史活動</span>
                     </button>
                 </div>
+            </div>
+
+            <!-- 新增：參加頻率圖表 (出席王排行榜) -->
+            <div id="participation-stats-container" class="premium-card p-6 mt-4 animate-fade-in hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <i data-lucide="award" class="w-5 h-5 text-yellow-500"></i> 出席王排行榜
+                    </h3>
+                    <span class="text-[10px] text-gray-400 font-medium">近 20 場統計</span>
+                </div>
+                <div class="relative w-full h-48">
+                    <canvas id="participationChart"></canvas>
+                </div>
+                <p class="text-[10px] text-gray-400 text-center mt-3">※ 數據每 24 小時自動更新一次</p>
             </div>
 
             <!-- 歷史活動列表 (隱藏狀態) -->
@@ -728,6 +847,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- ★ 修復：補回被意外刪除的動態欄位區塊 -->
                 <div id="dynamic-fields" class="space-y-4">
                     <div id="field-travel" class="hidden space-y-3 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
                         <div class="text-sm font-bold text-blue-800 flex items-center gap-1.5 mb-2"><i data-lucide="bus"
@@ -1350,7 +1470,7 @@
             updateUserProfileUI();
 
             // 抓取資料
-            await Promise.all([fetchEvents(), fetchSettings(), fetchMyRegistrations()]);
+            await Promise.all([fetchEvents(), fetchSettings(), fetchMyRegistrations(), fetchParticipationStats()]);
 
             // ★ 新增：套用名稱對應邏輯 (需在 fetchSettings 與 LIFF init 之後)
             applyUserNameMapping();
@@ -1437,6 +1557,105 @@
             } catch (e) {
                 console.warn("Fetch Registrations Failed", e);
             }
+        }
+
+        // ★ 新增：出席統計圖表 (優化版：先顯後更)
+        async function fetchParticipationStats() {
+            if (!GAS_URL) return;
+            const container = document.getElementById('participation-stats-container');
+            const canvas = document.getElementById('participationChart');
+            if (!container || !canvas) return;
+
+            const cacheKey = 'participation_stats_cache';
+            const cachedData = localStorage.getItem(cacheKey);
+
+            // 1. 先顯示快取數據
+            if (cachedData) {
+                try {
+                    const stats = JSON.parse(cachedData);
+                    container.classList.remove('hidden');
+                    renderParticipationChart(stats);
+                } catch (e) {
+                    console.warn("Parse stats cache failed", e);
+                }
+            }
+
+            // 2. 背景同步最新數據
+            try {
+                const res = await fetch(`${GAS_URL}?action=getParticipationStats&_=${Date.now()}`);
+                const stats = await res.json();
+
+                if (Array.isArray(stats) && stats.length > 0) {
+                    // 更新快取
+                    localStorage.setItem(cacheKey, JSON.stringify(stats));
+                    container.classList.remove('hidden');
+                    renderParticipationChart(stats, !!cachedData); // 如果已有快取，則不重複播大動畫
+                } else if (!cachedData) {
+                    container.classList.add('hidden');
+                }
+            } catch (e) {
+                console.warn("Fetch participation stats failed", e);
+            }
+        }
+
+        let participationChartInstance = null;
+        function renderParticipationChart(data, skipAnimation = false) {
+            const ctx = document.getElementById('participationChart').getContext('2d');
+            if (participationChartInstance) {
+                participationChartInstance.destroy();
+            }
+
+            const topData = data.slice(0, 8);
+            participationChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: topData.map(item => item.name),
+                    datasets: [{
+                        label: '參加次數',
+                        data: topData.map(item => item.count),
+                        backgroundColor: (context) => {
+                            const chart = context.chart;
+                            const { ctx, chartArea } = chart;
+                            if (!chartArea) return null;
+                            const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                            gradient.addColorStop(0, '#06c755');
+                            gradient.addColorStop(1, '#10b981');
+                            return gradient;
+                        },
+                        borderRadius: 8,
+                        barThickness: 16
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: skipAnimation ? 0 : 1000
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            padding: 8,
+                            titleFont: { size: 12 },
+                            bodyFont: { size: 12 },
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { display: false },
+                            ticks: { stepSize: 1, font: { size: 10 } }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { font: { weight: 'bold', size: 12 } }
+                        }
+                    }
+                }
+            });
         }
 
         async function fetchStats(forceRefresh = false) {
@@ -3747,10 +3966,8 @@
                     data.forEach((p, i) => {
                         count++;
                         const family = getIntField(p, 'family');
-
                         const guestData = parseGuestData(p);
                         const guestCountFallback = getIntField(p, 'guestCount');
-
                         const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
                         const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
                         const total = 1 + family + finalGuestCount;

@@ -446,6 +446,12 @@ function doGet(e) {
             case "getMyRegistrations":
                 result = getMyRegistrations(params.userId);
                 break;
+            case "getJackpotTop3":
+                result = getJackpotTop3();
+                break;
+            case "getParticipationStats":
+                result = getParticipationStats();
+                break;
             default:
                 result = { error: "Unknown action" };
         }
@@ -529,6 +535,9 @@ function doPost(e) {
                         break;
                     case "sendListToTelegram":
                         result = handleSendListToTelegram(data);
+                        break;
+                    case "recordJackpot":
+                        result = recordJackpot(data);
                         break;
                     default:
                         result = { error: "Unknown POST action: " + action };
@@ -1111,7 +1120,124 @@ function handleSendListToTelegram(data) {
 }
 
 // ==========================================
-// 8. 封存資料管理
+// 8. 拉霸與統計功能 (新增)
+// ==========================================
+
+/** 取得拉霸大獎前三名 */
+function getJackpotTop3() {
+    let sheet = getSheet('JackpotRecords');
+
+    if (!sheet) {
+        // 自動建立工作表
+        const ss = _cachedSpreadsheet || (SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet());
+        sheet = ss.insertSheet('JackpotRecords');
+        sheet.appendRow(['時間', 'UserID', '姓名', '中獎符號']);
+        return [];
+    }
+
+    const data = sheet.getDataRange().getValues();
+    if (data.length <= 1) return [];
+
+    const stats = {};
+    for (let i = 1; i < data.length; i++) {
+        const name = data[i][2];
+        if (!name) continue;
+        stats[name] = (stats[name] || 0) + 1;
+    }
+
+    const sorted = Object.keys(stats).map(name => {
+        return { name: name, count: stats[name] };
+    }).sort((a, b) => b.count - a.count);
+
+    return sorted.slice(0, 3);
+}
+
+/** 紀錄大獎結果 */
+function recordJackpot(data) {
+    let sheet = getSheet('JackpotRecords');
+
+    if (!sheet) {
+        const ss = _cachedSpreadsheet || (SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet());
+        sheet = ss.insertSheet('JackpotRecords');
+        sheet.appendRow(['時間', 'UserID', '姓名', '中獎符號']);
+    }
+
+    sheet.appendRow([
+        new Date(),
+        data.userId || '',
+        getRealName(data.userId, data.name || '訪客'),
+        data.symbol || ''
+    ]);
+
+    return { success: true };
+}
+
+/** 根據 UserMapping 取得真實姓名（優先比對 userId，再比對 displayName） */
+function getRealName(userId, displayName) {
+    const sheet = getSheet(SHEET_SETTINGS);
+    if (!sheet) return displayName;
+
+    const data = sheet.getDataRange().getValues();
+    let matchByName = null;
+
+    for (let i = 1; i < data.length; i++) {
+        if (data[i][0] !== 'UserMapping') continue;
+        const key = String(data[i][1]).trim();
+        const val = String(data[i][2]).trim();
+
+        // 優先：用 userId 精確比對
+        if (userId && key === String(userId).trim()) {
+            return val;
+        }
+        // 備用：用 displayName 比對（暫存，等迴圈結束後使用）
+        if (!matchByName && displayName && key === String(displayName).trim()) {
+            matchByName = val;
+        }
+    }
+    return matchByName || displayName;
+}
+
+/** 取得成員參加頻率統計 */
+function getParticipationStats() {
+    const stats = {};
+
+    // 取得 mapping 以便顯示真實姓名
+    const settings = getSettings();
+    const mapping = settings.userMapping || {};
+
+    const dataSheetNames = [SHEET_REGISTRATIONS, SHEET_NAME_ARCHIVE];
+
+    dataSheetNames.forEach(sName => {
+        const sheet = getSheet(sName);
+        if (!sheet) return;
+        const data = sheet.getDataRange().getValues();
+        if (data.length <= 1) return;
+
+        const headers = data[0];
+        const nameIdx = headers.indexOf('UserName');
+        const uidIdx = headers.indexOf('UserID');
+        if (nameIdx === -1) return;
+
+        for (let i = 1; i < data.length; i++) {
+            const participant = data[i][nameIdx];
+            const uid = uidIdx !== -1 ? String(data[i][uidIdx] || '').trim() : '';
+            if (participant && typeof participant === 'string') {
+                // 優先用 UserID 查 mapping，再用 displayName
+                const realName = (uid && mapping[uid]) || mapping[participant] || participant;
+                stats[realName] = (stats[realName] || 0) + 1;
+            }
+        }
+    });
+
+    const sorted = Object.keys(stats).map(name => {
+        return { name: name, count: stats[name] };
+    }).sort((a, b) => b.count - a.count);
+
+    return sorted;
+}
+
+// ==========================================
+// 9. 封存資料管理
 // ==========================================
 function archiveOldData() {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -1178,13 +1304,18 @@ function archiveOldData() {
             archiveSheet.getLastRow() + 1, 1,
             rowsToArchive.length, rowsToArchive[0].length
         ).setValues(rowsToArchive);
-        console.log(`已搬移 ${rowsToArchive.length} 筆資料至 ${SHEET_NAME_ARCHIVE}`);
+        console.log(`已成功搬移 ${rowsToArchive.length} 筆資料至 ${SHEET_NAME_ARCHIVE}`);
 
-        dataSheet.clearContents();
         if (rowsToKeep.length > 0) {
             dataSheet.getRange(1, 1, rowsToKeep.length, rowsToKeep[0].length).setValues(rowsToKeep);
+            const remainingRows = dataSheet.getLastRow() - rowsToKeep.length;
+            if (remainingRows > 0) {
+                dataSheet.deleteRows(rowsToKeep.length + 1, remainingRows);
+            }
+        } else {
+            dataSheet.clearContents();
         }
-        console.log("Responses 表更新完成");
+        console.log("Responses 表更新完成 (安全模式)");
     } else {
         console.log("沒有資料需要搬移");
     }
