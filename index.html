@@ -183,11 +183,12 @@
                 }
             }
         }
-
         function renderJackpotTop3(data) {
+            const container = document.getElementById('home-rankings-section');
             const listEl = document.getElementById('jackpot-top3-list');
             const homeListEl = document.getElementById('home-jackpot-list');
             if (!listEl && !homeListEl) return;
+            if (container) container.classList.remove('hidden');
 
             const displayOrder = data.length >= 3 ? [1, 0, 2] : (data.length === 2 ? [0, 1] : [0]);
 
@@ -197,14 +198,13 @@
                 const p = data[idx];
                 const isFirst = idx === 0;
                 const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
-                const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-90 opacity-80';
-                const colorClass = isFirst ? 'text-amber-300' : (idx === 1 ? 'text-gray-300' : 'text-orange-300');
+                const sizeClass = isFirst ? 'scale-105 -translate-y-1' : 'scale-90 opacity-75';
 
                 html += `
-                        <div class="flex flex-col items-center ${sizeClass} transition-transform duration-500">
-                            <span class="text-lg mb-0.5">${medal}</span>
-                            <span class="text-[11px] font-bold text-template-name truncate max-w-template-width">${p.name}</span>
-                            <span class="text-template-count-color text-[9px] font-black">${p.count} 次</span>
+                        <div class="flex flex-col items-center ${sizeClass}">
+                            <span class="text-base leading-none mb-0.5">${medal}</span>
+                            <span class="text-[10px] font-bold text-template-name truncate max-w-template-width">${p.name}</span>
+                            <span class="text-template-count-color text-[9px] font-black">${p.count}次</span>
                         </div>
                     `;
             });
@@ -213,17 +213,15 @@
                 listEl.innerHTML = html
                     .replace(/text-template-name/g, 'text-white')
                     .replace(/text-template-count-color/g, 'text-white/80')
-                    .replace(/max-w-template-width/g, 'max-w-[60px]');
+                    .replace(/max-w-template-width/g, 'max-w-[42px]');
             }
             if (homeListEl) {
                 homeListEl.innerHTML = html
-                    .replace(/text-template-name/g, 'text-gray-800')
-                    .replace(/text-template-count-color/g, 'text-amber-600')
-                    .replace(/max-w-template-width/g, 'max-w-[80px]')
-                    .replace(/text-\[11px\]/g, 'text-sm');
+                    .replace(/text-template-name/g, 'text-gray-700')
+                    .replace(/text-template-count-color/g, 'text-amber-500')
+                    .replace(/max-w-template-width/g, 'max-w-[45px]');
             }
 
-            // 刷新圖示
             if (typeof refreshIcons === 'function') refreshIcons();
         }
 
@@ -708,29 +706,29 @@
                 </div>
             </div>
 
-            <!-- 出席王排行榜 (Top 3 獎牌風格) -->
-            <div id="participation-stats-container" class="premium-card p-6 mt-4 animate-fade-in hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <i data-lucide="award" class="w-5 h-5 text-yellow-500"></i> 出席王排行榜
-                    </h3>
-                    <span class="text-[10px] text-gray-400 font-medium">近 20 場統計</span>
-                </div>
-                <div id="participation-top3-list" class="flex justify-center items-end gap-6 px-4 py-4">
-                    <div class="text-gray-400 text-xs animate-pulse">載入排行榜...</div>
-                </div>
-                <p class="text-[10px] text-gray-400 text-center mt-3">※ 數據每 24 小時自動更新一次</p>
-            </div>
-
-            <!-- 拉霸大獎排行榜 (首頁複刻版) -->
-            <div id="home-jackpot-container" class="premium-card p-6 mt-4 animate-fade-in hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <i data-lucide="crown" class="w-5 h-5 text-amber-500"></i> 拉霸英雄榜 (Jackpot)
-                    </h3>
-                </div>
-                <div id="home-jackpot-list" class="flex justify-center items-end gap-6 px-4 py-4">
-                    <div class="text-gray-400 text-xs animate-pulse">載入英雄榜...</div>
+            <!-- 合併排行榜彙整區塊 -->
+            <div id="home-rankings-section" class="premium-card p-4 mt-2 animate-fade-in hidden">
+                <div class="grid grid-cols-2 gap-4 divide-x divide-gray-100">
+                    <!-- 左側：出席王 -->
+                    <div id="participation-stats-container">
+                        <div class="flex items-center gap-1.5 mb-2 px-1">
+                            <i data-lucide="award" class="w-4 h-4 text-yellow-500"></i>
+                            <span class="text-xs font-bold text-gray-700">出席王排行</span>
+                        </div>
+                        <div id="participation-top3-list" class="flex justify-around items-end h-[60px]">
+                            <div class="text-[10px] text-gray-400 animate-pulse">載入中...</div>
+                        </div>
+                    </div>
+                    <!-- 右側：拉霸英雄 -->
+                    <div id="home-jackpot-container">
+                        <div class="flex items-center gap-1.5 mb-2 px-2">
+                            <i data-lucide="crown" class="w-4 h-4 text-amber-500"></i>
+                            <span class="text-xs font-bold text-gray-700">拉霸英雄榜</span>
+                        </div>
+                        <div id="home-jackpot-list" class="flex justify-around items-end h-[60px]">
+                            <div class="text-[10px] text-gray-400 animate-pulse">載入中...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1604,7 +1602,7 @@
         // ★ 新增：出席統計圖表 (優化版：先顯後更)
         async function fetchParticipationStats() {
             if (!GAS_URL) return;
-            const container = document.getElementById('participation-stats-container');
+            const container = document.getElementById('home-rankings-section');
             if (!container) return;
 
             const cacheKey = 'participation_stats_cache';
@@ -1640,13 +1638,14 @@
         }
 
         function renderParticipationChart(data) {
+            const container = document.getElementById('home-rankings-section');
             const listEl = document.getElementById('participation-top3-list');
             if (!listEl) return;
+            if (container) container.classList.remove('hidden');
 
             const top3 = data.slice(0, 3);
             if (top3.length === 0) return;
 
-            // 排列順序：銀(第2) → 金(第1) → 銅(第3)，與拉霸排行榜一致
             const displayOrder = top3.length >= 3 ? [1, 0, 2] : (top3.length === 2 ? [0, 1] : [0]);
 
             let html = '';
@@ -1655,18 +1654,14 @@
                 const p = top3[idx];
                 const isFirst = idx === 0;
                 const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
-                const sizeClass = isFirst ? 'scale-110 -translate-y-2' : 'scale-95 opacity-85';
-                const nameColor = isFirst ? 'text-amber-600' : 'text-gray-600';
-                const countColor = isFirst ? 'text-amber-500 font-black' : 'text-gray-500 font-bold';
-                const bgClass = isFirst ? 'bg-amber-50 ring-2 ring-amber-200' : 'bg-gray-50 ring-1 ring-gray-200';
+                const sizeClass = isFirst ? 'scale-105 -translate-y-1' : 'scale-90 opacity-75';
+                const countColor = isFirst ? 'text-amber-500' : 'text-gray-400';
 
                 html += `
-                    <div class="flex flex-col items-center ${sizeClass} transition-transform duration-500">
-                        <span class="text-2xl mb-1">${medal}</span>
-                        <div class="${bgClass} rounded-xl px-4 py-2 flex flex-col items-center">
-                            <span class="text-sm font-bold ${nameColor} truncate max-w-[80px]">${p.name}</span>
-                            <span class="${countColor} text-xs mt-0.5">${p.count} 次</span>
-                        </div>
+                    <div class="flex flex-col items-center ${sizeClass}">
+                        <span class="text-base leading-none mb-0.5">${medal}</span>
+                        <span class="text-[10px] font-bold text-gray-700 truncate max-w-[45px]">${p.name}</span>
+                        <span class="${countColor} text-[9px] font-black">${p.count}次</span>
                     </div>
                 `;
             });
