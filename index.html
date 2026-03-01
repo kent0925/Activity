@@ -699,26 +699,7 @@
         <div class="text-white text-3xl font-bold mb-4 animate-bounce">🍺 大老二兄弟會</div>
         <!-- 迷你老虎機 -->
         <div class="slot-machine-container">
-            <!-- 載入畫面排行榜 (移動至上方) -->
-            <div id="overlay-rankings-container"
-                class="mb-6 space-y-2 opacity-0 transition-all duration-1000 transform translate-y-4">
-                <div
-                    class="text-white/40 text-[9px] font-black tracking-[0.2em] uppercase text-center flex items-center justify-center gap-2 mb-2">
-                    <span class="w-6 h-px bg-white/10"></span>
-                    HERO BOARDS
-                    <span class="w-6 h-px bg-white/10"></span>
-                </div>
-                <div class="grid grid-cols-2 gap-4 divide-x divide-white/5 bg-black/10 py-3 rounded-2xl">
-                    <!-- 出席王 (載入畫面版) -->
-                    <div id="overlay-participation-list" class="flex justify-around items-end h-[70px] px-2 text-white">
-                        <div class="text-[12px] text-white/30 animate-pulse">載入中...</div>
-                    </div>
-                    <!-- 拉霸英雄 (載入畫面版) -->
-                    <div id="jackpot-top3-list" class="flex justify-around items-end h-[70px] px-2 text-white">
-                        <div class="text-[12px] text-white/30 animate-pulse">載入中...</div>
-                    </div>
-                </div>
-            </div>
+            <!-- 移除排行榜，保持載入畫面簡單 -->
 
             <div class="text-white/70 text-xs font-bold tracking-widest mb-3 text-center">🎰 今晚運勢</div>
             <div class="slot-machine">
@@ -757,24 +738,14 @@
 
         <div id="view-home" class="view-section space-y-4 animate-fade-in">
             <!-- Premium 區塊：標語與歷史按鈕 -->
-            <div class="premium-gradient rounded-[2rem] p-6 text-white shadow-2xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-                <div class="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full -ml-10 -mb-10 blur-2xl"></div>
-
-                <div class="relative z-10">
-                    <h2 class="text-2xl font-extrabold mb-1 tracking-tight">活動報名系統</h2>
-                    <p id="slogan-text" class="text-green-50/90 text-sm font-medium mb-4">你的人際關係已經岌岌可危，建議出席挽救一下。</p>
-
-                    <button onclick="toggleHistoryView()" id="btn-history-toggle"
-                        class="glass-effect text-white px-4 py-2 rounded-2xl flex items-center gap-2 hover:bg-white/20 transition-all font-semibold text-sm">
-                        <i data-lucide="history" class="w-4 h-4"></i>
-                        <span id="history-btn-text">查看歷史活動</span>
-                    </button>
-                </div>
+            <!-- 新首頁標頭與語錄 -->
+            <div class="px-2 pt-2">
+                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">活動報名系統</h2>
+                <p class="text-gray-500 text-base font-medium mt-1">I 人 E 人，喝了酒都是自己人。</p>
             </div>
 
-            <!-- 合併排行榜彙整區塊 -->
-            <div id="home-rankings-section" class="premium-card p-4 mt-2 animate-fade-in hidden">
+            <!-- 合併排行榜彙整區塊 (移至上方) -->
+            <div id="home-rankings-section" class="premium-card p-4 animate-fade-in hidden">
                 <div class="grid grid-cols-2 gap-4 divide-x divide-gray-100">
                     <!-- 左側：出席王 -->
                     <div id="participation-stats-container">
@@ -797,6 +768,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- 歷史活動按鈕 (移至排行下方) -->
+            <div class="flex justify-start px-1">
+                <button onclick="toggleHistoryView()" id="btn-history-toggle"
+                    class="bg-gray-100 text-gray-600 px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-gray-200 transition-all font-bold text-sm border border-gray-200 shadow-sm">
+                    <i data-lucide="history" class="w-4 h-4"></i>
+                    <span id="history-btn-text">查看歷史活動</span>
+                </button>
             </div>
 
             <!-- 歷史活動列表 (隱藏狀態) -->
