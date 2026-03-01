@@ -277,8 +277,8 @@
             }
             if (homeListEl) {
                 homeListEl.innerHTML = html
-                    .replace(/text-template-name/g, 'text-gray-700')
-                    .replace(/text-template-count-color/g, 'text-amber-500')
+                    .replace(/text-template-name/g, 'text-white/90')
+                    .replace(/text-template-count-color/g, 'text-amber-400')
                     .replace(/max-w-template-width/g, 'max-w-[60px]');
             }
 
@@ -688,6 +688,14 @@
             animation: jackpotPulse 1s ease-in-out infinite;
             color: #fbbf24;
         }
+
+        /* --- Premium Rankings --- */
+        .premium-dark-card {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 
@@ -737,45 +745,47 @@
     <div class="max-w-md mx-auto p-4 pb-24 relative min-h-[calc(100vh-64px)]">
 
         <div id="view-home" class="view-section space-y-4 animate-fade-in">
-            <!-- Premium 區塊：標語與歷史按鈕 -->
-            <!-- 新首頁標頭與語錄 -->
-            <div class="px-2 pt-2">
-                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">活動報名系統</h2>
-                <p class="text-gray-500 text-base font-medium mt-1">I 人 E 人，喝了酒都是自己人。</p>
-            </div>
+            <!-- Premium 排行榜核心區塊 -->
+            <div id="home-rankings-section"
+                class="premium-dark-card p-5 animate-fade-in hidden relative overflow-hidden">
+                <!-- 背景微光裝飾 -->
+                <div class="absolute top-0 left-0 w-32 h-32 bg-amber-500/10 rounded-full -ml-16 -mt-16 blur-3xl"></div>
+                <div class="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mb-16 blur-3xl"></div>
 
-            <!-- 合併排行榜彙整區塊 (移至上方) -->
-            <div id="home-rankings-section" class="premium-card p-4 animate-fade-in hidden">
-                <div class="grid grid-cols-2 gap-4 divide-x divide-gray-100">
+                <div class="grid grid-cols-2 gap-4 divide-x divide-white/10 relative z-10">
                     <!-- 左側：出席王 -->
                     <div id="participation-stats-container">
-                        <div class="flex items-center gap-1.5 mb-2 px-1">
-                            <i data-lucide="award" class="w-4 h-4 text-yellow-500"></i>
-                            <span class="text-xs font-bold text-gray-700">出席王排行</span>
+                        <div class="flex items-center gap-1.5 mb-3 px-1">
+                            <div class="w-7 h-7 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                                <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
+                            </div>
+                            <span class="text-xs font-black text-amber-50/90 tracking-wider">出席王排行</span>
                         </div>
-                        <div id="participation-top3-list" class="flex justify-around items-end h-[80px]">
-                            <div class="text-xs text-gray-400 animate-pulse">載入中...</div>
+                        <div id="participation-top3-list" class="flex justify-around items-end h-[90px]">
+                            <div class="text-xs text-amber-200/30 animate-pulse">載入中...</div>
                         </div>
                     </div>
                     <!-- 右側：拉霸英雄 -->
                     <div id="home-jackpot-container">
-                        <div class="flex items-center gap-1.5 mb-2 px-2">
-                            <i data-lucide="crown" class="w-4 h-4 text-amber-500"></i>
-                            <span class="text-xs font-bold text-gray-700">拉霸英雄榜</span>
+                        <div class="flex items-center gap-1.5 mb-3 px-2">
+                            <div class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center">
+                                <i data-lucide="crown" class="w-4 h-4 text-white"></i>
+                            </div>
+                            <span class="text-xs font-black text-white/90 tracking-wider">拉霸英雄榜</span>
                         </div>
-                        <div id="home-jackpot-list" class="flex justify-around items-end h-[80px]">
-                            <div class="text-xs text-gray-400 animate-pulse">載入中...</div>
+                        <div id="home-jackpot-list" class="flex justify-around items-end h-[90px]">
+                            <div class="text-xs white/30 animate-pulse">載入中...</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 歷史活動按鈕 (移至排行下方) -->
-            <div class="flex justify-start px-1">
+            <!-- 歷史活動按鈕 (低調玻璃質感) -->
+            <div class="flex justify-center px-1">
                 <button onclick="toggleHistoryView()" id="btn-history-toggle"
-                    class="bg-gray-100 text-gray-600 px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-gray-200 transition-all font-bold text-sm border border-gray-200 shadow-sm">
-                    <i data-lucide="history" class="w-4 h-4"></i>
-                    <span id="history-btn-text">查看歷史活動</span>
+                    class="bg-white/50 backdrop-blur-md text-gray-500 px-5 py-2 rounded-2xl flex items-center gap-2 hover:bg-white/80 transition-all font-bold text-xs border border-white/40 shadow-sm">
+                    <i data-lucide="history" class="w-3.5 h-3.5"></i>
+                    <span id="history-btn-text">回顧過往活動紀錄</span>
                 </button>
             </div>
 
@@ -1724,7 +1734,10 @@
             });
 
             if (listEl) {
-                listEl.innerHTML = html.replace(/text-template-name/g, 'text-gray-700').replace(/text-template-count-color/g, 'text-amber-500').replace(/max-w-template-width/g, 'max-w-[60px]');
+                listEl.innerHTML = html
+                    .replace(/text-template-name/g, 'text-white/90')
+                    .replace(/text-template-count-color/g, 'text-amber-400')
+                    .replace(/max-w-template-width/g, 'max-w-[60px]');
             }
             if (overlayListEl) {
                 overlayListEl.innerHTML = html.replace(/text-template-name/g, 'text-white').replace(/text-template-count-color/g, 'text-white/80').replace(/max-w-template-width/g, 'max-w-[50px]');
