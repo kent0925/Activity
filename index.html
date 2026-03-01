@@ -165,6 +165,12 @@
                 const top3 = await res.json();
 
                 if (Array.isArray(top3) && top3.length > 0) {
+                    // ★ 新增：同分者用筆畫(localeCompare)排序
+                    top3.sort((a, b) => {
+                        if (b.count !== a.count) return b.count - a.count;
+                        return a.name.localeCompare(b.name, 'zh-Hant-TW');
+                    });
+
                     // 更新快取
                     localStorage.setItem(cacheKey, JSON.stringify(top3));
                     // 重新渲染最新數據
@@ -1625,6 +1631,12 @@
                 const stats = await res.json();
 
                 if (Array.isArray(stats) && stats.length > 0) {
+                    // ★ 新增：同分者用筆畫(localeCompare)排序
+                    stats.sort((a, b) => {
+                        if (b.count !== a.count) return b.count - a.count;
+                        return a.name.localeCompare(b.name, 'zh-Hant-TW');
+                    });
+
                     // 更新快取
                     localStorage.setItem(cacheKey, JSON.stringify(stats));
                     container.classList.remove('hidden');
