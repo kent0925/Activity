@@ -141,9 +141,9 @@
 
             // 新增：抓取拉霸 Top 3 數據 (優化版：先顯後更)
             async function fetchJackpotTop3() {
-                const container = document.getElementById('jackpot-top3-container');
-                const listEl = document.getElementById('jackpot-top3-list');
-                if (!container || !listEl) return;
+                const overlayContainer = document.getElementById('jackpot-top3-container');
+                const homeContainer = document.getElementById('home-jackpot-container');
+                if (!overlayContainer && !homeContainer) return;
 
                 // 1. 先嘗試從 LocalStorage 讀取快取
                 const cacheKey = 'jackpot_top3_cache';
@@ -152,7 +152,8 @@
                     try {
                         const top3 = JSON.parse(cachedData);
                         renderJackpotTop3(top3);
-                        container.classList.remove('opacity-0', 'translate-y-4');
+                        if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
+                        if (homeContainer) homeContainer.classList.remove('hidden');
                     } catch (e) {
                         console.warn("Parse cache failed", e);
                     }
@@ -168,19 +169,26 @@
                         localStorage.setItem(cacheKey, JSON.stringify(top3));
                         // 重新渲染最新數據
                         renderJackpotTop3(top3);
-                        container.classList.remove('opacity-0', 'translate-y-4');
+                        if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
+                        if (homeContainer) homeContainer.classList.remove('hidden');
                     } else if (!cachedData) {
-                        container.classList.add('hidden');
+                        if (overlayContainer) overlayContainer.classList.add('hidden');
+                        if (homeContainer) homeContainer.classList.add('hidden');
                     }
                 } catch (e) {
                     console.warn("Fetch Top 3 failed", e);
-                    if (!cachedData) container.classList.add('hidden');
+                    if (!cachedData) {
+                        if (overlayContainer) overlayContainer.classList.add('hidden');
+                        if (homeContainer) homeContainer.classList.add('hidden');
+                    }
                 }
             }
 
             function renderJackpotTop3(data) {
                 const listEl = document.getElementById('jackpot-top3-list');
-                const medals = ['🥈', '🥇', '🥉']; // 排序通常是 2, 1, 3 視覺較好
+                const homeListEl = document.getElementById('home-jackpot-list');
+                if (!listEl && !homeListEl) return;
+
                 const displayOrder = data.length >= 3 ? [1, 0, 2] : (data.length === 2 ? [0, 1] : [0]);
 
                 let html = '';
@@ -195,12 +203,28 @@
                     html += `
                         <div class="flex flex-col items-center ${sizeClass} transition-transform duration-500">
                             <span class="text-lg mb-0.5">${medal}</span>
-                            <span class="text-[11px] font-bold text-white truncate max-w-[60px]">${p.name}</span>
-                            <span class="${colorClass} text-[9px] font-black">${p.count} 次</span>
+                            <span class="text-[11px] font-bold text-template-name truncate max-w-template-width">${p.name}</span>
+                            <span class="text-template-count-color text-[9px] font-black">${p.count} 次</span>
                         </div>
                     `;
                 });
-                listEl.innerHTML = html;
+
+                if (listEl) {
+                    listEl.innerHTML = html
+                        .replace(/text-template-name/g, 'text-white')
+                        .replace(/text-template-count-color/g, 'text-white/80')
+                        .replace(/max-w-template-width/g, 'max-w-[60px]');
+                }
+                if (homeListEl) {
+                    homeListEl.innerHTML = html
+                        .replace(/text-template-name/g, 'text-gray-800')
+                        .replace(/text-template-count-color/g, 'text-amber-600')
+                        .replace(/max-w-template-width/g, 'max-w-[80px]')
+                        .replace(/text-\[11px\]/g, 'text-sm');
+                }
+
+                // 刷新圖示
+                if (typeof refreshIcons === 'function') refreshIcons();
             }
 
             function startSlotMachine() {
@@ -696,6 +720,18 @@
                     <div class="text-gray-400 text-xs animate-pulse">載入排行榜...</div>
                 </div>
                 <p class="text-[10px] text-gray-400 text-center mt-3">※ 數據每 24 小時自動更新一次</p>
+            </div>
+
+            <!-- 拉霸大獎排行榜 (首頁複刻版) -->
+            <div id="home-jackpot-container" class="premium-card p-6 mt-4 animate-fade-in hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <i data-lucide="crown" class="w-5 h-5 text-amber-500"></i> 拉霸英雄榜 (Jackpot)
+                    </h3>
+                </div>
+                <div id="home-jackpot-list" class="flex justify-center items-end gap-6 px-4 py-4">
+                    <div class="text-gray-400 text-xs animate-pulse">載入英雄榜...</div>
+                </div>
             </div>
 
             <!-- 歷史活動列表 (隱藏狀態) -->
@@ -1470,7 +1506,13 @@
             updateUserProfileUI();
 
             // 抓取資料
-            await Promise.all([fetchEvents(), fetchSettings(), fetchMyRegistrations(), fetchParticipationStats()]);
+            await Promise.all([
+                fetchEvents(),
+                fetchSettings(),
+                fetchMyRegistrations(),
+                fetchParticipationStats(),
+                fetchJackpotTop3()
+            ]);
 
             // ★ 新增：套用名稱對應邏輯 (需在 fetchSettings 與 LIFF init 之後)
             applyUserNameMapping();
@@ -1563,8 +1605,7 @@
         async function fetchParticipationStats() {
             if (!GAS_URL) return;
             const container = document.getElementById('participation-stats-container');
-            const canvas = document.getElementById('participationChart');
-            if (!container || !canvas) return;
+            if (!container) return;
 
             const cacheKey = 'participation_stats_cache';
             const cachedData = localStorage.getItem(cacheKey);
