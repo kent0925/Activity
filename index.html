@@ -119,211 +119,211 @@
         ];
 
 
-        (function () {
-            // 隨機選擇語錄 (首頁、Meta 專用)
-            const randomQuote = window.APP_QUOTES[Math.floor(Math.random() * window.APP_QUOTES.length)];
+        // 語錄與拉霸功能初始化
+        // 隨機選擇語錄 (首頁、Meta 專用)
+        const randomQuote = window.APP_QUOTES[Math.floor(Math.random() * window.APP_QUOTES.length)];
 
-            document.addEventListener('DOMContentLoaded', function () {
-                const ogDesc = document.getElementById('og-description');
-                const metaDesc = document.getElementById('meta-description');
-                if (ogDesc) ogDesc.setAttribute('content', randomQuote);
-                if (metaDesc) metaDesc.setAttribute('content', randomQuote);
+        document.addEventListener('DOMContentLoaded', function () {
+            const ogDesc = document.getElementById('og-description');
+            const metaDesc = document.getElementById('meta-description');
+            if (ogDesc) ogDesc.setAttribute('content', randomQuote);
+            if (metaDesc) metaDesc.setAttribute('content', randomQuote);
 
-                const sloganText = document.getElementById('slogan-text');
-                if (sloganText) sloganText.innerText = randomQuote;
+            const sloganText = document.getElementById('slogan-text');
+            if (sloganText) sloganText.innerText = randomQuote;
 
-                // ★ 取得並顯示拉霸大獎 Top 3
-                fetchJackpotTop3();
+            // ★ 取得並顯示拉霸大獎 Top 3
+            fetchJackpotTop3();
 
-                // ★ 啟動迷你老虎機
-                startSlotMachine();
-            });
+            // ★ 啟動迷你老虎機
+            startSlotMachine();
+        });
 
-            // 新增：抓取拉霸 Top 3 數據 (優化版：先顯後更)
-            async function fetchJackpotTop3() {
-                const overlayContainer = document.getElementById('jackpot-top3-container');
-                const homeContainer = document.getElementById('home-jackpot-container');
-                if (!overlayContainer && !homeContainer) return;
+        // 新增：抓取拉霸 Top 3 數據 (優化版：先顯後更)
+        async function fetchJackpotTop3() {
+            const overlayContainer = document.getElementById('jackpot-top3-container');
+            const homeContainer = document.getElementById('home-jackpot-container');
+            if (!overlayContainer && !homeContainer) return;
 
-                // 1. 先嘗試從 LocalStorage 讀取快取
-                const cacheKey = 'jackpot_top3_cache';
-                const cachedData = localStorage.getItem(cacheKey);
-                if (cachedData) {
-                    try {
-                        const top3 = JSON.parse(cachedData);
-                        renderJackpotTop3(top3);
-                        if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
-                        if (homeContainer) homeContainer.classList.remove('hidden');
-                    } catch (e) {
-                        console.warn("Parse cache failed", e);
-                    }
-                }
-
-                // 2. 背景呼叫 API 更新數據
+            // 1. 先嘗試從 LocalStorage 讀取快取
+            const cacheKey = 'jackpot_top3_cache';
+            const cachedData = localStorage.getItem(cacheKey);
+            if (cachedData) {
                 try {
-                    const res = await fetch(`${GAS_URL}?action=getJackpotTop3&_=${Date.now()}`);
-                    const top3 = await res.json();
-
-                    if (Array.isArray(top3) && top3.length > 0) {
-                        // 更新快取
-                        localStorage.setItem(cacheKey, JSON.stringify(top3));
-                        // 重新渲染最新數據
-                        renderJackpotTop3(top3);
-                        if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
-                        if (homeContainer) homeContainer.classList.remove('hidden');
-                    } else if (!cachedData) {
-                        if (overlayContainer) overlayContainer.classList.add('hidden');
-                        if (homeContainer) homeContainer.classList.add('hidden');
-                    }
+                    const top3 = JSON.parse(cachedData);
+                    renderJackpotTop3(top3);
+                    if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
+                    if (homeContainer) homeContainer.classList.remove('hidden');
                 } catch (e) {
-                    console.warn("Fetch Top 3 failed", e);
-                    if (!cachedData) {
-                        if (overlayContainer) overlayContainer.classList.add('hidden');
-                        if (homeContainer) homeContainer.classList.add('hidden');
-                    }
+                    console.warn("Parse cache failed", e);
                 }
             }
 
-            function renderJackpotTop3(data) {
-                const listEl = document.getElementById('jackpot-top3-list');
-                const homeListEl = document.getElementById('home-jackpot-list');
-                if (!listEl && !homeListEl) return;
+            // 2. 背景呼叫 API 更新數據
+            try {
+                const res = await fetch(`${GAS_URL}?action=getJackpotTop3&_=${Date.now()}`);
+                const top3 = await res.json();
 
-                const displayOrder = data.length >= 3 ? [1, 0, 2] : (data.length === 2 ? [0, 1] : [0]);
+                if (Array.isArray(top3) && top3.length > 0) {
+                    // 更新快取
+                    localStorage.setItem(cacheKey, JSON.stringify(top3));
+                    // 重新渲染最新數據
+                    renderJackpotTop3(top3);
+                    if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
+                    if (homeContainer) homeContainer.classList.remove('hidden');
+                } else if (!cachedData) {
+                    if (overlayContainer) overlayContainer.classList.add('hidden');
+                    if (homeContainer) homeContainer.classList.add('hidden');
+                }
+            } catch (e) {
+                console.warn("Fetch Top 3 failed", e);
+                if (!cachedData) {
+                    if (overlayContainer) overlayContainer.classList.add('hidden');
+                    if (homeContainer) homeContainer.classList.add('hidden');
+                }
+            }
+        }
 
-                let html = '';
-                displayOrder.forEach(idx => {
-                    if (!data[idx]) return;
-                    const p = data[idx];
-                    const isFirst = idx === 0;
-                    const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
-                    const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-90 opacity-80';
-                    const colorClass = isFirst ? 'text-amber-300' : (idx === 1 ? 'text-gray-300' : 'text-orange-300');
+        function renderJackpotTop3(data) {
+            const listEl = document.getElementById('jackpot-top3-list');
+            const homeListEl = document.getElementById('home-jackpot-list');
+            if (!listEl && !homeListEl) return;
 
-                    html += `
+            const displayOrder = data.length >= 3 ? [1, 0, 2] : (data.length === 2 ? [0, 1] : [0]);
+
+            let html = '';
+            displayOrder.forEach(idx => {
+                if (!data[idx]) return;
+                const p = data[idx];
+                const isFirst = idx === 0;
+                const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
+                const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-90 opacity-80';
+                const colorClass = isFirst ? 'text-amber-300' : (idx === 1 ? 'text-gray-300' : 'text-orange-300');
+
+                html += `
                         <div class="flex flex-col items-center ${sizeClass} transition-transform duration-500">
                             <span class="text-lg mb-0.5">${medal}</span>
                             <span class="text-[11px] font-bold text-template-name truncate max-w-template-width">${p.name}</span>
                             <span class="text-template-count-color text-[9px] font-black">${p.count} 次</span>
                         </div>
                     `;
+            });
+
+            if (listEl) {
+                listEl.innerHTML = html
+                    .replace(/text-template-name/g, 'text-white')
+                    .replace(/text-template-count-color/g, 'text-white/80')
+                    .replace(/max-w-template-width/g, 'max-w-[60px]');
+            }
+            if (homeListEl) {
+                homeListEl.innerHTML = html
+                    .replace(/text-template-name/g, 'text-gray-800')
+                    .replace(/text-template-count-color/g, 'text-amber-600')
+                    .replace(/max-w-template-width/g, 'max-w-[80px]')
+                    .replace(/text-\[11px\]/g, 'text-sm');
+            }
+
+            // 刷新圖示
+            if (typeof refreshIcons === 'function') refreshIcons();
+        }
+
+        function startSlotMachine() {
+            const config = window.SLOT_CONFIG;
+            if (!config) return;
+            const symbols = config.symbols;
+            const reels = [
+                document.getElementById('slot-1'),
+                document.getElementById('slot-2'),
+                document.getElementById('slot-3')
+            ];
+            const resultEl = document.getElementById('slot-result');
+            if (!reels[0] || !reels[1] || !reels[2] || !resultEl) return;
+
+            // 開始旋轉：快速隨機切換符號
+            const intervals = reels.map(reel => {
+                return setInterval(() => {
+                    reel.querySelector('.slot-symbol').textContent =
+                        symbols[Math.floor(Math.random() * symbols.length)];
+                }, 80);
+            });
+
+            const finalSymbols = [];
+
+            // 第一輪停止
+            setTimeout(() => {
+                clearInterval(intervals[0]);
+                const sym = symbols[Math.floor(Math.random() * symbols.length)];
+                reels[0].querySelector('.slot-symbol').textContent = sym;
+                reels[0].classList.remove('spinning');
+                reels[0].classList.add('stopped');
+                finalSymbols.push(sym);
+            }, 800);
+
+            // 第二輪停止
+            setTimeout(() => {
+                clearInterval(intervals[1]);
+                const sym = symbols[Math.floor(Math.random() * symbols.length)];
+                reels[1].querySelector('.slot-symbol').textContent = sym;
+                reels[1].classList.remove('spinning');
+                reels[1].classList.add('stopped');
+                finalSymbols.push(sym);
+            }, 1400);
+
+            // 第三輪停止 + 顯示結果
+            setTimeout(() => {
+                clearInterval(intervals[2]);
+                const sym = symbols[Math.floor(Math.random() * symbols.length)];
+                reels[2].querySelector('.slot-symbol').textContent = sym;
+                reels[2].classList.remove('spinning');
+                reels[2].classList.add('stopped');
+                finalSymbols.push(sym);
+
+                // 判斷結果
+                const key = finalSymbols.join('');
+                let msg = '';
+                let isJackpot = false;
+
+                if (config.jackpots[key]) {
+                    msg = config.jackpots[key];
+                    isJackpot = true;
+                } else if (
+                    finalSymbols[0] === finalSymbols[1] ||
+                    finalSymbols[1] === finalSymbols[2] ||
+                    finalSymbols[0] === finalSymbols[2]
+                ) {
+                    msg = config.pairMsgs[Math.floor(Math.random() * config.pairMsgs.length)];
+                } else {
+                    msg = config.missMsgs[Math.floor(Math.random() * config.missMsgs.length)];
+                }
+
+                resultEl.textContent = msg;
+                resultEl.classList.add('show');
+                if (isJackpot) {
+                    resultEl.classList.add('jackpot');
+                    // ★ 新增：自動紀錄大獎
+                    recordJackpotResult(key);
+                }
+            }, 2000);
+        }
+
+        // 新增：紀錄大獎結果
+        async function recordJackpotResult(symbolKey) {
+            // 必須是登入狀態且有 UserID 才能紀錄
+            if (!appState.user || !appState.user.userId || appState.user.userId === '') return;
+
+            try {
+                await apiSubmit({
+                    action: 'recordJackpot',
+                    userId: appState.user.userId,
+                    name: appState.user.displayName,
+                    symbol: symbolKey
                 });
-
-                if (listEl) {
-                    listEl.innerHTML = html
-                        .replace(/text-template-name/g, 'text-white')
-                        .replace(/text-template-count-color/g, 'text-white/80')
-                        .replace(/max-w-template-width/g, 'max-w-[60px]');
-                }
-                if (homeListEl) {
-                    homeListEl.innerHTML = html
-                        .replace(/text-template-name/g, 'text-gray-800')
-                        .replace(/text-template-count-color/g, 'text-amber-600')
-                        .replace(/max-w-template-width/g, 'max-w-[80px]')
-                        .replace(/text-\[11px\]/g, 'text-sm');
-                }
-
-                // 刷新圖示
-                if (typeof refreshIcons === 'function') refreshIcons();
+                console.log("Jackpot recorded!");
+            } catch (e) {
+                console.error("Failed to record jackpot", e);
             }
-
-            function startSlotMachine() {
-                const config = window.SLOT_CONFIG;
-                if (!config) return;
-                const symbols = config.symbols;
-                const reels = [
-                    document.getElementById('slot-1'),
-                    document.getElementById('slot-2'),
-                    document.getElementById('slot-3')
-                ];
-                const resultEl = document.getElementById('slot-result');
-                if (!reels[0] || !reels[1] || !reels[2] || !resultEl) return;
-
-                // 開始旋轉：快速隨機切換符號
-                const intervals = reels.map(reel => {
-                    return setInterval(() => {
-                        reel.querySelector('.slot-symbol').textContent =
-                            symbols[Math.floor(Math.random() * symbols.length)];
-                    }, 80);
-                });
-
-                const finalSymbols = [];
-
-                // 第一輪停止
-                setTimeout(() => {
-                    clearInterval(intervals[0]);
-                    const sym = symbols[Math.floor(Math.random() * symbols.length)];
-                    reels[0].querySelector('.slot-symbol').textContent = sym;
-                    reels[0].classList.remove('spinning');
-                    reels[0].classList.add('stopped');
-                    finalSymbols.push(sym);
-                }, 800);
-
-                // 第二輪停止
-                setTimeout(() => {
-                    clearInterval(intervals[1]);
-                    const sym = symbols[Math.floor(Math.random() * symbols.length)];
-                    reels[1].querySelector('.slot-symbol').textContent = sym;
-                    reels[1].classList.remove('spinning');
-                    reels[1].classList.add('stopped');
-                    finalSymbols.push(sym);
-                }, 1400);
-
-                // 第三輪停止 + 顯示結果
-                setTimeout(() => {
-                    clearInterval(intervals[2]);
-                    const sym = symbols[Math.floor(Math.random() * symbols.length)];
-                    reels[2].querySelector('.slot-symbol').textContent = sym;
-                    reels[2].classList.remove('spinning');
-                    reels[2].classList.add('stopped');
-                    finalSymbols.push(sym);
-
-                    // 判斷結果
-                    const key = finalSymbols.join('');
-                    let msg = '';
-                    let isJackpot = false;
-
-                    if (config.jackpots[key]) {
-                        msg = config.jackpots[key];
-                        isJackpot = true;
-                    } else if (
-                        finalSymbols[0] === finalSymbols[1] ||
-                        finalSymbols[1] === finalSymbols[2] ||
-                        finalSymbols[0] === finalSymbols[2]
-                    ) {
-                        msg = config.pairMsgs[Math.floor(Math.random() * config.pairMsgs.length)];
-                    } else {
-                        msg = config.missMsgs[Math.floor(Math.random() * config.missMsgs.length)];
-                    }
-
-                    resultEl.textContent = msg;
-                    resultEl.classList.add('show');
-                    if (isJackpot) {
-                        resultEl.classList.add('jackpot');
-                        // ★ 新增：自動紀錄大獎
-                        recordJackpotResult(key);
-                    }
-                }, 2000);
-            }
-
-            // 新增：紀錄大獎結果
-            async function recordJackpotResult(symbolKey) {
-                // 必須是登入狀態且有 UserID 才能紀錄
-                if (!appState.user || !appState.user.userId || appState.user.userId === '') return;
-
-                try {
-                    await apiSubmit({
-                        action: 'recordJackpot',
-                        userId: appState.user.userId,
-                        name: appState.user.displayName,
-                        symbol: symbolKey
-                    });
-                    console.log("Jackpot recorded!");
-                } catch (e) {
-                    console.error("Failed to record jackpot", e);
-                }
-            }
-        })();
+        }
+        // 結束
     </script>
 
     <!-- 效能優化 (Performance Optimizations) -->
