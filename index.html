@@ -684,7 +684,7 @@
                 </div>
             </div>
 
-            <!-- 新增：參加頻率圖表 (出席王排行榜) -->
+            <!-- 出席王排行榜 (Top 3 獎牌風格) -->
             <div id="participation-stats-container" class="premium-card p-6 mt-4 animate-fade-in hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
@@ -692,8 +692,8 @@
                     </h3>
                     <span class="text-[10px] text-gray-400 font-medium">近 20 場統計</span>
                 </div>
-                <div class="relative w-full h-48">
-                    <canvas id="participationChart"></canvas>
+                <div id="participation-top3-list" class="flex justify-center items-end gap-6 px-4 py-4">
+                    <div class="text-gray-400 text-xs animate-pulse">載入排行榜...</div>
                 </div>
                 <p class="text-[10px] text-gray-400 text-center mt-3">※ 數據每 24 小時自動更新一次</p>
             </div>
@@ -1598,64 +1598,38 @@
             }
         }
 
-        let participationChartInstance = null;
-        function renderParticipationChart(data, skipAnimation = false) {
-            const ctx = document.getElementById('participationChart').getContext('2d');
-            if (participationChartInstance) {
-                participationChartInstance.destroy();
-            }
+        function renderParticipationChart(data) {
+            const listEl = document.getElementById('participation-top3-list');
+            if (!listEl) return;
 
-            const topData = data.slice(0, 8);
-            participationChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: topData.map(item => item.name),
-                    datasets: [{
-                        label: '參加次數',
-                        data: topData.map(item => item.count),
-                        backgroundColor: (context) => {
-                            const chart = context.chart;
-                            const { ctx, chartArea } = chart;
-                            if (!chartArea) return null;
-                            const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-                            gradient.addColorStop(0, '#06c755');
-                            gradient.addColorStop(1, '#10b981');
-                            return gradient;
-                        },
-                        borderRadius: 8,
-                        barThickness: 16
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: skipAnimation ? 0 : 1000
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(0,0,0,0.8)',
-                            padding: 8,
-                            titleFont: { size: 12 },
-                            bodyFont: { size: 12 },
-                            displayColors: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            grid: { display: false },
-                            ticks: { stepSize: 1, font: { size: 10 } }
-                        },
-                        y: {
-                            grid: { display: false },
-                            ticks: { font: { weight: 'bold', size: 12 } }
-                        }
-                    }
-                }
+            const top3 = data.slice(0, 3);
+            if (top3.length === 0) return;
+
+            // 排列順序：銀(第2) → 金(第1) → 銅(第3)，與拉霸排行榜一致
+            const displayOrder = top3.length >= 3 ? [1, 0, 2] : (top3.length === 2 ? [0, 1] : [0]);
+
+            let html = '';
+            displayOrder.forEach(idx => {
+                if (!top3[idx]) return;
+                const p = top3[idx];
+                const isFirst = idx === 0;
+                const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
+                const sizeClass = isFirst ? 'scale-110 -translate-y-2' : 'scale-95 opacity-85';
+                const nameColor = isFirst ? 'text-amber-600' : 'text-gray-600';
+                const countColor = isFirst ? 'text-amber-500 font-black' : 'text-gray-500 font-bold';
+                const bgClass = isFirst ? 'bg-amber-50 ring-2 ring-amber-200' : 'bg-gray-50 ring-1 ring-gray-200';
+
+                html += `
+                    <div class="flex flex-col items-center ${sizeClass} transition-transform duration-500">
+                        <span class="text-2xl mb-1">${medal}</span>
+                        <div class="${bgClass} rounded-xl px-4 py-2 flex flex-col items-center">
+                            <span class="text-sm font-bold ${nameColor} truncate max-w-[80px]">${p.name}</span>
+                            <span class="${countColor} text-xs mt-0.5">${p.count} 次</span>
+                        </div>
+                    </div>
+                `;
             });
+            listEl.innerHTML = html;
         }
 
         async function fetchStats(forceRefresh = false) {
