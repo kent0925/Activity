@@ -260,11 +260,15 @@
                 const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
                 const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-95 opacity-80';
 
+                const glowClass = isFirst ? 'ring-2 ring-amber-400/30 rounded-full p-2 bg-amber-500/10 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : '';
+
                 html += `
                         <div class="flex flex-col items-center ${sizeClass}">
-                            <span class="text-xl leading-none mb-1">${medal}</span>
-                            <span class="text-xs font-bold text-template-name truncate max-w-template-width">${p.name}</span>
-                            <span class="text-template-count-color text-[10px] font-black">${p.count}次</span>
+                            <div class="flex flex-col items-center ${glowClass}">
+                                <span class="text-xl leading-none mb-0.5">${medal}</span>
+                                <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${p.name}</span>
+                            </div>
+                            <span class="text-template-count-color text-[9px] font-black mt-0.5">${p.count}次</span>
                         </div>
                     `;
             });
@@ -755,7 +759,7 @@
                 <div class="grid grid-cols-2 gap-4 divide-x divide-white/10 relative z-10">
                     <!-- 左側：出席王 -->
                     <div id="participation-stats-container">
-                        <div class="flex items-center gap-1.5 mb-3 px-1">
+                        <div class="flex items-center gap-1.5 mb-1 px-1">
                             <div class="w-7 h-7 bg-amber-500/20 rounded-lg flex items-center justify-center">
                                 <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
                             </div>
@@ -767,7 +771,7 @@
                     </div>
                     <!-- 右側：拉霸英雄 -->
                     <div id="home-jackpot-container">
-                        <div class="flex items-center gap-1.5 mb-3 px-2">
+                        <div class="flex items-center gap-1.5 mb-1 px-2">
                             <div class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center">
                                 <i data-lucide="crown" class="w-4 h-4 text-white"></i>
                             </div>
@@ -1724,11 +1728,15 @@
                 const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-95 opacity-80';
                 const countColor = isFirst ? 'text-amber-500' : 'text-gray-400';
 
+                const glowClass = isFirst ? 'ring-2 ring-amber-400/30 rounded-full p-2 bg-amber-500/10 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : '';
+
                 html += `
                     <div class="flex flex-col items-center ${sizeClass}">
-                        <span class="text-xl leading-none mb-1">${medal}</span>
-                        <span class="text-xs font-bold text-template-name truncate max-w-template-width">${p.name}</span>
-                        <span class="text-template-count-color text-[10px] font-black">${p.count}次</span>
+                        <div class="flex flex-col items-center ${glowClass}">
+                            <span class="text-xl leading-none mb-0.5">${medal}</span>
+                            <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${p.name}</span>
+                        </div>
+                        <span class="text-template-count-color text-[9px] font-black mt-0.5">${p.count}次</span>
                     </div>
                 `;
             });
