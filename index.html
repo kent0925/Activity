@@ -134,6 +134,8 @@
 
             // ★ 取得並顯示拉霸大獎 Top 3
             fetchJackpotTop3();
+            // ★ 取得並顯示出席王 Top 3
+            fetchAttendanceTop3();
 
             // ★ 啟動迷你老虎機
             startSlotMachine();
@@ -141,8 +143,8 @@
 
         // 新增：抓取拉霸 Top 3 數據 (優化版：先顯後更)
         async function fetchJackpotTop3() {
-            const overlayContainer = document.getElementById('jackpot-top3-container');
-            const homeContainer = document.getElementById('home-jackpot-container');
+            const overlayContainer = document.getElementById('overlay-rankings-container');
+            const homeContainer = document.getElementById('home-rankings-section');
             if (!overlayContainer && !homeContainer) return;
 
             // 1. 先嘗試從 LocalStorage 讀取快取
@@ -165,7 +167,7 @@
                 const top3 = await res.json();
 
                 if (Array.isArray(top3) && top3.length > 0) {
-                    // ★ 新增：同分者用筆畫(localeCompare)排序
+                    // ★ 同分處裡 (筆畫)
                     top3.sort((a, b) => {
                         if (b.count !== a.count) return b.count - a.count;
                         return a.name.localeCompare(b.name, 'zh-Hant-TW');
@@ -189,10 +191,62 @@
                 }
             }
         }
+
+        // 新增：抓取出席王 Top 3 數據 (優化版：先顯後更)
+        async function fetchAttendanceTop3() {
+            const overlayContainer = document.getElementById('overlay-rankings-container');
+            const homeContainer = document.getElementById('home-rankings-section');
+            if (!overlayContainer && !homeContainer) return;
+
+            // 1. 先嘗試從 LocalStorage 讀取快取
+            const cacheKey = 'attendance_top3_cache';
+            const cachedData = localStorage.getItem(cacheKey);
+            if (cachedData) {
+                try {
+                    const top3 = JSON.parse(cachedData);
+                    renderAttendanceTop3(top3);
+                    if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
+                    if (homeContainer) homeContainer.classList.remove('hidden');
+                } catch (e) {
+                    console.warn("Parse cache failed", e);
+                }
+            }
+
+            // 2. 背景呼叫 API 更新數據
+            try {
+                const res = await fetch(`${GAS_URL}?action=getAttendanceTop3&_=${Date.now()}`);
+                const top3 = await res.json();
+
+                if (Array.isArray(top3) && top3.length > 0) {
+                    // ★ 同分處裡 (筆畫)
+                    top3.sort((a, b) => {
+                        if (b.count !== a.count) return b.count - a.count;
+                        return a.name.localeCompare(b.name, 'zh-Hant-TW');
+                    });
+
+                    // 更新快取
+                    localStorage.setItem(cacheKey, JSON.stringify(top3));
+                    // 重新渲染最新數據
+                    renderAttendanceTop3(top3);
+                    if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
+                    if (homeContainer) homeContainer.classList.remove('hidden');
+                } else if (!cachedData) {
+                    if (overlayContainer) overlayContainer.classList.add('hidden');
+                    if (homeContainer) homeContainer.classList.add('hidden');
+                }
+            } catch (e) {
+                console.warn("Fetch Attendance Top 3 failed", e);
+                if (!cachedData) {
+                    if (overlayContainer) overlayContainer.classList.add('hidden');
+                    if (homeContainer) homeContainer.classList.add('hidden');
+                }
+            }
+        }
+
         function renderJackpotTop3(data) {
             const container = document.getElementById('home-rankings-section');
-            const listEl = document.getElementById('jackpot-top3-list');
-            const homeListEl = document.getElementById('home-jackpot-list');
+            const listEl = document.getElementById('jackpot-top3-list'); // Overlay list
+            const homeListEl = document.getElementById('home-jackpot-list'); // Home list
             if (!listEl && !homeListEl) return;
             if (container) container.classList.remove('hidden');
 
@@ -204,13 +258,13 @@
                 const p = data[idx];
                 const isFirst = idx === 0;
                 const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
-                const sizeClass = isFirst ? 'scale-105 -translate-y-1' : 'scale-90 opacity-75';
+                const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-95 opacity-80';
 
                 html += `
                         <div class="flex flex-col items-center ${sizeClass}">
-                            <span class="text-base leading-none mb-0.5">${medal}</span>
-                            <span class="text-[10px] font-bold text-template-name truncate max-w-template-width">${p.name}</span>
-                            <span class="text-template-count-color text-[9px] font-black">${p.count}次</span>
+                            <span class="text-xl leading-none mb-1">${medal}</span>
+                            <span class="text-xs font-bold text-template-name truncate max-w-template-width">${p.name}</span>
+                            <span class="text-template-count-color text-[10px] font-black">${p.count}次</span>
                         </div>
                     `;
             });
@@ -219,13 +273,13 @@
                 listEl.innerHTML = html
                     .replace(/text-template-name/g, 'text-white')
                     .replace(/text-template-count-color/g, 'text-white/80')
-                    .replace(/max-w-template-width/g, 'max-w-[42px]');
+                    .replace(/max-w-template-width/g, 'max-w-[50px]');
             }
             if (homeListEl) {
                 homeListEl.innerHTML = html
                     .replace(/text-template-name/g, 'text-gray-700')
                     .replace(/text-template-count-color/g, 'text-amber-500')
-                    .replace(/max-w-template-width/g, 'max-w-[45px]');
+                    .replace(/max-w-template-width/g, 'max-w-[60px]');
             }
 
             if (typeof refreshIcons === 'function') refreshIcons();
@@ -645,6 +699,27 @@
         <div class="text-white text-3xl font-bold mb-4 animate-bounce">🍺 大老二兄弟會</div>
         <!-- 迷你老虎機 -->
         <div class="slot-machine-container">
+            <!-- 載入畫面排行榜 (移動至上方) -->
+            <div id="overlay-rankings-container"
+                class="mb-6 space-y-2 opacity-0 transition-all duration-1000 transform translate-y-4">
+                <div
+                    class="text-white/40 text-[9px] font-black tracking-[0.2em] uppercase text-center flex items-center justify-center gap-2 mb-2">
+                    <span class="w-6 h-px bg-white/10"></span>
+                    HERO BOARDS
+                    <span class="w-6 h-px bg-white/10"></span>
+                </div>
+                <div class="grid grid-cols-2 gap-4 divide-x divide-white/5 bg-black/10 py-3 rounded-2xl">
+                    <!-- 出席王 (載入畫面版) -->
+                    <div id="overlay-participation-list" class="flex justify-around items-end h-[70px] px-2 text-white">
+                        <div class="text-[12px] text-white/30 animate-pulse">載入中...</div>
+                    </div>
+                    <!-- 拉霸英雄 (載入畫面版) -->
+                    <div id="jackpot-top3-list" class="flex justify-around items-end h-[70px] px-2 text-white">
+                        <div class="text-[12px] text-white/30 animate-pulse">載入中...</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="text-white/70 text-xs font-bold tracking-widest mb-3 text-center">🎰 今晚運勢</div>
             <div class="slot-machine">
                 <div class="slot-reel spinning" id="slot-1"><span class="slot-symbol">🎲</span></div>
@@ -654,20 +729,6 @@
             <div id="slot-result"
                 class="slot-result text-white text-sm font-bold text-center mt-4 px-6 max-w-xs mx-auto min-h-[24px]">
                 拉霸中...</div>
-            <!-- 新增：拉霸大獎 Top 3 英雄榜容器 -->
-            <div id="jackpot-top3-container"
-                class="mt-8 space-y-3 opacity-0 transition-all duration-1000 transform translate-y-4">
-                <div
-                    class="text-white/40 text-[10px] font-black tracking-[0.2em] uppercase text-center flex items-center justify-center gap-2">
-                    <span class="w-8 h-px bg-white/10"></span>
-                    JACKPOT HEROES
-                    <span class="w-8 h-px bg-white/10"></span>
-                </div>
-                <div id="jackpot-top3-list"
-                    class="flex justify-center items-end gap-2 px-4 shadow-inner py-1 rounded-2xl">
-                    <div class="text-white/30 text-[10px] animate-pulse">載入英雄榜...</div>
-                </div>
-            </div>
         </div>
         <div class="mt-6 flex gap-2">
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0s"></div>
@@ -721,8 +782,8 @@
                             <i data-lucide="award" class="w-4 h-4 text-yellow-500"></i>
                             <span class="text-xs font-bold text-gray-700">出席王排行</span>
                         </div>
-                        <div id="participation-top3-list" class="flex justify-around items-end h-[60px]">
-                            <div class="text-[10px] text-gray-400 animate-pulse">載入中...</div>
+                        <div id="participation-top3-list" class="flex justify-around items-end h-[80px]">
+                            <div class="text-xs text-gray-400 animate-pulse">載入中...</div>
                         </div>
                     </div>
                     <!-- 右側：拉霸英雄 -->
@@ -731,8 +792,8 @@
                             <i data-lucide="crown" class="w-4 h-4 text-amber-500"></i>
                             <span class="text-xs font-bold text-gray-700">拉霸英雄榜</span>
                         </div>
-                        <div id="home-jackpot-list" class="flex justify-around items-end h-[60px]">
-                            <div class="text-[10px] text-gray-400 animate-pulse">載入中...</div>
+                        <div id="home-jackpot-list" class="flex justify-around items-end h-[80px]">
+                            <div class="text-xs text-gray-400 animate-pulse">載入中...</div>
                         </div>
                     </div>
                 </div>
@@ -1651,9 +1712,13 @@
 
         function renderParticipationChart(data) {
             const container = document.getElementById('home-rankings-section');
+            const overlayContainer = document.getElementById('overlay-rankings-container');
             const listEl = document.getElementById('participation-top3-list');
-            if (!listEl) return;
+            const overlayListEl = document.getElementById('overlay-participation-list');
+            if (!listEl && !overlayListEl) return;
+
             if (container) container.classList.remove('hidden');
+            if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
 
             const top3 = data.slice(0, 3);
             if (top3.length === 0) return;
@@ -1666,18 +1731,24 @@
                 const p = top3[idx];
                 const isFirst = idx === 0;
                 const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
-                const sizeClass = isFirst ? 'scale-105 -translate-y-1' : 'scale-90 opacity-75';
+                const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-95 opacity-80';
                 const countColor = isFirst ? 'text-amber-500' : 'text-gray-400';
 
                 html += `
                     <div class="flex flex-col items-center ${sizeClass}">
-                        <span class="text-base leading-none mb-0.5">${medal}</span>
-                        <span class="text-[10px] font-bold text-gray-700 truncate max-w-[45px]">${p.name}</span>
-                        <span class="${countColor} text-[9px] font-black">${p.count}次</span>
+                        <span class="text-xl leading-none mb-1">${medal}</span>
+                        <span class="text-xs font-bold text-template-name truncate max-w-template-width">${p.name}</span>
+                        <span class="text-template-count-color text-[10px] font-black">${p.count}次</span>
                     </div>
                 `;
             });
-            listEl.innerHTML = html;
+
+            if (listEl) {
+                listEl.innerHTML = html.replace(/text-template-name/g, 'text-gray-700').replace(/text-template-count-color/g, 'text-amber-500').replace(/max-w-template-width/g, 'max-w-[60px]');
+            }
+            if (overlayListEl) {
+                overlayListEl.innerHTML = html.replace(/text-template-name/g, 'text-white').replace(/text-template-count-color/g, 'text-white/80').replace(/max-w-template-width/g, 'max-w-[50px]');
+            }
         }
 
         async function fetchStats(forceRefresh = false) {
