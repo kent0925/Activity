@@ -2655,9 +2655,8 @@
                 const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
                 const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
 
-                // ★ 修正：FamilyCount 原意即為「報名者總數(含自己)」，預設為 1
-                const familyTotal = Math.max(1, family);
-                const total = familyTotal + finalGuestCount;
+                // ★ 修正：直接在前端透過加總處理人數 (若為 1 人則自己為 1，攜伴為 0，或 family 值為包含自己的情況)
+                const total = family + finalGuestCount;
 
                 let nameSuffix = '';
                 if (total > 1) {
@@ -3041,8 +3040,7 @@
                         const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
 
                         // ★ 修正：FamilyCount 原意即為「報名者總數(含自己)」，預設為 1
-                        const familyTotal = Math.max(1, family);
-                        const total = familyTotal + finalGuestCount;
+                        const total = family + finalGuestCount;
                         const num = count.toString().padStart(2, '0');
                         const status = p.status || p.note || '';
                         let prefix = status ? status : '';
@@ -3965,8 +3963,7 @@
                         const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
 
                         // ★ 修正：FamilyCount 原意即為「報名者總數(含自己)」，預設為 1
-                        const familyTotal = Math.max(1, family);
-                        const total = familyTotal + finalGuestCount;
+                        const total = family + finalGuestCount;
                         const num = count.toString().padStart(2, '0');
                         const status = p.status || p.note || '';
                         let prefix = status ? status : '';
@@ -4239,8 +4236,7 @@
                         const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
 
                         // ★ 修正：FamilyCount 原意即為「報名者總數(含自己)」，預設為 1
-                        const familyTotal = Math.max(1, family);
-                        const total = familyTotal + finalGuestCount;
+                        const total = family + finalGuestCount;
 
                         const num = count.toString().padStart(2, '0');
                         const status = p.status || p.note || '';
@@ -4640,27 +4636,6 @@
                 toast.style.opacity = '0';
                 toast.style.pointerEvents = 'none';
             }, duration);
-        }
-
-        // 視圖切換函式
-        function switchView(viewId) {
-            const views = document.querySelectorAll('.view-section');
-            views.forEach(view => view.classList.add('hidden'));
-
-            const targetView = document.getElementById(viewId);
-            if (targetView) {
-                targetView.classList.remove('hidden');
-            }
-
-            // 更新返回按鈕狀態
-            const btnBack = document.getElementById('btn-back');
-            if (btnBack) {
-                if (viewId === 'view-home') {
-                    btnBack.classList.add('hidden');
-                } else {
-                    btnBack.classList.remove('hidden');
-                }
-            }
         }
 
         // 填充人數選項
