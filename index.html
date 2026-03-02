@@ -2427,8 +2427,9 @@
             container.innerHTML = '';
 
             const filtered = appState.events.filter(e => {
-                if (type === 'all') return isEventOpen(e) && e.isActiveValue !== '';
-                return normalizeType(e.type) === type && isEventOpen(e) && e.isActiveValue !== '';
+                const isVisible = isEventOpen(e) || canModifyEvent(e);
+                if (type === 'all') return isVisible;
+                return normalizeType(e.type) === type && isVisible;
             }).sort((a, b) => {
                 // 解析日期（處理日期範圍與驗證 ISO 格式）
                 const getTime = (t) => {
@@ -3733,7 +3734,7 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
 
             // 當天及未來活動都可修改（隔天才進歷史）
-            return eventDate.getTime() >= tomorrow.getTime();
+            return eventDate.getTime() >= today.getTime();
         }
         function normalizeType(t) {
             t = t.toLowerCase();
