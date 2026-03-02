@@ -1478,7 +1478,7 @@
         /** 大小寫不敏感的值查找 */
         function findCaseInsensitiveValue(obj, keys) {
             if (!obj || !Array.isArray(keys)) return undefined;
-            
+
             for (const key of keys) {
                 if (obj.hasOwnProperty(key)) {
                     return obj[key];
@@ -1696,12 +1696,17 @@
         // 3. API 處理
         // ==========================================
         async function fetchEvents() {
-            if (!GAS_URL) return;
+            if (!GAS_URL) {
+                appState.events = [];
+                return;
+            }
             try {
                 const res = await fetch(`${GAS_URL}?action=getEvents`);
-                appState.events = await res.json();
+                const data = await res.json();
+                appState.events = Array.isArray(data) ? data : [];
             } catch (e) {
                 console.warn("API Error (getEvents)", e);
+                appState.events = [];
             }
         }
 
@@ -2010,22 +2015,22 @@
 
         function fillFormWithRecord(record) {
             DOM.formAction.value = 'update';
-            
+
             const isOpen = isEventOpen(appState.currentEvent);
             const canModify = canModifyEvent(appState.currentEvent);
             const isToday = !isOpen && canModify; // 當天活動的特徵
-            
+
             if (isToday) {
                 // 當天活動：允許修改
                 DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
                 DOM.submitBtn.className = "flex-1 bg-orange-500 text-white font-bold py-3.5 rounded-xl cursor-pointer hover:bg-orange-600 transition flex justify-center items-center gap-2";
                 DOM.submitBtn.disabled = false;
                 DOM.cancelBtn.classList.remove('hidden');
-                
+
                 // 重新啟用修改相關欄位
                 const modifyInputs = document.querySelectorAll('#regForm input:not(#family-count):not(#add-guest-name):not(#add-guest-count):not(input[name="addSponsorType"]), #regForm select:not(#pickup-loc):not(#room-type)');
                 modifyInputs.forEach(el => el.disabled = false);
-                
+
             } else if (isOpen) {
                 // 未來活動：正常修改
                 DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
@@ -2226,7 +2231,7 @@
             const isOpen = isEventOpen(e);
             const canModify = canModifyEvent(e);
             const isToday = !isOpen && canModify; // 當天活動的特徵
-            
+
             if (!isOpen) {
                 // 停用表單內所有輸入框
                 const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button');
@@ -2237,11 +2242,11 @@
                     DOM.submitBtn.innerText = "活動當天僅供修改";
                     DOM.submitBtn.className = "flex-1 bg-orange-500 text-white font-bold py-3.5 rounded-xl cursor-pointer flex justify-center items-center gap-2 hover:bg-orange-600 transition";
                     DOM.submitBtn.disabled = false;
-                    
+
                     // 停用新報名相關欄位，但保留修改功能
                     const newInputs = document.querySelectorAll('#family-count, #add-guest-name, #add-guest-count, input[name="addSponsorType"]');
                     newInputs.forEach(el => el.disabled = true);
-                    
+
                 } else {
                     // 隔天及以後：完全結束
                     DOM.submitBtn.innerText = "活動已結束";
@@ -3673,34 +3678,34 @@
         }
 
         // Utils
-        function isEventOpen(e) { 
+        function isEventOpen(e) {
             // 1. 檢查活動狀態
             const statusOpen = e.isActive === true || e.isActive === '開放' || e.isActive === 'open';
             if (!statusOpen) return false;
-            
+
             // 2. 檢查活動日期 - 當天仍顯示在報名區（隔天才移到歷史）
             if (!e.time) return true;
-            
+
             let eventDate = null;
             const today = new Date();
             today.setHours(0, 0, 0, 0); // 歸零到當天開始
-            
+
             // 處理旅遊活動的日期範圍
             if (e.time.includes('~')) {
                 eventDate = new Date(e.time.split('~')[0]);
             } else {
                 eventDate = new Date(e.time);
             }
-            
+
             // 如果事件日期無效，允許報名
             if (isNaN(eventDate.getTime())) return true;
-            
+
             eventDate.setHours(0, 0, 0, 0);
-            
+
             // 計算明天
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
-            
+
             // 明天之後的活動才移到歷史區（當天仍留在報名區）
             return eventDate.getTime() >= tomorrow.getTime();
         }
@@ -3708,25 +3713,25 @@
         // 新增：檢查是否可以修改（當天仍可修改）
         function canModifyEvent(e) {
             if (!e.time) return true;
-            
+
             let eventDate = null;
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             if (e.time.includes('~')) {
                 eventDate = new Date(e.time.split('~')[0]);
             } else {
                 eventDate = new Date(e.time);
             }
-            
+
             if (isNaN(eventDate.getTime())) return true;
-            
+
             eventDate.setHours(0, 0, 0, 0);
-            
+
             // 計算明天
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
-            
+
             // 當天及未來活動都可修改（隔天才進歷史）
             return eventDate.getTime() >= tomorrow.getTime();
         }
@@ -4612,11 +4617,11 @@
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toast-msg');
             if (!toast || !toastMsg) return;
-            
+
             toastMsg.textContent = message;
             toast.style.opacity = '1';
             toast.style.pointerEvents = 'auto';
-            
+
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.pointerEvents = 'none';
@@ -4627,12 +4632,12 @@
         function switchView(viewId) {
             const views = document.querySelectorAll('.view-section');
             views.forEach(view => view.classList.add('hidden'));
-            
+
             const targetView = document.getElementById(viewId);
             if (targetView) {
                 targetView.classList.remove('hidden');
             }
-            
+
             // 更新返回按鈕狀態
             const btnBack = document.getElementById('btn-back');
             if (btnBack) {
@@ -4648,7 +4653,7 @@
         function populateCountOptions() {
             const familySelect = document.getElementById('family-count');
             const guestCountSelect = document.getElementById('add-guest-count');
-            
+
             if (familySelect) {
                 familySelect.innerHTML = '';
                 for (let i = 1; i <= 10; i++) {
@@ -4658,7 +4663,7 @@
                     familySelect.appendChild(option);
                 }
             }
-            
+
             if (guestCountSelect) {
                 guestCountSelect.innerHTML = '';
                 for (let i = 1; i <= 10; i++) {
@@ -4674,12 +4679,12 @@
         function renderAddSponsorUI() {
             const sponsorType = document.querySelector('input[name="addSponsorType"]:checked');
             const inputArea = document.getElementById('sponsor-input-area');
-            
+
             if (!sponsorType || !inputArea) return;
-            
+
             const type = sponsorType.value;
             let html = '';
-            
+
             switch (type) {
                 case 'alcohol':
                     html = `
@@ -4705,7 +4710,7 @@
                     `;
                     break;
             }
-            
+
             inputArea.innerHTML = html;
         }
 
@@ -4715,9 +4720,9 @@
             try {
                 const queue = JSON.parse(localStorage.getItem(queueKey) || '[]');
                 if (queue.length === 0) return;
-                
+
                 showToast(`📤 正在處理 ${queue.length} 筆離線資料...`);
-                
+
                 // 清除佇列（實際應用中應該要重試送出）
                 localStorage.removeItem(queueKey);
                 showToast('✅ 離線資料處理完成');
