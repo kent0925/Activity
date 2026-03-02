@@ -2021,15 +2021,14 @@
             const isToday = !isOpen && canModify; // 當天活動的特徵
 
             if (isToday) {
-                // 當天活動：允許修改
-                DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
-                DOM.submitBtn.className = "flex-1 bg-orange-500 text-white font-bold py-3.5 rounded-xl cursor-pointer hover:bg-orange-600 transition flex justify-center items-center gap-2";
-                DOM.submitBtn.disabled = false;
-                DOM.cancelBtn.classList.remove('hidden');
+                // 當天活動：唯讀模式 (不允許修改)
+                DOM.submitBtn.classList.add('hidden');
+                DOM.submitBtn.classList.remove('flex');
+                DOM.cancelBtn.classList.add('hidden');
 
-                // 重新啟用修改相關欄位
-                const modifyInputs = document.querySelectorAll('#regForm input:not(#family-count):not(#add-guest-name):not(#add-guest-count):not(input[name="addSponsorType"]), #regForm select:not(#pickup-loc):not(#room-type)');
-                modifyInputs.forEach(el => el.disabled = false);
+                // 確認所有輸入框都維持停用狀態
+                const modifyInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button:not(#btn-header-share):not(#btn-stats)');
+                modifyInputs.forEach(el => el.disabled = true);
 
             } else if (isOpen) {
                 // 未來活動：正常修改
@@ -2234,26 +2233,18 @@
 
             if (!isOpen) {
                 if (isToday) {
+                    // 當天活動：完全唯讀
                     // 檢查是否已報名
                     const isRegistered = appState.myRegistrations.includes(e.id);
-                    if (isRegistered) {
-                        // 當天活動且已報名：允許修改和分享
-                        DOM.submitBtn.innerText = "活動當天僅供修改";
-                        DOM.submitBtn.className = "flex-1 bg-orange-500 text-white font-bold py-3.5 rounded-xl cursor-pointer flex justify-center items-center gap-2 hover:bg-orange-600 transition";
-                        DOM.submitBtn.disabled = false;
 
-                        // 停用新報名相關欄位，但保留修改功能（避免全盤 disabled）
-                        const newInputs = document.querySelectorAll('#family-count, #add-guest-name, #add-guest-count, input[name="addSponsorType"]');
-                        newInputs.forEach(el => el.disabled = true);
-                    } else {
-                        // 當天活動但尚未報名：完全結束，停用表單內所有輸入框
-                        const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button');
-                        formInputs.forEach(el => el.disabled = true);
+                    // 隱藏提交按鈕
+                    DOM.submitBtn.classList.add('hidden');
+                    DOM.submitBtn.classList.remove('flex');
+                    if (DOM.cancelBtn) DOM.cancelBtn.classList.add('hidden');
 
-                        DOM.submitBtn.innerText = "今日活動無法新報名";
-                        DOM.submitBtn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
-                        DOM.submitBtn.disabled = true;
-                    }
+                    // 停用表單內所有輸入框 (保留分享與統計等獨立功能)
+                    const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button:not(#btn-header-share):not(#btn-stats)');
+                    formInputs.forEach(el => el.disabled = true);
                 } else {
                     // 隔天及以後：完全結束，停用表單內所有輸入框
                     const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button');
