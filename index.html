@@ -4226,9 +4226,12 @@
                         const family = getIntField(p, 'family');
                         const guestData = parseGuestData(p);
                         const guestCountFallback = getIntField(p, 'guestCount');
-                        const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
+                        const guestTotalCount = guestData.reduce((acc, g) => acc + parseInt(g.count, 10), 0);
                         const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
-                        const total = 1 + family + finalGuestCount;
+
+                        // ★ 修正：FamilyCount 原意即為「報名者總數(含自己)」，預設為 1
+                        const familyTotal = Math.max(1, family);
+                        const total = familyTotal + finalGuestCount;
 
                         const num = count.toString().padStart(2, '0');
                         const status = p.status || p.note || '';
