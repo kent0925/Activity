@@ -1495,10 +1495,17 @@
 
         /** 取得整數欄位值 (針對 FamilyCount 進行 +1 補償) */
         function getIntField(row, fieldName) {
-            const val = parseInt(getField(row, fieldName)) || 0;
+            const val = parseInt(getField(row, fieldName), 10) || 0;
             // ★ 修正：GAS 存的是「眷屬數」，前端顯示需包含本人，故 +1
             if (fieldName === 'family') return val + 1;
             return val;
+        }
+
+        /** 強健的人數合計計算：處理 JSON 解析與舊資料備案 (冗餘清理) */
+        function calculateFinalGuestCount(row, guestData) {
+            const fallback = getIntField(row, 'guestCount');
+            const total = guestData.reduce((acc, g) => acc + (parseInt(g.count, 10) || 0), 0);
+            return total > 0 ? total : fallback;
         }
 
         /** DOM 元素快取 */
@@ -2653,12 +2660,10 @@
                 const family = getIntField(row, 'family');
 
                 const guestData = parseGuestData(row);
-                const guestCountFallback = getIntField(row, 'guestCount');
+                // 冗餘處理：使用統一計算函數
+                const finalGuestCount = calculateFinalGuestCount(row, guestData);
 
-                const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
-                const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
-
-                // ★ 修正：直接在前端透過加總處理人數 (若為 1 人則自己為 1，攜伴為 0，或 family 值為包含自己的情況)
+                // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
                 const total = family + finalGuestCount;
 
                 let nameSuffix = '';
@@ -3038,11 +3043,10 @@
                         count++;
                         const family = getIntField(p, 'family');
                         const guestData = parseGuestData(p);
-                        const guestCountFallback = getIntField(p, 'guestCount');
-                        const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
-                        const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
+                        // 冗餘處理：使用統一計算函數
+                        const finalGuestCount = calculateFinalGuestCount(p, guestData);
 
-                        // ★ 修正：FamilyCount 原意即為「報名者總數(含自己)」，預設為 1
+                        // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
                         const total = family + finalGuestCount;
                         const num = count.toString().padStart(2, '0');
                         const status = p.status || p.note || '';
@@ -3954,11 +3958,10 @@
                         count++;
                         const family = getIntField(p, 'family');
                         const guestData = parseGuestData(p);
-                        const guestCountFallback = getIntField(p, 'guestCount');
-                        const guestTotalCount = guestData.reduce((acc, g) => acc + g.count, 0);
-                        const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
+                        // 冗餘處理：使用統一計算函數
+                        const finalGuestCount = calculateFinalGuestCount(p, guestData);
 
-                        // ★ 修正：FamilyCount 原意即為「報名者總數(含自己)」，預設為 1
+                        // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
                         const total = family + finalGuestCount;
                         const num = count.toString().padStart(2, '0');
                         const status = p.status || p.note || '';
@@ -4227,11 +4230,10 @@
                         count++;
                         const family = getIntField(p, 'family');
                         const guestData = parseGuestData(p);
-                        const guestCountFallback = getIntField(p, 'guestCount');
-                        const guestTotalCount = guestData.reduce((acc, g) => acc + parseInt(g.count, 10), 0);
-                        const finalGuestCount = guestTotalCount > 0 ? guestTotalCount : guestCountFallback;
+                        // 冗餘處理：使用統一計算函數
+                        const finalGuestCount = calculateFinalGuestCount(p, guestData);
 
-                        // ★ 修正：FamilyCount 原意即為「報名者總數(含自己)」，預設為 1
+                        // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
                         const total = family + finalGuestCount;
 
                         const num = count.toString().padStart(2, '0');
