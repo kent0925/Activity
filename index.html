@@ -2010,14 +2010,31 @@
 
         function fillFormWithRecord(record) {
             DOM.formAction.value = 'update';
-
-            if (isEventOpen(appState.currentEvent)) {
+            
+            const isOpen = isEventOpen(appState.currentEvent);
+            const canModify = canModifyEvent(appState.currentEvent);
+            const isToday = !isOpen && canModify; // 當天活動的特徵
+            
+            if (isToday) {
+                // 當天活動：允許修改
+                DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
+                DOM.submitBtn.className = "flex-1 bg-orange-500 text-white font-bold py-3.5 rounded-xl cursor-pointer hover:bg-orange-600 transition flex justify-center items-center gap-2";
+                DOM.submitBtn.disabled = false;
+                DOM.cancelBtn.classList.remove('hidden');
+                
+                // 重新啟用修改相關欄位
+                const modifyInputs = document.querySelectorAll('#regForm input:not(#family-count):not(#add-guest-name):not(#add-guest-count):not(input[name="addSponsorType"]), #regForm select:not(#pickup-loc):not(#room-type)');
+                modifyInputs.forEach(el => el.disabled = false);
+                
+            } else if (isOpen) {
+                // 未來活動：正常修改
                 DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
                 DOM.submitBtn.classList.replace('bg-[#06c755]', 'bg-blue-600');
                 DOM.submitBtn.classList.replace('hover:bg-green-600', 'hover:bg-blue-700');
                 DOM.submitBtn.disabled = false;
                 DOM.cancelBtn.classList.remove('hidden');
             } else {
+                // 隔天及以後：完全結束
                 DOM.submitBtn.innerText = "已報名 (活動已結束)";
                 DOM.submitBtn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
                 DOM.submitBtn.disabled = true;
@@ -2207,14 +2224,30 @@
 
             // 檢查是否關閉 -> 停用表單
             const isOpen = isEventOpen(e);
+            const canModify = canModifyEvent(e);
+            const isToday = !isOpen && canModify; // 當天活動的特徵
+            
             if (!isOpen) {
                 // 停用表單內所有輸入框
                 const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button');
                 formInputs.forEach(el => el.disabled = true);
 
-                DOM.submitBtn.innerText = "活動已結束";
-                DOM.submitBtn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
-                DOM.submitBtn.disabled = true;
+                if (isToday) {
+                    // 當天活動：允許修改和分享
+                    DOM.submitBtn.innerText = "活動當天僅供修改";
+                    DOM.submitBtn.className = "flex-1 bg-orange-500 text-white font-bold py-3.5 rounded-xl cursor-pointer flex justify-center items-center gap-2 hover:bg-orange-600 transition";
+                    DOM.submitBtn.disabled = false;
+                    
+                    // 停用新報名相關欄位，但保留修改功能
+                    const newInputs = document.querySelectorAll('#family-count, #add-guest-name, #add-guest-count, input[name="addSponsorType"]');
+                    newInputs.forEach(el => el.disabled = true);
+                    
+                } else {
+                    // 隔天及以後：完全結束
+                    DOM.submitBtn.innerText = "活動已結束";
+                    DOM.submitBtn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
+                    DOM.submitBtn.disabled = true;
+                }
             }
 
             // 截止日期
@@ -3640,7 +3673,58 @@
         }
 
         // Utils
-        function isEventOpen(e) { return e.isActive === true || e.isActive === '開放' || e.isActive === 'open'; }
+        function isEventOpen(e) { 
+            // 1. 檢查活動狀態
+            const statusOpen = e.isActive === true || e.isActive === '開放' || e.isActive === 'open';
+            if (!statusOpen) return false;
+            
+            // 2. 檢查活動日期 - 當天禁止新報名
+            if (!e.time) return true;
+            
+            let eventDate = null;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // 歸零到當天開始
+            
+            // 處理旅遊活動的日期範圍
+            if (e.time.includes('~')) {
+                eventDate = new Date(e.time.split('~')[0]);
+            } else {
+                eventDate = new Date(e.time);
+            }
+            
+            // 如果事件日期無效，允許報名
+            if (isNaN(eventDate.getTime())) return true;
+            
+            eventDate.setHours(0, 0, 0, 0);
+            
+            // 當天或之後的活動都禁止新報名
+            return eventDate.getTime() > today.getTime();
+        }
+
+        // 新增：檢查是否可以修改（當天仍可修改）
+        function canModifyEvent(e) {
+            if (!e.time) return true;
+            
+            let eventDate = null;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (e.time.includes('~')) {
+                eventDate = new Date(e.time.split('~')[0]);
+            } else {
+                eventDate = new Date(e.time);
+            }
+            
+            if (isNaN(eventDate.getTime())) return true;
+            
+            eventDate.setHours(0, 0, 0, 0);
+            
+            // 當天及未來活動都可修改（隔天才進歷史）
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            return eventDate.getTime() >= tomorrow.getTime();
+        }
         function normalizeType(t) {
             t = t.toLowerCase();
             if (t.includes('一般')) return 'general';
