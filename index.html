@@ -2927,8 +2927,8 @@
                 // 渲染歷史列表
                 const list = document.getElementById('history-items');
                 list.innerHTML = '';
-                // 篩選已結束的活動 (isActive !== 'open')
-                const history = appState.events.filter(e => !isEventOpen(e));
+                // 篩選已結束的活動（隔天才進歷史）
+                const history = appState.events.filter(e => !canModifyEvent(e));
 
                 if (history.length === 0) {
                     list.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">無歷史紀錄</div>';
