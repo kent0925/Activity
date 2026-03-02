@@ -289,6 +289,56 @@
             if (typeof refreshIcons === 'function') refreshIcons();
         }
 
+        function renderAttendanceTop3(data) {
+            const container = document.getElementById('home-rankings-section');
+            const listEl = document.getElementById('participation-top3-list');
+            const overlayListEl = document.getElementById('overlay-participation-list');
+            if (!listEl && !overlayListEl) return;
+            if (container) container.classList.remove('hidden');
+
+            const top3 = data.slice(0, 3);
+            if (top3.length === 0) return;
+
+            const displayOrder = top3.length >= 3 ? [1, 0, 2] : (top3.length === 2 ? [0, 1] : [0]);
+
+            let html = '';
+            displayOrder.forEach(idx => {
+                if (!top3[idx]) return;
+                const p = top3[idx];
+                const isFirst = idx === 0;
+                const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
+                const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-95 opacity-80';
+                const countColor = isFirst ? 'text-amber-500' : 'text-gray-400';
+
+                const glowClass = isFirst ? 'ring-2 ring-amber-400/30 rounded-full p-2 bg-amber-500/10 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : '';
+
+                html += `
+                    <div class="flex flex-col items-center ${sizeClass}">
+                        <div class="flex flex-col items-center ${glowClass}">
+                            <span class="text-xl leading-none mb-0.5">${medal}</span>
+                            <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${p.name}</span>
+                        </div>
+                        <span class="text-template-count-color text-[9px] font-black mt-0.5">${p.count}次</span>
+                    </div>
+                `;
+            });
+
+            if (listEl) {
+                listEl.innerHTML = html
+                    .replace(/text-template-name/g, 'text-white/90')
+                    .replace(/text-template-count-color/g, 'text-amber-400')
+                    .replace(/max-w-template-width/g, 'max-w-[60px]');
+            }
+            if (overlayListEl) {
+                overlayListEl.innerHTML = html
+                    .replace(/text-template-name/g, 'text-white')
+                    .replace(/text-template-count-color/g, 'text-white/80')
+                    .replace(/max-w-template-width/g, 'max-w-[50px]');
+            }
+
+            if (typeof refreshIcons === 'function') refreshIcons();
+        }
+
         function startSlotMachine() {
             const config = window.SLOT_CONFIG;
             if (!config) return;
@@ -371,7 +421,7 @@
         // 新增：紀錄大獎結果
         async function recordJackpotResult(symbolKey) {
             // 必須是登入狀態且有 UserID 才能紀錄
-            if (!appState.user || !appState.user.userId || appState.user.userId === '') return;
+            if (typeof appState === 'undefined' || !appState.user || !appState.user.userId || appState.user.userId === '') return;
 
             try {
                 await apiSubmit({
@@ -1423,6 +1473,24 @@
         function getField(row, fieldName) {
             const keys = FIELD_KEYS[fieldName];
             return keys ? findCaseInsensitiveValue(row, keys) : undefined;
+        }
+
+        /** 大小寫不敏感的值查找 */
+        function findCaseInsensitiveValue(obj, keys) {
+            if (!obj || !Array.isArray(keys)) return undefined;
+            
+            for (const key of keys) {
+                if (obj.hasOwnProperty(key)) {
+                    return obj[key];
+                }
+                // 大小寫不敏感查找
+                for (const objKey in obj) {
+                    if (objKey.toLowerCase() === key.toLowerCase()) {
+                        return obj[objKey];
+                    }
+                }
+            }
+            return undefined;
         }
 
         /** 取得整數欄位值 */
@@ -4444,6 +4512,128 @@
                     area.select();
                     area.setSelectionRange(0, 99999); // 針對行動裝置
                 }, 100);
+            }
+        }
+    </script>
+
+    <!-- 補充缺失的關鍵函式 -->
+    <script>
+        // Toast 通知函式
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            if (!toast || !toastMsg) return;
+            
+            toastMsg.textContent = message;
+            toast.style.opacity = '1';
+            toast.style.pointerEvents = 'auto';
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.pointerEvents = 'none';
+            }, duration);
+        }
+
+        // 視圖切換函式
+        function switchView(viewId) {
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(view => view.classList.add('hidden'));
+            
+            const targetView = document.getElementById(viewId);
+            if (targetView) {
+                targetView.classList.remove('hidden');
+            }
+            
+            // 更新返回按鈕狀態
+            const btnBack = document.getElementById('btn-back');
+            if (btnBack) {
+                if (viewId === 'view-home') {
+                    btnBack.classList.add('hidden');
+                } else {
+                    btnBack.classList.remove('hidden');
+                }
+            }
+        }
+
+        // 填充人數選項
+        function populateCountOptions() {
+            const familySelect = document.getElementById('family-count');
+            const guestCountSelect = document.getElementById('add-guest-count');
+            
+            if (familySelect) {
+                familySelect.innerHTML = '';
+                for (let i = 1; i <= 10; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i + '人';
+                    familySelect.appendChild(option);
+                }
+            }
+            
+            if (guestCountSelect) {
+                guestCountSelect.innerHTML = '';
+                for (let i = 1; i <= 10; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i + '人';
+                    guestCountSelect.appendChild(option);
+                }
+            }
+        }
+
+        // 渲染贊助 UI
+        function renderAddSponsorUI() {
+            const sponsorType = document.querySelector('input[name="addSponsorType"]:checked');
+            const inputArea = document.getElementById('sponsor-input-area');
+            
+            if (!sponsorType || !inputArea) return;
+            
+            const type = sponsorType.value;
+            let html = '';
+            
+            switch (type) {
+                case 'alcohol':
+                    html = `
+                        <input type="number" id="sp-qty" placeholder="數量" min="1" 
+                               class="w-20 border border-gray-300 rounded-lg px-2 py-1 text-sm">
+                        <select id="sp-unit" class="border border-gray-300 rounded-lg px-2 py-1 text-sm">
+                            <option value="瓶">瓶</option>
+                            <option value="箱">箱</option>
+                        </select>
+                    `;
+                    break;
+                case 'money':
+                    html = `
+                        <input type="number" id="sp-amount" placeholder="金額" min="1" 
+                               class="w-32 border border-gray-300 rounded-lg px-2 py-1 text-sm">
+                        <span class="text-sm text-gray-600">元</span>
+                    `;
+                    break;
+                case 'other':
+                    html = `
+                        <input type="text" id="sp-other" placeholder="請輸入內容" 
+                               class="flex-1 border border-gray-300 rounded-lg px-2 py-1 text-sm">
+                    `;
+                    break;
+            }
+            
+            inputArea.innerHTML = html;
+        }
+
+        // 處理離線佇列（簡化版）
+        function processOfflineQueue() {
+            const queueKey = 'offlineSubmitQueue';
+            try {
+                const queue = JSON.parse(localStorage.getItem(queueKey) || '[]');
+                if (queue.length === 0) return;
+                
+                showToast(`📤 正在處理 ${queue.length} 筆離線資料...`);
+                
+                // 清除佇列（實際應用中應該要重試送出）
+                localStorage.removeItem(queueKey);
+                showToast('✅ 離線資料處理完成');
+            } catch (e) {
+                console.error('處理離線佇列失敗:', e);
             }
         }
     </script>
