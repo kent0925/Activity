@@ -3845,14 +3845,7 @@
                 travelEl.classList.add('hidden');
             }
 
-            // ★ 智慧判斷：如果沒什麼好選的，直接複製並跳過視窗
-            const showSponsor = !sponsorEl.classList.contains('hidden');
-            const showTravel = !travelEl.classList.contains('hidden');
-
-            if (!showSponsor && !showTravel) {
-                performCopy({ includeSponsor: false, includeTravel: false });
-                return;
-            }
+            // 移除智慧判斷，確保必定顯示視窗供使用者選擇分享格式（圖片或文字）
 
             // 確保隱藏無選項提示
             const noOptsEl = document.getElementById('share-no-opts');
