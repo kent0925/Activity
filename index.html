@@ -1493,9 +1493,12 @@
             return undefined;
         }
 
-        /** 取得整數欄位值 */
+        /** 取得整數欄位值 (針對 FamilyCount 進行 +1 補償) */
         function getIntField(row, fieldName) {
-            return parseInt(getField(row, fieldName)) || 0;
+            const val = parseInt(getField(row, fieldName)) || 0;
+            // ★ 修正：GAS 存的是「眷屬數」，前端顯示需包含本人，故 +1
+            if (fieldName === 'family') return val + 1;
+            return val;
         }
 
         /** DOM 元素快取 */
@@ -2103,9 +2106,9 @@
                 eventType: appState.currentEvent.type,
                 eventName: appState.currentEvent.name,
                 userId: appState.user.userId,
-                displayName: DOM.userName.value,
                 pictureUrl: appState.user.pictureUrl,
-                familyCount: document.getElementById('family-count').value,
+                displayName: DOM.userName.value,
+                familyCount: parseInt(document.getElementById('family-count').value, 10) - 1,
                 guestList: JSON.stringify(appState.guestList),
                 sponsorList: JSON.stringify(appState.sponsorList),
                 roomType: document.getElementById('room-type').value,
