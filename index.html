@@ -177,16 +177,11 @@
                     renderJackpotTop3(top3);
                     if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
                     if (homeContainer) homeContainer.classList.remove('hidden');
-                } else if (!cachedData) {
-                    if (overlayContainer) overlayContainer.classList.add('hidden');
-                    if (homeContainer) homeContainer.classList.add('hidden');
                 }
+                // ★ 修正：不在此處隱藏 homeContainer，避免與 fetchAttendanceTop3 競爭
             } catch (e) {
                 console.warn("Fetch Top 3 failed", e);
-                if (!cachedData) {
-                    if (overlayContainer) overlayContainer.classList.add('hidden');
-                    if (homeContainer) homeContainer.classList.add('hidden');
-                }
+                // ★ 修正：失敗時不主動隱藏排行榜，保留已顯示的出席王資料
             }
         }
 
@@ -228,16 +223,11 @@
                     renderAttendanceTop3(top3);
                     if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
                     if (homeContainer) homeContainer.classList.remove('hidden');
-                } else if (!cachedData) {
-                    if (overlayContainer) overlayContainer.classList.add('hidden');
-                    if (homeContainer) homeContainer.classList.add('hidden');
                 }
+                // ★ 修正：不在此處隱藏 homeContainer，避免與 fetchJackpotTop3 競爭
             } catch (e) {
                 console.warn("Fetch Attendance Top 3 failed", e);
-                if (!cachedData) {
-                    if (overlayContainer) overlayContainer.classList.add('hidden');
-                    if (homeContainer) homeContainer.classList.add('hidden');
-                }
+                // ★ 修正：失敗時不主動隱藏排行榜，保留已顯示的拉霸英雄資料
             }
         }
 
@@ -798,8 +788,7 @@
 
         <div id="view-home" class="view-section space-y-2 animate-fade-in">
             <!-- Premium 排行榜核心區塊 -->
-            <div id="home-rankings-section"
-                class="premium-dark-card p-4 pb-2 animate-fade-in hidden relative overflow-hidden">
+            <div id="home-rankings-section" class="premium-dark-card p-4 pb-2 animate-fade-in relative overflow-hidden">
                 <!-- 背景微光裝飾 -->
                 <div class="absolute top-0 left-0 w-32 h-32 bg-amber-500/10 rounded-full -ml-16 -mt-16 blur-3xl"></div>
                 <div class="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mb-16 blur-3xl"></div>
