@@ -132,9 +132,7 @@
             const sloganText = document.getElementById('slogan-text');
             if (sloganText) sloganText.innerText = randomQuote;
 
-            // ★ 取得並顯示拉霸大獎 Top 3
-            fetchJackpotTop3();
-            // ★ 取得並顯示出席王 Top 3
+            // ★ 取得並顯示出席王 Top 3（fetchJackpotTop3 由 window.onload 統一呼叫，不在此重複）
             fetchAttendanceTop3();
 
             // ★ 啟動迷你老虎機
@@ -212,7 +210,7 @@
                 }
             }
 
-            // 2. 背景呼叫 API 更新數據
+            // 2. 背景呼叫 API 更新數據（action=getAttendanceTop3 已在後端對應 getParticipationStats().slice(0,3)）
             try {
                 const res = await fetch(`${GAS_URL}?action=getAttendanceTop3&_=${Date.now()}`);
                 const top3 = await res.json();
@@ -828,7 +826,7 @@
                             <span class="text-xs font-black text-white/90 tracking-wider">拉霸英雄榜</span>
                         </div>
                         <div id="home-jackpot-list" class="flex justify-around items-end h-[90px]">
-                            <div class="text-xs white/30 animate-pulse">載入中...</div>
+                            <div class="text-xs text-white/30 animate-pulse">載入中...</div>
                         </div>
                     </div>
                 </div>
