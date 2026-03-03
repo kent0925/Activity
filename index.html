@@ -3679,6 +3679,7 @@
 
         // Utils
         function isEventOpen(e) {
+            if (!e) return false;
             // 1. 檢查活動狀態
             const statusOpen = e.isActive === true || e.isActive === '開放' || e.isActive === 'open';
             if (!statusOpen) return false;
