@@ -2387,7 +2387,7 @@
                 renderAddSponsorUI();
                 const content = s.substring(4); // "5瓶"
                 const unit = content.includes('箱') ? '箱' : '瓶';
-                const qty = parseInt(content);
+                const qty = parseInt(content, 10);
                 document.getElementById('sp-qty').value = qty;
                 document.getElementById('sp-unit').value = unit;
 
@@ -2603,25 +2603,7 @@
             }
         }
 
-        // 不分大小寫尋找值的輔助函式
-        function findCaseInsensitiveValue(row, candidates) {
-            if (!row) return undefined;
-            // 1. 直接匹配 (快)
-            for (const key of candidates) {
-                if (row[key] !== undefined && row[key] !== '') return row[key];
-            }
-            // 2. 不分大小寫掃描 (慢)
-            const keys = Object.keys(row);
-            for (const c of candidates) {
-                const lowerC = c.toLowerCase().replace(/\s/g, '');
-                for (const k of keys) {
-                    if (k.toLowerCase().replace(/\s/g, '') === lowerC) {
-                        return row[k];
-                    }
-                }
-            }
-            return undefined;
-        }
+        // findCaseInsensitiveValue 已在上方 FIELD_KEYS 區塊定義（L1466），此處不重複定義
 
         function renderDetailLists(data) {
             const listP = document.getElementById('details-list-people');
@@ -2765,6 +2747,56 @@
         // ==========================================
         // 6. UTILITY FUNCTIONS
         // ==========================================
+
+        /**
+         * ★ 統一時間格式化（分享/圖片/複製共用）
+         * 輸入：ISO 日期字串或 "start~end" 範圍字串
+         * 輸出：格式化後的顯示字串
+         */
+        function formatTimeForShare(timeStr) {
+            if (!timeStr) return '';
+            if (timeStr.includes('~')) {
+                const [start, end] = timeStr.split('~');
+                return `${formatDateOnly(start.trim())} ~ ${formatDateOnly(end.trim())}`;
+            }
+            const d = new Date(timeStr);
+            if (isNaN(d.getTime())) return timeStr;
+            const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+            return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+        }
+
+        /**
+         * ★ 統一判斷今天是否為活動日（分享/複製時自動顯示地圖連結共用）
+         * 輸入：活動物件（含 time 欄位）
+         * 輸出：Boolean
+         */
+        function isEventDay(event) {
+            if (!event || !event.time) return false;
+            const today = new Date();
+            const todayY = today.getFullYear();
+            const todayM = (today.getMonth() + 1).toString().padStart(2, '0');
+            const todayD = today.getDate().toString().padStart(2, '0');
+            const todayStr = `${todayY}-${todayM}-${todayD}`;
+
+            const t = event.time;
+            if (typeof t === 'string' && t.includes('~')) {
+                const [startStr, endStr] = t.split('~').map(s => s.trim());
+                const startD = new Date(startStr);
+                const endD = new Date(endStr);
+                if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
+                    const todayDate = new Date(todayStr);
+                    return todayDate >= new Date(startD.toDateString()) && todayDate <= new Date(endD.toDateString());
+                }
+            } else {
+                const eventDate = new Date(t);
+                if (!isNaN(eventDate.getTime())) {
+                    const eStr = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, '0')}-${eventDate.getDate().toString().padStart(2, '0')}`;
+                    return todayStr === eStr;
+                }
+            }
+            return false;
+        }
+
 
         /**
          * 統一解析來賓資料：支援多種格式（JSON、JSON 字串或舊版字串）
@@ -3003,19 +3035,8 @@
                 // 活動資訊區
                 html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                 if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
-                let timeDisplay = e.time;
-                if (timeDisplay) {
-                    if (timeDisplay.includes('~')) {
-                        const [start, end] = timeDisplay.split('~');
-                        timeDisplay = `${formatDateOnly(start)} ~ ${formatDateOnly(end)}`;
-                    } else {
-                        const d = new Date(timeDisplay);
-                        if (!isNaN(d.getTime())) {
-                            const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-                            timeDisplay = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-                        }
-                    }
-                }
+                // ★ 使用共用工具函式格式化時間
+                const timeDisplay = formatTimeForShare(e.time);
                 if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${escapeHtml(timeDisplay)}</div>`;
                 if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${escapeHtml(e.location)}</div>`;
                 if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${escapeHtml(e.address)}</div>`;
@@ -3221,7 +3242,7 @@
                 res = `酒類: ${qty}${unit}`;
             } else if (type === 'money') {
                 const val = document.getElementById('sp-money').value;
-                const num = parseInt(val);
+                const num = parseInt(val, 10);
                 if (!num || num <= 0) return showToast("金額不能為負數或零");
                 if (num % 100 !== 0) return showToast("金額須為 100 的倍數");
                 res = `紅包: ${num}元`;
@@ -3911,20 +3932,8 @@
                 // 活動資訊區
                 html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                 if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
-                let timeDisplay = e.time;
-                if (timeDisplay) {
-                    if (timeDisplay.includes('~')) {
-                        // 旅遊活動：顯示日期範圍
-                        const [start, end] = timeDisplay.split('~');
-                        timeDisplay = `${formatDateOnly(start)} ~ ${formatDateOnly(end)}`;
-                    } else {
-                        const d = new Date(timeDisplay);
-                        if (!isNaN(d.getTime())) {
-                            const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-                            timeDisplay = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-                        }
-                    }
-                }
+                // ★ 使用共用工具函式格式化時間
+                const timeDisplay = formatTimeForShare(e.time);
                 if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${escapeHtml(timeDisplay)}</div>`;
                 if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${escapeHtml(e.location)}</div>`;
                 if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${escapeHtml(e.address)}</div>`;
@@ -4069,45 +4078,16 @@
                         try {
                             let shareText = `📅 ${e.name}\n`;
                             if (e.organizer) shareText += `👤 主辦人：${e.organizer}\n`;
-                            let timeDisplay = e.time;
-                            if (timeDisplay) {
-                                const d = new Date(timeDisplay);
-                                if (!isNaN(d.getTime())) {
-                                    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-                                    timeDisplay = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}(${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-                                }
-                            }
-                            if (timeDisplay) shareText += `🕒 時間：${timeDisplay}\n`;
+                            // ★ 使用共用工具函式格式化時間
+                            const shareTD = formatTimeForShare(e.time);
+                            if (shareTD) shareText += `🕒 時間：${shareTD}\n`;
                             if (e.location) shareText += `📍 地點：${e.location}\n`;
                             if (e.address) shareText += `🚗 地址：${e.address}\n`;
                             shareText += `---------------------\n`;
                             shareText += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
 
-                            // ★ 活動日當天顯示 Google 地圖連結，非活動日顯示報名連結
-                            const today = new Date();
-                            const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-                            let isEventDay = false;
-
-                            if (e.time) {
-                                if (typeof e.time === 'string' && e.time.includes('~')) {
-                                    // 旅遊活動：日期範圍
-                                    const [startStr, endStr] = e.time.split('~').map(s => s.trim());
-                                    const startD = new Date(startStr);
-                                    const endD = new Date(endStr);
-                                    if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
-                                        const todayD = new Date(todayStr);
-                                        isEventDay = todayD >= new Date(startD.toDateString()) && todayD <= new Date(endD.toDateString());
-                                    }
-                                } else {
-                                    const eventDate = new Date(e.time);
-                                    if (!isNaN(eventDate.getTime())) {
-                                        const eventStr = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, '0')}-${eventDate.getDate().toString().padStart(2, '0')}`;
-                                        isEventDay = (todayStr === eventStr);
-                                    }
-                                }
-                            }
-
-                            if (isEventDay && (e.address || e.location)) {
+                            // ★ 使用共用工具函式判斷活動日
+                            if (isEventDay(e) && (e.address || e.location)) {
                                 const mapQuery = e.address || e.location;
                                 shareText += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}`;
                             } else {
@@ -4308,29 +4288,8 @@
 
                 // ★ 活動日當天自動替換：報名連結 → Google 地圖連結
                 if (options.includeLink !== false) {
-                    const today = new Date();
-                    const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-                    let isEventDay = false;
-
-                    if (e.time) {
-                        if (typeof e.time === 'string' && e.time.includes('~')) {
-                            const [startStr, endStr] = e.time.split('~').map(s => s.trim());
-                            const startD = new Date(startStr);
-                            const endD = new Date(endStr);
-                            if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
-                                const todayD = new Date(todayStr);
-                                isEventDay = todayD >= new Date(startD.toDateString()) && todayD <= new Date(endD.toDateString());
-                            }
-                        } else {
-                            const eventDate = new Date(e.time);
-                            if (!isNaN(eventDate.getTime())) {
-                                const eventStr = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, '0')}-${eventDate.getDate().toString().padStart(2, '0')}`;
-                                isEventDay = (todayStr === eventStr);
-                            }
-                        }
-                    }
-
-                    if (isEventDay && (e.address || e.location)) {
+                    // ★ 使用共用工具函式判斷活動日
+                    if (isEventDay(e) && (e.address || e.location)) {
                         const mapQuery = e.address || e.location;
                         text += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}\n`;
                     } else {
