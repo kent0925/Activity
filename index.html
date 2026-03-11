@@ -3913,12 +3913,16 @@
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
             refreshIcons();
 
-            // 圖片分享為固定內容，不依照勾選（只有複製文字才依勾選）
+            // ======================================================
+            // ⚠️ 注意：圖片分享為「固定內容」，不依照 checkbox 勾選！
+            //    只有「複製文字」(confirmShareCopy) 才依照 checkbox。
+            //    請勿修改以下固定值！
+            // ======================================================
             const includeSponsor = false; // 名單內不顯示贊助，改由下方獨立區塊顯示
             const includeTravel = true;
-            const includeMap = false;  // 圖片不含地圖連結
-            const includeNames = true;
-            const includeLink = false; // 圖片不含報名連結
+            const includeMap = false;     // 圖片不含地圖連結
+            const includeNames = true;    // 圖片固定包含詳細名單
+            const includeLink = false;    // 圖片不含報名連結
 
             try {
                 // --- 1. 動態產生分享卡片 HTML ---
