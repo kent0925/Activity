@@ -1235,7 +1235,7 @@
 
     <div id="details-modal"
         class="hidden fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4">
-        <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-sm max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
+        <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-sm max-h-[85dvh] sm:max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
             id="modal-content">
             <div
                 class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/80 rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
@@ -1260,13 +1260,13 @@
                 class="bg-blue-50/50 p-3 text-xs text-gray-700 border-b border-blue-100/50 grid grid-cols-2 gap-2">
             </div>
 
-            <div class="p-0 overflow-y-auto flex-1 min-h-0 overscroll-contain">
+            <div class="p-0 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe">
                 <div id="modal-loading" class="flex flex-col items-center py-12">
                     <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-green-500 mb-2"></i>
                     <span class="text-xs text-gray-400">正在讀取最新資料...</span>
                 </div>
 
-                <div id="details-lists-container" class="hidden pb-4">
+                <div id="details-lists-container" class="hidden pb-10 sm:pb-4">
                     <div class="px-4 py-2 bg-gray-100 text-xs font-bold text-gray-500 sticky top-0">人員名單</div>
                     <ul id="details-list-people" class="divide-y divide-gray-100"></ul>
 
