@@ -16,9 +16,18 @@
     <meta name="twitter:card" content="summary_large_image">
     <!-- 隨機 Meta 描述初始化 -->
     <script>
-        // 迷你老虎機資料
         window.SLOT_CONFIG = {
             symbols: ['🍺', '🎉', '💀', '🍷', '🎲', '👑', '🔥', '💰'],
+            symbolScores: {
+                '🍺': 1,
+                '🎉': 2,
+                '💀': 0,
+                '🍷': 3,
+                '🎲': 4,
+                '👑': 5,
+                '🔥': 6,
+                '💰': 10
+            },
             jackpots: {
                 '🍺🍺🍺': '恭喜！今晚你是買單王 👑',
                 '🎉🎉🎉': '酒神附身，戰力全開！💪',
@@ -167,7 +176,9 @@
                 if (Array.isArray(top3) && top3.length > 0) {
                     // ★ 同分處裡 (筆畫)
                     top3.sort((a, b) => {
-                        if (b.count !== a.count) return b.count - a.count;
+                        const valA = a.score !== undefined ? a.score : a.count;
+                        const valB = b.score !== undefined ? b.score : b.count;
+                        if (valB !== valA) return valB - valA;
                         return a.name.localeCompare(b.name, 'zh-Hant-TW');
                     });
 
@@ -256,7 +267,7 @@
                                 <span class="text-xl leading-none mb-0.5">${medal}</span>
                                 <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${p.name}</span>
                             </div>
-                            <span class="text-template-count-color text-[9px] font-black mt-0.5">${p.count}次</span>
+                            <span class="text-template-count-color text-[9px] font-black mt-0.5">${p.score !== undefined ? p.score + ' 分' : p.count + ' 次'}</span>
                         </div>
                     `;
             });
@@ -327,9 +338,15 @@
             if (typeof refreshIcons === 'function') refreshIcons();
         }
 
+        // 防止重複觸發
+        let _slotSpinning = false;
+
         function startSlotMachine() {
             const config = window.SLOT_CONFIG;
             if (!config) return;
+            if (_slotSpinning) return; // 正在旋轉中，忽略重複呼叫
+            _slotSpinning = true;
+
             const symbols = config.symbols;
             const reels = [
                 document.getElementById('slot-1'),
@@ -337,7 +354,10 @@
                 document.getElementById('slot-3')
             ];
             const resultEl = document.getElementById('slot-result');
-            if (!reels[0] || !reels[1] || !reels[2] || !resultEl) return;
+            if (!reels[0] || !reels[1] || !reels[2] || !resultEl) {
+                _slotSpinning = false;
+                return;
+            }
 
             // 開始旋轉：快速隨機切換符號
             const intervals = reels.map(reel => {
@@ -349,78 +369,83 @@
 
             const finalSymbols = [];
 
-            // 第一輪停止
-            setTimeout(() => {
-                clearInterval(intervals[0]);
-                const sym = symbols[Math.floor(Math.random() * symbols.length)];
-                reels[0].querySelector('.slot-symbol').textContent = sym;
-                reels[0].classList.remove('spinning');
-                reels[0].classList.add('stopped');
-                finalSymbols.push(sym);
-            }, 800);
+            // 停止單一轉輪的輔助函式（避免重複程式碼）
+            function stopReel(index, delay) {
+                setTimeout(() => {
+                    clearInterval(intervals[index]);
+                    const sym = symbols[Math.floor(Math.random() * symbols.length)];
+                    reels[index].querySelector('.slot-symbol').textContent = sym;
+                    reels[index].classList.remove('spinning');
+                    reels[index].classList.add('stopped');
+                    finalSymbols.push(sym);
 
-            // 第二輪停止
-            setTimeout(() => {
-                clearInterval(intervals[1]);
-                const sym = symbols[Math.floor(Math.random() * symbols.length)];
-                reels[1].querySelector('.slot-symbol').textContent = sym;
-                reels[1].classList.remove('spinning');
-                reels[1].classList.add('stopped');
-                finalSymbols.push(sym);
-            }, 1400);
+                    // 最後一輪顯示結果
+                    if (index === 2) showResult();
+                }, delay);
+            }
 
-            // 第三輪停止 + 顯示結果
-            setTimeout(() => {
-                clearInterval(intervals[2]);
-                const sym = symbols[Math.floor(Math.random() * symbols.length)];
-                reels[2].querySelector('.slot-symbol').textContent = sym;
-                reels[2].classList.remove('spinning');
-                reels[2].classList.add('stopped');
-                finalSymbols.push(sym);
+            stopReel(0, 800);
+            stopReel(1, 1400);
+            stopReel(2, 2000);
 
-                // 判斷結果
-                const key = finalSymbols.join('');
-                let msg = '';
-                let isJackpot = false;
+            function showResult() {
+                try {
+                    const key = finalSymbols.join('');
 
-                if (config.jackpots[key]) {
-                    msg = config.jackpots[key];
-                    isJackpot = true;
-                } else if (
-                    finalSymbols[0] === finalSymbols[1] ||
-                    finalSymbols[1] === finalSymbols[2] ||
-                    finalSymbols[0] === finalSymbols[2]
-                ) {
-                    msg = config.pairMsgs[Math.floor(Math.random() * config.pairMsgs.length)];
-                } else {
-                    msg = config.missMsgs[Math.floor(Math.random() * config.missMsgs.length)];
+                    // 計算基礎分數（取整數）
+                    let score = Math.round(
+                        finalSymbols.reduce((acc, sym) => acc + (config.symbolScores[sym] || 0), 0)
+                    );
+
+                    let msg = '';
+                    let isJackpot = false;
+
+                    if (config.jackpots[key]) {
+                        msg = config.jackpots[key];
+                        isJackpot = true;
+                        score = Math.round(score * 5); // 大獎 5 倍
+                    } else if (
+                        finalSymbols[0] === finalSymbols[1] ||
+                        finalSymbols[1] === finalSymbols[2] ||
+                        finalSymbols[0] === finalSymbols[2]
+                    ) {
+                        msg = config.pairMsgs[Math.floor(Math.random() * config.pairMsgs.length)];
+                        score = Math.round(score * 2); // 一對 2 倍
+                    } else {
+                        msg = config.missMsgs[Math.floor(Math.random() * config.missMsgs.length)];
+                    }
+
+                    resultEl.textContent = `${msg} (獲得 ${score} 分)`;
+                    resultEl.classList.add('show');
+                    if (isJackpot) resultEl.classList.add('jackpot');
+
+                    // 無論是否大獎都紀錄分數
+                    recordJackpotResult(key, score);
+                } catch (e) {
+                    console.error('showResult 發生錯誤', e);
+                } finally {
+                    _slotSpinning = false; // 解除鎖定
                 }
-
-                resultEl.textContent = msg;
-                resultEl.classList.add('show');
-                if (isJackpot) {
-                    resultEl.classList.add('jackpot');
-                    // ★ 新增：自動紀錄大獎
-                    recordJackpotResult(key);
-                }
-            }, 2000);
+            }
         }
 
-        // 新增：紀錄大獎結果
-        async function recordJackpotResult(symbolKey) {
-            // 必須是登入狀態且有 UserID 才能紀錄
-            if (typeof appState === 'undefined' || !appState.user || !appState.user.userId || appState.user.userId === '') return;
+        // 紀錄拉霸結果與分數（僅限登入狀態）
+        async function recordJackpotResult(symbolKey, score) {
+            if (typeof appState === 'undefined' ||
+                !appState.user?.userId ||
+                appState.user.userId === '') return;
 
             try {
                 await apiSubmit({
                     action: 'recordJackpot',
                     userId: appState.user.userId,
                     name: appState.user.displayName,
-                    symbol: symbolKey
+                    symbol: symbolKey,
+                    score: score
                 });
-                console.log("Jackpot recorded!");
+                console.log('Slot result recorded, score:', score);
             } catch (e) {
-                console.error("Failed to record jackpot", e);
+                console.warn('recordJackpotResult failed (non-critical):', e);
             }
         }
         // 結束
