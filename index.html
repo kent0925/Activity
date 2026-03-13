@@ -1654,35 +1654,67 @@
             // 更新介面顯示使用者頭像與名稱
             updateUserProfileUI();
 
-            // 抓取資料
-            await Promise.all([
+            // 先嘗試從 LocalStorage 讀取快取以加速最初始渲染
+            try {
+                const cachedEvents = localStorage.getItem('events_cache');
+                if (cachedEvents) appState.events = JSON.parse(cachedEvents);
+
+                const cachedSettings = localStorage.getItem('settings_cache');
+                if (cachedSettings) appState.settings = JSON.parse(cachedSettings);
+
+                if (appState.user && appState.user.userId) {
+                    const cachedRegs = localStorage.getItem('registrations_cache_' + appState.user.userId);
+                    if (cachedRegs) appState.myRegistrations = JSON.parse(cachedRegs);
+                }
+            } catch (e) {
+                console.warn("載入快取失敗", e);
+            }
+
+            // 若有快取，先遣散載入畫面讓使用者看到 UI
+            const hasCache = appState.events && appState.events.length > 0;
+            if (hasCache) {
+                applyUserNameMapping();
+                appState.isDataLoaded = true;
+                appState.currentCategory = 'all';
+                renderEventGrid('all');
+                
+                const historyLoading = document.getElementById('history-loading');
+                if (historyLoading) historyLoading.classList.add('hidden');
+
+                const overlay = document.getElementById('initial-load-overlay');
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.remove(), 500);
+                }
+            }
+
+            // 背景非同步抓取最新資料 (不 await 阻塞 UI)
+            Promise.all([
                 fetchEvents(),
                 fetchSettings(),
-                fetchMyRegistrations(),
-                fetchParticipationStats(),
-                fetchJackpotTop3()
-            ]);
+                fetchMyRegistrations()
+            ]).then(() => {
+                applyUserNameMapping();
+                appState.isDataLoaded = true;
+                appState.currentCategory = 'all';
+                renderEventGrid('all');
 
-            // ★ 新增：套用名稱對應邏輯 (需在 fetchSettings 與 LIFF init 之後)
-            applyUserNameMapping();
+                // 若之前沒有快取，則在資料回來後移除載入畫面
+                if (!hasCache) {
+                    const historyLoading = document.getElementById('history-loading');
+                    if (historyLoading) historyLoading.classList.add('hidden');
 
-            appState.isDataLoaded = true;
+                    const overlay = document.getElementById('initial-load-overlay');
+                    if (overlay) {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => overlay.remove(), 500);
+                    }
+                }
+            }).catch(e => console.error("背景抓取資料失敗", e));
 
-            // 首頁直接渲染活動列表（已移除分類頁導航邏輯）
-            appState.currentCategory = 'all';
-            renderEventGrid('all');
-
-            // 若在首頁則移除初始骨架屏
-            document.getElementById('history-loading').classList.add('hidden');
-
-            // 移除初始載入畫面
-            const overlay = document.getElementById('initial-load-overlay');
-            if (overlay) {
-                overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.remove();
-                }, 500);
-            }
+            // 其他統計資料也丟在背景抓取
+            fetchParticipationStats();
+            fetchJackpotTop3();
         };
 
         function applyUserNameMapping() {
@@ -1726,9 +1758,9 @@
                 const res = await fetch(`${GAS_URL}?action=getEvents`);
                 const data = await res.json();
                 appState.events = Array.isArray(data) ? data : [];
+                localStorage.setItem('events_cache', JSON.stringify(appState.events));
             } catch (e) {
                 console.warn("API Error (getEvents)", e);
-                appState.events = [];
             }
         }
 
@@ -1737,6 +1769,7 @@
             try {
                 const res = await fetch(`${GAS_URL}?action=getSettings`);
                 appState.settings = await res.json();
+                localStorage.setItem('settings_cache', JSON.stringify(appState.settings));
                 // 已移除下拉選單填入邏輯（改為手動輸入）
             } catch (e) {
                 console.warn("API Error (getSettings)", e);
@@ -1750,6 +1783,7 @@
                 const res = await fetch(`${GAS_URL}?action=getMyRegistrations&userId=${appState.user.userId}`);
                 const data = await res.json();
                 appState.myRegistrations = Array.isArray(data) ? data : [];
+                localStorage.setItem('registrations_cache_' + appState.user.userId, JSON.stringify(appState.myRegistrations));
             } catch (e) {
                 console.warn("Fetch Registrations Failed", e);
             }
