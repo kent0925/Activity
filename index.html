@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>大老二兄弟會活動報名系統</title>
     <meta property="og:title" content="大老二兄弟會活動報名系統" />
-    <meta property="og:description" id="og-description" content="錢放在口袋會咬人，把它變成酒精就不痛了。" />
+    <meta property="og:description" id="og-description" content="酒杯舉起來，煩惱滾一邊。" />
     <meta property="og:image" content="https://kent0925.github.io/test/logo.jpg" />
     <meta property="og:type" content="website" />
     <!-- 新增 SEO 與品牌標籤 -->
-    <meta name="description" id="meta-description" content="錢放在口袋會咬人，把它變成酒精就不痛了。" />
+    <meta name="description" id="meta-description" content="酒杯舉起來，煩惱滾一邊。" />
     <meta name="theme-color" content="#06c755">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -2042,7 +2042,20 @@
             const canModify = canModifyEvent(appState.currentEvent);
             const isToday = !isOpen && canModify; // 當天活動的特徵
 
-            if (isToday) {
+            // ★ 新增：檢查黑名單
+            const isBlacklisted = isCurrentUserBlacklisted();
+
+            if (isBlacklisted) {
+                // 黑名單使用者：無法修改/報名
+                DOM.submitBtn.innerText = "您目前無法報名活動";
+                DOM.submitBtn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
+                DOM.submitBtn.disabled = true;
+                if (DOM.cancelBtn) DOM.cancelBtn.classList.add('hidden');
+
+                const modifyInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button:not(#btn-header-share):not(#btn-stats)');
+                modifyInputs.forEach(el => el.disabled = true);
+
+            } else if (isToday) {
                 // 當天活動：唯讀模式 (不允許修改)
                 DOM.submitBtn.classList.add('hidden');
                 DOM.submitBtn.classList.remove('flex');
@@ -2253,12 +2266,22 @@
             const canModify = canModifyEvent(e);
             const isToday = !isOpen && canModify; // 當天活動的特徵
 
-            if (!isOpen) {
-                if (isToday) {
-                    // 當天活動：完全唯讀
-                    // 檢查是否已報名
-                    const isRegistered = appState.myRegistrations.includes(e.id);
+            // ★ 新增：檢查黑名單
+            const isBlacklisted = isCurrentUserBlacklisted();
 
+            if (isBlacklisted) {
+                // 黑名單使用者：顯示無法報名，並停用表單
+                DOM.submitBtn.innerText = "您目前無法報名活動";
+                DOM.submitBtn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
+                DOM.submitBtn.disabled = true;
+                if (DOM.cancelBtn) DOM.cancelBtn.classList.add('hidden');
+
+                const formInputs = document.querySelectorAll('#regForm input, #regForm select, #regForm button:not(#btn-header-share):not(#btn-stats)');
+                formInputs.forEach(el => el.disabled = true);
+                
+            } else if (!isOpen) {
+                if (isToday) {
+                    // 合點時活動：完全唯讀
                     // 隱藏提交按鈕
                     DOM.submitBtn.classList.add('hidden');
                     DOM.submitBtn.classList.remove('flex');
@@ -3726,6 +3749,14 @@
         }
 
         // Utils
+        /** 判斷目前登入使用者是否在黑名單中 */
+        function isCurrentUserBlacklisted() {
+            if (!appState.settings || !appState.settings.blacklist) return false;
+            if (!appState.user) return false;
+            const bl = appState.settings.blacklist;
+            return !!(bl[appState.user.userId] || bl[appState.user.displayName]);
+        }
+
         function isEventOpen(e) {
             if (!e) return false;
             // 1. 檢查活動狀態
