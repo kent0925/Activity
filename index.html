@@ -144,8 +144,16 @@
             // ★ 取得並顯示出席王 Top 3（fetchJackpotTop3 由 window.onload 統一呼叫，不在此重複）
             fetchAttendanceTop3();
 
+            // ★ 取得並顯示出席王 Top 3（fetchJackpotTop3 由 window.onload 統一呼叫，不在此重複）
+            fetchAttendanceTop3();
+
             // ★ 啟動迷你老虎機
-            startSlotMachine();
+            // 修改：傳入回呼函式，讓老虎機轉完後才關閉載入畫面
+            startSlotMachine(() => {
+                if (window.hideInitialOverlay) {
+                    window.hideInitialOverlay();
+                }
+            });
         });
 
         // 新增：抓取拉霸 Top 3 數據 (優化版：先顯後更)
@@ -341,9 +349,13 @@
         // 防止重複觸發
         let _slotSpinning = false;
 
-        function startSlotMachine() {
+        // 修改：加入 onComplete 回呼函式
+        function startSlotMachine(onComplete) {
             const config = window.SLOT_CONFIG;
-            if (!config) return;
+            if (!config) {
+                if (onComplete) onComplete();
+                return;
+            }
             if (_slotSpinning) return; // 正在旋轉中，忽略重複呼叫
             _slotSpinning = true;
 
@@ -356,6 +368,7 @@
             const resultEl = document.getElementById('slot-result');
             if (!reels[0] || !reels[1] || !reels[2] || !resultEl) {
                 _slotSpinning = false;
+                if (onComplete) onComplete();
                 return;
             }
 
@@ -425,6 +438,10 @@
                     console.error('showResult 發生錯誤', e);
                 } finally {
                     _slotSpinning = false; // 解除鎖定
+                    // 等待 1.5 秒讓使用者看清楚分數，再關閉載入畫面
+                    setTimeout(() => {
+                        if (onComplete) onComplete();
+                    }, 1500);
                 }
             }
         }
@@ -1574,10 +1591,8 @@
                 showToast('✅ 網路已恢復');
                 setTimeout(() => processOfflineQueue(), 1500);
             });
-            // 頁面載入時也檢查是否有殘留佇列
-            if (navigator.onLine) {
-                setTimeout(() => processOfflineQueue(), 3000);
-            }
+            // 頁面載入時的殘留佇列檢查，移至載入畫面結束後再處理
+            // (見 window.hideInitialOverlay)
 
             // ★ 下拉刷新 (Pull-to-Refresh)
             {
@@ -1670,14 +1685,8 @@
                 console.warn("載入快取失敗", e);
             }
 
-            // 若有快取，先遣散載入畫面讓使用者看到 UI
-            const hasCache = appState.events && appState.events.length > 0;
-            if (hasCache) {
-                applyUserNameMapping();
-                appState.isDataLoaded = true;
-                appState.currentCategory = 'all';
-                renderEventGrid('all');
-                
+            // ★ 建立全域的 hideInitialOverlay 函式由老虎機呼叫
+            window.hideInitialOverlay = function() {
                 const historyLoading = document.getElementById('history-loading');
                 if (historyLoading) historyLoading.classList.add('hidden');
 
@@ -1686,6 +1695,20 @@
                     overlay.style.opacity = '0';
                     setTimeout(() => overlay.remove(), 500);
                 }
+                
+                // 畫面顯示後再處理離線佇列，避免一開始就跳 toast
+                if (navigator.onLine) {
+                    setTimeout(() => processOfflineQueue(), 1000);
+                }
+            };
+
+            const hasCache = appState.events && appState.events.length > 0;
+            if (hasCache) {
+                applyUserNameMapping();
+                appState.isDataLoaded = true;
+                appState.currentCategory = 'all';
+                renderEventGrid('all');
+                // 注意：這裡不主動關閉載入畫面，交給老虎機播完再關
             }
 
             // 背景非同步抓取最新資料 (不 await 阻塞 UI)
@@ -1698,18 +1721,13 @@
                 appState.isDataLoaded = true;
                 appState.currentCategory = 'all';
                 renderEventGrid('all');
-
-                // 若之前沒有快取，則在資料回來後移除載入畫面
-                if (!hasCache) {
-                    const historyLoading = document.getElementById('history-loading');
-                    if (historyLoading) historyLoading.classList.add('hidden');
-
-                    const overlay = document.getElementById('initial-load-overlay');
-                    if (overlay) {
-                        overlay.style.opacity = '0';
-                        setTimeout(() => overlay.remove(), 500);
-                    }
+                
+                // 若沒有快取，等資料回來才算準備好。但仍然交給老虎機控制最終移除畫面的時機。
+                // 如果老虎機已經跑完，這裡可以保護性關閉。
+                if (!hasCache && !_slotSpinning) {
+                     if (window.hideInitialOverlay) window.hideInitialOverlay();
                 }
+                
             }).catch(e => console.error("背景抓取資料失敗", e));
 
             // 其他統計資料也丟在背景抓取
