@@ -141,14 +141,10 @@
             const sloganText = document.getElementById('slogan-text');
             if (sloganText) sloganText.innerText = randomQuote;
 
-            // ★ 取得並顯示出席王 Top 3（fetchJackpotTop3 由 window.onload 統一呼叫，不在此重複）
+            // ★ 取得並顯示出席王 Top 3
             fetchAttendanceTop3();
 
-            // ★ 取得並顯示出席王 Top 3（fetchJackpotTop3 由 window.onload 統一呼叫，不在此重複）
-            fetchAttendanceTop3();
-
-            // ★ 啟動迷你老虎機
-            // 修改：傳入回呼函式，讓老虎機轉完後才關閉載入畫面
+            // ★ 啟動迷你老虎機：轉完後才關閉載入畫面
             startSlotMachine(() => {
                 if (window.hideInitialOverlay) {
                     window.hideInitialOverlay();
