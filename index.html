@@ -174,29 +174,31 @@
 
             // 2. 背景呼叫 API 更新數據
             try {
-                const res = await fetch(`${GAS_URL}?action=getJackpotTop3&_=${Date.now()}`);
-                const top3 = await res.json();
+                const res = await fetch(`${GAS_URL}?action=getJackpotAll&_=${Date.now()}`);
+                const allData = await res.json();
 
-                if (Array.isArray(top3) && top3.length > 0) {
-                    // ★ 同分處裡 (筆畫)
-                    top3.sort((a, b) => {
+                if (Array.isArray(allData) && allData.length > 0) {
+                    // 同分處理 (筆畫)
+                    allData.sort((a, b) => {
                         const valA = a.score !== undefined ? a.score : a.count;
                         const valB = b.score !== undefined ? b.score : b.count;
                         if (valB !== valA) return valB - valA;
                         return a.name.localeCompare(b.name, 'zh-Hant-TW');
                     });
 
-                    // 更新快取
+                    // 更新快取 (Top 3)
+                    const top3 = allData.slice(0, 3);
                     localStorage.setItem(cacheKey, JSON.stringify(top3));
+                    // 緩存完整名單
+                    appState.jackpotRankings = allData;
+
                     // 重新渲染最新數據
                     renderJackpotTop3(top3);
                     if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
                     if (homeContainer) homeContainer.classList.remove('hidden');
                 }
-                // ★ 修正：不在此處隱藏 homeContainer，避免與 fetchAttendanceTop3 競爭
             } catch (e) {
-                console.warn("Fetch Top 3 failed", e);
-                // ★ 修正：失敗時不主動隱藏排行榜，保留已顯示的出席王資料
+                console.warn("Fetch Jackpot All failed", e);
             }
         }
 
@@ -220,29 +222,31 @@
                 }
             }
 
-            // 2. 背景呼叫 API 更新數據（action=getAttendanceTop3 已在後端對應 getParticipationStats().slice(0,3)）
+            // 2. 背景呼叫 API 更新數據
             try {
-                const res = await fetch(`${GAS_URL}?action=getAttendanceTop3&_=${Date.now()}`);
-                const top3 = await res.json();
+                const res = await fetch(`${GAS_URL}?action=getParticipationStats&_=${Date.now()}`);
+                const allData = await res.json();
 
-                if (Array.isArray(top3) && top3.length > 0) {
-                    // ★ 同分處裡 (筆畫)
-                    top3.sort((a, b) => {
+                if (Array.isArray(allData) && allData.length > 0) {
+                    // 同分處理
+                    allData.sort((a, b) => {
                         if (b.count !== a.count) return b.count - a.count;
                         return a.name.localeCompare(b.name, 'zh-Hant-TW');
                     });
 
-                    // 更新快取
+                    // 更新快取 (Top 3)
+                    const top3 = allData.slice(0, 3);
                     localStorage.setItem(cacheKey, JSON.stringify(top3));
+                    // 緩存完整名單
+                    appState.attendanceRankings = allData;
+
                     // 重新渲染最新數據
                     renderAttendanceTop3(top3);
                     if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
                     if (homeContainer) homeContainer.classList.remove('hidden');
                 }
-                // ★ 修正：不在此處隱藏 homeContainer，避免與 fetchJackpotTop3 競爭
             } catch (e) {
-                console.warn("Fetch Attendance Top 3 failed", e);
-                // ★ 修正：失敗時不主動隱藏排行榜，保留已顯示的拉霸英雄資料
+                console.warn("Fetch Participation Full failed", e);
             }
         }
 
@@ -775,6 +779,41 @@
             border-radius: 1.5rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+
+        /* 詳細排行榜名單彈窗 */
+        #rankings-modal-content {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .ranking-item {
+            transition: all 0.2s ease;
+        }
+
+        .ranking-item:hover {
+            background: rgba(0, 0, 0, 0.02);
+            transform: translateX(2px);
+        }
+
+        .ranking-medal {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+        }
+
+        .rank-number {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            color: #9ca3af;
+            width: 24px;
+            text-align: center;
         }
     </style>
 </head>
@@ -833,7 +872,7 @@
 
                 <div class="grid grid-cols-2 gap-4 divide-x divide-white/10 relative z-10">
                     <!-- 左側：出席王 -->
-                    <div id="participation-stats-container">
+                    <div id="participation-stats-container" onclick="openRankingsModal('attendance', event)" class="cursor-pointer active:opacity-70 transition-opacity">
                         <div class="flex items-center gap-1.5 mb-1 px-1">
                             <div class="w-7 h-7 bg-amber-500/20 rounded-lg flex items-center justify-center">
                                 <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
@@ -845,7 +884,7 @@
                         </div>
                     </div>
                     <!-- 右側：拉霸英雄 -->
-                    <div id="home-jackpot-container">
+                    <div id="home-jackpot-container" onclick="openRankingsModal('jackpot', event)" class="cursor-pointer active:opacity-70 transition-opacity">
                         <div class="flex items-center gap-1.5 mb-1 px-2">
                             <div class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center">
                                 <i data-lucide="crown" class="w-4 h-4 text-white"></i>
@@ -1440,6 +1479,38 @@
         </div>
     </div>
 
+    <!-- 詳細排行榜彈窗 -->
+    <div id="rankings-modal" onclick="closeRankingsModal()"
+        class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
+        <div id="rankings-modal-content" onclick="event.stopPropagation();"
+            class="bg-white/90 rounded-3xl shadow-2xl w-full max-w-xs flex flex-col overflow-hidden transform transition-all border border-white/20">
+            <!-- Top Notice -->
+            <div class="bg-amber-500/10 text-amber-600 text-[10px] py-2 text-center font-bold tracking-widest border-b border-amber-500/10">
+                <i data-lucide="info" class="w-3 h-3 inline-block -mt-0.5 mr-1"></i> 三秒後或點擊任意處即可離開
+            </div>
+            <!-- Header/Tabs -->
+            <div class="flex border-b border-black/5 bg-gray-50/50">
+                <button id="rank-tab-attendance" onclick="switchRankTab('attendance')"
+                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-400">出席王</button>
+                <button id="rank-tab-jackpot" onclick="switchRankTab('jackpot')"
+                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-400">拉霸英雄</button>
+            </div>
+
+            <!-- List Area -->
+            <div class="flex-1 overflow-y-auto max-h-[60dvh] min-h-[300px] p-2 space-y-1 custom-scrollbar" id="rankings-list-container">
+                <div class="flex flex-col items-center justify-center py-20 animate-pulse">
+                    <i data-lucide="loader-2" class="w-8 h-8 text-gray-300 animate-spin mb-2"></i>
+                    <span class="text-xs text-gray-400">數據讀取中...</span>
+                </div>
+            </div>
+
+            <!-- Footer: Auto close indicator -->
+            <div class="px-4 py-2 bg-gray-50/80 text-[11px] text-gray-500 text-center border-t border-black/5 font-medium">
+                <span id="rank-close-timer" class="font-black text-amber-500">3</span> 秒後自動關閉
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==========================================
         // 1. 設定與狀態
@@ -1459,17 +1530,137 @@
             currentCategory: 'all',
             currentEvent: null,
             currentStats: {},
+            currentRankTab: 'attendance',
             historyStack: ['home'],
             guestList: [],
             sponsorList: [],
             isDataLoaded: false,
-            myRegistrations: []
+            myRegistrations: [],
+            attendanceRankings: [],
+            jackpotRankings: [],
+            rankingsTimer: null,
+            rankingsTimeLeft: 3
         };
 
         // ★ 防重複提交鎖 + 離線佇列常數
         let _isSubmitting = false;
         const OFFLINE_QUEUE_KEY = 'offlineSubmitQueue';
         const OFFLINE_QUEUE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 小時過期
+
+        // --- 詳細排行榜彈窗邏輯 ---
+        function openRankingsModal(type, event) {
+            if (event) event.stopPropagation();
+            
+            const modal = document.getElementById('rankings-modal');
+            if (modal) modal.classList.remove('hidden');
+            
+            appState.currentRankTab = type || 'attendance';
+            switchRankTab(appState.currentRankTab);
+            
+            // 啟動 3 秒自動關閉計時器
+            startRankingsAutoClose();
+        }
+
+        function closeRankingsModal() {
+            const modal = document.getElementById('rankings-modal');
+            if (modal && !modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+                stopRankingsAutoClose();
+            }
+        }
+
+        function startRankingsAutoClose() {
+            stopRankingsAutoClose();
+            appState.rankingsTimeLeft = 3;
+            const timerEl = document.getElementById('rank-close-timer');
+            if (timerEl) timerEl.innerText = appState.rankingsTimeLeft;
+            
+            appState.rankingsTimer = setInterval(() => {
+                appState.rankingsTimeLeft--;
+                if (timerEl) timerEl.innerText = appState.rankingsTimeLeft;
+                
+                if (appState.rankingsTimeLeft <= 0) {
+                    closeRankingsModal();
+                }
+            }, 1000);
+        }
+
+        function stopRankingsAutoClose() {
+            if (appState.rankingsTimer) {
+                clearInterval(appState.rankingsTimer);
+                appState.rankingsTimer = null;
+            }
+        }
+
+        function switchRankTab(type) {
+            appState.currentRankTab = type;
+            const tabs = {
+                attendance: document.getElementById('rank-tab-attendance'),
+                jackpot: document.getElementById('rank-tab-jackpot')
+            };
+            
+            Object.keys(tabs).forEach(k => {
+                if (!tabs[k]) return;
+                if (k === type) {
+                    tabs[k].classList.add('text-green-600', 'border-green-600', 'bg-white');
+                    tabs[k].classList.remove('text-gray-400', 'border-transparent');
+                } else {
+                    tabs[k].classList.remove('text-green-600', 'border-green-600', 'bg-white');
+                    tabs[k].classList.add('text-gray-400', 'border-transparent');
+                }
+            });
+            
+            renderDetailedRankings();
+            startRankingsAutoClose();
+        }
+
+        function renderDetailedRankings() {
+            const container = document.getElementById('rankings-list-container');
+            const type = appState.currentRankTab;
+            const data = type === 'attendance' ? appState.attendanceRankings : appState.jackpotRankings;
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+                        <i data-lucide="info" class="w-8 h-8 mb-2 opacity-20"></i>
+                        <span class="text-xs">尚無排名數據</span>
+                    </div>
+                `;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
+            }
+            
+            let html = '';
+            data.forEach((item, index) => {
+                const rank = index + 1;
+                let rankIcon = '';
+                if (rank === 1) rankIcon = '<span class="ranking-medal">🥇</span>';
+                else if (rank === 2) rankIcon = '<span class="ranking-medal">🥈</span>';
+                else if (rank === 3) rankIcon = '<span class="ranking-medal">🥉</span>';
+                else rankIcon = `<span class="rank-number">${rank}</span>`;
+                
+                const valueLabel = type === 'attendance' ? `${item.count} 次` : `${item.score} 分`;
+                const valueColor = type === 'attendance' ? 'text-amber-600' : 'text-green-600';
+                
+                html += `
+                    <div class="ranking-item flex items-center gap-3 p-3 rounded-2xl">
+                        <div class="flex-shrink-0 flex items-center justify-center min-w-[32px]">
+                            ${rankIcon}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-bold text-gray-800 truncate">${escapeHtml(item.name)}</div>
+                        </div>
+                        <div class="text-xs font-black ${valueColor} whitespace-nowrap bg-gray-50 px-2.5 py-1 rounded-lg">
+                            ${valueLabel}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            // 刷新 Lucide 圖示
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
 
         // ==========================================
         // 1.1 共用工具與常數
