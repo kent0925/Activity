@@ -1557,7 +1557,7 @@
             appState.currentRankTab = type || 'attendance';
             switchRankTab(appState.currentRankTab);
             
-            // 啟動 3 秒自動關閉計時器
+            // 啟動 5 秒自動關閉計時器
             startRankingsAutoClose();
         }
 
@@ -1571,7 +1571,7 @@
 
         function startRankingsAutoClose() {
             stopRankingsAutoClose();
-            appState.rankingsTimeLeft = 3;
+            appState.rankingsTimeLeft = 5;
             const timerEl = document.getElementById('rank-close-timer');
             if (timerEl) timerEl.innerText = appState.rankingsTimeLeft;
             
