@@ -891,7 +891,7 @@
                             <div class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center">
                                 <i data-lucide="crown" class="w-4 h-4 text-white"></i>
                             </div>
-                            <span class="text-xs font-black text-white/90 tracking-wider">拉霸英雄榜</span>
+                            <span class="text-xs font-black text-white/90 tracking-wider">瑪莉英雄榜</span>
                         </div>
                         <div id="home-jackpot-list" class="flex justify-around items-end h-[90px]">
                             <div class="text-xs text-white/30 animate-pulse">載入中...</div>
@@ -900,12 +900,17 @@
                 </div>
             </div>
 
-            <!-- 歷史活動按鈕 (低調玻璃質感) -->
-            <div class="flex justify-center px-1">
+            <!-- 歷史活動與小瑪莉 (並列) -->
+            <div class="flex justify-center gap-3 px-1">
                 <button onclick="toggleHistoryView()" id="btn-history-toggle"
-                    class="bg-white/50 backdrop-blur-md text-gray-500 px-5 py-2 rounded-2xl flex items-center gap-2 hover:bg-white/80 transition-all font-bold text-xs border border-white/40 shadow-sm">
-                    <i data-lucide="history" class="w-3.5 h-3.5"></i>
-                    <span id="history-btn-text">回顧過往活動紀錄</span>
+                    class="flex-1 max-w-[180px] bg-white/50 backdrop-blur-md text-gray-500 px-4 py-2.5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/80 transition-all font-bold text-xs border border-white/40 shadow-sm">
+                    <i data-lucide="history" class="w-4 h-4"></i>
+                    <span id="history-btn-text">回顧過往</span>
+                </button>
+                <button onclick="openSmallMary()" id="btn-small-mary-open"
+                    class="flex-1 max-w-[180px] premium-gradient text-white px-4 py-2.5 rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 transition-all font-bold text-xs shadow-md">
+                    <i data-lucide="gamepad-2" class="w-4 h-4"></i>
+                    <span>小瑪莉遊戲</span>
                 </button>
             </div>
 
@@ -1516,6 +1521,139 @@
         </div>
     </div>
 
+    <!-- 小瑪莉遊戲彈窗 (Portal) -->
+    <div id="small-mary-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in overflow-y-auto">
+        <div class="bg-[#1a1a1a] rounded-[2rem] border-4 border-[#333] shadow-2xl w-full max-w-sm flex flex-col p-4 relative text-white">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-black tracking-tighter">小瑪莉</h2>
+                        <p class="text-[10px] text-amber-400 font-bold uppercase tracking-widest">Fruit Machine</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="openMaryHelp()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition active:scale-95 text-gray-300 text-lg font-black">?</button>
+                    <button onclick="closeSmallMary()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition active:scale-95">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 遊戲說明 Overlay -->
+            <div id="mary-help-overlay" class="hidden absolute inset-0 bg-[#111]/95 rounded-[2rem] z-30 overflow-y-auto flex flex-col p-5 text-white">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-base font-black">📘 小瑪莉 遊戲說明</h3>
+                    <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition text-sm">✕</button>
+                </div>
+
+                <!-- 綉分說明 -->
+                <div class="bg-white/5 rounded-2xl p-3 mb-3 border border-white/10">
+                    <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">🎫 點數來源</div>
+                    <div class="space-y-1 text-[12px] text-gray-300">
+                        <div>• 每月自動發放 <span class="text-amber-400 font-bold">200 贈分</span>（本月有報名活動者）</div>
+                        <div>• 贈分保留至 <span class="text-amber-400 font-bold">2026/05/01</span>，期滠徒入彩池</div>
+                        <div>• 拉霸機分數可用 <span class="text-amber-400 font-bold">10:1</span> 從小瑪莉介面偌「兌換」轉入</div>
+                    </div>
+                </div>
+
+                <!-- 紦號貭率 -->
+                <div class="bg-white/5 rounded-2xl p-3 mb-3 border border-white/10">
+                    <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">🍒 符號貭率表</div>
+                    <div class="grid grid-cols-2 gap-y-1.5 text-[12px]">
+                        <div class="flex items-center gap-2"><span class="text-lg">🍒</span> <span class="text-gray-300">櫻桃</span></div><div class="text-right font-black text-amber-400">x 2</div>
+                        <div class="flex items-center gap-2"><span class="text-lg">🍊</span> <span class="text-gray-300">橘子</span></div><div class="text-right font-black text-amber-400">x 3</div>
+                        <div class="flex items-center gap-2"><span class="text-lg">🥭</span> <span class="text-gray-300">芒果</span></div><div class="text-right font-black text-amber-400">x 5</div>
+                        <div class="flex items-center gap-2"><span class="text-lg">🔔</span> <span class="text-gray-300">鈴鐺</span></div><div class="text-right font-black text-amber-400">x 10</div>
+                        <div class="flex items-center gap-2"><span class="text-lg">🍉</span> <span class="text-gray-300">西瓜</span></div><div class="text-right font-black text-amber-400">x 20</div>
+                        <div class="flex items-center gap-2"><span class="text-lg">🌟</span> <span class="text-gray-300">星星</span></div><div class="text-right font-black text-amber-400">x 30</div>
+                        <div class="flex items-center gap-2"><span class="text-lg">7️⃣</span> <span class="text-gray-300">幸運 7</span></div><div class="text-right font-black text-amber-400">x 40</div>
+                        <div class="flex items-center gap-2"><span class="text-lg">💎</span> <span class="text-gray-300">鑽石 BAR</span></div><div class="text-right font-black text-green-400">x 100 🎖️</div>
+                        <div class="flex items-center gap-2"><span class="text-lg">🍀</span> <span class="text-gray-300">幸運命中</span></div><div class="text-right font-black text-blue-400">多送燈</div>
+                    </div>
+                    <div class="text-[10px] text-gray-500 mt-2">• 貭率 = 壓在該符號的點數 × 倒率</div>
+                </div>
+
+                <!-- 比大小 -->
+                <div class="bg-white/5 rounded-2xl p-3 mb-3 border border-white/10">
+                    <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">🃏 比大小（Double Up）</div>
+                    <div class="space-y-1 text-[12px] text-gray-300">
+                        <div>• 中獎後可選擇進入比大小翻倍挑戰</div>
+                        <div>• 猜 <span class="text-red-400 font-bold">小 (1~6)</span> 或 <span class="text-blue-400 font-bold">大 (8~13)</span></div>
+                        <div>• 猜對：贏分翻倍，猜錯：贏分歸零</div>
+                        <div>• 開出 <span class="text-yellow-400 font-bold">7 點 莊家通殺</span>（大小皆輸）</div>
+                        <div>• 可選擇「頸獎」自動安全收取目前贏分</div>
+                    </div>
+                </div>
+
+                <!-- 玩法步驟 -->
+                <div class="bg-white/5 rounded-2xl p-3 border border-white/10">
+                    <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">ℹ️ 如何遊玩</div>
+                    <div class="space-y-1 text-[12px] text-gray-300">
+                        <div>① 點擊下方符號進行壓注</div>
+                        <div>② 點「啟動 START」開始轉盤</div>
+                        <div>③ 中獎後選擇「比大小」翻倍或「頸獎」直接安全存分</div>
+                        <div>④ 點「兌換」將拉霸分數轉入點數 (10:1)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jackpot Pool Display -->
+            <div class="bg-black/40 rounded-2xl p-3 mb-4 border border-white/5 text-center">
+                <div class="text-[10px] text-gray-500 font-bold uppercase mb-1">彩池 Jackpot</div>
+                <div id="mary-jackpot-pool" class="text-3xl font-black text-amber-400 tabular-nums leading-none">0</div>
+            </div>
+
+            <!-- Main Board (6x5 or similar grid) -->
+            <div id="mary-board" class="grid grid-cols-6 gap-1 mb-4 p-1 bg-black/50 rounded-xl border border-white/10 aspect-square">
+                <!-- 24格轉盤由 JS 生成 -->
+            </div>
+
+            <!-- Score Display Row -->
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <div class="bg-black/60 rounded-xl p-2 border border-blue-500/30">
+                    <div class="text-[9px] text-blue-400 font-bold uppercase mb-0.5">我的點數</div>
+                    <div id="mary-my-points" class="text-xl font-black tabular-nums">0</div>
+                    <div id="mary-gift-points" class="text-[9px] text-blue-300 font-medium">贈分: 0</div>
+                </div>
+                <div class="bg-black/60 rounded-xl p-2 border border-green-500/30">
+                    <div class="text-[9px] text-green-400 font-bold uppercase mb-0.5">本局贏分</div>
+                    <div id="mary-win-score" class="text-xl font-black tabular-nums text-green-400">0</div>
+                </div>
+            </div>
+
+            <!-- Double Up (Big/Small) Section -->
+            <div id="mary-double-section" class="hidden grid grid-cols-2 gap-2 mb-4">
+                <button id="mary-btn-small" onclick="maryDoubleUp('small')" class="py-3 bg-red-600 rounded-xl font-black text-sm hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-600/20">小 (1-6)</button>
+                <button id="mary-btn-big" onclick="maryDoubleUp('big')" class="py-3 bg-blue-600 rounded-xl font-black text-sm hover:bg-blue-500 active:scale-95 transition-all shadow-lg shadow-blue-600/20">大 (8-13)</button>
+            </div>
+            <div id="mary-collect-btn" class="hidden mb-3">
+                <button onclick="maryCollect()" class="w-full py-2 bg-green-600 rounded-xl font-black text-sm hover:bg-green-500 active:scale-95 transition-all">✅ 頸獎停止 ({{ winScore }} 分)</button>
+            </div>
+
+            <!-- Betting Icons (Grid 4x2) -->
+            <div id="mary-bet-panel" class="grid grid-cols-4 gap-2 mb-4">
+                <!-- 由 JS 生成 8 個壓注按鈕 -->
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="flex gap-2">
+                <button onclick="maryClearBet()" class="flex-1 py-3 bg-white/10 rounded-xl font-bold text-xs hover:bg-white/20 active:scale-95 transition border border-white/10">清除</button>
+                <button onclick="maryExchange()" class="flex-1 py-3 bg-white/10 rounded-xl font-bold text-xs hover:bg-white/20 active:scale-95 transition border border-white/10">兌換</button>
+                <button id="mary-btn-start" onclick="maryStartSpin()" class="flex-[2] py-3 premium-gradient rounded-xl font-black text-sm shadow-xl active:scale-95 transition-transform disabled:opacity-50">啟動 START</button>
+            </div>
+
+            <!-- Double Up Status Overlay (Optional) -->
+            <div id="mary-double-result" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-black/90 px-8 py-4 rounded-3xl border-2 border-amber-500 text-center">
+                <div class="text-4xl font-black mb-1" id="mary-double-num">7</div>
+                <div class="text-xs font-bold text-amber-500" id="mary-double-msg">恭喜翻倍！</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==========================================
         // 1. 設定與狀態
@@ -1668,8 +1806,328 @@
         }
 
         // ==========================================
-        // 1.1 共用工具與常數
+        // 小瑪莉遊戲 (Small Mary / Fruit Machine) 邏輯
         // ==========================================
+        let maryState = {
+            points: 0,
+            monthlyGift: 0,
+            jackpotPool: 0,
+            totalMaryScore: 0,
+            currentBet: {}, // { 'cherry': 5, 'orange': 2, ... }
+            isSpinning: false,
+            winScore: 0,
+            lastResult: null,
+            doubleUpActive: false,
+            doubleUpScore: 0
+        };
+
+        const MARY_CONFIG = [
+            { id: 'cherry', label: '🍒', rate: 2, count: 5 },
+            { id: 'orange', label: '🍊', rate: 3, count: 4 },
+            { id: 'mango', label: '🥭', rate: 5, count: 4 },
+            { id: 'bell', label: '🔔', rate: 10, count: 3 },
+            { id: 'watermelon', label: '🍉', rate: 20, count: 2 },
+            { id: 'star', label: '🌟', rate: 30, count: 2 },
+            { id: 'seven', label: '7️⃣', rate: 40, count: 1 },
+            { id: 'bar', label: '💎', rate: 100, count: 1 },
+            { id: 'lucky', label: '🍀', rate: 0, count: 2 } // 送燈
+        ];
+
+        // 轉盤順序 (24格)
+        const MARY_GRID = [
+            'bar', 'cherry', 'orange', 'mango', 'bell', 'lucky',
+            'watermelon', 'cherry', 'star', 'mango', 'orange', 'bell',
+            'seven', 'cherry', 'mango', 'orange', 'bell', 'lucky',
+            'watermelon', 'cherry', 'star', 'mango', 'orange', 'bell'
+        ];
+
+        async function openSmallMary() {
+            if (!appState.user.userId) return showToast("請先登入 LINE");
+            document.getElementById('small-mary-modal').classList.remove('hidden');
+            initMaryBoard();
+            initMaryBetPanel();
+            await refreshMaryData();
+        }
+
+        function closeSmallMary() {
+            if (maryState.isSpinning) return;
+            document.getElementById('small-mary-modal').classList.add('hidden');
+        }
+
+        function openMaryHelp() {
+            document.getElementById('mary-help-overlay').classList.remove('hidden');
+        }
+
+        async function refreshMaryData() {
+            try {
+                const res = await fetch(`${GAS_URL}?action=getSmallMaryData&userId=${appState.user.userId}&name=${encodeURIComponent(appState.user.displayName)}`);
+                const data = await res.json();
+                if (data.error) return showToast(data.error);
+                
+                maryState.points = data.points;
+                maryState.monthlyGift = data.monthlyGift;
+                maryState.totalMaryScore = data.totalMaryScore;
+                maryState.jackpotPool = data.jackpotPool;
+
+                updateMaryUI();
+            } catch (e) { console.error(e); }
+        }
+
+        function updateMaryUI() {
+            const total = maryState.points + maryState.monthlyGift;
+            document.getElementById('mary-my-points').innerText = maryState.points.toLocaleString();
+            document.getElementById('mary-gift-points').innerText = `贈分: ${maryState.monthlyGift.toLocaleString()}`;
+            document.getElementById('mary-jackpot-pool').innerText = maryState.jackpotPool.toLocaleString();
+            document.getElementById('mary-win-score').innerText = maryState.winScore.toLocaleString();
+            // 点數不足時禁用開始按鈕
+            const startBtn = document.getElementById('mary-btn-start');
+            if (startBtn && !maryState.isSpinning) {
+                startBtn.disabled = total <= 0;
+            }
+        }
+
+        function initMaryBoard() {
+            const board = document.getElementById('mary-board');
+            board.innerHTML = '';
+            MARY_GRID.forEach((id, index) => {
+                const conf = MARY_CONFIG.find(c => c.id === id);
+                const cell = document.createElement('div');
+                cell.id = `mary-cell-${index}`;
+                cell.className = "flex items-center justify-center bg-[#2a2a2a] rounded-lg border-2 border-transparent text-xl shadow-inner transition-all duration-100";
+                cell.innerHTML = conf.label;
+                board.appendChild(cell);
+            });
+        }
+
+        function initMaryBetPanel() {
+            const panel = document.getElementById('mary-bet-panel');
+            panel.innerHTML = '';
+            MARY_CONFIG.filter(c => c.rate > 0).forEach(conf => {
+                const btn = document.createElement('div');
+                btn.className = "flex flex-col items-center bg-[#333] p-1.5 rounded-xl border border-white/5 active:scale-95 transition cursor-pointer relative overflow-hidden";
+                btn.onclick = () => maryAddBet(conf.id);
+                
+                btn.innerHTML = `
+                    <div class="text-[10px] text-amber-500 font-black mb-0.5">x${conf.rate}</div>
+                    <div class="text-xl">${conf.label}</div>
+                    <div id="mary-bet-val-${conf.id}" class="text-[11px] font-black text-white mt-1">0</div>
+                `;
+                panel.appendChild(btn);
+            });
+        }
+
+        function maryAddBet(id) {
+            if (maryState.isSpinning || maryState.doubleUpActive) return;
+            const totalBet = Object.values(maryState.currentBet).reduce((a, b) => a + b, 0);
+            if (totalBet >= (maryState.points + maryState.monthlyGift)) return showToast("點數不足");
+
+            maryState.currentBet[id] = (maryState.currentBet[id] || 0) + 1;
+            document.getElementById(`mary-bet-val-${id}`).innerText = maryState.currentBet[id];
+            updateMaryUI();
+        }
+
+        function maryClearBet() {
+            if (maryState.isSpinning || maryState.doubleUpActive) return;
+            maryState.currentBet = {};
+            MARY_CONFIG.forEach(c => {
+                const el = document.getElementById(`mary-bet-val-${c.id}`);
+                if (el) el.innerText = '0';
+            });
+        }
+
+        async function maryStartSpin() {
+            if (maryState.isSpinning || maryState.doubleUpActive) return;
+            const betPoints = Object.values(maryState.currentBet).reduce((a, b) => a + b, 0);
+            if (betPoints <= 0) return showToast("請先壓注");
+
+            maryState.isSpinning = true;
+            document.getElementById('mary-btn-start').disabled = true;
+            
+            // 隨機結果 (考慮機率)
+            const targetIdx = Math.floor(Math.random() * 24);
+            const targetId = MARY_GRID[targetIdx];
+            const targetConfig = MARY_CONFIG.find(c => c.id === targetId);
+
+            // 動畫
+            let currentIdx = 0;
+            let speed = 50;
+            const totalRounds = 3 * 24 + targetIdx;
+            
+            for (let i = 0; i <= totalRounds; i++) {
+                const prev = document.getElementById(`mary-cell-${(i - 1 + 24) % 24}`);
+                const curr = document.getElementById(`mary-cell-${i % 24}`);
+                if (prev) prev.classList.remove('border-amber-500', 'bg-amber-500/20', 'scale-110', 'z-10');
+                if (curr) curr.classList.add('border-amber-500', 'bg-amber-500/20', 'scale-110', 'z-10');
+                
+                // 漸慢效果
+                if (totalRounds - i < 10) speed += 30;
+                else if (totalRounds - i < 20) speed += 10;
+                
+                await new Promise(r => setTimeout(r, speed));
+            }
+
+            // 結算
+            const winRate = targetConfig.rate;
+            const betOnTarget = maryState.currentBet[targetId] || 0;
+            const winScore = betOnTarget * winRate;
+            
+            maryState.winScore = winScore;
+            updateMaryUI();
+
+            // 與後端同步
+            try {
+                const res = await apiSubmit({
+                    action: 'playSmallMary',
+                    userId: appState.user.userId,
+                    betPoints: betPoints,
+                    winPoints: winScore,
+                    symbol: targetConfig.label // 傳送中獎符號 (e.g. 🍒)
+                });
+                if (res.success) {
+                    maryState.points = res.points;
+                    maryState.monthlyGift = res.monthlyGift;
+                    maryState.totalMaryScore = res.totalMaryScore;
+                    updateMaryUI();
+                }
+            } catch (e) { console.error(e); }
+
+            if (winScore > 0) {
+                showToast(`🎊 中獎了！獲得 ${winScore} 分 (${targetConfig.label})`);
+                document.getElementById('mary-double-section').classList.remove('hidden');
+                maryState.doubleUpActive = true;
+            } else {
+                // 未中獎，清除壓注並重置狀態
+                maryClearBet();
+                maryState.winScore = 0;
+                maryState.isSpinning = false;
+                document.getElementById('mary-btn-start').disabled = false;
+                showToast(`未中獎，試試手氣！本局落在 ${targetConfig.label}`);
+            }
+        }
+
+        async function maryDoubleUp(choice) {
+            const num = Math.floor(Math.random() * 13) + 1; // 1-13
+            const resultEl = document.getElementById('mary-double-result');
+            const numEl = document.getElementById('mary-double-num');
+            const msgEl = document.getElementById('mary-double-msg');
+            
+            numEl.innerText = num;
+            resultEl.classList.remove('hidden');
+            
+            let win = false;
+            if (num === 7) {
+                win = false; // 莊家通殺
+            } else if (choice === 'small' && num <= 6) {
+                win = true;
+            } else if (choice === 'big' && num >= 8) {
+                win = true;
+            }
+
+            if (win) {
+                maryState.winScore *= 2;
+                msgEl.innerText = `🎉 開出 ${num}，恭喜翻倍！`;
+                msgEl.className = "text-xs font-bold text-amber-400";
+                document.getElementById('mary-collect-btn').classList.remove('hidden');
+            } else {
+                const msg = num === 7 ? `💀 開出 7，莊家通殺！` : `開出 ${num}，遺憾輸了...`;
+                msgEl.innerText = msg;
+                msgEl.className = "text-xs font-bold text-gray-400";
+                maryState.winScore = 0;
+                maryState.doubleUpActive = false;
+                document.getElementById('mary-double-section').classList.add('hidden');
+                document.getElementById('mary-collect-btn').classList.add('hidden');
+                maryClearBet();
+            }
+            
+            updateMaryUI();
+
+            // 同步至後端
+            apiSubmit({
+                action: 'playSmallMary',
+                userId: appState.user.userId,
+                betPoints: 0,
+                isDoubleUp: true,
+                doubleWin: maryState.winScore,
+                symbol: win ? `大小翻倍×2` : `大小輸(開${num})`
+            });
+
+            setTimeout(() => {
+                resultEl.classList.add('hidden');
+                if (!maryState.doubleUpActive) {
+                    // 輸後完全重置
+                    maryState.isSpinning = false;
+                    maryState.winScore = 0;
+                    updateMaryUI();
+                    document.getElementById('mary-btn-start').disabled = false;
+                } else {
+                    // 優勝後更新顰獎按鈕文字
+                    const collectBtn = document.getElementById('mary-collect-btn');
+                    if (collectBtn) {
+                        const b = collectBtn.querySelector('button');
+                        if (b) b.textContent = `✅ 頸獎停止 (${maryState.winScore} 分)`;
+                    }
+                }
+            }, 1800);
+        }
+
+        // 領獎免進入 Double Up
+        function maryCollect() {
+            document.getElementById('mary-collect-btn').classList.add('hidden');
+            document.getElementById('mary-double-section').classList.add('hidden');
+            document.getElementById('mary-double-result').classList.add('hidden');
+            maryState.doubleUpActive = false;
+            maryState.isSpinning = false;
+            maryClearBet();
+            showToast(`✅ 已領奖 ${maryState.winScore} 分！`);
+            maryState.winScore = 0;
+            updateMaryUI();
+            document.getElementById('mary-btn-start').disabled = false;
+        }
+
+        async function maryExchange() {
+            if (maryState.isSpinning || maryState.doubleUpActive) return;
+            // 顯示內建小型輸入却
+            const overlay = document.createElement('div');
+            overlay.id = 'mary-exchange-overlay';
+            overlay.className = 'absolute inset-0 bg-black/90 rounded-[2rem] z-20 flex flex-col items-center justify-center gap-4 p-6';
+            overlay.innerHTML = `
+                <div class="text-sm font-black text-white">拉霸分 10:1 兌換</div>
+                <input id="mary-exchange-input" type="number" min="10" step="10" placeholder="請輸入拉霸分數"
+                    class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white text-center text-lg font-black focus:outline-none focus:border-amber-400">
+                <div class="text-xs text-gray-400">最小 10 分，必須為 10 的倍數</div>
+                <div class="flex gap-2 w-full">
+                    <button onclick="document.getElementById('mary-exchange-overlay').remove()" 
+                        class="flex-1 py-2.5 bg-white/10 rounded-xl font-bold text-sm">取消</button>
+                    <button onclick="maryConfirmExchange()" 
+                        class="flex-1 py-2.5 bg-amber-500 rounded-xl font-black text-sm text-black">確認兌換</button>
+                </div>
+            `;
+            document.querySelector('#small-mary-modal > div').appendChild(overlay);
+        }
+
+        async function maryConfirmExchange() {
+            const input = document.getElementById('mary-exchange-input');
+            const val = parseInt(input ? input.value : 0);
+            if (!val || isNaN(val) || val < 10) return showToast('請輸入合法的分數（最小 10）');
+            const roundedVal = Math.floor(val / 10) * 10;
+
+            document.getElementById('mary-exchange-overlay').remove();
+            try {
+                const res = await apiSubmit({
+                    action: 'exchangeSlotToMary',
+                    userId: appState.user.userId,
+                    name: appState.user.displayName,
+                    exchangeScore: roundedVal
+                });
+                if (res.success) {
+                    showToast(`✅ 成功兌換 ${res.addedPoints} 小瑪莉點數`);
+                    maryState.points += res.addedPoints;
+                    updateMaryUI();
+                } else {
+                    showToast(res.error || '兌換失敗');
+                }
+            } catch (e) { console.error(e); }
+        }
 
         /** HTML 跳脫：防止使用者輸入的 XSS 攻擊 */
         function escapeHtml(str) {
