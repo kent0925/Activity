@@ -1522,7 +1522,8 @@
     </div>
 
     <!-- 小瑪莉遊戲彈窗 - 街機風格 -->
-    <div id="small-mary-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-md p-2 animate-fade-in overflow-y-auto">
+    <div id="small-mary-modal"
+        class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-md p-2 animate-fade-in overflow-y-auto">
         <div id="mary-machine" style="
             background: linear-gradient(160deg, #2c1810 0%, #1a0f0a 30%, #0d0805 70%, #1a0f0a 100%);
             border: 3px solid #8b6914;
@@ -1530,7 +1531,7 @@
             box-shadow: 0 0 40px rgba(255, 180, 0, 0.3), 0 0 80px rgba(255, 100, 0, 0.1), inset 0 0 30px rgba(0,0,0,0.8);
             width: 100%; max-width: 340px; position: relative; overflow: hidden; font-family: 'Segoe UI', sans-serif;
         " class="text-white flex flex-col">
-            
+
             <!-- 頂部霓虹招牌 -->
             <div style="
                 background: linear-gradient(90deg, #ff6b00, #ffcc00, #ff6b00);
@@ -1540,12 +1541,19 @@
                 position: relative;
                 box-shadow: 0 4px 20px rgba(255,150,0,0.5);
             ">
-                <div style="font-size: 22px; font-weight: 900; color: #1a0800; letter-spacing: 4px; text-shadow: 0 1px 0 rgba(255,255,255,0.4);">🎰 小瑪 莉 🎰</div>
-                <div style="font-size: 9px; color: #5a2800; font-weight: 700; letter-spacing: 6px; text-transform: uppercase;">FRUIT MACHINE</div>
+                <div
+                    style="font-size: 22px; font-weight: 900; color: #1a0800; letter-spacing: 4px; text-shadow: 0 1px 0 rgba(255,255,255,0.4);">
+                    🎰 小瑪 莉 🎰</div>
+                <div
+                    style="font-size: 9px; color: #5a2800; font-weight: 700; letter-spacing: 6px; text-transform: uppercase;">
+                    FRUIT MACHINE</div>
                 <!-- 控制按鈕列 -->
-                <div style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px;">
-                    <button onclick="openMaryHelp()" style="width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.3);color:#fff;font-weight:900;font-size:13px;cursor:pointer;">?</button>
-                    <button onclick="closeSmallMary()" style="width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);color:#ccc;font-size:14px;cursor:pointer;">✕</button>
+                <div
+                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px;">
+                    <button onclick="openMaryHelp()"
+                        style="width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.3);color:#fff;font-weight:900;font-size:13px;cursor:pointer;">?</button>
+                    <button onclick="closeSmallMary()"
+                        style="width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);color:#ccc;font-size:14px;cursor:pointer;">✕</button>
                 </div>
             </div>
 
@@ -1555,8 +1563,9 @@
                 border-top: 2px solid #5a3000; border-bottom: 2px solid #5a3000;
                 display: flex; gap: 8px; white-space: nowrap;
             " id="mary-led-runner">
-                <span style="color: #ff0; font-size: 10px; font-weight: 700; letter-spacing: 2px; animation: none;" id="mary-led-text">
-                    🌟 恭喜加入小瑪莉遊戲！每月獲贈200點 · 人  💎 BAR 最高 x100 倍 · 中獎可比大小翻倍！
+                <span style="color: #ff0; font-size: 10px; font-weight: 700; letter-spacing: 2px; animation: none;"
+                    id="mary-led-text">
+                    🌟 恭喜加入小瑪莉遊戲！每月獲贈200點 · 人 💎 BAR 最高 x100 倍 · 中獎可比大小翻倍！
                 </span>
             </div>
 
@@ -1570,12 +1579,17 @@
                 box-shadow: 0 0 15px rgba(255,100,0,0.4), inset 0 0 10px rgba(0,0,0,0.8);
             ">
                 <div>
-                    <div style="font-size: 9px; color: #ff6600; font-weight: 700; letter-spacing: 2px;">JACKPOT POOL</div>
-                    <div id="mary-jackpot-pool" style="font-size: 26px; font-weight: 900; color: #ffcc00; font-family: 'Courier New', monospace; text-shadow: 0 0 10px #ff9900; line-height: 1.1;">0</div>
+                    <div style="font-size: 9px; color: #ff6600; font-weight: 700; letter-spacing: 2px;">JACKPOT POOL
+                    </div>
+                    <div id="mary-jackpot-pool"
+                        style="font-size: 26px; font-weight: 900; color: #ffcc00; font-family: 'Courier New', monospace; text-shadow: 0 0 10px #ff9900; line-height: 1.1;">
+                        0</div>
                 </div>
                 <div style="text-align: right;">
                     <div style="font-size: 9px; color: #00ff88; font-weight: 700; letter-spacing: 2px;">WIN</div>
-                    <div id="mary-win-score" style="font-size: 26px; font-weight: 900; color: #00ff88; font-family: 'Courier New', monospace; text-shadow: 0 0 10px #00ff88; line-height: 1.1;">0</div>
+                    <div id="mary-win-score"
+                        style="font-size: 26px; font-weight: 900; color: #00ff88; font-family: 'Courier New', monospace; text-shadow: 0 0 10px #00ff88; line-height: 1.1;">
+                        0</div>
                 </div>
             </div>
 
@@ -1591,307 +1605,420 @@
             ">
                 <!-- 霓虹邊燈 (上) -->
                 <div style="display: flex; justify-content: space-around; margin-bottom: 6px;">
-                    <div class="mary-led-dot" style="width:6px;height:6px;border-radius:50%;background:#ff0;box-shadow:0 0 6px #ff0;"></div>
-                    <div class="mary-led-dot" style="width:6px;height:6px;border-radius:50%;background:#f00;box-shadow:0 0 6px #f00;"></div>
-                    <div class="mary-led-dot" style="width:6px;height:6px;border-radius:50%;background:#0f0;box-shadow:0 0 6px #0f0;"></div>
-                    <div class="mary-led-dot" style="width:6px;height:6px;border-radius:50%;background:#00f;box-shadow:0 0 6px #4af;"></div>
-                    <div class="mary-led-dot" style="width:6px;height:6px;border-radius:50%;background:#f0f;box-shadow:0 0 6px #f0f;"></div>
-                    <div class="mary-led-dot" style="width:6px;height:6px;border-radius:50%;background:#ff0;box-shadow:0 0 6px #ff0;"></div>
-                    <div class="mary-led-dot" style="width:6px;height:6px;border-radius:50%;background:#f60;box-shadow:0 0 6px #f60;"></div>
+                    <div class="mary-led-dot"
+                        style="width:6px;height:6px;border-radius:50%;background:#ff0;box-shadow:0 0 6px #ff0;"></div>
+                    <div class="mary-led-dot"
+                        style="width:6px;height:6px;border-radius:50%;background:#f00;box-shadow:0 0 6px #f00;"></div>
+                    <div class="mary-led-dot"
+                        style="width:6px;height:6px;border-radius:50%;background:#0f0;box-shadow:0 0 6px #0f0;"></div>
+                    <div class="mary-led-dot"
+                        style="width:6px;height:6px;border-radius:50%;background:#00f;box-shadow:0 0 6px #4af;"></div>
+                    <div class="mary-led-dot"
+                        style="width:6px;height:6px;border-radius:50%;background:#f0f;box-shadow:0 0 6px #f0f;"></div>
+                    <div class="mary-led-dot"
+                        style="width:6px;height:6px;border-radius:50%;background:#ff0;box-shadow:0 0 6px #ff0;"></div>
+                    <div class="mary-led-dot"
+                        style="width:6px;height:6px;border-radius:50%;background:#f60;box-shadow:0 0 6px #f60;"></div>
                 </div>
-                
-                <!-- 三軸滾輪 -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; height: 110px; overflow: hidden; position: relative;">
-                    <!-- 中線指示 -->
-                    <div style="position:absolute;top:50%;left:0;right:0;height:2px;background:rgba(255,200,0,0.5);transform:translateY(-50%);z-index:5;pointer-events:none;">
-                        <div style="position:absolute;left:-6px;top:-6px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid #ffcc00;"></div>
-                        <div style="position:absolute;right:-6px;top:-6px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid #ffcc00;"></div>
-                    </div>
-                    <!-- 滾輪 1 -->
-                    <div style="background:#111;border:2px solid #333;border-radius:8px;overflow:hidden;position:relative;">
-                        <div id="mary-reel-0" style="display:flex;flex-direction:column;align-items:center;transition:transform 0.1s linear;">
-                            <!-- 由 JS 填入 -->
+
+                <!-- 麻仔台環形跑道 -->
+                <div style="display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(5,1fr);gap:2px;height:160px;position:relative;"
+                    id="mary-track-grid">
+                    <!-- 上排 (6格) row1: col1~6 -->
+                    <!-- 左側 (3格) row2~4: col1 -->
+                    <!-- 右側 (3格) row2~4: col6 -->
+                    <!-- 下排 (6格) row5: col1~6 -->
+                    <!-- 中心顯示 -->
+                    <div id="mary-center" style="
+                        grid-column:2/6;grid-row:2/5;
+                        background:linear-gradient(135deg,#0a2a0a,#001a00);
+                        border:2px solid #2a4a2a;border-radius:6px;
+                        display:flex;flex-direction:column;align-items:center;justify-content:center;
+                        position:relative;overflow:hidden;
+                    ">
+                        <!-- 中央插圖區 -->
+                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                            <div style="font-size:36px;opacity:0.4;user-select:none;">🎰</div>
                         </div>
-                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.7) 0%,transparent 25%,transparent 75%,rgba(0,0,0,0.7) 100%);pointer-events:none;"></div>
-                    </div>
-                    <!-- 滾輪 2 -->
-                    <div style="background:#111;border:2px solid #333;border-radius:8px;overflow:hidden;position:relative;">
-                        <div id="mary-reel-1" style="display:flex;flex-direction:column;align-items:center;transition:transform 0.1s linear;">
+                        <div id="mary-center-win" style="position:relative;z-index:1;text-align:center;">
+                            <div style="font-size:9px;color:#0a0;letter-spacing:2px;font-weight:700;">WIN</div>
+                            <div id="mary-win-score"
+                                style="font-size:24px;font-weight:900;color:#0f0;font-family:monospace;text-shadow:0 0 10px #0f0;line-height:1;">
+                                0</div>
                         </div>
-                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.7) 0%,transparent 25%,transparent 75%,rgba(0,0,0,0.7) 100%);pointer-events:none;"></div>
+                        <!-- ONCE MORE 裝飾 -->
+                        <div
+                            style="position:absolute;left:2px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-size:7px;color:#0a4a0a;font-weight:900;letter-spacing:2px;">
+                            ONCE MORE</div>
+                        <div
+                            style="position:absolute;right:2px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-size:7px;color:#0a4a0a;font-weight:900;letter-spacing:2px;">
+                            ONCE MORE</div>
                     </div>
-                    <!-- 滾輪 3 -->
-                    <div style="background:#111;border:2px solid #333;border-radius:8px;overflow:hidden;position:relative;">
-                        <div id="mary-reel-2" style="display:flex;flex-direction:column;align-items:center;transition:transform 0.1s linear;">
-                        </div>
-                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.7) 0%,transparent 25%,transparent 75%,rgba(0,0,0,0.7) 100%);pointer-events:none;"></div>
+                    <!-- 跑道格由 JS 動態生成，插入 id="mary-board" -->
+                </div>
+                <div id="mary-board" style="display:none;"></div>
+                <!-- 隱藏舊 reel 容器 -->
+                <div id="mary-reel-0" style="display:none;"></div>
+                <div id="mary-reel-1" style="display:none;"></div>
+                <div id="mary-reel-2" style="display:none;"></div>
+
+                <!-- 中線指示 -->
+                <div
+                    style="position:absolute;top:50%;left:0;right:0;height:2px;background:rgba(255,200,0,0.5);transform:translateY(-50%);z-index:5;pointer-events:none;">
+                    <div
+                        style="position:absolute;left:-6px;top:-6px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid #ffcc00;">
+                    </div>
+                    <div
+                        style="position:absolute;right:-6px;top:-6px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid #ffcc00;">
                     </div>
                 </div>
-                
-                <!-- 霓虹邊燈 (下) -->
-                <div style="display: flex; justify-content: space-around; margin-top: 6px;">
-                    <div style="width:6px;height:6px;border-radius:50%;background:#f60;box-shadow:0 0 6px #f60;"></div>
-                    <div style="width:6px;height:6px;border-radius:50%;background:#ff0;box-shadow:0 0 6px #ff0;"></div>
-                    <div style="width:6px;height:6px;border-radius:50%;background:#f0f;box-shadow:0 0 6px #f0f;"></div>
-                    <div style="width:6px;height:6px;border-radius:50%;background:#0f0;box-shadow:0 0 6px #0f0;"></div>
-                    <div style="width:6px;height:6px;border-radius:50%;background:#00f;box-shadow:0 0 6px #4af;"></div>
-                    <div style="width:6px;height:6px;border-radius:50%;background:#f00;box-shadow:0 0 6px #f00;"></div>
-                    <div style="width:6px;height:6px;border-radius:50%;background:#ff0;box-shadow:0 0 6px #ff0;"></div>
+                <!-- 滾輪 1 -->
+                <div style="background:#111;border:2px solid #333;border-radius:8px;overflow:hidden;position:relative;">
+                    <div id="mary-reel-0"
+                        style="display:flex;flex-direction:column;align-items:center;transition:transform 0.1s linear;">
+                        <!-- 由 JS 填入 -->
+                    </div>
+                    <div
+                        style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.7) 0%,transparent 25%,transparent 75%,rgba(0,0,0,0.7) 100%);pointer-events:none;">
+                    </div>
+                </div>
+                <!-- 滾輪 2 -->
+                <div style="background:#111;border:2px solid #333;border-radius:8px;overflow:hidden;position:relative;">
+                    <div id="mary-reel-1"
+                        style="display:flex;flex-direction:column;align-items:center;transition:transform 0.1s linear;">
+                    </div>
+                    <div
+                        style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.7) 0%,transparent 25%,transparent 75%,rgba(0,0,0,0.7) 100%);pointer-events:none;">
+                    </div>
+                </div>
+                <!-- 滾輪 3 -->
+                <div style="background:#111;border:2px solid #333;border-radius:8px;overflow:hidden;position:relative;">
+                    <div id="mary-reel-2"
+                        style="display:flex;flex-direction:column;align-items:center;transition:transform 0.1s linear;">
+                    </div>
+                    <div
+                        style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.7) 0%,transparent 25%,transparent 75%,rgba(0,0,0,0.7) 100%);pointer-events:none;">
+                    </div>
                 </div>
             </div>
 
-            <!-- 兌換速查 Legacy Board (隱藏 Grid，保留 JS 兼容) -->
-            <div id="mary-board" style="display:none;"></div>
+            <!-- 霓虹邊燈 (下) -->
+            <div style="display: flex; justify-content: space-around; margin-top: 6px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:#f60;box-shadow:0 0 6px #f60;"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#ff0;box-shadow:0 0 6px #ff0;"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#f0f;box-shadow:0 0 6px #f0f;"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#0f0;box-shadow:0 0 6px #0f0;"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#00f;box-shadow:0 0 6px #4af;"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#f00;box-shadow:0 0 6px #f00;"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#ff0;box-shadow:0 0 6px #ff0;"></div>
+            </div>
+        </div>
 
-            <!-- 點數顯示 (LED 面板) -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 12px;">
-                <div style="background:#000;border:1px solid #1e4d1e;border-radius:8px;padding:6px 10px;">
-                    <div style="font-size:9px;color:#0f0;letter-spacing:2px;font-weight:700;">CREDIT</div>
-                    <div id="mary-my-points" style="font-size:20px;color:#0f0;font-family:monospace;font-weight:900;text-shadow:0 0 8px #0f0;">0</div>
-                    <div id="mary-gift-points" style="font-size:9px;color:#0a0;font-weight:600;">贈分: 0</div>
+        <!-- 兌換速查 Legacy Board (隱藏 Grid，保留 JS 兼容) -->
+        <div id="mary-board" style="display:none;"></div>
+
+        <!-- 點數顯示 (LED 面板) -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 12px;">
+            <div style="background:#000;border:1px solid #1e4d1e;border-radius:8px;padding:6px 10px;">
+                <div style="font-size:9px;color:#0f0;letter-spacing:2px;font-weight:700;">CREDIT</div>
+                <div id="mary-my-points"
+                    style="font-size:20px;color:#0f0;font-family:monospace;font-weight:900;text-shadow:0 0 8px #0f0;">0
                 </div>
-                <div style="background:#000;border:1px solid #4d3500;border-radius:8px;padding:6px 10px;">
-                    <div style="font-size:9px;color:#fa0;letter-spacing:2px;font-weight:700;">BET</div>
-                    <div id="mary-bet-total-display" style="font-size:20px;color:#fa0;font-family:monospace;font-weight:900;text-shadow:0 0 8px #fa0;">0</div>
-                    <div style="font-size:9px;color:#764;font-weight:600;">本局壓注</div>
+                <div id="mary-gift-points" style="font-size:9px;color:#0a0;font-weight:600;">贈分: 0</div>
+            </div>
+            <div style="background:#000;border:1px solid #4d3500;border-radius:8px;padding:6px 10px;">
+                <div style="font-size:9px;color:#fa0;letter-spacing:2px;font-weight:700;">BET</div>
+                <div id="mary-bet-total-display"
+                    style="font-size:20px;color:#fa0;font-family:monospace;font-weight:900;text-shadow:0 0 8px #fa0;">0
                 </div>
+                <div style="font-size:9px;color:#764;font-weight:600;">本局壓注</div>
             </div>
+        </div>
 
-            <!-- 比大小區 -->
-            <div id="mary-double-section" class="hidden" style="margin: 0 12px 6px; display: none; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <button onclick="maryDoubleUp('small')" style="padding:12px;background:linear-gradient(135deg,#8b0000,#cc0000);border:2px solid #ff4444;border-radius:10px;font-weight:900;font-size:14px;color:#fff;cursor:pointer;box-shadow:0 0 15px rgba(255,0,0,0.4);">🔽 小 (1-6)</button>
-                <button onclick="maryDoubleUp('big')" style="padding:12px;background:linear-gradient(135deg,#00008b,#0000cc);border:2px solid #4444ff;border-radius:10px;font-weight:900;font-size:14px;color:#fff;cursor:pointer;box-shadow:0 0 15px rgba(0,0,255,0.4);">🔼 大 (8-13)</button>
-            </div>
-            <div id="mary-collect-btn" class="hidden" style="margin: 0 12px 6px; display: none;">
-                <button onclick="maryCollect()" style="width:100%;padding:10px;background:linear-gradient(135deg,#005a20,#00a030);border:2px solid #00ff66;border-radius:10px;font-weight:900;font-size:13px;color:#fff;cursor:pointer;box-shadow:0 0 15px rgba(0,255,100,0.3);">✅ 領獎停止</button>
-            </div>
+        <!-- 比大小區 -->
+        <div id="mary-double-section" class="hidden"
+            style="margin: 0 12px 6px; display: none; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button onclick="maryDoubleUp('small')"
+                style="padding:12px;background:linear-gradient(135deg,#8b0000,#cc0000);border:2px solid #ff4444;border-radius:10px;font-weight:900;font-size:14px;color:#fff;cursor:pointer;box-shadow:0 0 15px rgba(255,0,0,0.4);">🔽
+                小 (1-6)</button>
+            <button onclick="maryDoubleUp('big')"
+                style="padding:12px;background:linear-gradient(135deg,#00008b,#0000cc);border:2px solid #4444ff;border-radius:10px;font-weight:900;font-size:14px;color:#fff;cursor:pointer;box-shadow:0 0 15px rgba(0,0,255,0.4);">🔼
+                大 (8-13)</button>
+        </div>
+        <div id="mary-collect-btn" class="hidden" style="margin: 0 12px 6px; display: none;">
+            <button onclick="maryCollect()"
+                style="width:100%;padding:10px;background:linear-gradient(135deg,#005a20,#00a030);border:2px solid #00ff66;border-radius:10px;font-weight:900;font-size:13px;color:#fff;cursor:pointer;box-shadow:0 0 15px rgba(0,255,100,0.3);">✅
+                領獎停止</button>
+        </div>
 
-            <!-- 壓注符號按鈕區 -->
-            <div style="margin: 4px 12px 8px;">
-                <div style="font-size:9px;color:#888;letter-spacing:2px;margin-bottom:4px;text-align:center;">— 選擇符號壓注 —</div>
-                <div id="mary-bet-panel" style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;"></div>
+        <!-- 壓注符號按鈕區 -->
+        <div style="margin: 4px 12px 8px;">
+            <div style="font-size:9px;color:#888;letter-spacing:2px;margin-bottom:4px;text-align:center;">— 選擇符號壓注 —
             </div>
+            <div id="mary-bet-panel" style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;"></div>
+        </div>
 
-            <!-- 主控制台 (實體按鈕風格) -->
-            <div style="
+        <!-- 主控制台 (實體按鈕風格) -->
+        <div style="
                 background: linear-gradient(180deg, #1a1008 0%, #0d0804 100%);
                 border-top: 3px solid #8b6914;
                 padding: 10px 12px;
                 border-radius: 0 0 20px 20px;
                 display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 8px;
             ">
-                <!-- 清除鈕 (灰色) -->
-                <button onclick="maryClearBet()" style="
+            <!-- 清除鈕 (灰色) -->
+            <button onclick="maryClearBet()" style="
                     background: radial-gradient(circle at 35% 35%, #555, #222);
                     border: 2px solid #666; border-radius: 50%; width: 56px; height: 56px;
                     font-weight: 900; font-size: 10px; color: #ccc; cursor: pointer;
                     box-shadow: 0 4px 8px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.1);
                     margin: auto; display: flex; align-items: center; justify-content: center;
                     flex-direction: column; gap: 2px; line-height: 1;
-                " onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(0.95)'" ontouchend="this.style.transform=''">
-                    <span style="font-size:16px;">🗑️</span>
-                    <span>清除</span>
-                </button>
-                <!-- 兌換鈕 (藍色) -->
-                <button onclick="maryExchange()" style="
+                " onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform=''"
+                ontouchstart="this.style.transform='scale(0.95)'" ontouchend="this.style.transform=''">
+                <span style="font-size:16px;">🗑️</span>
+                <span>清除</span>
+            </button>
+            <!-- 兌換鈕 (藍色) -->
+            <button onclick="maryExchange()" style="
                     background: radial-gradient(circle at 35% 35%, #1a5590, #0a2a50);
                     border: 2px solid #2277cc; border-radius: 50%; width: 56px; height: 56px;
                     font-weight: 900; font-size: 10px; color: #88ccff; cursor: pointer;
                     box-shadow: 0 4px 8px rgba(0,0,0,0.8), 0 0 12px rgba(30,100,220,0.3);
                     margin: auto; display: flex; align-items: center; justify-content: center;
                     flex-direction: column; gap: 2px; line-height: 1;
-                " onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(0.95)'" ontouchend="this.style.transform=''">
-                    <span style="font-size:16px;">💱</span>
-                    <span>兌換</span>
-                </button>
-                <!-- START 鈕 (大紅鈕) -->
-                <button id="mary-btn-start" onclick="maryStartSpin()" style="
+                " onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform=''"
+                ontouchstart="this.style.transform='scale(0.95)'" ontouchend="this.style.transform=''">
+                <span style="font-size:16px;">💱</span>
+                <span>兌換</span>
+            </button>
+            <!-- START 鈕 (大紅鈕) -->
+            <button id="mary-btn-start" onclick="maryStartSpin()" style="
                     background: radial-gradient(circle at 35% 30%, #ff4444, #bb0000, #800000);
                     border: 3px solid #ff6666; border-radius: 16px;
                     font-weight: 900; font-size: 14px; color: #fff; cursor: pointer; letter-spacing: 1px;
                     box-shadow: 0 6px 20px rgba(200,0,0,0.6), 0 0 30px rgba(255,50,50,0.3), inset 0 2px 0 rgba(255,255,255,0.2);
                     padding: 0 16px; height: 56px;
                     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-                " onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform=''">
-                    ▶ START
-                </button>
-            </div>
+                " onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''"
+                ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform=''">
+                ▶ START
+            </button>
+        </div>
 
-            <!-- 比大小結果遮罩 -->
-            <div id="mary-double-result" class="hidden" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;
+        <!-- 比大小結果遮罩 -->
+        <div id="mary-double-result" class="hidden" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;
                 background:rgba(0,0,0,0.95);border:3px solid #ffcc00;border-radius:20px;
                 padding:20px 30px;text-align:center;box-shadow:0 0 40px rgba(255,200,0,0.5);">
-                <div style="font-size:48px;font-weight:900;color:#ffcc00;font-family:monospace;text-shadow:0 0 20px #ff9900;" id="mary-double-num">7</div>
-                <div style="font-size:14px;font-weight:700;margin-top:4px;" id="mary-double-msg">結果</div>
-            </div>
+            <div style="font-size:48px;font-weight:900;color:#ffcc00;font-family:monospace;text-shadow:0 0 20px #ff9900;"
+                id="mary-double-num">7</div>
+            <div style="font-size:14px;font-weight:700;margin-top:4px;" id="mary-double-msg">結果</div>
+        </div>
 
-            <!-- 遊戲說明 Overlay (保留) -->
-            <div id="mary-help-overlay" class="hidden" style="position:absolute;inset:0;background:rgba(10,5,0,0.97);border-radius:24px;z-index:40;overflow-y:auto;padding:16px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span style="font-size:15px;font-weight:900;color:#ffcc00;">📘 遊戲說明</span>
-                    <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:#fff;cursor:pointer;font-size:14px;">✕</button>
+        <!-- 遊戲說明 Overlay (保留) -->
+        <div id="mary-help-overlay" class="hidden"
+            style="position:absolute;inset:0;background:rgba(10,5,0,0.97);border-radius:24px;z-index:40;overflow-y:auto;padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span style="font-size:15px;font-weight:900;color:#ffcc00;">📘 遊戲說明</span>
+                <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')"
+                    style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:#fff;cursor:pointer;font-size:14px;">✕</button>
+            </div>
+            <div style="font-size:11px;color:#ccc;line-height:1.7;space-y:8px;">
+                <div style="color:#ffcc00;font-weight:700;margin-bottom:4px;">🎫 點數來源</div>
+                <div>• 每月自動發放 <b style="color:#fa0;">200 贈分</b>（本月有報名活動者）</div>
+                <div>• 贈分保留至 <b style="color:#fa0;">2026/05/01</b>，期滿進入彩池</div>
+                <div>• 拉霸機分數可 <b style="color:#fa0;">10:1</b> 兌換為本遊戲點數</div>
+                <br>
+                <div style="color:#ffcc00;font-weight:700;margin-bottom:4px;">🍒 符號賠率</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;font-family:monospace;">
+                    <span>🍒 櫻桃</span><span style="color:#fa0;text-align:right;">× 2</span>
+                    <span>🍊 橘子</span><span style="color:#fa0;text-align:right;">× 3</span>
+                    <span>🥭 芒果</span><span style="color:#fa0;text-align:right;">× 5</span>
+                    <span>🔔 鈴鐺</span><span style="color:#fa0;text-align:right;">× 10</span>
+                    <span>🍉 西瓜</span><span style="color:#fa0;text-align:right;">× 20</span>
+                    <span>🌟 星星</span><span style="color:#fa0;text-align:right;">× 30</span>
+                    <span>7️⃣ 幸運7</span><span style="color:#fa0;text-align:right;">× 40</span>
+                    <span>💎 BAR</span><span style="color:#0f0;text-align:right;">× 100 🏆</span>
+                    <span>🍀 幸運</span><span style="color:#8af;text-align:right;">多送燈</span>
                 </div>
-                <div style="font-size:11px;color:#ccc;line-height:1.7;space-y:8px;">
-                    <div style="color:#ffcc00;font-weight:700;margin-bottom:4px;">🎫 點數來源</div>
-                    <div>• 每月自動發放 <b style="color:#fa0;">200 贈分</b>（本月有報名活動者）</div>
-                    <div>• 贈分保留至 <b style="color:#fa0;">2026/05/01</b>，期滿進入彩池</div>
-                    <div>• 拉霸機分數可 <b style="color:#fa0;">10:1</b> 兌換為本遊戲點數</div>
-                    <br>
-                    <div style="color:#ffcc00;font-weight:700;margin-bottom:4px;">🍒 符號賠率</div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;font-family:monospace;">
-                        <span>🍒 櫻桃</span><span style="color:#fa0;text-align:right;">× 2</span>
-                        <span>🍊 橘子</span><span style="color:#fa0;text-align:right;">× 3</span>
-                        <span>🥭 芒果</span><span style="color:#fa0;text-align:right;">× 5</span>
-                        <span>🔔 鈴鐺</span><span style="color:#fa0;text-align:right;">× 10</span>
-                        <span>🍉 西瓜</span><span style="color:#fa0;text-align:right;">× 20</span>
-                        <span>🌟 星星</span><span style="color:#fa0;text-align:right;">× 30</span>
-                        <span>7️⃣ 幸運7</span><span style="color:#fa0;text-align:right;">× 40</span>
-                        <span>💎 BAR</span><span style="color:#0f0;text-align:right;">× 100 🏆</span>
-                        <span>🍀 幸運</span><span style="color:#8af;text-align:right;">多送燈</span>
-                    </div>
-                    <div style="font-size:10px;color:#666;margin-top:4px;">賠率 = 壓注點數 × 倍率</div>
-                    <br>
-                    <div style="color:#ffcc00;font-weight:700;margin-bottom:4px;">🃏 比大小 Double Up</div>
-                    <div>• 猜 <b style="color:#f88;">小 (1-6)</b> 或 <b style="color:#88f;">大 (8-13)</b></div>
-                    <div>• 猜對翻倍，猜錯歸零</div>
-                    <div>• 開出 <b style="color:#ff0;">7 點 莊家通殺</b></div>
-                    <div>• 可點「領獎」安全停止</div>
-                    <br>
-                    <div style="color:#ffcc00;font-weight:700;margin-bottom:4px;">ℹ️ 玩法步驟</div>
-                    <div>① 點符號按鈕壓注 ② 按 START ③ 中獎後選比大小或領獎 ④ 點💱兌換拉霸積分</div>
-                </div>
+                <div style="font-size:10px;color:#666;margin-top:4px;">賠率 = 壓注點數 × 倍率</div>
+                <br>
+                <div style="color:#ffcc00;font-weight:700;margin-bottom:4px;">🃏 比大小 Double Up</div>
+                <div>• 猜 <b style="color:#f88;">小 (1-6)</b> 或 <b style="color:#88f;">大 (8-13)</b></div>
+                <div>• 猜對翻倍，猜錯歸零</div>
+                <div>• 開出 <b style="color:#ff0;">7 點 莊家通殺</b></div>
+                <div>• 可點「領獎」安全停止</div>
+                <br>
+                <div style="color:#ffcc00;font-weight:700;margin-bottom:4px;">ℹ️ 玩法步驟</div>
+                <div>① 點符號按鈕壓注 ② 按 START ③ 中獎後選比大小或領獎 ④ 點💱兌換拉霸積分</div>
             </div>
         </div>
+    </div>
     </div>
 
 
 
 
 
-                        <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-black tracking-tighter">小瑪莉</h2>
-                        <p class="text-[10px] text-amber-400 font-bold uppercase tracking-widest">Fruit Machine</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="openMaryHelp()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition active:scale-95 text-gray-300 text-lg font-black">?</button>
-                    <button onclick="closeSmallMary()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition active:scale-95">
-                        <i data-lucide="x" class="w-6 h-6"></i>
-                    </button>
-                </div>
-            </div>
+    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+    </div>
+    <div>
+        <h2 class="text-lg font-black tracking-tighter">小瑪莉</h2>
+        <p class="text-[10px] text-amber-400 font-bold uppercase tracking-widest">Fruit Machine</p>
+    </div>
+    </div>
+    <div class="flex items-center gap-2">
+        <button onclick="openMaryHelp()"
+            class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition active:scale-95 text-gray-300 text-lg font-black">?</button>
+        <button onclick="closeSmallMary()"
+            class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition active:scale-95">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+    </div>
+    </div>
 
-            <!-- 遊戲說明 Overlay -->
-            <div id="mary-help-overlay" class="hidden absolute inset-0 bg-[#111]/95 rounded-[2rem] z-30 overflow-y-auto flex flex-col p-5 text-white">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-base font-black">📘 小瑪莉 遊戲說明</h3>
-                    <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition text-sm">✕</button>
-                </div>
+    <!-- 遊戲說明 Overlay -->
+    <div id="mary-help-overlay"
+        class="hidden absolute inset-0 bg-[#111]/95 rounded-[2rem] z-30 overflow-y-auto flex flex-col p-5 text-white">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-base font-black">📘 小瑪莉 遊戲說明</h3>
+            <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')"
+                class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition text-sm">✕</button>
+        </div>
 
-                <!-- 綉分說明 -->
-                <div class="bg-white/5 rounded-2xl p-3 mb-3 border border-white/10">
-                    <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">🎫 點數來源</div>
-                    <div class="space-y-1 text-[12px] text-gray-300">
-                        <div>• 每月自動發放 <span class="text-amber-400 font-bold">200 贈分</span>（本月有報名活動者）</div>
-                        <div>• 贈分保留至 <span class="text-amber-400 font-bold">2026/05/01</span>，期滠徒入彩池</div>
-                        <div>• 拉霸機分數可用 <span class="text-amber-400 font-bold">10:1</span> 從小瑪莉介面偌「兌換」轉入</div>
-                    </div>
-                </div>
-
-                <!-- 紦號貭率 -->
-                <div class="bg-white/5 rounded-2xl p-3 mb-3 border border-white/10">
-                    <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">🍒 符號貭率表</div>
-                    <div class="grid grid-cols-2 gap-y-1.5 text-[12px]">
-                        <div class="flex items-center gap-2"><span class="text-lg">🍒</span> <span class="text-gray-300">櫻桃</span></div><div class="text-right font-black text-amber-400">x 2</div>
-                        <div class="flex items-center gap-2"><span class="text-lg">🍊</span> <span class="text-gray-300">橘子</span></div><div class="text-right font-black text-amber-400">x 3</div>
-                        <div class="flex items-center gap-2"><span class="text-lg">🥭</span> <span class="text-gray-300">芒果</span></div><div class="text-right font-black text-amber-400">x 5</div>
-                        <div class="flex items-center gap-2"><span class="text-lg">🔔</span> <span class="text-gray-300">鈴鐺</span></div><div class="text-right font-black text-amber-400">x 10</div>
-                        <div class="flex items-center gap-2"><span class="text-lg">🍉</span> <span class="text-gray-300">西瓜</span></div><div class="text-right font-black text-amber-400">x 20</div>
-                        <div class="flex items-center gap-2"><span class="text-lg">🌟</span> <span class="text-gray-300">星星</span></div><div class="text-right font-black text-amber-400">x 30</div>
-                        <div class="flex items-center gap-2"><span class="text-lg">7️⃣</span> <span class="text-gray-300">幸運 7</span></div><div class="text-right font-black text-amber-400">x 40</div>
-                        <div class="flex items-center gap-2"><span class="text-lg">💎</span> <span class="text-gray-300">鑽石 BAR</span></div><div class="text-right font-black text-green-400">x 100 🎖️</div>
-                        <div class="flex items-center gap-2"><span class="text-lg">🍀</span> <span class="text-gray-300">幸運命中</span></div><div class="text-right font-black text-blue-400">多送燈</div>
-                    </div>
-                    <div class="text-[10px] text-gray-500 mt-2">• 貭率 = 壓在該符號的點數 × 倒率</div>
-                </div>
-
-                <!-- 比大小 -->
-                <div class="bg-white/5 rounded-2xl p-3 mb-3 border border-white/10">
-                    <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">🃏 比大小（Double Up）</div>
-                    <div class="space-y-1 text-[12px] text-gray-300">
-                        <div>• 中獎後可選擇進入比大小翻倍挑戰</div>
-                        <div>• 猜 <span class="text-red-400 font-bold">小 (1~6)</span> 或 <span class="text-blue-400 font-bold">大 (8~13)</span></div>
-                        <div>• 猜對：贏分翻倍，猜錯：贏分歸零</div>
-                        <div>• 開出 <span class="text-yellow-400 font-bold">7 點 莊家通殺</span>（大小皆輸）</div>
-                        <div>• 可選擇「頸獎」自動安全收取目前贏分</div>
-                    </div>
-                </div>
-
-                <!-- 玩法步驟 -->
-                <div class="bg-white/5 rounded-2xl p-3 border border-white/10">
-                    <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">ℹ️ 如何遊玩</div>
-                    <div class="space-y-1 text-[12px] text-gray-300">
-                        <div>① 點擊下方符號進行壓注</div>
-                        <div>② 點「啟動 START」開始轉盤</div>
-                        <div>③ 中獎後選擇「比大小」翻倍或「頸獎」直接安全存分</div>
-                        <div>④ 點「兌換」將拉霸分數轉入點數 (10:1)</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Jackpot Pool Display -->
-            <div class="bg-black/40 rounded-2xl p-3 mb-4 border border-white/5 text-center">
-                <div class="text-[10px] text-gray-500 font-bold uppercase mb-1">彩池 Jackpot</div>
-                <div id="mary-jackpot-pool" class="text-3xl font-black text-amber-400 tabular-nums leading-none">0</div>
-            </div>
-
-            <!-- Main Board (6x5 or similar grid) -->
-            <div id="mary-board" class="grid grid-cols-6 gap-1 mb-4 p-1 bg-black/50 rounded-xl border border-white/10 aspect-square">
-                <!-- 24格轉盤由 JS 生成 -->
-            </div>
-
-            <!-- Score Display Row -->
-            <div class="grid grid-cols-2 gap-2 mb-4">
-                <div class="bg-black/60 rounded-xl p-2 border border-blue-500/30">
-                    <div class="text-[9px] text-blue-400 font-bold uppercase mb-0.5">我的點數</div>
-                    <div id="mary-my-points" class="text-xl font-black tabular-nums">0</div>
-                    <div id="mary-gift-points" class="text-[9px] text-blue-300 font-medium">贈分: 0</div>
-                </div>
-                <div class="bg-black/60 rounded-xl p-2 border border-green-500/30">
-                    <div class="text-[9px] text-green-400 font-bold uppercase mb-0.5">本局贏分</div>
-                    <div id="mary-win-score" class="text-xl font-black tabular-nums text-green-400">0</div>
-                </div>
-            </div>
-
-            <!-- Double Up (Big/Small) Section -->
-            <div id="mary-double-section" class="hidden grid grid-cols-2 gap-2 mb-4">
-                <button id="mary-btn-small" onclick="maryDoubleUp('small')" class="py-3 bg-red-600 rounded-xl font-black text-sm hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-600/20">小 (1-6)</button>
-                <button id="mary-btn-big" onclick="maryDoubleUp('big')" class="py-3 bg-blue-600 rounded-xl font-black text-sm hover:bg-blue-500 active:scale-95 transition-all shadow-lg shadow-blue-600/20">大 (8-13)</button>
-            </div>
-            <div id="mary-collect-btn" class="hidden mb-3">
-                <button onclick="maryCollect()" class="w-full py-2 bg-green-600 rounded-xl font-black text-sm hover:bg-green-500 active:scale-95 transition-all">✅ 頸獎停止 ({{ winScore }} 分)</button>
-            </div>
-
-            <!-- Betting Icons (Grid 4x2) -->
-            <div id="mary-bet-panel" class="grid grid-cols-4 gap-2 mb-4">
-                <!-- 由 JS 生成 8 個壓注按鈕 -->
-            </div>
-
-            <!-- Footer Buttons -->
-            <div class="flex gap-2">
-                <button onclick="maryClearBet()" class="flex-1 py-3 bg-white/10 rounded-xl font-bold text-xs hover:bg-white/20 active:scale-95 transition border border-white/10">清除</button>
-                <button onclick="maryExchange()" class="flex-1 py-3 bg-white/10 rounded-xl font-bold text-xs hover:bg-white/20 active:scale-95 transition border border-white/10">兌換</button>
-                <button id="mary-btn-start" onclick="maryStartSpin()" class="flex-[2] py-3 premium-gradient rounded-xl font-black text-sm shadow-xl active:scale-95 transition-transform disabled:opacity-50">啟動 START</button>
-            </div>
-
-            <!-- Double Up Status Overlay (Optional) -->
-            <div id="mary-double-result" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-black/90 px-8 py-4 rounded-3xl border-2 border-amber-500 text-center">
-                <div class="text-4xl font-black mb-1" id="mary-double-num">7</div>
-                <div class="text-xs font-bold text-amber-500" id="mary-double-msg">恭喜翻倍！</div>
+        <!-- 綉分說明 -->
+        <div class="bg-white/5 rounded-2xl p-3 mb-3 border border-white/10">
+            <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">🎫 點數來源</div>
+            <div class="space-y-1 text-[12px] text-gray-300">
+                <div>• 每月自動發放 <span class="text-amber-400 font-bold">200 贈分</span>（本月有報名活動者）</div>
+                <div>• 贈分保留至 <span class="text-amber-400 font-bold">2026/05/01</span>，期滠徒入彩池</div>
+                <div>• 拉霸機分數可用 <span class="text-amber-400 font-bold">10:1</span> 從小瑪莉介面偌「兌換」轉入</div>
             </div>
         </div>
+
+        <!-- 紦號貭率 -->
+        <div class="bg-white/5 rounded-2xl p-3 mb-3 border border-white/10">
+            <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">🍒 符號貭率表</div>
+            <div class="grid grid-cols-2 gap-y-1.5 text-[12px]">
+                <div class="flex items-center gap-2"><span class="text-lg">🍒</span> <span
+                        class="text-gray-300">櫻桃</span></div>
+                <div class="text-right font-black text-amber-400">x 2</div>
+                <div class="flex items-center gap-2"><span class="text-lg">🍊</span> <span
+                        class="text-gray-300">橘子</span></div>
+                <div class="text-right font-black text-amber-400">x 3</div>
+                <div class="flex items-center gap-2"><span class="text-lg">🥭</span> <span
+                        class="text-gray-300">芒果</span></div>
+                <div class="text-right font-black text-amber-400">x 5</div>
+                <div class="flex items-center gap-2"><span class="text-lg">🔔</span> <span
+                        class="text-gray-300">鈴鐺</span></div>
+                <div class="text-right font-black text-amber-400">x 10</div>
+                <div class="flex items-center gap-2"><span class="text-lg">🍉</span> <span
+                        class="text-gray-300">西瓜</span></div>
+                <div class="text-right font-black text-amber-400">x 20</div>
+                <div class="flex items-center gap-2"><span class="text-lg">🌟</span> <span
+                        class="text-gray-300">星星</span></div>
+                <div class="text-right font-black text-amber-400">x 30</div>
+                <div class="flex items-center gap-2"><span class="text-lg">7️⃣</span> <span class="text-gray-300">幸運
+                        7</span></div>
+                <div class="text-right font-black text-amber-400">x 40</div>
+                <div class="flex items-center gap-2"><span class="text-lg">💎</span> <span class="text-gray-300">鑽石
+                        BAR</span></div>
+                <div class="text-right font-black text-green-400">x 100 🎖️</div>
+                <div class="flex items-center gap-2"><span class="text-lg">🍀</span> <span
+                        class="text-gray-300">幸運命中</span></div>
+                <div class="text-right font-black text-blue-400">多送燈</div>
+            </div>
+            <div class="text-[10px] text-gray-500 mt-2">• 貭率 = 壓在該符號的點數 × 倒率</div>
+        </div>
+
+        <!-- 比大小 -->
+        <div class="bg-white/5 rounded-2xl p-3 mb-3 border border-white/10">
+            <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">🃏 比大小（Double Up）</div>
+            <div class="space-y-1 text-[12px] text-gray-300">
+                <div>• 中獎後可選擇進入比大小翻倍挑戰</div>
+                <div>• 猜 <span class="text-red-400 font-bold">小 (1~6)</span> 或 <span class="text-blue-400 font-bold">大
+                        (8~13)</span></div>
+                <div>• 猜對：贏分翻倍，猜錯：贏分歸零</div>
+                <div>• 開出 <span class="text-yellow-400 font-bold">7 點 莊家通殺</span>（大小皆輸）</div>
+                <div>• 可選擇「頸獎」自動安全收取目前贏分</div>
+            </div>
+        </div>
+
+        <!-- 玩法步驟 -->
+        <div class="bg-white/5 rounded-2xl p-3 border border-white/10">
+            <div class="text-[11px] font-black text-amber-400 mb-2 uppercase tracking-wider">ℹ️ 如何遊玩</div>
+            <div class="space-y-1 text-[12px] text-gray-300">
+                <div>① 點擊下方符號進行壓注</div>
+                <div>② 點「啟動 START」開始轉盤</div>
+                <div>③ 中獎後選擇「比大小」翻倍或「頸獎」直接安全存分</div>
+                <div>④ 點「兌換」將拉霸分數轉入點數 (10:1)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jackpot Pool Display -->
+    <div class="bg-black/40 rounded-2xl p-3 mb-4 border border-white/5 text-center">
+        <div class="text-[10px] text-gray-500 font-bold uppercase mb-1">彩池 Jackpot</div>
+        <div id="mary-jackpot-pool" class="text-3xl font-black text-amber-400 tabular-nums leading-none">0</div>
+    </div>
+
+    <!-- Main Board (6x5 or similar grid) -->
+    <div id="mary-board"
+        class="grid grid-cols-6 gap-1 mb-4 p-1 bg-black/50 rounded-xl border border-white/10 aspect-square">
+        <!-- 24格轉盤由 JS 生成 -->
+    </div>
+
+    <!-- Score Display Row -->
+    <div class="grid grid-cols-2 gap-2 mb-4">
+        <div class="bg-black/60 rounded-xl p-2 border border-blue-500/30">
+            <div class="text-[9px] text-blue-400 font-bold uppercase mb-0.5">我的點數</div>
+            <div id="mary-my-points" class="text-xl font-black tabular-nums">0</div>
+            <div id="mary-gift-points" class="text-[9px] text-blue-300 font-medium">贈分: 0</div>
+        </div>
+        <div class="bg-black/60 rounded-xl p-2 border border-green-500/30">
+            <div class="text-[9px] text-green-400 font-bold uppercase mb-0.5">本局贏分</div>
+            <div id="mary-win-score" class="text-xl font-black tabular-nums text-green-400">0</div>
+        </div>
+    </div>
+
+    <!-- Double Up (Big/Small) Section -->
+    <div id="mary-double-section" class="hidden grid grid-cols-2 gap-2 mb-4">
+        <button id="mary-btn-small" onclick="maryDoubleUp('small')"
+            class="py-3 bg-red-600 rounded-xl font-black text-sm hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-600/20">小
+            (1-6)</button>
+        <button id="mary-btn-big" onclick="maryDoubleUp('big')"
+            class="py-3 bg-blue-600 rounded-xl font-black text-sm hover:bg-blue-500 active:scale-95 transition-all shadow-lg shadow-blue-600/20">大
+            (8-13)</button>
+    </div>
+    <div id="mary-collect-btn" class="hidden mb-3">
+        <button onclick="maryCollect()"
+            class="w-full py-2 bg-green-600 rounded-xl font-black text-sm hover:bg-green-500 active:scale-95 transition-all">✅
+            頸獎停止 ({{ winScore }} 分)</button>
+    </div>
+
+    <!-- Betting Icons (Grid 4x2) -->
+    <div id="mary-bet-panel" class="grid grid-cols-4 gap-2 mb-4">
+        <!-- 由 JS 生成 8 個壓注按鈕 -->
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="flex gap-2">
+        <button onclick="maryClearBet()"
+            class="flex-1 py-3 bg-white/10 rounded-xl font-bold text-xs hover:bg-white/20 active:scale-95 transition border border-white/10">清除</button>
+        <button onclick="maryExchange()"
+            class="flex-1 py-3 bg-white/10 rounded-xl font-bold text-xs hover:bg-white/20 active:scale-95 transition border border-white/10">兌換</button>
+        <button id="mary-btn-start" onclick="maryStartSpin()"
+            class="flex-[2] py-3 premium-gradient rounded-xl font-black text-sm shadow-xl active:scale-95 transition-transform disabled:opacity-50">啟動
+            START</button>
+    </div>
+
+    <!-- Double Up Status Overlay (Optional) -->
+    <div id="mary-double-result"
+        class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-black/90 px-8 py-4 rounded-3xl border-2 border-amber-500 text-center">
+        <div class="text-4xl font-black mb-1" id="mary-double-num">7</div>
+        <div class="text-xs font-bold text-amber-500" id="mary-double-msg">恭喜翻倍！</div>
+    </div>
+    </div>
     </div>
 
     <script>
@@ -2103,7 +2230,7 @@
                 const res = await fetch(`${GAS_URL}?action=getSmallMaryData&userId=${appState.user.userId}&name=${encodeURIComponent(appState.user.displayName)}`);
                 const data = await res.json();
                 if (data.error) return showToast(data.error);
-                
+
                 maryState.points = data.points;
                 maryState.monthlyGift = data.monthlyGift;
                 maryState.totalMaryScore = data.totalMaryScore;
@@ -2127,21 +2254,48 @@
         }
 
         function initMaryBoard() {
-            // 三軸滚輪初始化 - 每座建立輪帶內容
-            for (let r = 0; r < 3; r++) {
-                const reel = document.getElementById(`mary-reel-${r}`);
-                if (!reel) continue;
-                reel.innerHTML = '';
-                // 將 MARY_GRID 複製多圈供滚動
-                const symbols = [...MARY_GRID, ...MARY_GRID, ...MARY_GRID];
-                symbols.forEach(id => {
-                    const conf = MARY_CONFIG.find(c => c.id === id);
-                    const cell = document.createElement('div');
-                    cell.style.cssText = 'width:100%;height:36px;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;flex-shrink:0;';
-                    cell.innerText = conf.label;
-                    reel.appendChild(cell);
-                });
-            }
+            // 麻仔台 環形跑道：24格繞正方形邊框
+            // 格子座標（grid-column / grid-row，從外框順時針）
+            // 上排 col1-6 row1；右側 col6 row2-4；下排 col6-1 row5；左側 col1 row4-2
+            const track = [
+                // 上排左→右 (6格)
+                { c: 1, r: 1 }, { c: 2, r: 1 }, { c: 3, r: 1 }, { c: 4, r: 1 }, { c: 5, r: 1 }, { c: 6, r: 1 },
+                // 右側上→下 (3格，排除角落)
+                { c: 6, r: 2 }, { c: 6, r: 3 }, { c: 6, r: 4 },
+                // 下排右→左 (6格)
+                { c: 6, r: 5 }, { c: 5, r: 5 }, { c: 4, r: 5 }, { c: 3, r: 5 }, { c: 2, r: 5 }, { c: 1, r: 5 },
+                // 左側下→上 (3格，排除角落)
+                { c: 1, r: 4 }, { c: 1, r: 3 }, { c: 1, r: 2 },
+            ]; // 共 18格；MARY_GRID有24格，補足到24格（重複前6格）
+            const full = [...track, ...track].slice(0, MARY_GRID.length);
+
+            const grid = document.getElementById('mary-track-grid');
+            if (!grid) return;
+            // 移除舊格子（保留中心div）
+            [...grid.children].forEach(ch => {
+                if (ch.id !== 'mary-center') ch.remove();
+            });
+
+            MARY_GRID.forEach((id, i) => {
+                const conf = MARY_CONFIG.find(c => c.id === id);
+                const pos = full[i % full.length];
+                const cell = document.createElement('div');
+                cell.id = `mary-cell-${i}`;
+                cell.style.cssText = `
+                    grid-column:${pos.c};grid-row:${pos.r};
+                    background:linear-gradient(135deg,#1a1008,#0d0804);
+                    border:1px solid #3a2000;border-radius:4px;
+                    display:flex;flex-direction:column;align-items:center;justify-content:center;
+                    font-size:15px;line-height:1;cursor:default;transition:background 0.08s,box-shadow 0.08s;
+                    position:relative;overflow:hidden;
+                `;
+                cell.innerHTML = `
+                    <div id="mary-cell-sym-${i}" style="font-size:16px;line-height:1;">${conf.label}</div>
+                    <div style="font-size:7px;color:#5a3a00;font-weight:700;">${conf.rate > 0 ? 'x' + conf.rate : '⭐'}</div>
+                `;
+                grid.appendChild(cell);
+            });
+            maryState._trackLen = MARY_GRID.length;
         }
 
         function initMaryBetPanel() {
@@ -2197,69 +2351,76 @@
             if (betDisp) betDisp.innerText = '0';
         }
 
+        // 記錄當前光標位置
+        let maryCurrentPos = 0;
+
         async function maryStartSpin() {
             if (maryState.isSpinning || maryState.doubleUpActive) return;
             const betPoints = Object.values(maryState.currentBet).reduce((a, b) => a + b, 0);
-            if (betPoints <= 0) return showToast("請先壓注");
+            if (betPoints <= 0) return showToast("請先選符號壓注");
 
             maryState.isSpinning = true;
             document.getElementById('mary-btn-start').disabled = true;
 
-            // 隨機決定最終符號 (主軸由Index 0決定中獎符號)
-            const targetIdx = Math.floor(Math.random() * MARY_GRID.length);
+            const trackLen = MARY_GRID.length; // 24
+            // 隨機決定目標格 index
+            const targetIdx = Math.floor(Math.random() * trackLen);
             const targetId = MARY_GRID[targetIdx];
             const targetConfig = MARY_CONFIG.find(c => c.id === targetId);
 
-            // 其他兩座頊軸隨機 (1-2 座展示隨機符號，彼彼提升趣味)
-            const reel2Id = MARY_GRID[Math.floor(Math.random() * MARY_GRID.length)];
-            const reel3Id = MARY_GRID[Math.floor(Math.random() * MARY_GRID.length)];
+            // 總步數：至少 2 圈 + 到達目標格
+            const minRounds = 2;
+            const startPos = maryCurrentPos;
+            let stepsToTarget = (targetIdx - startPos + trackLen) % trackLen;
+            if (stepsToTarget === 0) stepsToTarget = trackLen;
+            const totalSteps = minRounds * trackLen + stepsToTarget;
 
-            // --- 動畫函式：滚動一窝數座滚輪 ---
-            const spinReel = (reelIdx, targetSymbolId, durationMs) => {
-                return new Promise(resolve => {
-                    const reel = document.getElementById(`mary-reel-${reelIdx}`);
-                    if (!reel) return resolve();
-                    const cellH = 36;
-                    const totalSymbols = 72; // 3圈 * 24
-                    
-                    // 找到靠近中間的目標符號 index
-                    const midStart = 24; // 第二圈開始
-                    let targetPos = -1;
-                    for (let i = midStart; i < midStart + 24; i++) {
-                        if (MARY_GRID[i % 24] === targetSymbolId) { targetPos = i; break; }
-                    }
-                    if (targetPos < 0) targetPos = midStart;
-                    // 最終位置：目標符號於中間視窗
-                    const finalOffset = -(targetPos * cellH) + cellH; // +cellH 讓目標處於中間
-
-                    let currentOffset = 0;
-                    const startTime = performance.now();
-                    function ease(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
-                    
-                    function animate(now) {
-                        const elapsed = now - startTime;
-                        const progress = Math.min(elapsed / durationMs, 1);
-                        const eased = ease(progress);
-                        currentOffset = eased * finalOffset;
-                        reel.style.transform = `translateY(${currentOffset}px)`;
-                        if (progress < 1) requestAnimationFrame(animate);
-                        else resolve();
-                    }
-                    requestAnimationFrame(animate);
-                });
+            // 跑馬燈動畫 (async 版)
+            const highlight = (idx, on) => {
+                const cell = document.getElementById(`mary-cell-${idx}`);
+                if (!cell) return;
+                cell.style.background = on
+                    ? 'linear-gradient(135deg,#ffcc00,#ff8800)'
+                    : 'linear-gradient(135deg,#1a1008,#0d0804)';
+                cell.style.boxShadow = on ? '0 0 10px #ffaa00' : '';
+                cell.style.transform = on ? 'scale(1.08)' : '';
             };
 
-            // 三座依序啟動，各差 400ms 停止
-            await Promise.all([
-                spinReel(0, targetId, 1800),
-                spinReel(1, reel2Id, 2200),
-                spinReel(2, reel3Id, 2600)
-            ]);
+            let delay = 60; // ms 初始速度
+            for (let step = 0; step < totalSteps; step++) {
+                const pos = (startPos + step) % trackLen;
+                const prevPos = (startPos + step - 1 + trackLen) % trackLen;
+                highlight(prevPos, false);
+                highlight(pos, true);
+                maryCurrentPos = pos;
+
+                // 漸慢：最後20步開始減速
+                const remaining = totalSteps - step;
+                if (remaining <= 20) delay = 60 + (20 - remaining) * 25;
+                else if (remaining <= 40) delay = 60 + (40 - remaining) * 5;
+
+                await new Promise(r => setTimeout(r, delay));
+            }
+
+            // 最終停在 targetIdx，確保對齊
+            highlight(maryCurrentPos, false);
+            highlight(targetIdx, true);
+            maryCurrentPos = targetIdx;
 
             // 中獎結算
             const betOnTarget = maryState.currentBet[targetId] || 0;
             const winScore = betOnTarget * targetConfig.rate;
             maryState.winScore = winScore;
+
+            // 中獎格閃爍
+            if (winScore > 0) {
+                let blinkCount = 0;
+                const blinkInterval = setInterval(() => {
+                    highlight(targetIdx, blinkCount % 2 === 0);
+                    blinkCount++;
+                    if (blinkCount >= 8) clearInterval(blinkInterval);
+                }, 180);
+            }
 
             // 同步後端
             try {
@@ -2282,6 +2443,8 @@
                 showToast(`🎊 中獎！${targetConfig.label} 獲得 ${winScore} 分`);
                 const ds = document.getElementById('mary-double-section');
                 if (ds) { ds.classList.remove('hidden'); ds.style.display = 'grid'; }
+                const cb = document.getElementById('mary-collect-btn');
+                if (cb) { cb.classList.remove('hidden'); cb.style.display = 'block'; }
                 maryState.doubleUpActive = true;
             } else {
                 maryClearBet();
@@ -2297,10 +2460,10 @@
             const resultEl = document.getElementById('mary-double-result');
             const numEl = document.getElementById('mary-double-num');
             const msgEl = document.getElementById('mary-double-msg');
-            
+
             numEl.innerText = num;
             resultEl.classList.remove('hidden');
-            
+
             let win = false;
             if (num === 7) {
                 win = false; // 莊家通殺
@@ -2325,7 +2488,7 @@
                 document.getElementById('mary-collect-btn').classList.add('hidden');
                 maryClearBet();
             }
-            
+
             updateMaryUI();
 
             // 同步至後端
@@ -2373,23 +2536,47 @@
 
         async function maryExchange() {
             if (maryState.isSpinning || maryState.doubleUpActive) return;
-            // 顯示內建小型輸入却
+            // 先查詢用戶拉霸分數
+            let slotScore = 0;
+            try {
+                const r = await fetch(`${GAS_URL}?action=getUserSlotScore&userId=${appState.user.userId}`);
+                const d = await r.json();
+                slotScore = d.slotScore || 0;
+            } catch (_) { /* 如果查詢失敗，不影響後續流程 */ }
+
+            const maxConvert = Math.floor(slotScore / 10) * 10;
+            const maryPoints = Math.floor(maxConvert / 10);
+
             const overlay = document.createElement('div');
             overlay.id = 'mary-exchange-overlay';
-            overlay.className = 'absolute inset-0 bg-black/90 rounded-[2rem] z-20 flex flex-col items-center justify-center gap-4 p-6';
+            overlay.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.95);border-radius:24px;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;';
             overlay.innerHTML = `
-                <div class="text-sm font-black text-white">拉霸分 10:1 兌換</div>
-                <input id="mary-exchange-input" type="number" min="10" step="10" placeholder="請輸入拉霸分數"
-                    class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white text-center text-lg font-black focus:outline-none focus:border-amber-400">
-                <div class="text-xs text-gray-400">最小 10 分，必須為 10 的倍數</div>
-                <div class="flex gap-2 w-full">
-                    <button onclick="document.getElementById('mary-exchange-overlay').remove()" 
-                        class="flex-1 py-2.5 bg-white/10 rounded-xl font-bold text-sm">取消</button>
-                    <button onclick="maryConfirmExchange()" 
-                        class="flex-1 py-2.5 bg-amber-500 rounded-xl font-black text-sm text-black">確認兌換</button>
+                <div style="font-size:16px;font-weight:900;color:#ffcc00;">💱 拉霸分 10:1 兌換</div>
+                <div style="background:#111;border:1px solid #ff6600;border-radius:10px;padding:10px 16px;width:100%;text-align:center;">
+                    <div style="font-size:10px;color:#ff6600;margin-bottom:4px;letter-spacing:2px;">YOU HAVE</div>
+                    <div style="font-size:28px;font-weight:900;color:#fa0;font-family:monospace;">${slotScore.toLocaleString()}</div>
+                    <div style="font-size:10px;color:#888;">拉霸積分</div>
+                </div>
+                <div style="color:#ccc;font-size:11px;text-align:center;">
+                    最多可換 <b style="color:#0f0;">${maryPoints.toLocaleString()}</b> 點小瑪莉點數<br>
+                    <span style="color:#666;font-size:10px;">（10 拉霸分 → 1 小瑪莉點）</span>
+                </div>
+                <input id="mary-exchange-input" type="number" min="10" step="10" value="${maxConvert}" max="${slotScore}"
+                    style="width:100%;background:rgba(255,255,255,0.08);border:1px solid #fa0;border-radius:10px;
+                    padding:10px;color:#fa0;text-align:center;font-size:18px;font-weight:900;font-family:monospace;
+                    outline:none;">
+                <div style="font-size:10px;color:#555;">最小 10 分，請輸入 10 的倍數</div>
+                <div style="display:flex;gap:10px;width:100%;">
+                    <button onclick="document.getElementById('mary-exchange-overlay').remove()"
+                        style="flex:1;padding:12px;background:rgba(255,255,255,0.1);border:none;border-radius:10px;
+                        color:#ccc;font-weight:700;font-size:13px;cursor:pointer;">取消</button>
+                    <button onclick="maryConfirmExchange()"
+                        style="flex:2;padding:12px;background:linear-gradient(135deg,#cc6600,#ffaa00);
+                        border:none;border-radius:10px;color:#000;font-weight:900;font-size:13px;cursor:pointer;
+                        box-shadow:0 0 15px rgba(255,150,0,0.4);">確認兌換</button>
                 </div>
             `;
-            document.querySelector('#small-mary-modal > div').appendChild(overlay);
+            document.getElementById('mary-machine').appendChild(overlay);
         }
 
         async function maryConfirmExchange() {
@@ -2411,7 +2598,7 @@
                     maryState.points += res.addedPoints;
                     updateMaryUI();
                 } else {
-                    showToast(res.error || '兌換失敗');
+                    showToast(res.error || '兌換失敗，請確認拉霸分數是否尚充足');
                 }
             } catch (e) { console.error(e); }
         }
