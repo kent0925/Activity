@@ -438,12 +438,51 @@
                     console.error('showResult 發生錯誤', e);
                 } finally {
                     _slotSpinning = false; // 解除鎖定
-                    // 等待 1.5 秒讓使用者看清楚分數，再關閉載入畫面
-                    setTimeout(() => {
+                    
+                    // 顯示按鈕與倒數
+                    const dots = document.getElementById('slot-loading-dots');
+                    if (dots) dots.classList.add('hidden');
+                    
+                    const actions = document.getElementById('slot-actions');
+                    if (actions) {
+                        actions.classList.remove('hidden');
+                        actions.classList.add('flex');
+                    }
+
+                    // 等待 1 秒讓使用者選擇，未選擇則進入活動頁面
+                    window._slotAutoJumpTimer = setTimeout(() => {
+                        if (actions) actions.classList.add('hidden');
                         if (onComplete) onComplete();
-                    }, 1500);
+                    }, 1000);
                 }
             }
+        }
+
+        // 新增：再玩一次
+        function playSlotAgain() {
+            if (window._slotAutoJumpTimer) clearTimeout(window._slotAutoJumpTimer);
+            
+            const actions = document.getElementById('slot-actions');
+            if (actions) {
+                actions.classList.remove('flex');
+                actions.classList.add('hidden');
+            }
+            
+            const dots = document.getElementById('slot-loading-dots');
+            if (dots) dots.classList.remove('hidden');
+            
+            const resultEl = document.getElementById('slot-result');
+            if (resultEl) {
+                resultEl.classList.remove('show', 'jackpot');
+                resultEl.textContent = '拉霸中...';
+            }
+
+            // 再次旋轉
+            startSlotMachine(() => {
+                if (window.hideInitialOverlay) {
+                    window.hideInitialOverlay();
+                }
+            });
         }
 
         // 紀錄拉霸結果與分數（僅限登入狀態）
@@ -838,7 +877,11 @@
                 class="slot-result text-white text-sm font-bold text-center mt-4 px-6 max-w-xs mx-auto min-h-[24px]">
                 拉霸中...</div>
         </div>
-        <div class="mt-6 flex gap-2">
+        <div id="slot-actions" class="hidden flex-col items-center mt-6 animate-fade-in z-50">
+            <button onclick="playSlotAgain()" class="bg-amber-500 hover:bg-amber-600 text-black font-black py-2.5 px-10 rounded-full shadow-[0_4px_15px_rgba(251,191,36,0.5)] transition-all active:scale-95 mb-2 border-2 border-amber-300">再玩一次</button>
+            <div class="text-white/60 text-xs font-bold font-mono">1 秒後自動進入活動...</div>
+        </div>
+        <div id="slot-loading-dots" class="mt-6 flex gap-2">
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0s"></div>
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
@@ -1559,8 +1602,8 @@
                     <!-- 中央插圖區 -->
                     <div id="mary-center" class="col-start-2 col-end-7 row-start-2 row-end-7 bg-[#2da6ff] rounded-md border-2 border-[#1e4d1e] relative overflow-hidden flex flex-col items-center justify-center p-2 shadow-[inset_0_0_20px_rgba(0,0,0,0.3)]">
                         <!-- 類馬力歐插圖 (暫用 Emoji 示意，可換為圖片) -->
-                        <div class="text-[80px] opacity-20 filter grayscale-0 select-none absolute">🐢</div>
-                        <div class="text-[100px] font-black text-white/10 select-none -mb-8 z-0">JP</div>
+                        <div class="text-[80px] font-black opacity-20 filter grayscale-0 select-none absolute text-[#44aaff] tracking-widest break-all">BAR</div>
+                        <div class="text-[100px] font-black text-[#55ccff]/10 select-none -mb-8 z-0 tracking-widest leading-none">BAR</div>
                         
                         <!-- 中央大獎數字 -->
                         <div id="mary-center-num" class="bg-black/80 border-4 border-[#ff4444] rounded-xl px-4 py-2 text-5xl font-black text-[#ff4444] shadow-[0_0_20px_rgba(255,68,68,0.5)] tabular-nums z-10" style="font-family: 'Courier New', monospace;">0</div>
@@ -1661,6 +1704,9 @@
 
         // ★ 請替換為您的 LIFF ID
         const LIFF_ID = "2008678090-aXTesgDK";
+
+        // ★ 管理員 LineID 列表（管理員遊玩無限制且不作紀錄）
+        const ADMIN_USER_IDS = ["U612df670c4d7d3cde0d599ab5008451f"]; 
 
         // 狀態變數
         let appState = {
@@ -1886,6 +1932,12 @@
                 maryState.totalMaryScore = data.totalMaryScore;
                 maryState.jackpotPool = data.jackpotPool;
 
+                // ★ 管理員模式：給予無限點數
+                if (ADMIN_USER_IDS.includes(appState.user.userId)) {
+                    maryState.points = 999999;
+                    maryState.monthlyGift = 999999;
+                }
+
                 updateMaryUI();
             } catch (e) { console.error(e); }
         }
@@ -2100,6 +2152,11 @@
             } catch (e) { console.error(e); }
 
             if (winScore > 0) {
+                // 手機震動 (若中最大獎 BAR)
+                if (targetId === 'bar' && navigator.vibrate) {
+                    navigator.vibrate([500, 200, 500]);
+                }
+
                 showToast(`🎊 中獎！${targetConfig.label} 獲得 ${winScore} 分`);
                 const db = document.getElementById('mary-double-btns');
                 if (db) { 
@@ -2199,7 +2256,7 @@
                         if (btns[2]) btns[2].textContent = `✅ 領獎 (${maryState.winScore})`;
                     }
                 }
-            }, 1800);
+            }, 800); // 縮短跳出畫面的時間至 800ms
         }
 
         // 領獎
@@ -2290,7 +2347,7 @@
                     最多可換 <b style="color:#0f0;">${maryPoints.toLocaleString()}</b> 點小瑪莉點數<br>
                     <span style="color:#666;font-size:10px;">（10 拉霸分 → 1 小瑪莉點）</span>
                 </div>
-                <input id="mary-exchange-input" type="number" min="10" step="10" value="${maxConvert}" max="${slotScore}"
+                <input id="mary-exchange-input" type="number" inputmode="numeric" pattern="[0-9]*" min="10" step="10" value="${maxConvert}" max="${slotScore}"
                     style="width:100%;background:rgba(255,255,255,0.08);border:1px solid #fa0;border-radius:10px;
                     padding:10px;color:#fa0;text-align:center;font-size:18px;font-weight:900;font-family:monospace;
                     outline:none;">
