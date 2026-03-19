@@ -2059,6 +2059,7 @@
             highlight(maryCurrentPos, false);
             highlight(targetIdx, true);
             maryCurrentPos = targetIdx;
+            maryState.isSpinning = false; // ★ 修正：轉完立即解鎖，否則後續領獎/比大小會被鎖死
 
             // 中獎結算
             const betOnTarget = maryState.currentBet[targetId] || 0;
@@ -2100,7 +2101,6 @@
             } else {
                 maryClearBet();
                 maryState.winScore = 0;
-                maryState.isSpinning = false;
                 document.getElementById('mary-btn-start').disabled = false;
                 showToast(`未中獎 — 落在 ${targetConfig.label}，再試一次！`);
             }
