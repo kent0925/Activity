@@ -2366,7 +2366,10 @@
                     const db = document.getElementById('mary-double-btns');
                     if (db) {
                         const btns = db.querySelectorAll('button');
-                        if (btns[2]) btns[2].textContent = `✅ 領獎 (${maryState.winScore})`;
+                        if (btns[2]) {
+                            btns[2].textContent = `✅ 領獎 (${maryState.winScore})`;
+                            btns[2].style.pointerEvents = 'auto'; // 強制領獎按鈕可點
+                        }
                     }
                 }
             }, 800); // 800ms
@@ -2426,6 +2429,7 @@
                     maryState.winScore = 0;
                     maryState.points = targetPoints; // 校正回歸後端正確值
                     maryState.isSpinning = false;
+                    maryState.doubleUpActive = false;
                     maryClearBet();
                     showToast(`✅ 已領獎 ${win} 分！`);
                     document.getElementById('mary-btn-start').disabled = false;
