@@ -174,7 +174,8 @@
 
             // 2. 背景呼叫 API 更新數據
             try {
-                const res = await fetch(`${GAS_URL}?action=getJackpotAll&_=${Date.now()}`);
+                // 原先為 getJackpotAll (拉霸排行榜)，現改為拿取小瑪莉專屬的英雄榜
+                const res = await fetch(`${GAS_URL}?action=getMaryRankings&_=${Date.now()}`);
                 const allData = await res.json();
 
                 if (Array.isArray(allData) && allData.length > 0) {
@@ -1546,7 +1547,7 @@
                 <button id="rank-tab-attendance" onclick="switchRankTab('attendance')"
                     class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-400">出席王</button>
                 <button id="rank-tab-jackpot" onclick="switchRankTab('jackpot')"
-                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-400">拉霸英雄</button>
+                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-400">小瑪莉英雄榜</button>
             </div>
 
             <!-- List Area -->
@@ -2343,7 +2344,11 @@
             const dbContainer = document.getElementById('mary-double-btns');
             if (dbContainer) dbContainer.style.pointerEvents = 'none';
 
-            const num = Math.floor(Math.random() * 13) + 1; // 1-13
+            let num = Math.floor(Math.random() * 13) + 1; // 1-13
+            // ★ 新需求：降低過五關機率。當玩家聽牌 (連贏 4 次) 時，強制 80% 落入通殺！
+            if (maryState.doubleUpStreak >= 4 && Math.random() < 0.8) {
+                num = 7; 
+            }
 
             const numEl = document.getElementById('mary-double-number');
             const numDisplay = document.getElementById('mary-double-num-display');
