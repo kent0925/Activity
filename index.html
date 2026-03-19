@@ -2406,6 +2406,19 @@
                 maryClearBet();
             }
 
+            // 即時更新領獎按鈕的數字，避免等待動畫的 800ms 期間顯示舊數字
+            const immediateDb = document.getElementById('mary-double-btns');
+            if (immediateDb) {
+                const immediateBtns = immediateDb.querySelectorAll('button');
+                if (immediateBtns[2]) {
+                    if (maryState.winScore > 0) {
+                        immediateBtns[2].textContent = `✅ 領獎 (${maryState.winScore})`;
+                    } else {
+                        immediateBtns[2].textContent = '領獎';
+                    }
+                }
+            }
+
             updateMaryUI();
 
             // 同步至後端
