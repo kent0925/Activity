@@ -1557,17 +1557,28 @@
                 <!-- 24格跑道 -->
                 <div id="mary-track-grid" class="flex-1 grid grid-cols-7 grid-rows-7 gap-1 p-1 bg-white/5 border-2 border-[#5a3a00] rounded-lg relative overflow-hidden">
                     <!-- 中央插圖區 -->
-                    <div id="mary-center" class="col-start-2 col-end-7 row-start-2 row-end-7 bg-[#2da6ff] rounded-md border-2 border-[#1e4d1e] relative overflow-hidden flex items-center justify-center p-2 shadow-[inset_0_0_20px_rgba(0,0,0,0.3)]">
+                    <div id="mary-center" class="col-start-2 col-end-7 row-start-2 row-end-7 bg-[#2da6ff] rounded-md border-2 border-[#1e4d1e] relative overflow-hidden flex flex-col items-center justify-center p-2 shadow-[inset_0_0_20px_rgba(0,0,0,0.3)]">
                         <!-- 類馬力歐插圖 (暫用 Emoji 示意，可換為圖片) -->
-                        <div class="text-[80px] opacity-20 filter grayscale-0 select-none">🐢</div>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <div class="text-[100px] font-black text-white/10 select-none -mb-10">JP</div>
-                            <!-- 中央大獎數字 -->
-                            <div id="mary-center-num" class="bg-black/80 border-4 border-[#ff4444] rounded-xl px-4 py-2 text-5xl font-black text-[#ff4444] shadow-[0_0_20px_rgba(255,68,68,0.5)] tabular-nums" style="font-family: 'Courier New', monospace;">0</div>
+                        <div class="text-[80px] opacity-20 filter grayscale-0 select-none absolute">🐢</div>
+                        <div class="text-[100px] font-black text-white/10 select-none -mb-8 z-0">JP</div>
+                        
+                        <!-- 中央大獎數字 -->
+                        <div id="mary-center-num" class="bg-black/80 border-4 border-[#ff4444] rounded-xl px-4 py-2 text-5xl font-black text-[#ff4444] shadow-[0_0_20px_rgba(255,68,68,0.5)] tabular-nums z-10" style="font-family: 'Courier New', monospace;">0</div>
+                        
+                        <!-- 覆蓋於上方的大/小按鈕區 -->
+                        <div id="mary-double-btns" class="hidden absolute inset-0 z-20 flex flex-col justify-between py-2 bg-black/40 backdrop-blur-sm">
+                            <div class="flex justify-between items-center w-full px-2 mt-4">
+                                <button onclick="maryDoubleUp('small')" class="mary-phys-btn bg-[#ff4444] border-b-4 border-[#cc0000] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(255,0,0,0.5)] active:translate-y-1 active:border-b-0 leading-tight">押小<br><span class="text-[10px] opacity-80">1-6</span></button>
+                                <button onclick="maryDoubleUp('big')" class="mary-phys-btn bg-[#4444ff] border-b-4 border-[#0000cc] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(0,0,255,0.5)] active:translate-y-1 active:border-b-0 leading-tight">押大<br><span class="text-[10px] opacity-80">8-13</span></button>
+                            </div>
+                            <div class="flex justify-center w-full mb-1">
+                                <button onclick="maryCollect()" class="mary-phys-btn bg-[#00aa33] border-b-4 border-[#006622] rounded-md px-6 py-2 text-sm font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_15px_rgba(0,255,0,0.6)]">領獎</button>
+                            </div>
                         </div>
+
                         <!-- ONCE MORE 裝飾 -->
-                        <div class="absolute left-1 top-1/2 -translate-y-1/2 text-[8px] font-black text-white/40 uppercase whitespace-nowrap [writing-mode:vertical-rl] tracking-widest">Once More</div>
-                        <div class="absolute right-1 top-1/2 -translate-y-1/2 text-[8px] font-black text-white/40 uppercase whitespace-nowrap [writing-mode:vertical-rl] tracking-widest rotate-180">Once More</div>
+                        <div class="absolute left-1 top-1/2 -translate-y-1/2 text-[8px] font-black text-white/40 uppercase whitespace-nowrap [writing-mode:vertical-rl] tracking-widest z-0">Once More</div>
+                        <div class="absolute right-1 top-1/2 -translate-y-1/2 text-[8px] font-black text-white/40 uppercase whitespace-nowrap [writing-mode:vertical-rl] tracking-widest rotate-180 z-0">Once More</div>
                     </div>
                 </div>
                 
@@ -1589,13 +1600,9 @@
                     <button onclick="maryExchange()" class="mary-phys-btn bg-[#4aaeff] border-b-4 border-[#2277cc] rounded-md px-3 py-2 text-[10px] font-black text-white active:translate-y-1 active:border-b-0">兌換</button>
                 </div>
                 
-                <!-- 中央：比大小鈕 (隱藏/顯示控制) -->
+                <!-- 中央：裝飾或者功能區，已將大/小按鍵移至中央 -->
                 <div id="mary-action-area" class="flex-1 flex justify-center gap-2">
-                    <div id="mary-double-btns" class="hidden flex gap-2">
-                        <button onclick="maryDoubleUp('small')" class="mary-phys-btn bg-[#ff4444] border-b-4 border-[#cc0000] rounded-md px-4 py-2 text-xs font-black text-white active:translate-y-1 active:border-b-0">小 1-6</button>
-                        <button onclick="maryDoubleUp('big')" class="mary-phys-btn bg-[#4444ff] border-b-4 border-[#0000cc] rounded-md px-4 py-2 text-xs font-black text-white active:translate-y-1 active:border-b-0">大 8-13</button>
-                        <button onclick="maryCollect()" class="mary-phys-btn bg-[#00aa33] border-b-4 border-[#006622] rounded-md px-3 py-2 text-xs font-black text-white active:translate-y-1 active:border-b-0">領獎</button>
-                    </div>
+                    <div class="text-xs text-white/50 font-black tracking-widest">GOOD LUCK</div>
                 </div>
 
                 <!-- 右側：開始鈕 -->
@@ -1823,12 +1830,12 @@
             { id: 'lucky', label: '🍀', rate: 0, color: '#00ffaa' } // 送燈 / 小獎
         ];
 
-        // 轉盤順序 (24格) 經典佈局
+        // 轉盤順序 (24格) 經典佈局，最大獎在上下中，次獎在左右中
         const MARY_GRID = [
-            'bar', 'apple', 'orange', 'mango', 'bell', 'lucky',
-            'watermelon', 'apple', 'star', 'mango', 'orange', 'bell',
-            'seven', 'apple', 'mango', 'orange', 'bell', 'lucky',
-            'watermelon', 'apple', 'star', 'mango', 'orange', 'bell'
+            'apple', 'orange', 'mango', 'bar', 'bell', 'lucky', 'watermelon',
+            'apple', 'star', 'seven', 'mango', 'bell',
+            'orange', 'apple', 'mango', 'bar', 'bell', 'lucky', 'watermelon',
+            'apple', 'star', 'seven', 'orange', 'bell'
         ];
 
         async function openSmallMary() {
@@ -1936,8 +1943,7 @@
                     background: linear-gradient(135deg, #2a1810, #1a0f0a);
                 `;
                 cell.innerHTML = `
-                    <div id="mary-cell-sym-${i}" class="text-lg leading-none select-none">${conf.label}</div>
-                    <div class="text-[7px] font-black opacity-30 select-none">${conf.rate > 0 ? 'x' + conf.rate : ''}</div>
+                    <div id="mary-cell-sym-${i}" class="text-2xl leading-none select-none">${conf.label}</div>
                 `;
                 grid.appendChild(cell);
             });
@@ -2096,7 +2102,12 @@
             if (winScore > 0) {
                 showToast(`🎊 中獎！${targetConfig.label} 獲得 ${winScore} 分`);
                 const db = document.getElementById('mary-double-btns');
-                if (db) { db.classList.remove('hidden'); db.style.display = 'flex'; }
+                if (db) { 
+                    db.classList.remove('hidden'); 
+                    db.style.display = 'flex'; 
+                    const btns = db.querySelectorAll('button');
+                    if (btns[2]) btns[2].textContent = '領獎';
+                }
                 maryState.doubleUpActive = true;
             } else {
                 maryClearBet();
@@ -2197,7 +2208,17 @@
             
             maryState.doubleUpActive = false; // 立即標記，防止重複領
             const win = maryState.winScore;
+            const startPoints = maryState.points;
+            let targetPoints = startPoints + win;
             
+            // 隱藏按鈕區
+            const dbBtns = document.getElementById('mary-double-btns');
+            if (dbBtns) {
+                dbBtns.classList.add('hidden');
+                dbBtns.style.display = 'none';
+            }
+            document.getElementById('mary-double-result').classList.add('hidden');
+
             try {
                 const res = await apiSubmit({
                     action: 'playSmallMary',
@@ -2208,28 +2229,38 @@
                 });
                 
                 if (res && res.success) {
-                    maryState.points = res.points;
+                    targetPoints = res.points;
                     maryState.monthlyGift = res.monthlyGift;
-                } else {
-                    maryState.points += win;
                 }
             } catch (e) {
                 console.error(e);
-                maryState.points += win;
             }
 
-            document.getElementById('mary-double-btns').classList.add('hidden');
-            document.getElementById('mary-double-btns').style.display = 'none';
-            document.getElementById('mary-double-result').classList.add('hidden');
+            // 分數動畫移轉 (跑分特效)
+            const steps = 20;
+            const stepAmount = Math.max(1, Math.floor(win / steps));
+            let currentWin = win;
+            let currentPt = startPoints;
             
-            maryState.isSpinning = false;
-            maryState.winScore = 0;
-            
-            maryClearBet();
-
-            showToast(`✅ 已領獎 ${win} 分！`);
-            updateMaryUI();
-            document.getElementById('mary-btn-start').disabled = false;
+            const interval = setInterval(() => {
+                const chunk = Math.min(stepAmount, currentWin);
+                currentWin -= chunk;
+                currentPt += chunk;
+                
+                maryState.winScore = currentWin;
+                maryState.points = currentPt;
+                updateMaryUI();
+                
+                if (currentWin <= 0) {
+                    clearInterval(interval);
+                    maryState.winScore = 0;
+                    maryState.points = targetPoints; // 校正回歸後端正確值
+                    maryState.isSpinning = false;
+                    maryClearBet();
+                    showToast(`✅ 已領獎 ${win} 分！`);
+                    document.getElementById('mary-btn-start').disabled = false;
+                }
+            }, 30);
         }
 
         async function maryExchange() {
