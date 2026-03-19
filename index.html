@@ -1548,6 +1548,7 @@
                 <div class="bg-black border-2 border-[#5a3a00] rounded-lg p-2 shadow-[inset_0_0_15px_rgba(255,150,0,0.3)]">
                     <div class="text-[10px] text-amber-800 font-black mb-1 text-center">CREDIT</div>
                     <div id="mary-my-points" class="text-3xl font-black text-amber-500 text-center leading-none tabular-nums" style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,150,0,0.5);">0000</div>
+                    <div id="mary-gift-points" class="text-[9px] text-amber-600 font-bold text-center mt-1">贈分: 0</div>
                 </div>
             </div>
 
@@ -1893,18 +1894,6 @@
             updateMaryUI();
         }
 
-        function updateMaryUI() {
-            const total = maryState.points + maryState.monthlyGift;
-            document.getElementById('mary-my-points').innerText = maryState.points.toLocaleString();
-            document.getElementById('mary-gift-points').innerText = `贈分: ${maryState.monthlyGift.toLocaleString()}`;
-            document.getElementById('mary-jackpot-pool').innerText = maryState.jackpotPool.toLocaleString();
-            document.getElementById('mary-win-score').innerText = maryState.winScore.toLocaleString();
-            // 点數不足時禁用開始按鈕
-            const startBtn = document.getElementById('mary-btn-start');
-            if (startBtn && !maryState.isSpinning) {
-                startBtn.disabled = total <= 0;
-            }
-        }
 
         function initMaryBoard() {
             const track = [
@@ -1978,16 +1967,20 @@
         function updateMaryUI() {
             const winEl = document.getElementById('mary-win-score');
             const pointsEl = document.getElementById('mary-my-points');
+            const giftEl = document.getElementById('mary-gift-points');
             const centerNumEl = document.getElementById('mary-center-num');
             
+            // 總額顯示 (Credit)
+            const total = (maryState.points + maryState.monthlyGift);
+            if (pointsEl) pointsEl.innerText = total.toString().padStart(4, '0');
+            if (giftEl) giftEl.innerText = `贈分: ${maryState.monthlyGift}`;
+            
             if (winEl) winEl.innerText = maryState.winScore.toString().padStart(4, '0');
-            if (pointsEl) pointsEl.innerText = (maryState.points + maryState.monthlyGift).toString().padStart(4, '0');
             if (centerNumEl) centerNumEl.innerText = maryState.winScore > 0 ? maryState.winScore : '0';
 
             const startBtn = document.getElementById('mary-btn-start');
             if (startBtn && !maryState.isSpinning) {
-                const total = maryState.points + maryState.monthlyGift;
-                startBtn.disabled = total <= 0 && Object.values(maryState.currentBet).length === 0;
+                startBtn.disabled = total <= 0 && Object.values(maryState.currentBet).every(v => v === 0);
             }
         }
 
@@ -2232,7 +2225,11 @@
             if (!val || isNaN(val) || val < 10) return showToast('請輸入合法的分數（最小 10）');
             const roundedVal = Math.floor(val / 10) * 10;
 
-            document.getElementById('mary-exchange-overlay').remove();
+            const overlay = document.getElementById('mary-exchange-overlay');
+            if (overlay) {
+                overlay.innerHTML = `<div class="flex flex-col items-center gap-4"><div class="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div><div class="text-amber-500 font-bold">正在處理兌換...</div></div>`;
+            }
+
             try {
                 const res = await apiSubmit({
                     action: 'exchangeSlotToMary',
@@ -2240,14 +2237,19 @@
                     name: appState.user.displayName,
                     exchangeScore: roundedVal
                 });
-                if (res.success) {
+                if (overlay) overlay.remove();
+                if (res && res.success) {
                     showToast(`✅ 成功兌換 ${res.addedPoints} 小瑪莉點數`);
                     maryState.points += res.addedPoints;
                     updateMaryUI();
                 } else {
-                    showToast(res.error || '兌換失敗，請確認拉霸分數是否尚充足');
+                    showToast(res ? (res.error || '兌換失敗，請確認拉霸分數是否尚充足') : '伺服器無回應');
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                if (overlay) overlay.remove();
+                console.error(e); 
+                showToast('❌ 發生異常錯誤，請稍後再試');
+            }
         }
 
         /** HTML 跳脫：防止使用者輸入的 XSS 攻擊 */
@@ -2731,7 +2733,13 @@
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(data)
                 });
-                return await res.json();
+                const text = await res.text();
+                try {
+                    return JSON.parse(text);
+                } catch (jsonErr) {
+                    console.error('GAS 回傳格式錯誤 (非 JSON):', text);
+                    return { success: false, error: '伺服器回應格式錯誤' };
+                }
             } catch (err) {
                 // ★ 網路錯誤時存入離線佇列
                 if (err.name === 'TypeError' || err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
@@ -2739,6 +2747,7 @@
                     showToast('⚠️ 網路異常，資料已暫存，待恢復後自動送出');
                     return { queued: true };
                 }
+                showToast('❌ 系統連線失敗');
                 throw err;
             }
         }
