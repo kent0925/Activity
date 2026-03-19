@@ -860,7 +860,8 @@
 <body class="bg-gray-50 min-h-screen pb-safe">
 
     <!-- 初始載入畫面 (Loading Overlay) -->
-    <div id="initial-load-overlay" onclick="if(window.hideInitialOverlay && !_slotSpinning) window.hideInitialOverlay();"
+    <div id="initial-load-overlay"
+        onclick="if(window.hideInitialOverlay && !_slotSpinning) window.hideInitialOverlay();"
         class="fixed inset-0 z-[100] bg-[#06c755] flex flex-col items-center justify-center transition-opacity duration-500 cursor-pointer">
         <div class="text-white text-3xl font-bold mb-4 animate-bounce pointer-events-none">🍺 大老二兄弟會</div>
         <!-- 迷你老虎機 -->
@@ -1605,6 +1606,7 @@
                         style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,150,0,0.5);">0000
                     </div>
                     <div id="mary-gift-points" class="text-[9px] text-amber-600 font-bold text-center mt-1">贈分: 0</div>
+                    <div id="mary-jackpot-pool" class="text-[10px] text-rose-500 font-extrabold text-center mt-1 animate-pulse">彩金池: 0</div>
                 </div>
             </div>
 
@@ -1678,7 +1680,8 @@
 
                 <!-- 中央：裝飾或者功能區，已將大/小按鍵移至中央 -->
                 <div id="mary-action-area" class="flex-1 flex justify-center gap-2">
-                    <button onclick="maryRandomBet()" class="mary-phys-btn bg-[#aa44ff] border-b-4 border-[#7700cc] rounded-md px-4 py-2 text-[11px] font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_10px_rgba(170,68,255,0.5)]">隨機押注</button>
+                    <button onclick="maryRandomBet()"
+                        class="mary-phys-btn bg-[#aa44ff] border-b-4 border-[#7700cc] rounded-md px-4 py-2 text-[11px] font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_10px_rgba(170,68,255,0.5)]">隨機押注</button>
                 </div>
 
                 <!-- 右側：開始鈕 -->
@@ -1904,14 +1907,14 @@
         };
 
         const MARY_CONFIG = [
-            { id: 'apple', label: '🍎', rate: 2, color: '#ff4444' }, // 原 5
-            { id: 'orange', label: '🍊', rate: 5, color: '#ffaa00' }, // 原 10
-            { id: 'mango', label: '🥭', rate: 7, color: '#ffee00' }, // 原 15
-            { id: 'bell', label: '🔔', rate: 10, color: '#ffdd00' }, // 原 20
-            { id: 'watermelon', label: '🍉', rate: 10, color: '#44ff44' }, // 原 20
-            { id: 'star', label: '🌟', rate: 15, color: '#ffff44' }, // 原 30
-            { id: 'seven', label: '7️⃣', rate: 20, color: '#ff2222' }, // 原 40
-            { id: 'bar', label: 'BAR', rate: 50, color: '#44aaff' }, // 原 100
+            { id: 'apple', label: '🍎', rate: 5, color: '#ff4444' }, // 原 5
+            { id: 'orange', label: '🍊', rate: 10, color: '#ffaa00' }, // 原 10
+            { id: 'mango', label: '🥭', rate: 15, color: '#ffee00' }, // 原 15
+            { id: 'bell', label: '🔔', rate: 20, color: '#ffdd00' }, // 原 20
+            { id: 'watermelon', label: '🍉', rate: 25, color: '#44ff44' }, // 原 20
+            { id: 'star', label: '🌟', rate: 30, color: '#ffff44' }, // 原 30
+            { id: 'seven', label: '7️⃣', rate: 40, color: '#ff2222' }, // 原 40
+            { id: 'bar', label: 'BAR', rate: 100, color: '#44aaff' }, // 原 100
             { id: 'lucky', label: '🍀', rate: 0, color: '#00ffaa' } // 送燈 / 小獎
         ];
 
@@ -2013,14 +2016,14 @@
             let currentTotalBet = Object.values(maryState.currentBet).reduce((a, b) => a + b, 0);
 
             // 決定要押幾個不同圖案 (2~4種)
-            const numSymbols = Math.floor(Math.random() * 3) + 2; 
+            const numSymbols = Math.floor(Math.random() * 3) + 2;
 
             for (let i = 0; i < numSymbols; i++) {
                 const target = activeOptions[Math.floor(Math.random() * activeOptions.length)];
                 const times = Math.floor(Math.random() * 3) + 1; // 各 1~3 注
-                
+
                 if (currentTotalBet + times > userTotal) break;
-                
+
                 maryState.currentBet[target.id] = (maryState.currentBet[target.id] || 0) + times;
                 currentTotalBet += times;
 
@@ -2103,12 +2106,14 @@
             const winEl = document.getElementById('mary-win-score');
             const pointsEl = document.getElementById('mary-my-points');
             const giftEl = document.getElementById('mary-gift-points');
+            const jackpotEl = document.getElementById('mary-jackpot-pool');
             const centerNumEl = document.getElementById('mary-center-num');
 
             // 總額顯示 (Credit)
             const total = (maryState.points + maryState.monthlyGift);
             if (pointsEl) pointsEl.innerText = total.toString().padStart(4, '0');
             if (giftEl) giftEl.innerText = `贈分: ${maryState.monthlyGift}`;
+            if (jackpotEl) jackpotEl.innerText = `🎰彩金池: ${maryState.jackpotPool || 0}`;
 
             if (winEl) winEl.innerText = maryState.winScore.toString().padStart(4, '0');
             if (centerNumEl) centerNumEl.innerText = maryState.winScore > 0 ? maryState.winScore : '0';
@@ -2151,42 +2156,51 @@
             // (下注面板歸零已移至遊戲結束後)
 
             const trackLen = MARY_GRID.length; // 24
-            
-            // ★ 動態權重開獎系統 (降低中獎率並增加自然感)
-            let weights = [];
+
+            // ★ 動態權重開獎系統 (精準控制 25% 中獎率與 RTP，但大獎獨立)
+            let isWin = false;
             const betSymbols = Object.keys(maryState.currentBet).filter(id => (maryState.currentBet[id] || 0) > 0);
             
+            // 25% 中獎機率判定
+            if (betSymbols.length > 0 && Math.random() < 0.25) {
+                isWin = true;
+            }
+
+            let weights = [];
             for (let i = 0; i < trackLen; i++) {
                 const sym = MARY_GRID[i];
                 const conf = MARY_CONFIG.find(c => c.id === sym);
-                let w = 10; // 基礎權重
-
-                // 1. 調整基礎權重
-                if (sym === 'lucky') w = 20; // 避免死板頻繁送燈
-                if (sym === 'apple') w = 15; // 稍微提升蘋果機率
-
                 const betAmt = maryState.currentBet[sym] || 0;
-                
-                // 2. 聰明避開：玩家沒押注的項目，權重大幅增加
-                if (betAmt === 0 && conf.rate > 0) {
-                    w += 25; 
-                }
+                let w = 0;
 
-                // 3. 防衛殺盤：對於有押注的項目
-                if (betAmt > 0) {
-                    if (conf.rate >= 15) {
-                        // 高倍數 (芒果以上)：機率幾乎歸零
-                        w = 1;
-                    } else if (conf.rate > 0) {
-                        // 低倍數 (蘋果、橘子)：機率減半
-                        w = Math.max(2, Math.floor(w / 2));
+                // ★ 使用者特殊要求：最大獎機率不會因為使用者有無押注而出現
+                // 無視 25% 的 isWin 盤控，也無視玩家有無押注，大獎固定保留微小且真實的自然隨機率
+                if (sym === 'bar' || sym === 'seven') {
+                    w = (sym === 'bar') ? 1 : 2; // 維持極低但是存在的固定機率
+                } else if (isWin) {
+                    // 中獎：只從有押注的中小獎項中挑選
+                    if (betAmt > 0 && conf && conf.rate > 0) {
+                        // RTP 控制：賠率越高權重越低 (100 / rate)，以逼近 60% 回報率
+                        w = Math.max(1, Math.floor(100 / conf.rate));
+                    }
+                } else {
+                    // 沒中獎：挑選沒押注的項目或送燈
+                    if (betAmt === 0) {
+                        if (sym === 'lucky') w = 50; // 送燈機率最高
+                        else w = 20;
                     }
                 }
                 weights.push(w);
             }
 
-            // 依據權重陣列隨機抽籤
-            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            let totalWeight = weights.reduce((a, b) => a + b, 0);
+            if (totalWeight === 0) {
+                // 預防萬一：所有權重都是 0 時，退回全隨機
+                 weights = weights.map(() => 10);
+                 totalWeight = weights.reduce((a, b) => a + b, 0);
+            }
+
+            // 抽籤決定目標
             let rand = Math.random() * totalWeight;
             let targetIdx = 0;
             for (let i = 0; i < trackLen; i++) {
@@ -2200,38 +2214,73 @@
             const targetId = MARY_GRID[targetIdx];
             const targetConfig = MARY_CONFIG.find(c => c.id === targetId);
 
-            // 總步數：至少 2 圈 + 到達目標格
-            const minRounds = 2;
-            const startPos = maryCurrentPos;
-            let stepsToTarget = (targetIdx - startPos + trackLen) % trackLen;
-            if (stepsToTarget === 0) stepsToTarget = trackLen;
-            const totalSteps = minRounds * trackLen + stepsToTarget;
+            // 獨立的旋轉動畫函數
+            const doSpinAnim = async (tIdx, baseMinRounds = 2, baseDelay = 60) => {
+                const startPos = maryCurrentPos;
+                let stepsToTarget = (tIdx - startPos + trackLen) % trackLen;
+                if (stepsToTarget === 0) stepsToTarget = trackLen;
+                const totalSteps = baseMinRounds * trackLen + stepsToTarget;
 
-            let delay = 60; // ms 初始速度
-            for (let step = 0; step < totalSteps; step++) {
-                const pos = (startPos + step) % trackLen;
-                const prevPos = (startPos + step - 1 + trackLen) % trackLen;
-                highlight(prevPos, false);
-                highlight(pos, true);
-                maryCurrentPos = pos;
+                let delay = baseDelay;
+                for (let step = 0; step < totalSteps; step++) {
+                    const pos = (startPos + step) % trackLen;
+                    const prevPos = (startPos + step - 1 + trackLen) % trackLen;
+                    highlight(prevPos, false);
+                    highlight(pos, true);
+                    maryCurrentPos = pos;
 
-                // 漸慢：最後20步開始減速
-                const remaining = totalSteps - step;
-                if (remaining <= 20) delay = 60 + (20 - remaining) * 25;
-                else if (remaining <= 40) delay = 60 + (40 - remaining) * 5;
+                    const remaining = totalSteps - step;
+                    if (remaining <= 10) delay = baseDelay + (10 - remaining) * 20;
+                    else if (remaining <= 25) delay = baseDelay + (25 - remaining) * 5;
 
-                await new Promise(r => setTimeout(r, delay));
+                    await new Promise(r => setTimeout(r, delay));
+                }
+                highlight(maryCurrentPos, false);
+                highlight(tIdx, true);
+                maryCurrentPos = tIdx;
+            };
+
+            // 第 1 次旋轉
+            await doSpinAnim(targetIdx, 2, 50);
+
+            let winScore = (maryState.currentBet[targetId] || 0) * targetConfig.rate;
+            let displayMsg = targetConfig.label;
+
+            // ★ 雙重送燈機制 (Lucky Star)
+            if (targetId === 'lucky') {
+                showToast("🍀 送兩燈！");
+                await new Promise(r => setTimeout(r, 600)); // 停頓一下再送
+
+                for (let i = 0; i < 2; i++) {
+                    // 第 2, 3 次旋轉 (快速跑圈，1圈，稍快)
+                    // 為了有趣，送燈時隨機送大獎以外的圖案
+                    let extraTargetIdx = Math.floor(Math.random() * trackLen); 
+                    const extraSym = MARY_GRID[extraTargetIdx];
+                    if (extraSym === 'bar' || extraSym === 'seven' || extraSym === 'lucky') {
+                        extraTargetIdx = (extraTargetIdx + 1) % trackLen; // 避開大獎死板防錯
+                        if (MARY_GRID[extraTargetIdx] === 'bar' || MARY_GRID[extraTargetIdx] === 'seven') {
+                            extraTargetIdx = (extraTargetIdx + 1) % trackLen;
+                        }
+                    }
+
+                    await doSpinAnim(extraTargetIdx, 1, 30);
+                    
+                    const extraTargetId = MARY_GRID[extraTargetIdx];
+                    const extraTargetConfig = MARY_CONFIG.find(c => c.id === extraTargetId);
+                    
+                    // 累加分數
+                    if (extraTargetId !== 'lucky') {
+                        let extraWin = (maryState.currentBet[extraTargetId] || 0) * extraTargetConfig.rate;
+                        winScore += extraWin;
+                    }
+                    
+                    // 讓多個中獎格都保持發亮
+                    highlight(extraTargetIdx, true); 
+                    await new Promise(r => setTimeout(r, 400));
+                }
             }
 
-            // 最終停在 targetIdx，確保對齊
-            highlight(maryCurrentPos, false);
-            highlight(targetIdx, true);
-            maryCurrentPos = targetIdx;
-            maryState.isSpinning = false; // ★ 修正：轉完立即解鎖，否則後續領獎/比大小會被鎖死
-
-            // 中獎結算
-            const betOnTarget = maryState.currentBet[targetId] || 0;
-            const winScore = betOnTarget * targetConfig.rate;
+            maryState.isSpinning = false;
             maryState.winScore = winScore;
 
             // 中獎格閃爍
@@ -2251,12 +2300,13 @@
                     userId: appState.user.userId,
                     betPoints,
                     winPoints: winScore,
-                    symbol: targetConfig.label
+                    symbol: displayMsg
                 });
                 if (res.success) {
                     maryState.points = res.points;
                     maryState.monthlyGift = res.monthlyGift;
                     maryState.totalMaryScore = res.totalMaryScore;
+                    if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
                     updateMaryUI();
                 }
             } catch (e) { console.error(e); }
@@ -2267,7 +2317,7 @@
                     navigator.vibrate([500, 200, 500]);
                 }
 
-                showToast(`🎊 中獎！${targetConfig.label} 獲得 ${winScore} 分`);
+                showToast(`🎊 中獎！${displayMsg} 獲得 ${winScore} 分`);
                 const db = document.getElementById('mary-double-btns');
                 if (db) {
                     db.classList.remove('hidden');
@@ -2276,11 +2326,13 @@
                     if (btns[2]) btns[2].textContent = '領獎';
                 }
                 maryState.doubleUpActive = true;
+                maryState.doubleUpStreak = 0; // ★ 重置過關計數
             } else {
                 maryClearBet();
                 maryState.winScore = 0;
+                maryState.doubleUpStreak = 0;
                 document.getElementById('mary-btn-start').disabled = false;
-                showToast(`未中獎 — 落在 ${targetConfig.label}，再試一次！`);
+                showToast(`未中獎 — 落在 ${displayMsg}，再試一次！`);
             }
         }
 
@@ -2292,7 +2344,7 @@
             if (dbContainer) dbContainer.style.pointerEvents = 'none';
 
             const num = Math.floor(Math.random() * 13) + 1; // 1-13
-            
+
             const numEl = document.getElementById('mary-double-number');
             const numDisplay = document.getElementById('mary-double-num-display');
             if (numEl) numEl.innerText = num;
@@ -2312,6 +2364,7 @@
 
             if (win) {
                 maryState.winScore *= 2;
+                maryState.doubleUpStreak = (maryState.doubleUpStreak || 0) + 1; // 記錄連勝
                 if (choice === 'big') {
                     if (btnBig) btnBig.classList.add('brightness-150', 'scale-110', 'ring-4', 'ring-white');
                     if (btnSmall) btnSmall.classList.add('opacity-30', 'grayscale');
@@ -2321,6 +2374,7 @@
                 }
             } else {
                 maryState.winScore = 0;
+                maryState.doubleUpStreak = 0; // 失敗歸零
                 maryState.doubleUpActive = false;
                 if (btnBig) btnBig.classList.add('opacity-30', 'grayscale');
                 if (btnSmall) btnSmall.classList.add('opacity-30', 'grayscale');
@@ -2342,10 +2396,11 @@
                 if (res && res.success) {
                     maryState.points = res.points;
                     maryState.monthlyGift = res.monthlyGift;
+                    if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
                 }
             } catch (e) { console.error(e); }
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 if (numDisplay) numDisplay.classList.add('hidden');
                 const classesToRemove = ['brightness-150', 'scale-110', 'ring-4', 'ring-white', 'opacity-30', 'grayscale'];
                 if (btnBig) btnBig.classList.remove(...classesToRemove);
@@ -2353,13 +2408,40 @@
 
                 if (dbContainer) dbContainer.style.pointerEvents = 'auto'; // 恢復點擊
 
+                // ★ 過五關斬將彩池觸發
+                if (win && maryState.doubleUpStreak >= 5) {
+                    maryState.doubleUpStreak = 0; // 重置
+                    document.getElementById('mary-double-btns')?.classList.add('hidden');
+                    showToast("🎉 恭喜！過五關斬將，觸發彩池大獎！正在結算中...", 4000);
+                    
+                    try {
+                        const res = await apiSubmit({
+                            action: 'claimSmallMaryJackpot',
+                            userId: appState.user.userId,
+                            name: appState.user.name
+                        });
+                        if (res.success) {
+                            maryState.winScore += res.jackpotWon; // 將彩金加上去
+                            showToast(`🎰 狂賀！獨得彩池 ${res.jackpotWon} 分！總合 ${maryState.winScore} 分！`, 5000);
+                        } else {
+                            showToast(`⚠️ 彩池提示：${res.error || '未知的錯誤'}`, 3000);
+                        }
+                    } catch (e) {
+                        console.error("領取彩池失敗", e);
+                    }
+                    
+                    updateMaryUI();
+                    maryCollect(); // 自動轉入領獎跑分動畫
+                    return;
+                }
+
                 if (!maryState.doubleUpActive) {
                     maryState.isSpinning = false;
                     maryState.winScore = 0;
 
                     // 隱藏整個雙倍區按鈕
                     document.getElementById('mary-double-btns')?.classList.add('hidden');
-                    
+
                     updateMaryUI();
                     document.getElementById('mary-btn-start').disabled = false;
                 } else {
@@ -2479,12 +2561,12 @@
                     const slotScore = d.slotScore || 0;
                     const maxConvert = Math.floor(slotScore / 10) * 10;
                     const maryPoints = Math.floor(maxConvert / 10);
-                    
+
                     const scoreEl = document.getElementById('mary-exchange-slot-score');
                     const maxEl = document.getElementById('mary-exchange-max-convert');
                     const inputEl = document.getElementById('mary-exchange-input');
                     const btnEl = document.getElementById('mary-exchange-btn-confirm');
-                    
+
                     if (scoreEl) {
                         scoreEl.classList.remove('animate-pulse');
                         scoreEl.innerText = slotScore.toLocaleString();
