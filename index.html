@@ -2024,11 +2024,7 @@
             maryState.isSpinning = true;
             document.getElementById('mary-btn-start').disabled = true;
 
-            // ★ 修正：開獎前下注面板先歸零 (使用者要求)
-            MARY_CONFIG.forEach(c => {
-                const el = document.getElementById(`mary-bet-val-${c.id}`);
-                if (el) el.innerText = '0';
-            });
+            // (下注面板歸零已移至遊戲結束後)
 
             const trackLen = MARY_GRID.length; // 24
             // 隨機決定目標格 index
@@ -2150,15 +2146,21 @@
 
             updateMaryUI();
 
-            // 同步至後端
-            apiSubmit({
-                action: 'playSmallMary',
-                userId: appState.user.userId,
-                betPoints: 0,
-                isDoubleUp: true,
-                doubleWin: maryState.winScore,
-                symbol: win ? `大小翻倍×2` : `大小輸(開${num})`
-            });
+            // 同步至後端 (等待回應以確保積分正確)
+            try {
+                const res = await apiSubmit({
+                    action: 'playSmallMary',
+                    userId: appState.user.userId,
+                    betPoints: 0,
+                    isDoubleUp: true,
+                    doubleWin: maryState.winScore,
+                    symbol: win ? `大小翻倍×2` : `大小輸(開${num})`
+                });
+                if (res && res.success) {
+                    maryState.points = res.points;
+                    maryState.monthlyGift = res.monthlyGift;
+                }
+            } catch (e) { console.error(e); }
 
             setTimeout(() => {
                 resultEl.classList.add('hidden');
@@ -2223,12 +2225,7 @@
             maryState.isSpinning = false;
             maryState.winScore = 0;
             
-            // 下注歸零
-            maryState.currentBet = {};
-            MARY_CONFIG.forEach(c => {
-                const el = document.getElementById(`mary-bet-val-${c.id}`);
-                if (el) el.innerText = '0';
-            });
+            maryClearBet();
 
             showToast(`✅ 已領獎 ${win} 分！`);
             updateMaryUI();
