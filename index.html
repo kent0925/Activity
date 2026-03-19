@@ -1904,14 +1904,14 @@
         };
 
         const MARY_CONFIG = [
-            { id: 'apple', label: '🍎', rate: 5, color: '#ff4444' },
-            { id: 'orange', label: '🍊', rate: 10, color: '#ffaa00' },
-            { id: 'mango', label: '🥭', rate: 15, color: '#ffee00' },
-            { id: 'bell', label: '🔔', rate: 20, color: '#ffdd00' },
-            { id: 'watermelon', label: '🍉', rate: 20, color: '#44ff44' },
-            { id: 'star', label: '🌟', rate: 30, color: '#ffff44' },
-            { id: 'seven', label: '7️⃣', rate: 40, color: '#ff2222' },
-            { id: 'bar', label: '💎', rate: 100, color: '#44aaff' },
+            { id: 'apple', label: '🍎', rate: 2, color: '#ff4444' }, // 原 5
+            { id: 'orange', label: '🍊', rate: 5, color: '#ffaa00' }, // 原 10
+            { id: 'mango', label: '🥭', rate: 7, color: '#ffee00' }, // 原 15
+            { id: 'bell', label: '🔔', rate: 10, color: '#ffdd00' }, // 原 20
+            { id: 'watermelon', label: '🍉', rate: 10, color: '#44ff44' }, // 原 20
+            { id: 'star', label: '🌟', rate: 15, color: '#ffff44' }, // 原 30
+            { id: 'seven', label: '7️⃣', rate: 20, color: '#ff2222' }, // 原 40
+            { id: 'bar', label: 'BAR', rate: 50, color: '#44aaff' }, // 原 100
             { id: 'lucky', label: '🍀', rate: 0, color: '#00ffaa' } // 送燈 / 小獎
         ];
 
@@ -2151,8 +2151,46 @@
             // (下注面板歸零已移至遊戲結束後)
 
             const trackLen = MARY_GRID.length; // 24
-            // 隨機決定目標格 index
-            const targetIdx = Math.floor(Math.random() * trackLen);
+            
+            // ★ 動態權重開獎系統 (降低中獎率)
+            let weights = [];
+            for (let i = 0; i < trackLen; i++) {
+                const sym = MARY_GRID[i];
+                let w = 10; // 基礎權重
+                
+                // 調整盤面基礎機率 (未押注時)
+                if (sym === 'lucky') w = 50; // 送燈/沒獎機率最高
+                if (sym === 'apple') w = 30; // 蘋果機率次高
+                if (sym === 'bar') w = 2; // BAR 機率極低
+                if (sym === 'seven') w = 4; // 7️⃣ 機率很低
+
+                // 檢查玩家押注情況，進行防衛性殺盤
+                const betAmt = maryState.currentBet[sym] || 0;
+                if (betAmt > 0) {
+                    const conf = MARY_CONFIG.find(c => c.id === sym);
+                    if (conf && conf.rate >= 10) {
+                        // 押中高賠率 (🔔, 🍉, 🌟, 7️⃣, BAR)：機率大幅調降為 1/3
+                        w = Math.max(1, Math.floor(w / 3));
+                    } else if (conf && conf.rate > 0) {
+                        // 押中小賠率 (🍎, 🍊, 🥭)：機率調降為 1/1.5
+                        w = Math.max(1, Math.floor(w / 1.5));
+                    }
+                }
+                weights.push(w);
+            }
+
+            // 依據權重陣列隨機抽籤
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            let rand = Math.random() * totalWeight;
+            let targetIdx = 0;
+            for (let i = 0; i < trackLen; i++) {
+                if (rand < weights[i]) {
+                    targetIdx = i;
+                    break;
+                }
+                rand -= weights[i];
+            }
+
             const targetId = MARY_GRID[targetIdx];
             const targetConfig = MARY_CONFIG.find(c => c.id === targetId);
 
