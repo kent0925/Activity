@@ -1639,6 +1639,12 @@
                                 <button onclick="maryDoubleUp('small')"
                                     class="mary-phys-btn bg-[#ff4444] border-b-4 border-[#cc0000] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(255,0,0,0.5)] active:translate-y-1 active:border-b-0 leading-tight">押小<br><span
                                         class="text-[10px] opacity-80">1-6</span></button>
+                                        
+                                <!-- ★ 新增：中間顯示開出的數字 -->
+                                <div id="mary-double-num-display" class="hidden flex items-center justify-center bg-black border-2 border-[#ffcc00] rounded-full w-12 h-12 shadow-[0_0_15px_rgba(255,200,0,0.5)] mx-1">
+                                    <span id="mary-double-number" class="text-2xl font-black text-[#ffcc00] tabular-nums" style="font-family: 'Courier New', monospace;">7</span>
+                                </div>
+
                                 <button onclick="maryDoubleUp('big')"
                                     class="mary-phys-btn bg-[#4444ff] border-b-4 border-[#0000cc] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(0,0,255,0.5)] active:translate-y-1 active:border-b-0 leading-tight">押大<br><span
                                         class="text-[10px] opacity-80">8-13</span></button>
@@ -2125,9 +2131,13 @@
             }
         }
 
-        const highlight = (idx, on) => {
+        const highlight = (idx, on, force = false) => {
             const cell = document.getElementById(`mary-cell-${idx}`);
             if (!cell) return;
+            
+            // ★ 新增：保護不死燈號
+            if (!on && !force && maryState.keepLights && maryState.keepLights.includes(idx)) return;
+
             if (on) {
                 cell.style.background = 'linear-gradient(135deg, #ffcc00, #ff8800)';
                 cell.style.boxShadow = '0 0 15px #ffaa00, inset 0 0 10px rgba(255,255,255,0.5)';
@@ -2148,6 +2158,13 @@
 
         async function maryStartSpin() {
             if (maryState.isSpinning || maryState.doubleUpActive) return;
+            
+            // ★ 清除前一局殘留的送燈
+            if (maryState.keepLights) {
+                maryState.keepLights.forEach(idx => highlight(idx, false, true)); // force clear
+            }
+            maryState.keepLights = [];
+
             const betPoints = Object.values(maryState.currentBet).reduce((a, b) => a + b, 0);
             if (betPoints <= 0) return showToast("請先選符號壓注");
 
@@ -2243,6 +2260,7 @@
 
             // 第 1 次旋轉
             await doSpinAnim(targetIdx, 2, 50);
+            maryState.keepLights.push(targetIdx); // 保護第一個中獎格
 
             let winScore = (maryState.currentBet[targetId] || 0) * targetConfig.rate;
             let displayMsg = targetConfig.label;
@@ -2265,7 +2283,8 @@
                     }
 
                     await doSpinAnim(extraTargetIdx, 1, 30);
-                    
+                    maryState.keepLights.push(extraTargetIdx); // 保護送的燈號
+
                     const extraTargetId = MARY_GRID[extraTargetIdx];
                     const extraTargetConfig = MARY_CONFIG.find(c => c.id === extraTargetId);
                     
@@ -2288,7 +2307,8 @@
             if (winScore > 0) {
                 let blinkCount = 0;
                 const blinkInterval = setInterval(() => {
-                    highlight(targetIdx, blinkCount % 2 === 0);
+                    const targetsToBlink = maryState.keepLights.length > 0 ? maryState.keepLights : [targetIdx];
+                    targetsToBlink.forEach(idx => highlight(idx, blinkCount % 2 === 0, true));
                     blinkCount++;
                     if (blinkCount >= 8) clearInterval(blinkInterval);
                 }, 180);
