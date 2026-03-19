@@ -1886,11 +1886,22 @@
         function maryAddBet(id) {
             if (maryState.isSpinning || maryState.doubleUpActive) return;
             const totalBet = Object.values(maryState.currentBet).reduce((a, b) => a + b, 0);
-            if (totalBet >= (maryState.points + maryState.monthlyGift)) return showToast("點數不足");
+            const userTotal = maryState.points + maryState.monthlyGift;
+            if (totalBet >= userTotal) return showToast("點數不足");
 
             maryState.currentBet[id] = (maryState.currentBet[id] || 0) + 1;
             const valEl = document.getElementById(`mary-bet-val-${id}`);
             if (valEl) valEl.innerText = maryState.currentBet[id];
+            updateMaryUI();
+        }
+
+        function maryClearBet() {
+            if (maryState.isSpinning || maryState.doubleUpActive) return;
+            maryState.currentBet = {};
+            MARY_CONFIG.forEach(c => {
+                const el = document.getElementById(`mary-bet-val-${c.id}`);
+                if (el) el.innerText = '0';
+            });
             updateMaryUI();
         }
 
@@ -2013,6 +2024,12 @@
             maryState.isSpinning = true;
             document.getElementById('mary-btn-start').disabled = true;
 
+            // ★ 修正：開獎前下注面板先歸零 (使用者要求)
+            MARY_CONFIG.forEach(c => {
+                const el = document.getElementById(`mary-bet-val-${c.id}`);
+                if (el) el.innerText = '0';
+            });
+
             const trackLen = MARY_GRID.length; // 24
             // 隨機決定目標格 index
             const targetIdx = Math.floor(Math.random() * trackLen);
@@ -2094,6 +2111,12 @@
         }
 
         async function maryDoubleUp(choice) {
+            if (!maryState.doubleUpActive || maryState.isSpinning) return;
+            
+            // 鎖定按鈕防止重複按
+            const dbContainer = document.getElementById('mary-double-btns');
+            if (dbContainer) dbContainer.style.pointerEvents = 'none';
+
             const num = Math.floor(Math.random() * 13) + 1; // 1-13
             const resultEl = document.getElementById('mary-double-result');
             const numEl = document.getElementById('mary-double-num');
@@ -2139,10 +2162,20 @@
 
             setTimeout(() => {
                 resultEl.classList.add('hidden');
+                if (dbContainer) dbContainer.style.pointerEvents = 'auto'; // 恢復點擊
+
                 if (!maryState.doubleUpActive) {
                     // 輸後完全重置
                     maryState.isSpinning = false;
                     maryState.winScore = 0;
+                    
+                    // 下注歸零
+                    maryState.currentBet = {};
+                    MARY_CONFIG.forEach(c => {
+                        const el = document.getElementById(`mary-bet-val-${c.id}`);
+                        if (el) el.innerText = '0';
+                    });
+
                     updateMaryUI();
                     document.getElementById('mary-btn-start').disabled = false;
                 } else {
@@ -2156,15 +2189,48 @@
             }, 1800);
         }
 
-        // 領獎免進入 Double Up
-        function maryCollect() {
+        // 領獎
+        async function maryCollect() {
+            if (maryState.isSpinning || !maryState.doubleUpActive || maryState.winScore <= 0) return;
+            
+            maryState.doubleUpActive = false; // 立即標記，防止重複領
+            const win = maryState.winScore;
+            
+            try {
+                const res = await apiSubmit({
+                    action: 'playSmallMary',
+                    userId: appState.user.userId,
+                    betPoints: 0,
+                    winPoints: win,
+                    symbol: '領獎'
+                });
+                
+                if (res && res.success) {
+                    maryState.points = res.points;
+                    maryState.monthlyGift = res.monthlyGift;
+                } else {
+                    maryState.points += win;
+                }
+            } catch (e) {
+                console.error(e);
+                maryState.points += win;
+            }
+
             document.getElementById('mary-double-btns').classList.add('hidden');
+            document.getElementById('mary-double-btns').style.display = 'none';
             document.getElementById('mary-double-result').classList.add('hidden');
-            maryState.doubleUpActive = false;
+            
             maryState.isSpinning = false;
-            maryClearBet();
-            showToast(`✅ 已領獎 ${maryState.winScore} 分！`);
             maryState.winScore = 0;
+            
+            // 下注歸零
+            maryState.currentBet = {};
+            MARY_CONFIG.forEach(c => {
+                const el = document.getElementById(`mary-bet-val-${c.id}`);
+                if (el) el.innerText = '0';
+            });
+
+            showToast(`✅ 已領獎 ${win} 分！`);
             updateMaryUI();
             document.getElementById('mary-btn-start').disabled = false;
         }
