@@ -164,6 +164,7 @@
             if (cachedData) {
                 try {
                     const top3 = JSON.parse(cachedData);
+                    appState.jackpotRankings = top3; // ★ 快取時也同步更新，名單顯示才能正確
                     renderJackpotTop3(top3);
                     if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
                     if (homeContainer) homeContainer.classList.remove('hidden');
@@ -4041,10 +4042,21 @@
 
                 const liP = document.createElement('li');
                 liP.className = 'px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0';
+
+                // ★ 小瑪莉前三名勳章（網頁名單內顯示）
+                let maryMedal = '';
+                let maryNameColor = '';
+                if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                    const rankIndex = appState.jackpotRankings.findIndex(r => r.name === name);
+                    if (rankIndex === 0) { maryMedal = '🥇'; maryNameColor = 'color:#d97706;font-weight:800;'; }
+                    else if (rankIndex === 1) { maryMedal = '🥈'; maryNameColor = 'color:#64748b;font-weight:800;'; }
+                    else if (rankIndex === 2) { maryMedal = '🥉'; maryNameColor = 'color:#b45309;font-weight:800;'; }
+                }
+
                 liP.innerHTML = `
                     <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
                         <span class="text-gray-400 font-mono text-sm">${num}.</span>
-                        <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap">${safeName}${tagHtml}${nameSuffix}</span>
+                        <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap" style="${maryNameColor}">${maryMedal}${safeName}${tagHtml}${nameSuffix}</span>
                     </div>
                     ${subHtml}`;
                 fragP.appendChild(liP);
@@ -5617,7 +5629,16 @@
                             textTags = ' ' + roles.map(r => r.textLabel).join('');
                         }
 
-                        text += `${num}. ${prefix}${p.name}${textTags}`;
+                        // ★ 小瑪莉前三名勳章（文字名單分享用）
+                        let maryMedalCopy = '';
+                        if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                            const rankIdx = appState.jackpotRankings.findIndex(r => r.name === p.name);
+                            if (rankIdx === 0) maryMedalCopy = '🥇';
+                            else if (rankIdx === 1) maryMedalCopy = '🥈';
+                            else if (rankIdx === 2) maryMedalCopy = '🥉';
+                        }
+
+                        text += `${num}. ${maryMedalCopy}${prefix}${p.name}${textTags}`;
                         if (total > 1) text += ` *${total}`;
                         text += `\n`;
 
