@@ -1569,7 +1569,8 @@
 
     <!-- 小瑪莉遊戲彈窗 - 正宗台式街機風格 -->
     <div id="small-mary-modal"
-        class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/95 backdrop-blur-md p-0 md:p-4 animate-fade-in overflow-y-auto">
+        class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/95 backdrop-blur-md p-0 md:p-4 animate-fade-in overflow-y-auto"
+        oncontextmenu="return false;">
         <div id="mary-machine"
             class="relative bg-[#3d2b1f] border-[6px] border-[#8b6914] rounded-[30px] shadow-[0_0_50px_rgba(0,0,0,0.8),_inset_0_0_30px_rgba(255,150,0,0.2)] flex flex-col overflow-hidden"
             style="width: 100%; max-width: 420px; aspect-ratio: 2/3.2; font-family: 'Segoe UI', sans-serif; transform-origin: center top;">
@@ -1590,24 +1591,29 @@
             </div>
 
             <!-- 數位計分板 (Scoreboard) -->
-            <div class="grid grid-cols-2 gap-4 px-6 py-4 bg-[#1a110a]">
-                <div
-                    class="bg-black border-2 border-[#5a3a00] rounded-lg p-2 shadow-[inset_0_0_15px_rgba(255,0,0,0.3)]">
-                    <div class="text-[10px] text-red-800 font-black mb-1 text-center">WIN</div>
-                    <div id="mary-win-score"
-                        class="text-3xl font-black text-red-600 text-center leading-none tabular-nums"
-                        style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,0,0,0.5);">0000
+            <div class="px-6 pt-4 pb-1 bg-[#1a110a]">
+                <div class="grid grid-cols-2 gap-4">
+                    <div
+                        class="bg-black border-2 border-[#5a3a00] rounded-lg p-2 shadow-[inset_0_0_15px_rgba(255,0,0,0.3)]">
+                        <div class="text-[10px] text-red-800 font-black mb-1 text-center">WIN</div>
+                        <div id="mary-win-score"
+                            class="text-3xl font-black text-red-600 text-center leading-none tabular-nums"
+                            style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,0,0,0.5);">0000
+                        </div>
+                    </div>
+                    <div
+                        class="bg-black border-2 border-[#5a3a00] rounded-lg p-2 shadow-[inset_0_0_15px_rgba(255,150,0,0.3)]">
+                        <div class="text-[10px] text-amber-800 font-black mb-1 text-center">CREDIT</div>
+                        <div id="mary-my-points"
+                            class="text-3xl font-black text-amber-500 text-center leading-none tabular-nums"
+                            style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,150,0,0.5);">0000
+                        </div>
+                        <div id="mary-gift-points" class="text-[9px] text-amber-600 font-bold text-center mt-1">贈分: 0</div>
                     </div>
                 </div>
-                <div
-                    class="bg-black border-2 border-[#5a3a00] rounded-lg p-2 shadow-[inset_0_0_15px_rgba(255,150,0,0.3)]">
-                    <div class="text-[10px] text-amber-800 font-black mb-1 text-center">CREDIT</div>
-                    <div id="mary-my-points"
-                        class="text-3xl font-black text-amber-500 text-center leading-none tabular-nums"
-                        style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,150,0,0.5);">0000
-                    </div>
-                    <div id="mary-gift-points" class="text-[9px] text-amber-600 font-bold text-center mt-1">贈分: 0</div>
-                    <div id="mary-jackpot-pool" class="text-[10px] text-rose-500 font-extrabold text-center mt-1 animate-pulse">彩金池: 0</div>
+                <!-- 彩金池 — 獨立置中於兩個計分板下方 -->
+                <div class="flex justify-center mt-2">
+                    <div id="mary-jackpot-pool" class="bg-black border-2 border-rose-700 rounded-lg px-4 py-1 text-[13px] text-rose-400 font-extrabold text-center animate-pulse shadow-[0_0_12px_rgba(255,30,30,0.4)]" style="letter-spacing:2px;">🎰 彩金池: 0</div>
                 </div>
             </div>
 
@@ -2120,11 +2126,13 @@
             const jackpotEl = document.getElementById('mary-jackpot-pool');
             const centerNumEl = document.getElementById('mary-center-num');
 
-            // 總額顯示 (Credit)
+            // 計算已押注總額，Credit 即時反映剩餘可用點數
+            const betPoints = Object.values(maryState.currentBet).reduce((a, b) => a + b, 0);
             const total = (maryState.points + maryState.monthlyGift);
-            if (pointsEl) pointsEl.innerText = total.toString().padStart(4, '0');
+            const displayCredit = Math.max(0, total - betPoints);
+            if (pointsEl) pointsEl.innerText = displayCredit.toString().padStart(4, '0');
             if (giftEl) giftEl.innerText = `贈分: ${maryState.monthlyGift}`;
-            if (jackpotEl) jackpotEl.innerText = `🎰彩金池: ${maryState.jackpotPool || 0}`;
+            if (jackpotEl) jackpotEl.innerText = `🎰 彩金池: ${maryState.jackpotPool || 0}`;
 
             if (winEl) winEl.innerText = maryState.winScore.toString().padStart(4, '0');
             if (centerNumEl) centerNumEl.innerText = maryState.winScore > 0 ? maryState.winScore : '0';
@@ -2361,6 +2369,14 @@
                 }
                 maryState.doubleUpActive = true;
                 maryState.doubleUpStreak = 0; // ★ 重置過關計數
+
+                // ★ 3 秒後未操作自動領獎
+                if (maryState._autoCollectTimer) clearTimeout(maryState._autoCollectTimer);
+                maryState._autoCollectTimer = setTimeout(() => {
+                    if (maryState.doubleUpActive && !maryState.isSpinning) {
+                        maryCollect();
+                    }
+                }, 3000);
             } else {
                 maryClearBet();
                 maryState.winScore = 0;
@@ -2372,6 +2388,8 @@
 
         async function maryDoubleUp(choice) {
             if (!maryState.doubleUpActive || maryState.isSpinning) return;
+            // 玩家有操作，清除自動領獎計時器
+            if (maryState._autoCollectTimer) { clearTimeout(maryState._autoCollectTimer); maryState._autoCollectTimer = null; }
 
             // 鎖定按鈕防止重複按
             const dbContainer = document.getElementById('mary-double-btns');
@@ -2529,6 +2547,8 @@
         // 領獎
         async function maryCollect() {
             if (maryState.isSpinning || !maryState.doubleUpActive || maryState.winScore <= 0) return;
+            // 清除自動領獎計時器（若為手動觸發）
+            if (maryState._autoCollectTimer) { clearTimeout(maryState._autoCollectTimer); maryState._autoCollectTimer = null; }
 
             maryState.doubleUpActive = false; // 立即標記，防止重複領
             const win = maryState.winScore;
