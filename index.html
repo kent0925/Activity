@@ -2105,6 +2105,10 @@
                 btn.addEventListener('pointerdown', startPress);
                 btn.addEventListener('pointerup', stopPress);
                 btn.addEventListener('pointerleave', stopPress);
+                btn.addEventListener('pointercancel', stopPress); // ★ 修正：防止滑出邊界或系統中斷造成自動押注
+                btn.addEventListener('touchend', stopPress);
+                btn.addEventListener('touchcancel', stopPress);
+                btn.addEventListener('contextmenu', e => e.preventDefault()); // 禁用右鍵/長按選單
                 panel.appendChild(btn);
             });
         }
@@ -2179,8 +2183,17 @@
             let isWin = false;
             const betSymbols = Object.keys(maryState.currentBet).filter(id => (maryState.currentBet[id] || 0) > 0);
             
-            // 25% 中獎機率判定
-            if (betSymbols.length > 0 && Math.random() < 0.25) {
+            // ★ 新需求：全項目押注中小獎機率上升
+            let winRate = 0.25; // 基礎 25%
+            const maxOptions = MARY_CONFIG.filter(c => c.rate > 0).length; // 8項
+            if (betSymbols.length >= maxOptions) {
+                winRate = 0.50; // 全押時提升到 50%
+            } else if (betSymbols.length >= maxOptions - 2) {
+                winRate = 0.35; // 押注 6 項以上提升到 35%
+            }
+
+            // 中獎判定
+            if (betSymbols.length > 0 && Math.random() < winRate) {
                 isWin = true;
             }
 
@@ -2204,8 +2217,8 @@
                 } else {
                     // 沒中獎：挑選沒押注的項目或送燈
                     if (betAmt === 0) {
-                        if (sym === 'lucky') w = 50; // 送燈機率最高
-                        else w = 20;
+                        if (sym === 'lucky') w = 10; // ★ 修正：降低四葉草獲獎機率 (原50)
+                        else w = 30; // 稍微提高其他未押注重點，補回分佈
                     }
                 }
                 weights.push(w);
@@ -4406,8 +4419,18 @@
                         if (roles.length > 0) {
                             tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
                         }
+                        // ★ 新增：檢查是否為小瑪莉前三名
+                        let nameColor = 'inherit';
+                        let maryMedal = '';
+                        if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                            const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
+                            if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
+                            else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
+                            else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
+                        }
+
                         html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
-                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;">${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
+                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
                         if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
                         html += '</div>';
                         if (guestData.length > 0) {
@@ -5328,8 +5351,18 @@
                             tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
                         }
 
+                        // ★ 新增：檢查是否為小瑪莉前三名
+                        let nameColor = 'inherit';
+                        let maryMedal = '';
+                        if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                            const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
+                            if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
+                            else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
+                            else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
+                        }
+
                         html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
-                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;">${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
+                        html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
                         if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
                         html += '</div>';
 
