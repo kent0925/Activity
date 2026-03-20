@@ -2378,6 +2378,9 @@
             const btnSmall = document.getElementById('btn-mary-small');
             const btnBig = document.getElementById('btn-mary-big');
 
+            // ★ 修正 F5：在修改 winScore 前先保存本局金額，讓後端能正確收到輸掉/贏得的金額
+            const winBeforeChange = maryState.winScore;
+
             let win = false;
             if (num === 7) {
                 win = false; // 莊家通殺
@@ -2422,13 +2425,16 @@
             updateMaryUI();
 
             // 同步至後端
+            // ★ 修正 F5：使用 winBeforeChange（修改前的金額）傳後端
+            //   - 贏：doubleWin = maryState.winScore（翻倍後），後端累加 MaryScore
+            //   - 輸：doubleWin = -winBeforeChange（負數），後端可正確計算輸掉的金額並補彩金池
             try {
                 const res = await apiSubmit({
                     action: 'playSmallMary',
                     userId: appState.user.userId,
                     betPoints: 0,
                     isDoubleUp: true,
-                    doubleWin: maryState.winScore,
+                    doubleWin: win ? maryState.winScore : -winBeforeChange,
                     symbol: win ? `大小翻倍×2` : `大小輸(開${num})`
                 });
                 if (res && res.success) {
@@ -2459,8 +2465,15 @@
                             name: appState.user.name
                         });
                         if (res.success) {
-                            maryState.winScore += res.jackpotWon; // 將彩金加上去
+                            // ★ 修正 F3：claimSmallMaryJackpot 後端已記帳完畢（內部呼叫 playSmallMary）
+                            // 直接更新前端狀態，不再呼叫 maryCollect()（避免再次送 playSmallMary 導致彩金雙重記入）
+                            maryState.winScore += res.jackpotWon; // 加上彩金用於前端動畫
                             showToast(`🎰 狂賀！獨得彩池 ${res.jackpotWon} 分！總合 ${maryState.winScore} 分！`, 5000);
+
+                            // 直接更新後端回傳的正確點數
+                            if (res.points !== undefined) maryState.points = res.points;
+                            if (res.monthlyGift !== undefined) maryState.monthlyGift = res.monthlyGift;
+                            if (res.totalMaryScore !== undefined) maryState.totalMaryScore = res.totalMaryScore;
                         } else {
                             showToast(`⚠️ 彩池提示：${res.error || '未知的錯誤'}`, 3000);
                         }
@@ -2468,8 +2481,13 @@
                         console.error("領取彩池失敗", e);
                     }
                     
+                    // 清除比大小 UI
+                    maryState.doubleUpActive = false;
+                    maryState.isSpinning = false;
+                    maryState.winScore = 0;
+                    maryClearBet();
                     updateMaryUI();
-                    maryCollect(); // 自動轉入領獎跑分動畫
+                    document.getElementById('mary-btn-start').disabled = false;
                     return;
                 }
 
@@ -2512,6 +2530,8 @@
             }
             document.getElementById('mary-double-result').classList.add('hidden');
 
+            // ★ 修正 F4：用旗標追蹤後端是否成功，失敗時不以前端預算覆蓋點數
+            let backendOk = false;
             try {
                 const res = await apiSubmit({
                     action: 'playSmallMary',
@@ -2524,9 +2544,25 @@
                 if (res && res.success) {
                     targetPoints = res.points;
                     maryState.monthlyGift = res.monthlyGift;
+                    backendOk = true;
+                } else {
+                    showToast(`⚠️ 領獎同步失敗：${res?.error || '伺服器無回應'}，請重試`, 3000);
                 }
             } catch (e) {
                 console.error(e);
+                showToast('❌ 領獎通訊異常，請稍後重試', 3000);
+            }
+
+            // 若後端失敗，還原 doubleUpActive 讓玩家可以重試領獎
+            if (!backendOk) {
+                maryState.doubleUpActive = true;
+                maryState.winScore = win; // 還原 winScore
+                if (dbBtns) {
+                    dbBtns.classList.remove('hidden');
+                    dbBtns.style.display = 'flex';
+                }
+                document.getElementById('mary-btn-start').disabled = false;
+                return;
             }
 
             // 分數動畫移轉 (跑分特效)
@@ -2612,7 +2648,7 @@
                     if (maxEl) maxEl.innerText = maryPoints.toLocaleString();
                     if (inputEl) {
                         inputEl.placeholder = "請輸入";
-                        inputEl.max = slotScore;
+                        inputEl.max = maxConvert; // ★ 修正 F1：上限改為可兌換的整數最大值
                         if (maxConvert > 0) {
                             inputEl.value = maxConvert;
                             inputEl.disabled = false;
