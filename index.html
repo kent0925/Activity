@@ -2720,6 +2720,11 @@
             const val = parseInt(input ? input.value : 0);
             if (!val || isNaN(val) || val < 10) return showToast('請輸入合法的分數（最小 10）');
             const roundedVal = Math.floor(val / 10) * 10;
+            
+            // ★ 優化：增加前端餘額判斷防呆
+            const maxConvertStr = document.getElementById('mary-exchange-max-convert')?.innerText;
+            const maxConvert = parseInt(maxConvertStr?.replace(/,/g, '')) || 0;
+            if (roundedVal > (maxConvert * 10)) return showToast('兌換點數超過可用餘額');
 
             const overlay = document.getElementById('mary-exchange-overlay');
             if (overlay) {
