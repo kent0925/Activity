@@ -185,7 +185,7 @@
                         const valA = a.score !== undefined ? a.score : a.count;
                         const valB = b.score !== undefined ? b.score : b.count;
                         if (valB !== valA) return valB - valA;
-                        return a.name.localeCompare(b.name, 'zh-Hant-TW');
+                        return String(a.name).localeCompare(String(b.name), 'zh-TW', { collation: 'stroke' });
                     });
 
                     // 更新快取 (Top 3)
@@ -233,7 +233,7 @@
                     // 同分處理
                     allData.sort((a, b) => {
                         if (b.count !== a.count) return b.count - a.count;
-                        return a.name.localeCompare(b.name, 'zh-Hant-TW');
+                        return String(a.name).localeCompare(String(b.name), 'zh-TW', { collation: 'stroke' });
                     });
 
                     // 更新快取 (Top 3)
@@ -1613,8 +1613,8 @@
                     </div>
                 </div>
                 <!-- 彩金池 — 獨立置中於兩個計分板下方 -->
-                <div class="flex justify-center mt-2">
-                    <div id="mary-jackpot-pool" class="bg-black border-2 border-rose-700 rounded-lg px-4 py-1 text-[13px] text-rose-400 font-extrabold text-center animate-pulse shadow-[0_0_12px_rgba(255,30,30,0.4)]" style="letter-spacing:2px;">🎰 彩金池: 0</div>
+                <div class="flex justify-center mt-3 mb-2">
+                    <div id="mary-jackpot-pool" class="bg-black border-4 border-rose-700 rounded-xl px-8 py-3 text-[18px] sm:text-xl text-rose-400 font-extrabold text-center animate-pulse shadow-[0_0_20px_rgba(255,30,30,0.6)]" style="letter-spacing:4px;">🎰 彩金池: 0</div>
                 </div>
             </div>
 
@@ -3110,7 +3110,7 @@
                     // ★ 新增：同分者用筆畫(localeCompare)排序
                     stats.sort((a, b) => {
                         if (b.count !== a.count) return b.count - a.count;
-                        return a.name.localeCompare(b.name, 'zh-Hant-TW');
+                        return String(a.name).localeCompare(String(b.name), 'zh-TW', { collation: 'stroke' });
                     });
 
                     // 更新快取
