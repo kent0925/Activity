@@ -4145,6 +4145,33 @@
         // ==========================================
 
         /**
+         * ★ parseLocalDate — 統一時間字串解析工具（防止 UTC 時差 +8 小時 BUG）
+         * 問題：'yyyy-MM-dd HH:mm' 格式字串給 new Date() 會被当成 UTC 解析，
+         *          導致 GMT+8 地區時間少了 8 小時（如 18:29 變 00:00）。
+         * 解決：自動辨識格式，給無時區的字串加上 +08:00 後缀再解析。
+         * 輸入：字串或 Date 物件
+         * 輸出：Date 物件（GMT+8 正確時間）
+         */
+        function parseLocalDate(s) {
+            if (!s) return new Date(NaN);
+            if (s instanceof Date) return s;
+            const str = String(s).trim();
+            // 如果已包含 +時區資訊（+08:00, Z, UTC 等），直接解析
+            if (/[Z+]\d{2}:?\d{2}$/.test(str) || str.endsWith('Z')) {
+                return new Date(str);
+            }
+            // 匹配 yyyy-MM-dd HH:mm(:ss) 或 yyyy/MM/dd HH:mm(:ss)
+            const match = str.match(/^(\d{4})[\-\/](\d{2})[\-\/](\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}))?)?/);
+            if (match) {
+                const y = match[1], mo = match[2], d = match[3];
+                const h = match[4] || '00', mi = match[5] || '00', sec = match[6] || '00';
+                // 加上 +08:00 確保聲明 GMT+8 解析
+                return new Date(`${y}-${mo}-${d}T${h}:${mi}:${sec}+08:00`);
+            }
+            return new Date(str);
+        }
+
+        /**
          * ★ 統一時間格式化（分享/圖片/複製共用）
          * 輸入：ISO 日期字串或 "start~end" 範圍字串
          * 輸出：格式化後的顯示字串
@@ -4177,14 +4204,14 @@
             const t = event.time;
             if (typeof t === 'string' && t.includes('~')) {
                 const [startStr, endStr] = t.split('~').map(s => s.trim());
-                const startD = new Date(startStr);
-                const endD = new Date(endStr);
+                const startD = parseLocalDate(startStr); // ★ 改用 parseLocalDate
+                const endD = parseLocalDate(endStr);     // ★ 改用 parseLocalDate
                 if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
-                    const todayDate = new Date(todayStr);
+                    const todayDate = parseLocalDate(todayStr);
                     return todayDate >= new Date(startD.toDateString()) && todayDate <= new Date(endD.toDateString());
                 }
             } else {
-                const eventDate = new Date(t);
+                const eventDate = parseLocalDate(t); // ★ 改用 parseLocalDate
                 if (!isNaN(eventDate.getTime())) {
                     const eStr = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, '0')}-${eventDate.getDate().toString().padStart(2, '0')}`;
                     return todayStr === eStr;
@@ -4762,7 +4789,7 @@
             let startDate = null;
             if (timeStr) {
                 const startRaw = timeStr.includes('~') ? timeStr.split('~')[0] : timeStr;
-                const d = new Date(startRaw);
+                const d = parseLocalDate(startRaw); // ★ 改用 parseLocalDate 避免日程日期偬差
                 if (!isNaN(d.getTime())) {
                     startDate = d;
                 }
@@ -5208,7 +5235,7 @@
                 let month = null;
                 let timeStr = event.time;
                 if (timeStr.includes('~')) timeStr = timeStr.split('~')[0];
-                const d = new Date(timeStr);
+                const d = parseLocalDate(timeStr); // ★ 改用 parseLocalDate 避免 UTC 偵差
                 if (!isNaN(d.getTime())) {
                     month = d.getMonth() + 1;
                 }
@@ -5740,24 +5767,21 @@
             // 如果是旅遊活動的時間範圍 (例如: 2023-10-10~2023-10-12)
             if (isoStr.includes('~')) {
                 const start = isoStr.split('~')[0];
-                const d = new Date(start);
-                // 如果日期無效，回傳原始字串
+                const d = parseLocalDate(start); // ★ 改用 parseLocalDate
                 if (isNaN(d.getTime())) return start;
                 return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}...`;
             }
 
-            const d = new Date(isoStr);
-            // 如果日期無效，回傳原始字串
+            const d = parseLocalDate(isoStr); // ★ 改用 parseLocalDate
             if (isNaN(d.getTime())) return isoStr;
 
             const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-            // 回傳格式: 月/日 (星期)
             return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} (${week})`;
         }
 
         function formatDate(isoStr) {
             if (!isoStr) return '';
-            const d = new Date(isoStr);
+            const d = parseLocalDate(isoStr); // ★ 核心修復：改用 parseLocalDate 避免 UTC 時差，18:29不再變0:00
             if (isNaN(d.getTime())) return isoStr;
             const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
             return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
@@ -5765,7 +5789,7 @@
 
         function formatDateOnly(isoStr) {
             if (!isoStr) return '';
-            const d = new Date(isoStr);
+            const d = parseLocalDate(isoStr); // ★ 改用 parseLocalDate
             if (isNaN(d.getTime())) return isoStr;
             const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
             return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week})`;
