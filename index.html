@@ -216,6 +216,7 @@
             if (cachedData) {
                 try {
                     const top3 = JSON.parse(cachedData);
+                    appState.attendanceRankings = top3; // ★ 優化：快取讀取後同步更新，排行榜 Modal 可即時顯示
                     renderAttendanceTop3(top3);
                     if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
                     if (homeContainer) homeContainer.classList.remove('hidden');
@@ -883,7 +884,7 @@
         <div id="slot-actions" class="hidden flex-col items-center mt-6 animate-fade-in z-50">
             <button onclick="playSlotAgain()"
                 class="bg-amber-500 hover:bg-amber-600 text-black font-black py-2.5 px-10 rounded-full shadow-[0_4px_15px_rgba(251,191,36,0.5)] transition-all active:scale-95 mb-2 border-2 border-amber-300">再玩一次</button>
-            <div class="text-white/60 text-xs font-bold font-mono">1 秒後自動進入活動...</div>
+            <div class="text-white/60 text-xs font-bold font-mono">2 秒後自動進入活動...</div>
         </div>
         <div id="slot-loading-dots" class="mt-6 flex gap-2">
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0s"></div>
@@ -1713,7 +1714,7 @@
 
             <!-- 說明層 (Help Overlay) -->
             <div id="mary-help-overlay"
-                class="hidden absolute inset-0 z-[100] bg-[#1a110a]/fb backdrop-blur-md p-6 overflow-y-auto text-white flex flex-col">
+                class="hidden absolute inset-0 z-[100] bg-[#1a110a]/95 backdrop-blur-md p-6 overflow-y-auto text-white flex flex-col">
                 <div class="flex justify-between items-center mb-6 border-b-2 border-amber-500 pb-2">
                     <h3 class="text-lg font-black text-amber-500">🎰 小瑪莉 遊戲說明</h3>
                     <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')"
@@ -1973,9 +1974,7 @@
             document.getElementById('small-mary-modal').classList.add('hidden');
         }
 
-        function openMaryHelp() {
-            document.getElementById('mary-help-overlay').classList.remove('hidden');
-        }
+        // openMaryHelp 定義於下方（第 2713 行），此處不重複定義
 
         async function refreshMaryData() {
             try {
@@ -2457,24 +2456,29 @@
             updateMaryUI();
 
             // 同步至後端
-            // ★ 修正 F5：使用 winBeforeChange（修改前的金額）傳後端
+            // ★ BUG 7 修正：過五關（streak >= 5）時，後續會呼叫 claimSmallMaryJackpot，
+            // 其後端內部也呼叫 playSmallMary，為避免雙重計分，此處跳過 playSmallMary。
+            // ★ F5 說明：使用 winBeforeChange（修改前的金額）傳後端
             //   - 贏：doubleWin = maryState.winScore（翻倍後），後端累加 MaryScore
             //   - 輸：doubleWin = -winBeforeChange（負數），後端可正確計算輸掉的金額並補彩金池
-            try {
-                const res = await apiSubmit({
-                    action: 'playSmallMary',
-                    userId: appState.user.userId,
-                    betPoints: 0,
-                    isDoubleUp: true,
-                    doubleWin: win ? maryState.winScore : -winBeforeChange,
-                    symbol: win ? `大小翻倍×2` : `大小輸(開${num})`
-                });
-                if (res && res.success) {
-                    maryState.points = res.points;
-                    maryState.monthlyGift = res.monthlyGift;
-                    if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
-                }
-            } catch (e) { console.error(e); }
+            const willTriggerJackpot = win && (maryState.doubleUpStreak >= 5);
+            if (!willTriggerJackpot) {
+                try {
+                    const res = await apiSubmit({
+                        action: 'playSmallMary',
+                        userId: appState.user.userId,
+                        betPoints: 0,
+                        isDoubleUp: true,
+                        doubleWin: win ? maryState.winScore : -winBeforeChange,
+                        symbol: win ? `大小翻倍×2` : `大小輸(開${num})`
+                    });
+                    if (res && res.success) {
+                        maryState.points = res.points;
+                        maryState.monthlyGift = res.monthlyGift;
+                        if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
+                    }
+                } catch (e) { console.error(e); }
+            }
 
             setTimeout(async () => {
                 if (numDisplay) numDisplay.classList.add('hidden');
@@ -2494,7 +2498,7 @@
                         const res = await apiSubmit({
                             action: 'claimSmallMaryJackpot',
                             userId: appState.user.userId,
-                            name: appState.user.name
+                            name: appState.user.displayName // ★ BUG 3 修正：應為 displayName，非 name
                         });
                         if (res.success) {
                             // ★ 修正 F3：claimSmallMaryJackpot 後端已記帳完畢（內部呼叫 playSmallMary）
@@ -3004,8 +3008,8 @@
 
             }).catch(e => console.error("背景抓取資料失敗", e));
 
-            // 其他統計資料也丟在背景抓取
-            fetchParticipationStats();
+            // ★ 優化：移除重複的 fetchParticipationStats() 呼叫（fetchAttendanceTop3 已在 DOMContentLoaded 中呼叫同一 API）
+            // fetchParticipationStats(); // 已移除，避免重複請求
             fetchJackpotTop3();
         };
 
