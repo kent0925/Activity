@@ -4160,8 +4160,8 @@
             if (/[Z+]\d{2}:?\d{2}$/.test(str) || str.endsWith('Z')) {
                 return new Date(str);
             }
-            // 匹配 yyyy-MM-dd HH:mm(:ss) 或 yyyy/MM/dd HH:mm(:ss)
-            const match = str.match(/^(\d{4})[\-\/](\d{2})[\-\/](\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}))?)?/);
+            // 匹配 yyyy-MM-dd HH:mm(:ss) 或 yyyy/MM/dd HH:mm(:ss)（月份/日期支援不補零）
+            const match = str.match(/^(\d{4})[\-\/](\d{1,2})[\-\/](\d{1,2})(?:[T ](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
             if (match) {
                 const y = match[1], mo = match[2], d = match[3];
                 const h = match[4] || '00', mi = match[5] || '00', sec = match[6] || '00';
