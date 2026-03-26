@@ -1572,10 +1572,11 @@
     <!-- 小瑪莉遊戲彈窗 - 正宗台式街機風格 -->
     <div id="small-mary-modal"
         class="hidden fixed inset-0 z-[120] flex items-start justify-center bg-black/95 backdrop-blur-md p-2 md:p-4 animate-fade-in overflow-y-auto"
+        style="padding-bottom: env(safe-area-inset-bottom);"
         oncontextmenu="return false;">
         <div id="mary-machine"
             class="relative bg-[#3d2b1f] border-[6px] border-[#8b6914] rounded-[30px] shadow-[0_0_50px_rgba(0,0,0,0.8),_inset_0_0_30px_rgba(255,150,0,0.2)] flex flex-col overflow-hidden"
-            style="width: 100%; max-width: 420px; aspect-ratio: 2/3.2; font-family: 'Segoe UI', sans-serif; transform-origin: top center;">
+            style="width: 100%; max-width: 420px; max-height: 98dvh; min-height: min(600px, 98dvh); font-family: 'Segoe UI', sans-serif; transform-origin: top center;">
 
             <!-- 頂部裝飾與控制按鈕 -->
             <div
@@ -1684,7 +1685,7 @@
             </div>
 
             <!-- 實體按鈕區 (Action Buttons) -->
-            <div class="bg-gradient-to-t from-[#251810] to-[#5d3b24] p-4 flex justify-between items-center gap-2" style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;">
+            <div class="bg-gradient-to-t from-[#251810] to-[#5d3b24] p-4 flex justify-between items-center gap-2 flex-none" style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;">
                 <!-- 左側：功能鈕 -->
                 <div class="flex gap-2">
                     <button onclick="maryClearBet()"
@@ -2507,7 +2508,9 @@
                 // ★ 過五關斬將彩池觸發
                 if (win && maryState.doubleUpStreak >= 5) {
                     maryState.doubleUpStreak = 0; // 重置
-                    document.getElementById('mary-double-btns')?.classList.add('hidden');
+                    const dbBtnsJP = document.getElementById('mary-double-btns');
+                    if (dbBtnsJP) { dbBtnsJP.classList.add('hidden'); dbBtnsJP.style.pointerEvents = 'auto'; }
+                    if (dbContainer) dbContainer.style.pointerEvents = 'auto'; // ★ 恢復 pointerEvents
                     showToast("🎉 恭喜！過五關斬將，觸發彩池大獎！正在結算中...", 4000);
                     
                     try {
@@ -2548,7 +2551,12 @@
                     maryState.winScore = 0;
 
                     // 隱藏整個雙倍區按鈕
-                    document.getElementById('mary-double-btns')?.classList.add('hidden');
+                    const dbBtnsLose = document.getElementById('mary-double-btns');
+                    if (dbBtnsLose) {
+                        dbBtnsLose.classList.add('hidden');
+                        dbBtnsLose.style.pointerEvents = 'auto'; // ★ 修復：恢復 pointerEvents，防止下局殘留
+                    }
+                    if (dbContainer) dbContainer.style.pointerEvents = 'auto'; // ★ 同步恢復原始參照
 
                     updateMaryUI();
                     document.getElementById('mary-btn-start').disabled = false;
