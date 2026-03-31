@@ -1608,14 +1608,18 @@
                         <div class="text-[10px] text-amber-800 font-black mb-1 text-center">CREDIT</div>
                         <div id="mary-my-points"
                             class="text-3xl font-black text-amber-500 text-center leading-none tabular-nums"
-                            style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,150,0,0.5);">0000
+                            style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,150,0,0.5);">
+                            0000
                         </div>
-                        <div id="mary-gift-points" class="text-[9px] text-amber-600 font-bold text-center mt-1">贈分: 0</div>
+                        <div id="mary-gift-points" class="text-[9px] text-amber-600 font-bold text-center mt-1">贈分: 0
+                        </div>
                     </div>
                 </div>
                 <!-- 彩金池 — 獨立置中於兩個計分板下方 -->
                 <div class="flex justify-center mt-3 mb-2">
-                    <div id="mary-jackpot-pool" class="bg-black border-4 border-rose-700 rounded-xl px-8 py-3 text-[18px] sm:text-xl text-rose-400 font-extrabold text-center animate-pulse shadow-[0_0_20px_rgba(255,30,30,0.6)]" style="letter-spacing:4px;">🎰 彩金池: 0</div>
+                    <div id="mary-jackpot-pool"
+                        class="bg-black border-4 border-rose-700 rounded-xl px-8 py-3 text-[18px] sm:text-xl text-rose-400 font-extrabold text-center animate-pulse shadow-[0_0_20px_rgba(255,30,30,0.6)]"
+                        style="letter-spacing:4px;">🎰 彩金池: 0</div>
                 </div>
             </div>
 
@@ -1647,10 +1651,13 @@
                                 <button onclick="maryDoubleUp('small')"
                                     class="mary-phys-btn bg-[#ff4444] border-b-4 border-[#cc0000] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(255,0,0,0.5)] active:translate-y-1 active:border-b-0 leading-tight">押小<br><span
                                         class="text-[10px] opacity-80">1-6</span></button>
-                                        
+
                                 <!-- ★ 新增：中間顯示開出的數字 -->
-                                <div id="mary-double-num-display" class="hidden flex items-center justify-center bg-black border-2 border-[#ffcc00] rounded-full w-12 h-12 shadow-[0_0_15px_rgba(255,200,0,0.5)] mx-1">
-                                    <span id="mary-double-number" class="text-2xl font-black text-[#ffcc00] tabular-nums" style="font-family: 'Courier New', monospace;">7</span>
+                                <div id="mary-double-num-display"
+                                    class="hidden flex items-center justify-center bg-black border-2 border-[#ffcc00] rounded-full w-12 h-12 shadow-[0_0_15px_rgba(255,200,0,0.5)] mx-1">
+                                    <span id="mary-double-number"
+                                        class="text-2xl font-black text-[#ffcc00] tabular-nums"
+                                        style="font-family: 'Courier New', monospace;">7</span>
                                 </div>
 
                                 <button onclick="maryDoubleUp('big')"
@@ -1684,7 +1691,8 @@
             </div>
 
             <!-- 實體按鈕區 (Action Buttons) -->
-            <div class="bg-gradient-to-t from-[#251810] to-[#5d3b24] px-4 pt-4 pb-6 flex justify-between items-center gap-2 flex-none" style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;">
+            <div class="bg-gradient-to-t from-[#251810] to-[#5d3b24] px-4 pt-4 pb-6 flex justify-between items-center gap-2 flex-none"
+                style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;">
                 <!-- 左側：功能鈕 -->
                 <div class="flex gap-2">
                     <button onclick="maryClearBet()"
@@ -1725,13 +1733,13 @@
                     <p>• <b class="text-amber-400">壓注：</b> 點擊符號按鈕加注。長按可快速加注。</p>
                     <p>• <b class="text-amber-400">比大小：</b> 中獎後可挑戰翻倍，開出 7 點莊家通殺。</p>
                     <div class="grid grid-cols-2 gap-2 bg-black/40 p-4 rounded-xl border border-white/10 font-mono">
-                        <div class="flex justify-between"><span>🍎</span><span>x5</span></div>
-                        <div class="flex justify-between"><span>🍊</span><span>x10</span></div>
-                        <div class="flex justify-between"><span>🥭</span><span>x15</span></div>
+                        <div class="flex justify-between"><span>🍎</span><span>x2</span></div>
+                        <div class="flex justify-between"><span>🍊</span><span>x5</span></div>
+                        <div class="flex justify-between"><span>🥭</span><span>x10</span></div>
                         <div class="flex justify-between"><span>🔔</span><span>x20</span></div>
-                        <div class="flex justify-between"><span>🍉</span><span>x20</span></div>
-                        <div class="flex justify-between"><span>🌟</span><span>x30</span></div>
-                        <div class="flex justify-between"><span>7️⃣</span><span>x40</span></div>
+                        <div class="flex justify-between"><span>🍉</span><span>x30</span></div>
+                        <div class="flex justify-between"><span>🌟</span><span>x40</span></div>
+                        <div class="flex justify-between"><span>7️⃣</span><span>x50</span></div>
                         <div class="flex justify-between text-[#44aaff]"><span>💎 BAR</span><span>x100</span></div>
                     </div>
                 </div>
@@ -1922,15 +1930,15 @@
         };
 
         const MARY_CONFIG = [
-            { id: 'apple', label: '🍎', rate: 5, color: '#ff4444' }, // 原 5
-            { id: 'orange', label: '🍊', rate: 10, color: '#ffaa00' }, // 原 10
-            { id: 'mango', label: '🥭', rate: 15, color: '#ffee00' }, // 原 15
-            { id: 'bell', label: '🔔', rate: 20, color: '#ffdd00' }, // 原 20
-            { id: 'watermelon', label: '🍉', rate: 25, color: '#44ff44' }, // 原 20
-            { id: 'star', label: '🌟', rate: 30, color: '#ffff44' }, // 原 30
-            { id: 'seven', label: '7️⃣', rate: 40, color: '#ff2222' }, // 原 40
-            { id: 'bar', label: 'BAR', rate: 100, color: '#44aaff' }, // 原 100
-            { id: 'lucky', label: '🍀', rate: 0, color: '#00ffaa' } // 送燈 / 小獎
+            { id: 'apple',      label: '🍎', rate: 2,   color: '#ff4444' }, // 🍎 2x
+            { id: 'orange',     label: '🍊', rate: 5,   color: '#ffaa00' }, // 🍊 5x
+            { id: 'mango',      label: '🥭', rate: 10,  color: '#ffee00' }, // 🥭 10x
+            { id: 'bell',       label: '🔔', rate: 20,  color: '#ffdd00' }, // 🔔 20x
+            { id: 'watermelon', label: '🍉', rate: 30,  color: '#44ff44' }, // 🍉 30x
+            { id: 'star',       label: '🌟', rate: 40,  color: '#ffff44' }, // 🌟 40x
+            { id: 'seven',      label: '7️⃣', rate: 50,  color: '#ff2222' }, // 7️⃣ 50x
+            { id: 'bar',        label: 'BAR', rate: 100, color: '#44aaff' }, // BAR 100x
+            { id: 'lucky',      label: '🍀', rate: 0,   color: '#00ffaa' }  // 送燈 / 小獎
         ];
 
         // 轉盤順序 (24格) 經典佈局，最大獎在上下中，次獎在左右中
@@ -2160,7 +2168,7 @@
         const highlight = (idx, on, force = false) => {
             const cell = document.getElementById(`mary-cell-${idx}`);
             if (!cell) return;
-            
+
             // ★ 新增：保護不死燈號
             if (!on && !force && maryState.keepLights && maryState.keepLights.includes(idx)) return;
 
@@ -2184,7 +2192,7 @@
 
         async function maryStartSpin() {
             if (maryState.isSpinning || maryState.doubleUpActive) return;
-            
+
             // ★ 清除前一局殘留的送燈
             if (maryState.keepLights) {
                 maryState.keepLights.forEach(idx => highlight(idx, false, true)); // force clear
@@ -2204,7 +2212,7 @@
             // ★ 動態權重開獎系統 (精準控制 25% 中獎率與 RTP，但大獎獨立)
             let isWin = false;
             const betSymbols = Object.keys(maryState.currentBet).filter(id => (maryState.currentBet[id] || 0) > 0);
-            
+
             // ★ 新需求：全項目押注中小獎機率上升
             let winRate = 0.25; // 基礎 25%
             const maxOptions = MARY_CONFIG.filter(c => c.rate > 0).length; // 8項
@@ -2219,6 +2227,18 @@
                 isWin = true;
             }
 
+            // ★ 使用者指定精準權重映射表 (中獎時的權重)
+            const weightMap = {
+                'apple':      50,  // 最容易中
+                'orange':     10,
+                'mango':      5,
+                'bell':       4,
+                'star':       3,
+                'watermelon': 2,
+                'seven':      0.5, // 七 (極稀有)
+                'bar':        0.2  // BAR (神話級)
+            };
+
             let weights = [];
             for (let i = 0; i < trackLen; i++) {
                 const sym = MARY_GRID[i];
@@ -2226,22 +2246,24 @@
                 const betAmt = maryState.currentBet[sym] || 0;
                 let w = 0;
 
-                // ★ 使用者特殊要求：最大獎機率不會因為使用者有無押注而出現
-                // 無視 25% 的 isWin 盤控，也無視玩家有無押注，大獎固定保留微小且真實的自然隨機率
+                // ★ 使用者特殊要求：大獎隔離判定
                 if (sym === 'bar' || sym === 'seven') {
-                    w = 1; // ★ 降低大獎機率：BAR 與 7️⃣ 各固定權重 1（極低）
+                    // 大獎固定低機率，不論 isWin 狀態
+                    w = weightMap[sym];
                 } else if (isWin) {
-                    // 中獎：只從有押注的中小獎項中挑選
+                    // 中獎：只從有押注的中小獎項中依據 weightMap 挑選
                     if (betAmt > 0 && conf && conf.rate > 0) {
-                        // RTP 控制：賠率越高權重越低 (100 / rate)，以逼近 60% 回報率
-                        w = Math.max(1, Math.floor(100 / conf.rate));
+                        w = weightMap[sym] || 1;
                     }
                 } else {
                     // 沒中獎：挑選沒押注的項目或送燈
-                    if (betAmt === 0) {
-                        if (sym === 'lucky') w = 10; // ★ 修正：降低四葉草獲獎機率 (原50)
-                        else w = 30; // 稍微提高其他未押注重點，補回分佈
-                    }
+                        if (sym === 'lucky') {
+                            // ★ 新增要求：全押或押 6 項以上時，四葉草權重降至 1 (減少干擾)
+                            const betCount = betSymbols.length;
+                            const maxOptions = MARY_CONFIG.filter(c => c.rate > 0).length; // 8項
+                            w = (betCount >= maxOptions - 2) ? 1 : 10;
+                        }
+                        else w = 30;
                 }
                 weights.push(w);
             }
@@ -2254,7 +2276,7 @@
             }
             // ★ 加入底限：確保大獎（BAR/7）在整體池中占比極低（< 0.5%）
             const bigPrizeCount = weights.filter((w, i) => MARY_GRID[i] === 'bar' || MARY_GRID[i] === 'seven')
-                                         .reduce((a, b) => a + b, 0);
+                .reduce((a, b) => a + b, 0);
             const minTotal = bigPrizeCount * 200; // 大獎格佔比不超過 1/200
             if (totalWeight < minTotal) {
                 const pad = minTotal - totalWeight;
@@ -2322,7 +2344,7 @@
                 for (let i = 0; i < 2; i++) {
                     // 第 2, 3 次旋轉 (快速跑圈，1圈，稍快)
                     // 為了有趣，送燈時隨機送大獎以外的圖案
-                    let extraTargetIdx = Math.floor(Math.random() * trackLen); 
+                    let extraTargetIdx = Math.floor(Math.random() * trackLen);
                     const extraSym = MARY_GRID[extraTargetIdx];
                     if (extraSym === 'bar' || extraSym === 'seven' || extraSym === 'lucky') {
                         extraTargetIdx = (extraTargetIdx + 1) % trackLen; // 避開大獎死板防錯
@@ -2336,15 +2358,15 @@
 
                     const extraTargetId = MARY_GRID[extraTargetIdx];
                     const extraTargetConfig = MARY_CONFIG.find(c => c.id === extraTargetId);
-                    
+
                     // 累加分數
                     if (extraTargetId !== 'lucky') {
                         let extraWin = (maryState.currentBet[extraTargetId] || 0) * extraTargetConfig.rate;
                         winScore += extraWin;
                     }
-                    
+
                     // 讓多個中獎格都保持發亮
-                    highlight(extraTargetIdx, true); 
+                    highlight(extraTargetIdx, true);
                     await new Promise(r => setTimeout(r, 400));
                 }
             }
@@ -2426,7 +2448,7 @@
             let num = Math.floor(Math.random() * 13) + 1; // 1-13
             // ★ 新需求：降低過五關機率。當玩家聽牌 (連贏 4 次) 時，強制 80% 落入通殺！
             if (maryState.doubleUpStreak >= 4 && Math.random() < 0.8) {
-                num = 7; 
+                num = 7;
             }
 
             const numEl = document.getElementById('mary-double-number');
@@ -2523,7 +2545,7 @@
                     if (dbBtnsJP) { dbBtnsJP.classList.add('hidden'); dbBtnsJP.style.pointerEvents = 'auto'; }
                     if (dbContainer) dbContainer.style.pointerEvents = 'auto'; // ★ 恢復 pointerEvents
                     showToast("🎉 恭喜！過五關斬將，觸發彩池大獎！正在結算中...", 4000);
-                    
+
                     try {
                         const res = await apiSubmit({
                             action: 'claimSmallMaryJackpot',
@@ -2546,7 +2568,7 @@
                     } catch (e) {
                         console.error("領取彩池失敗", e);
                     }
-                    
+
                     // 清除比大小 UI
                     maryState.doubleUpActive = false;
                     maryState.isSpinning = false;
@@ -2768,7 +2790,7 @@
             const val = parseInt(input ? input.value : 0);
             if (!val || isNaN(val) || val < 10) return showToast('請輸入合法的分數（最小 10）');
             const roundedVal = Math.floor(val / 10) * 10;
-            
+
             // ★ 優化：增加前端餘額判斷防呆
             const maxConvertStr = document.getElementById('mary-exchange-max-convert')?.innerText;
             const maxConvert = parseInt(maxConvertStr?.replace(/,/g, '')) || 0;
