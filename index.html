@@ -1564,7 +1564,7 @@
             <!-- Footer: Auto close indicator -->
             <div
                 class="px-4 py-2 bg-gray-50/80 text-[11px] text-gray-500 text-center border-t border-black/5 font-medium">
-                <span id="rank-close-timer" class="font-black text-amber-500">3</span> 秒後自動關閉
+                <span id="rank-close-timer" class="font-black text-amber-500">10</span> 秒後自動關閉
             </div>
         </div>
     </div>
@@ -2239,33 +2239,61 @@
                 'bar':        0.2  // BAR (神話級)
             };
 
+            // ★ 新增：幸運奇蹟判定 (1.5% 機率無視風控開大獎)
+            const isLuckyMiracle = Math.random() < 0.015;
+
             let weights = [];
             for (let i = 0; i < trackLen; i++) {
                 const sym = MARY_GRID[i];
                 const conf = MARY_CONFIG.find(c => c.id === sym);
                 const betAmt = maryState.currentBet[sym] || 0;
-                let w = 0;
+                
+                let w = weightMap[sym] || 1;
+
+                // ★ 風控邏輯：大注判定 (單項押注 ≥ 20 點)
+                if (betAmt >= 20 && !isLuckyMiracle) {
+                    // 非奇蹟時：除了蘋果，其餘大額投注項目的權重強制下壓
+                    if (sym !== 'apple') {
+                        w = Math.max(0.1, w / 5);
+                    } else {
+                        // 蘋果在大額押注時權重反而加倍 (引導至最小賠率獎)
+                        w = 200; 
+                    }
+                } else if (isLuckyMiracle) {
+                    // 幸運奇蹟發生時：提高大獎格權重 (驚喜感)
+                    if (sym === 'bar' || sym === 'seven' || sym === 'star') {
+                        w = w * 10; 
+                    }
+                }
 
                 // ★ 使用者特殊要求：大獎隔離判定
                 if (sym === 'bar' || sym === 'seven') {
-                    // 大獎固定低機率，不論 isWin 狀態
-                    w = weightMap[sym];
+                    // 保留極稀有機率，不受 isWin 限制
+                    weights.push(isLuckyMiracle ? w : w * 0.5); 
                 } else if (isWin) {
                     // 中獎：只從有押注的中小獎項中依據 weightMap 挑選
                     if (betAmt > 0 && conf && conf.rate > 0) {
-                        w = weightMap[sym] || 1;
+                        // 若中獎且有押蘋果，蘋果權重加強 (保本機制)
+                        if (sym === 'apple') w = 200; 
+                        weights.push(w);
+                    } else {
+                        weights.push(0);
                     }
                 } else {
                     // 沒中獎：挑選沒押注的項目或送燈
+                    if (betAmt === 0) {
                         if (sym === 'lucky') {
-                            // ★ 新增要求：全押或押 6 項以上時，四葉草權重降至 1 (減少干擾)
                             const betCount = betSymbols.length;
                             const maxOptions = MARY_CONFIG.filter(c => c.rate > 0).length; // 8項
                             w = (betCount >= maxOptions - 2) ? 1 : 10;
+                            weights.push(w);
+                        } else {
+                            weights.push(30);
                         }
-                        else w = 30;
+                    } else {
+                        weights.push(0);
+                    }
                 }
-                weights.push(w);
             }
 
             let totalWeight = weights.reduce((a, b) => a + b, 0);
