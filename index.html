@@ -1746,6 +1746,41 @@
                 <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')"
                     class="mt-8 w-full py-3 bg-amber-500 rounded-xl text-black font-black">我明白了</button>
             </div>
+            </div>
+
+            <!-- 自訂數字鍵盤 (Keypad Overlay) -->
+            <div id="mary-keypad-overlay"
+                class="hidden absolute inset-0 z-[110] bg-black/80 backdrop-blur-sm flex items-center justify-center pointer-events-auto">
+                <div class="bg-[#1a110a] border-2 border-[#ffcc00] rounded-xl w-72 p-4 shadow-[0_0_30px_rgba(255,204,0,0.3)] relative">
+                    <button onclick="maryCloseKeypad()"
+                        class="absolute -top-4 -right-4 bg-[#ff4444] text-white w-10 h-10 rounded-full font-bold border-2 border-[#1a110a] text-xl shadow-lg active:scale-95">✕</button>
+                    <div id="mary-keypad-title" class="text-[#ffcc00] font-black text-center mb-3 text-lg">押注: 🍎</div>
+                    <div class="bg-black/80 border border-[#444] rounded-lg p-3 mb-4 shadow-inner">
+                        <input type="number" id="mary-keypad-input"
+                            class="w-full bg-transparent text-[#00ff88] text-right text-4xl font-mono outline-none" 
+                            placeholder="0" value="" min="0" oninput="maryKeypadValidate()">
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <!-- 數字鍵 -->
+                        <button onclick="maryKeypadType(1)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">1</button>
+                        <button onclick="maryKeypadType(2)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">2</button>
+                        <button onclick="maryKeypadType(3)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">3</button>
+                        <button onclick="maryKeypadType(4)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">4</button>
+                        <button onclick="maryKeypadType(5)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">5</button>
+                        <button onclick="maryKeypadType(6)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">6</button>
+                        <button onclick="maryKeypadType(7)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">7</button>
+                        <button onclick="maryKeypadType(8)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">8</button>
+                        <button onclick="maryKeypadType(9)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">9</button>
+                        <!-- 功能鍵 -->
+                        <button onclick="maryKeypadClear()" class="mary-phys-btn bg-[#ff4444] text-white rounded-lg py-3 text-lg font-black border-b-4 border-[#cc0000] active:translate-y-1 active:border-b-0">清除</button>
+                        <button onclick="maryKeypadType(0)" class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">0</button>
+                        <button onclick="maryKeypadMax()"   class="mary-phys-btn bg-[#4aaeff] text-white rounded-lg py-3 text-lg font-black border-b-4 border-[#2277cc] active:translate-y-1 active:border-b-0">最大</button>
+                        
+                        <button onclick="maryKeypadConfirm()" class="col-span-3 mary-phys-btn bg-[#00ff88] text-[#004d00] rounded-lg py-3 mt-2 text-xl font-black border-b-4 border-[#00aa55] shadow-[0_0_10px_rgba(0,255,136,0.3)] hover:brightness-110 active:translate-y-1 active:border-b-0">確定押注</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -2112,31 +2147,163 @@
             MARY_CONFIG.filter(c => c.rate > 0).forEach(conf => {
                 const btn = document.createElement('div');
                 btn.className = 'flex flex-col items-center justify-center bg-black/60 border border-[#5a3a00] rounded-md py-1 px-0.5 cursor-pointer select-none active:brightness-125 transition-all';
-                btn.onclick = () => maryAddBet(conf.id);
                 btn.innerHTML = `
                     <div class="text-[8px] font-black text-[#ffcc00] mb-0.5">x${conf.rate}</div>
                     <div class="text-xl leading-none mb-1">${conf.label}</div>
                     <div id="mary-bet-val-${conf.id}" class="w-full bg-black text-[#ff4444] font-mono text-[10px] font-black text-center border border-[#333] rounded-sm py-0.5 shadow-[inset_0_0_5px_rgba(255,0,0,0.5)]">0</div>
                 `;
 
-                // 長按快速加注
+                // 長按跳出數字鍵盤
                 let pressTimer;
+                let isLongPress = false;
+                
                 const startPress = (e) => {
-                    e.preventDefault();
-                    maryAddBet(conf.id);
-                    pressTimer = setInterval(() => maryAddBet(conf.id), 150);
+                    if (e.cancelable) e.preventDefault();
+                    isLongPress = false;
+                    pressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        openMaryKeypad(conf.id, conf.label);
+                    }, 500); // 500ms 觸發長按
                 };
-                const stopPress = () => clearInterval(pressTimer);
+                
+                const stopPress = (e) => {
+                    if (e && e.cancelable) e.preventDefault();
+                    if (pressTimer) clearTimeout(pressTimer);
+                    
+                    // 短按 (未觸發長按) 且非移出/取消事件
+                    if (!isLongPress && e && e.type !== 'pointerleave' && e.type !== 'pointercancel' && e.type !== 'touchcancel') {
+                        maryAddBet(conf.id);
+                    }
+                };
 
                 btn.addEventListener('pointerdown', startPress);
                 btn.addEventListener('pointerup', stopPress);
                 btn.addEventListener('pointerleave', stopPress);
-                btn.addEventListener('pointercancel', stopPress); // ★ 修正：防止滑出邊界或系統中斷造成自動押注
+                btn.addEventListener('pointercancel', stopPress);
                 btn.addEventListener('touchend', stopPress);
                 btn.addEventListener('touchcancel', stopPress);
-                btn.addEventListener('contextmenu', e => e.preventDefault()); // 禁用右鍵/長按選單
+                btn.addEventListener('contextmenu', e => e.preventDefault());
                 panel.appendChild(btn);
             });
+        }
+
+        // ==========================================
+        // 數字鍵盤 (Keypad) 邏輯
+        // ==========================================
+        let maryKeypadTargetId = null;
+
+        function openMaryKeypad(id, label) {
+            if (maryState.isSpinning || maryState.doubleUpActive) return;
+            maryKeypadTargetId = id;
+            
+            const overlay = document.getElementById('mary-keypad-overlay');
+            const title = document.getElementById('mary-keypad-title');
+            const input = document.getElementById('mary-keypad-input');
+            
+            if (overlay) overlay.classList.remove('hidden');
+            if (title) title.innerText = `押注: ${label}`;
+            
+            const currentVal = maryState.currentBet[id] || 0;
+            if (input) {
+                input.value = currentVal > 0 ? currentVal : '';
+                // 若為手機原生鍵盤體驗，也可加入 input.focus()
+            }
+        }
+
+        function maryCloseKeypad() {
+            const overlay = document.getElementById('mary-keypad-overlay');
+            if (overlay) overlay.classList.add('hidden');
+            maryKeypadTargetId = null;
+        }
+
+        function maryKeypadType(num) {
+            const input = document.getElementById('mary-keypad-input');
+            if (input) {
+                const current = input.value;
+                if (current === '0' || current === '') {
+                    input.value = num;
+                } else {
+                    if (current.length < 6) { // 限制輸入長度
+                        input.value = current + num;
+                    }
+                }
+                maryKeypadValidate();
+            }
+        }
+
+        function maryKeypadClear() {
+            const input = document.getElementById('mary-keypad-input');
+            if (input) {
+                input.value = '';
+            }
+        }
+
+        function maryKeypadValidate() {
+            const input = document.getElementById('mary-keypad-input');
+            if (!input || !maryKeypadTargetId) return;
+            
+            let val = parseInt(input.value, 10);
+            if (isNaN(val) || val < 0) return; // 容許輸入中暫時為空
+            
+            const totalBetExcludingTarget = Object.keys(maryState.currentBet).reduce((sum, key) => {
+                return key === maryKeypadTargetId ? sum : sum + maryState.currentBet[key];
+            }, 0);
+            
+            const userTotal = maryState.points + maryState.monthlyGift;
+            const maxAvailable = userTotal - totalBetExcludingTarget;
+            
+            if (val > maxAvailable) {
+                input.value = maxAvailable > 0 ? maxAvailable : 0;
+                showToast("最多只能押到可用餘額上限");
+            }
+        }
+
+        function maryKeypadMax() {
+            if (!maryKeypadTargetId) return;
+            const input = document.getElementById('mary-keypad-input');
+            if (input) {
+                const totalBetExcludingTarget = Object.keys(maryState.currentBet).reduce((sum, key) => {
+                    return key === maryKeypadTargetId ? sum : sum + maryState.currentBet[key];
+                }, 0);
+                const userTotal = maryState.points + maryState.monthlyGift;
+                let maxAvailable = userTotal - totalBetExcludingTarget;
+                if (maxAvailable < 0) maxAvailable = 0;
+                
+                input.value = maxAvailable;
+                maryKeypadValidate();
+            }
+        }
+
+        function maryKeypadConfirm() {
+            if (!maryKeypadTargetId) {
+                maryCloseKeypad();
+                return;
+            }
+            
+            const input = document.getElementById('mary-keypad-input');
+            let val = parseInt(input.value, 10);
+            if (isNaN(val) || val < 0) val = 0;
+            
+            const totalBetExcludingTarget = Object.keys(maryState.currentBet).reduce((sum, key) => {
+                return key === maryKeypadTargetId ? sum : sum + maryState.currentBet[key];
+            }, 0);
+            const userTotal = maryState.points + maryState.monthlyGift;
+            
+            if (totalBetExcludingTarget + val > userTotal) {
+                val = userTotal - totalBetExcludingTarget;
+            }
+            
+            if (val > 0) {
+                maryState.currentBet[maryKeypadTargetId] = val;
+            } else {
+                delete maryState.currentBet[maryKeypadTargetId];
+            }
+            
+            const valEl = document.getElementById(`mary-bet-val-${maryKeypadTargetId}`);
+            if (valEl) valEl.innerText = val;
+            
+            updateMaryUI();
+            maryCloseKeypad();
         }
 
         function updateMaryUI() {
