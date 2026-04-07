@@ -903,6 +903,11 @@
             <h1 class="text-lg font-bold tracking-wide" id="header-title">活動與報名</h1>
         </div>
         <!-- 右上角快速分享按鈕 -->
+        <!-- 測試廣播按鈕 (僅管理員可見) -->
+        <button id="btn-header-test-broadcast" onclick="testBirthdayBroadcast()"
+            class="hidden p-2 hover:bg-white/20 rounded-full transition active:scale-90" title="測試推播功能">
+            <i data-lucide="megaphone" class="w-5 h-5"></i>
+        </button>
         <button id="btn-header-share" onclick="openShareModal()"
             class="hidden p-2 hover:bg-white/20 rounded-full transition active:scale-90" title="分享活動資訊">
             <i data-lucide="share-2" class="w-5 h-5"></i>
@@ -6092,6 +6097,35 @@
             if (isNaN(d.getTime())) return isoStr;
             const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
             return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week})`;
+        }
+
+        // ==========================================
+        // 生日通報與活動測試廣播功能
+        // ==========================================
+        setInterval(() => {
+            if (appState && appState.user && appState.user.userId === 'U612df670c4d7d3cde0d599ab5008451f') {
+                const btn = document.getElementById('btn-header-test-broadcast');
+                if (btn) btn.classList.remove('hidden');
+            }
+        }, 1500);
+
+        async function testBirthdayBroadcast() {
+            if (!confirm("確定要發送「生日與活動通報」到 Telegram 群組進行測試嗎？\\n(此訊息將清楚標示為自動系統測試)")) return;
+            try {
+                showToast("正在傳送推播測試...");
+                const res = await apiSubmit({
+                    action: 'testBirthdayBroadcast',
+                    userId: appState.user.userId
+                });
+                if (res && res.success) {
+                    showToast('✅ ' + (res.message || '傳送成功'));
+                } else {
+                    showToast('❌ ' + (res ? res.error : '傳送失敗'));
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('發生錯誤，請檢查網路狀態');
+            }
         }
 
         function animateValue(obj, start, end, duration) {
