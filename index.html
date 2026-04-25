@@ -1421,6 +1421,27 @@
         </div>
     </div>
 
+    <!-- ★ UID 專屬提示 Modal -->
+    <div id="uid-alert-modal"
+        class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-md p-6 transition-all duration-300 opacity-0">
+        <div class="bg-gradient-to-br from-white to-orange-50 rounded-3xl shadow-[0_0_40px_rgba(251,191,36,0.4)] w-full max-w-sm p-8 transform scale-90 transition-all duration-300 flex flex-col items-center text-center border-2 border-orange-200">
+            <div class="w-20 h-20 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mb-5 shadow-inner relative">
+                <i data-lucide="bell-ring" class="w-10 h-10 animate-bounce"></i>
+                <span class="absolute top-0 right-0 flex h-4 w-4">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-4 w-4 bg-red-500 border-2 border-white"></span>
+                </span>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 mb-3 tracking-wide">專屬通知</h3>
+            <p id="uid-alert-msg" class="text-gray-700 text-base leading-relaxed font-medium mb-8 whitespace-pre-wrap">提示訊息內容</p>
+            <button onclick="closeUIDAlertModal()"
+                class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-lg hover:from-orange-600 hover:to-amber-600 shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2">
+                <span>我知道了</span>
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+
     <div id="confirm-modal"
         class="hidden fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6 animate-fade-in">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xs p-6 transform scale-100 transition-all">
@@ -1851,9 +1872,34 @@
                         if (appState.hasShownUIDAlertOnEnter) return;
                         appState.hasShownUIDAlertOnEnter = true;
                     }
-                    setTimeout(() => alert(msg), 100);
+                    setTimeout(() => showUIDAlertModal(msg), 100);
                 }
             }
+        }
+
+        function showUIDAlertModal(msg) {
+            const modal = document.getElementById('uid-alert-modal');
+            const msgEl = document.getElementById('uid-alert-msg');
+            if (!modal || !msgEl) return;
+            msgEl.innerText = msg;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-90');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+            refreshIcons();
+        }
+
+        function closeUIDAlertModal() {
+            const modal = document.getElementById('uid-alert-modal');
+            if (!modal) return;
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-90');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
         // ★ 防重複提交鎖 + 離線佇列常數
