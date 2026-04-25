@@ -1839,8 +1839,22 @@
             attendanceRankings: [],
             jackpotRankings: [],
             rankingsTimer: null,
-            rankingsTimeLeft: 3
+            rankingsTimeLeft: 3,
+            hasShownUIDAlertOnEnter: false
         };
+
+        function checkUIDAlert(actionType) {
+            if (appState.user && appState.user.userId && appState.settings && appState.settings.uidAlerts) {
+                const msg = appState.settings.uidAlerts[appState.user.userId];
+                if (msg) {
+                    if (actionType === 'enter') {
+                        if (appState.hasShownUIDAlertOnEnter) return;
+                        appState.hasShownUIDAlertOnEnter = true;
+                    }
+                    setTimeout(() => alert(msg), 100);
+                }
+            }
+        }
 
         // ★ 防重複提交鎖 + 離線佇列常數
         let _isSubmitting = false;
@@ -3285,6 +3299,7 @@
                 appState.isDataLoaded = true;
                 appState.currentCategory = 'all';
                 renderEventGrid('all');
+                checkUIDAlert('enter'); // ★ 進入網頁檢查
                 // 注意：這裡不主動關閉載入畫面，交給老虎機播完再關
             }
 
@@ -3298,6 +3313,7 @@
                 appState.isDataLoaded = true;
                 appState.currentCategory = 'all';
                 renderEventGrid('all');
+                checkUIDAlert('enter'); // ★ 進入網頁檢查
 
                 // 若沒有快取，等資料回來才算準備好。但仍然交給老虎機控制最終移除畫面的時機。
                 // 如果老虎機已經跑完，這裡可以保護性關閉。
@@ -3628,6 +3644,8 @@
             const event = appState.events.find(e => e.id === eventId);
             if (!event) return;
 
+            checkUIDAlert('participate'); // ★ 點擊參加活動檢查
+
             // ★【修正點 2】一點擊就顯示 Loading Toast，提升體驗
             showToast("正在讀取活動詳情...");
 
@@ -3760,6 +3778,8 @@
             e.preventDefault();
             if (_isSubmitting) return; // ★ 防重複提交鎖
             const originalContent = DOM.submitBtn.innerHTML;
+
+            checkUIDAlert('register'); // ★ 點擊報名檢查
 
             if (!validateForm()) return;
             _isSubmitting = true;
