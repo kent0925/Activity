@@ -1,0 +1,437 @@
+:root {
+    --primary: #005088;
+    --secondary: #f1c40f;
+    --text: #2c3e50;
+    --bg: #f8f9fa;
+    --danger: #e74c3c;
+    --level-green: #27ae60;
+    --level-yellow: #f39c12;
+    --level-orange: #e67e22;
+    --level-red: #e74c3c;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+#app {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.view {
+    transition: opacity 0.3s ease;
+}
+
+.hidden {
+    display: none;
+}
+
+.required {
+    color: var(--danger);
+}
+
+header h1 {
+    color: var(--primary);
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+header p {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin: 0;
+}
+
+.stats-dashboard {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.stat-box {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.official-stat {
+    border-bottom: 4px solid var(--primary);
+}
+
+.user-stat {
+    border-bottom: 4px solid var(--secondary);
+}
+
+.stat-title {
+    font-size: 11px;
+    font-weight: bold;
+    color: #7f8c8d;
+}
+
+.stat-number {
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-outline {
+    background: none;
+    border: 2px solid var(--secondary);
+    color: #8a6d3b;
+}
+
+.btn-secondary {
+    background: #95a5a6;
+    color: white;
+}
+
+.btn-submit-yellow {
+    background: var(--secondary);
+    color: #5c4b12;
+}
+
+.btn-text-only {
+    background: none;
+    color: #7f8c8d;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    color: #bdc3c7;
+    font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #eee;
+}
+
+.divider span {
+    padding: 0 10px;
+}
+
+.loader-content {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.score-board {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.score-value {
+    font-size: 64px;
+    font-weight: 900;
+}
+
+.status-tag {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.result-card {
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    border-left: 5px solid #eee;
+}
+
+.court-data {
+    background: #eef7ff;
+}
+
+.user-data {
+    background: #fffcf0;
+}
+
+.card-tag {
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.sub-text {
+    font-size: 12px;
+    color: #7f8c8d;
+    margin-bottom: 15px;
+}
+
+.ui-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin: 0 4px 4px 0;
+    border: 1px solid;
+    font-weight: bold;
+}
+
+.ui-tag[data-type="high-risk"] {
+    background: #fdedec;
+    color: var(--level-red);
+    border-color: #fadbd8;
+}
+
+.ui-tag[data-type="damage"] {
+    background: #fef5e7;
+    color: var(--level-orange);
+    border-color: #fbeee6;
+}
+
+.ui-tag[data-type="env"] {
+    background: #fcf3cf;
+    color: var(--level-yellow);
+    border-color: #f9e79f;
+}
+
+.ui-tag[data-type="angel"] {
+    background: #eafaf1;
+    color: var(--level-green);
+    border-color: #d4efdf;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.check-item {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.legal-text {
+    font-size: 10px;
+    color: #bdc3c7;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.text-green {
+    color: var(--level-green) !important;
+}
+
+.text-yellow {
+    color: var(--level-yellow) !important;
+}
+
+.text-orange {
+    color: var(--level-orange) !important;
+}
+
+.text-red {
+    color: var(--level-red) !important;
+}
+
+.green {
+    color: var(--level-green) !important;
+}
+
+.yellow {
+    color: var(--level-yellow) !important;
+}
+
+.orange {
+    color: var(--level-orange) !important;
+}
+
+.red {
+    color: var(--level-red) !important;
+}
+
+.border-green {
+    border-left-color: var(--level-green) !important;
+}
+
+.border-yellow {
+    border-left-color: var(--level-yellow) !important;
+}
+
+.border-orange {
+    border-left-color: var(--level-orange) !important;
+}
+
+.border-red {
+    border-left-color: var(--level-red) !important;
+}
+
+/* 身分切換開關 */
+.identity-switch {
+    display: flex;
+    background: #eee;
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 20px;
+}
+
+.identity-switch button {
+    flex: 1;
+    padding: 10px;
+    font-size: 13px;
+    border-radius: 6px;
+    background: none;
+    margin: 0;
+    color: #7f8c8d;
+}
+
+.identity-switch button.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 標籤選擇器網格 */
+.tag-selector-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.tag-chip {
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: white;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tag-chip.selected {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: #5c4b12;
+    font-weight: bold;
+}
+
+/* 區分好壞註解的微色調 (選填) */
+.tag-chip[data-impact="bad"]:hover {
+    border-color: var(--danger);
+}
+
+.tag-chip[data-impact="good"]:hover {
+    border-color: var(--level-green);
+}
+
+/* 標籤基礎樣式 */
+.tag-chip {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+    background: #fdfdfd;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 選中狀態 */
+.tag-chip.selected {
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 好標籤選中：綠色系 */
+.tag-chip[data-impact="good"].selected {
+    background: #eafaf1;
+    border-color: var(--level-green);
+    color: var(--level-green);
+}
+
+/* 壞標籤選中：紅色系 */
+.tag-chip[data-impact="bad"].selected {
+    background: #fdedec;
+    border-color: var(--level-red);
+    color: var(--level-red);
+}
