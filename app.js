@@ -216,3 +216,33 @@ window.onload = () => {
     // 預設渲染一次標籤
     renderTags();
 };
+
+// --- 9. 即時數據儀表板更新 ---
+async function updateLiveStats() {
+    try {
+        // 未來正式上線時，將此 URL 替換為你的 GAS Web App URL
+        // const GAS_URL = "你的_GAS_部署網址";
+        // const response = await fetch(`${GAS_URL}?action=getStats`);
+        // const data = await response.json();
+
+        // 暫時模擬從後端抓取的動態行為
+        const simulatedData = {
+            courtCount: 5012345, // 這裡會隨著你 Sheets 增加而變動
+            userCount: 1204      // 同上
+        };
+
+        // 更新 UI
+        document.getElementById('stat-court-num').innerText = simulatedData.courtCount.toLocaleString();
+        document.getElementById('stat-user-num').innerText = simulatedData.userCount.toLocaleString();
+
+        console.log("📊 儀表板數據已同步更新");
+    } catch (error) {
+        console.error("無法更新儀表板數據:", error);
+    }
+}
+
+// 修改初始化函式
+window.onload = () => {
+    renderTags();    // 渲染標籤
+    updateLiveStats(); // 更新儀表板
+};
