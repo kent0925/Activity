@@ -1,0 +1,338 @@
+/* ==========================================
+   大老二兄弟會活動報名系統 - 主樣式表
+   從 index.html <style> 區塊抽出
+   ========================================== */
+
+:root {
+    --primary: #06c755;
+    --primary-dark: #05a346;
+
+    --primary-light: #e6f9ed;
+    --accent: #f59e0b;
+    --danger: #ef4444;
+    --bg-gray: #f9fafb;
+    --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.3);
+}
+
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--bg-gray);
+    color: #1f2937;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 玻璃擬態 (Glassmorphism) */
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+}
+
+.premium-gradient {
+    background: linear-gradient(135deg, #06c755 0%, #059669 100%);
+}
+
+.premium-card {
+    background: white;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 自定義動畫 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes pulse-subtle {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animate-pulse-subtle {
+    animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+/* 詳細樣式 */
+details>summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+details>summary::-webkit-details-marker {
+    display: none;
+}
+
+.arrow-icon {
+    transition: transform 0.3s ease;
+}
+
+details[open]>summary .arrow-icon {
+    transform: rotate(180deg);
+}
+
+/* 分頁標籤 (Tabs) */
+.filter-tab {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.filter-tab.active {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(6, 199, 85, 0.3);
+}
+
+/* 骨架屏載入效果 (Skeleton Loading) */
+.skeleton {
+    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite linear;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* 行動裝置瀏海安全區域 */
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+    padding-top: env(safe-area-inset-top);
+}
+
+/* --- 行程表手風琴特效 (新增) --- */
+
+/* 1. 隱藏瀏覽器預設的 details 三角形 */
+.itinerary-group summary::-webkit-details-marker {
+    display: none;
+}
+
+.itinerary-group summary {
+    list-style: none;
+}
+
+/* 2. 控制 + 和 - 圖示的切換邏輯 */
+/* 預設狀態 (關閉)：顯示 Plus (+), 隱藏 Minus (-) */
+.itinerary-group summary .icon-plus {
+    display: block;
+}
+
+.itinerary-group summary .icon-minus {
+    display: none;
+}
+
+/* 當 details 被打開 (open) 時：隱藏 Plus, 顯示 Minus */
+.itinerary-group[open] summary .icon-plus {
+    display: none;
+}
+
+.itinerary-group[open] summary .icon-minus {
+    display: block;
+}
+
+/* 3. 內容展開時的滑動動畫 */
+.itinerary-group[open] .group-content {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 迷你老虎機 */
+.slot-machine-container {
+    text-align: center;
+}
+
+.slot-machine {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.slot-reel {
+    width: 72px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.slot-reel.spinning {
+    animation: reelShake 0.1s linear infinite;
+}
+
+.slot-reel.stopped {
+    animation: reelStop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+@keyframes reelShake {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-2px);
+    }
+
+    75% {
+        transform: translateY(2px);
+    }
+}
+
+@keyframes reelStop {
+    0% {
+        transform: scale(1.2);
+    }
+
+    60% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.slot-result {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-height: 24px;
+}
+
+.slot-result.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes jackpotPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+}
+
+.slot-result.jackpot {
+    animation: jackpotPulse 1s ease-in-out infinite;
+    color: #fbbf24;
+}
+
+/* --- Premium Rankings --- */
+.premium-dark-card {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+/* 詳細排行榜名單彈窗 */
+#rankings-modal-content {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ranking-item {
+    transition: all 0.2s ease;
+}
+
+.ranking-item:hover {
+    background: rgba(0, 0, 0, 0.02);
+    transform: translateX(2px);
+}
+
+.ranking-medal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+}
+
+.rank-number {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    color: #9ca3af;
+    width: 24px;
+    text-align: center;
+}
