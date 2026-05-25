@@ -2079,6 +2079,17 @@ function renderEventStaticInfo() {
     document.getElementById('display-address').innerText = e.address;
     document.getElementById('map-link').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.address)}`;
 
+    // ★ 備註欄位：有內容時顯示，空白時隱藏
+    const noteSection = document.getElementById('display-note-section');
+    const noteEl = document.getElementById('display-note');
+    if (e.note && e.note.trim()) {
+        noteEl.innerText = e.note;
+        noteSection.classList.remove('hidden');
+    } else {
+        noteSection.classList.add('hidden');
+        noteEl.innerText = '';
+    }
+
     // 時間顯示
     const timeDiv = document.getElementById('display-time-container');
     if (e.type === 'travel' && e.time.includes('~')) {
