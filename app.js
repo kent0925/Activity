@@ -3893,6 +3893,9 @@ async function shareAsImage() {
         if (includeLink) {
             html += `<div style="font-size:13px;color:#2563eb;">🔗 報名：https://liff.line.me/${LIFF_ID}</div>`;
         }
+        if (e.note) {
+            html += `<div style="font-size:13px;margin-top:12px;padding:10px;background:#fffbeb;color:#b45309;border:1px solid #fde68a;border-radius:8px;line-height:1.5;">💡 <b>備註：</b><br>${escapeHtml(e.note).replace(/\\n/g, '<br>')}</div>`;
+        }
         html += '</div>';
 
         // 名單區
@@ -4550,4 +4553,33 @@ function openManualCopyModal(text) {
             area.setSelectionRange(0, 99999); // 針對行動裝置
         }, 100);
     }
+}
+
+// --- Tutorial Modal Logic ---
+function openTutorialModal() {
+    const modal = document.getElementById('tutorial-modal');
+    const content = document.getElementById('tutorial-modal-content');
+    if (!modal || !content) return;
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('translate-y-full', 'opacity-0');
+        content.classList.add('translate-y-10', 'sm:translate-y-0', 'opacity-100');
+    }, 10);
+    
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
+}
+
+function closeTutorialModal() {
+    const modal = document.getElementById('tutorial-modal');
+    const content = document.getElementById('tutorial-modal-content');
+    if (!modal || !content) return;
+
+    content.classList.remove('translate-y-10', 'sm:translate-y-0', 'opacity-100');
+    content.classList.add('translate-y-full', 'opacity-0');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
 }
