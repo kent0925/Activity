@@ -136,6 +136,15 @@
                 </button>
             </div>
 
+            <!-- 報名操作指南按鈕 -->
+            <div class="flex justify-center px-1 mt-3">
+                <button type="button" onclick="openTutorialModal()"
+                    class="w-full bg-[#06c755]/10 hover:bg-[#06c755]/20 text-[#06c755] py-3 rounded-2xl flex items-center justify-center gap-2 transition-all font-black text-xs border border-[#06c755]/20 shadow-sm active:scale-95">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    <span>💡 如何報名？報名操作指南</span>
+                </button>
+            </div>
+
             <!-- 歷史活動列表 (隱藏狀態) -->
             <div id="history-list" class="hidden space-y-4 animate-fade-in">
                 <div id="history-loading" class="hidden space-y-3">
@@ -256,10 +265,16 @@
             </div>
 
             <form id="regForm" class="premium-card p-6 space-y-8 relative" onsubmit="handleSubmit(event)">
-                <div class="flex items-center gap-3 pb-4 border-b border-gray-100">
-                    <div class="bg-primary-light p-2 rounded-xl"><i data-lucide="edit-3"
-                            class="w-6 h-6 text-primary"></i></div>
-                    <h2 class="text-xl font-bold text-gray-800" id="form-title">填寫報名資料</h2>
+                <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-primary-light p-2 rounded-xl"><i data-lucide="edit-3"
+                                class="w-6 h-6 text-primary"></i></div>
+                        <h2 class="text-xl font-bold text-gray-800" id="form-title">填寫報名資料</h2>
+                    </div>
+                    <button type="button" onclick="openTutorialModal()"
+                        class="text-xs text-[#06c755] hover:text-[#05a647] font-bold flex items-center gap-1 bg-[#06c755]/10 px-2.5 py-1.5 rounded-lg border border-[#06c755]/20 transition shadow-sm active:scale-95">
+                        <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> 報名教學
+                    </button>
                 </div>
                 <input type="hidden" id="eventId" name="eventId">
                 <input type="hidden" id="eventType" name="eventType">
@@ -979,6 +994,49 @@
         </div>
 
     </div>
+    </div>
+
+    <!-- 報名操作教學彈窗 -->
+    <div id="tutorial-modal"
+        class="hidden fixed inset-0 z-[130] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4">
+        <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[85dvh] sm:max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
+            id="tutorial-modal-content">
+            <!-- 標頭 -->
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/80 rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
+                <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                    <i data-lucide="help-circle" class="w-5 h-5 text-green-600"></i> 報名操作教學
+                </h3>
+                <button onclick="closeTutorialModal()"
+                    class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- 內容區 -->
+            <div class="p-5 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe space-y-5 bg-gray-50/50">
+                <!-- 報名操作教學圖片 -->
+                <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-white p-1">
+                    <img src="./registration_tutorial.png" alt="報名教學圖解" class="w-full h-auto object-contain rounded-xl">
+                </div>
+                
+                <!-- 提示 Banner -->
+                <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 flex gap-3 text-xs text-amber-800">
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+                    <div class="space-y-1 leading-relaxed">
+                        <strong class="block font-bold">💡 填寫提示：</strong>
+                        若漏填 <span class="text-red-600 font-bold">*必選</span> 欄位（例如：<strong>上車地點</strong>或<strong>房型需求</strong>），點擊確認時網頁會自動捲動至該欄位，並以 <span class="text-red-600 font-bold">紅色外框高亮顯示</span> 提示您補選。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部關閉按鈕 -->
+            <div class="p-4 border-t border-gray-100 bg-gray-50 flex gap-2 rounded-b-2xl">
+                <button onclick="closeTutorialModal()"
+                    class="w-full py-3 bg-[#06c755] hover:bg-[#05b04b] text-white font-bold rounded-xl shadow-md transition active:scale-95 text-center text-sm">
+                    我懂了，開始報名！
+                </button>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
