@@ -4304,7 +4304,35 @@ function validateForm() {
         showToast('請填寫姓名');
         return false;
     }
+
+    // ★ 旅遊活動：上車地點與房型需求為必選
+    if (appState.currentEvent && appState.currentEvent.type === 'travel') {
+        const pickupEl = document.getElementById('pickup-loc');
+        const roomEl = document.getElementById('room-type');
+
+        if (pickupEl && !pickupEl.value) {
+            showToast('⚠️ 請選擇上車地點');
+            scrollToAndHighlight(pickupEl);
+            return false;
+        }
+        if (roomEl && !roomEl.value) {
+            showToast('⚠️ 請選擇房型需求');
+            scrollToAndHighlight(roomEl);
+            return false;
+        }
+    }
+
     return true;
+}
+
+// ★ 捲動至指定欄位並加上紅色高亮閃爍效果
+function scrollToAndHighlight(el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('ring-2', 'ring-red-500', 'border-red-500');
+    el.focus();
+    setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-red-500', 'border-red-500');
+    }, 2500);
 }
 
 function addGuest() {
