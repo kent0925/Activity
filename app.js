@@ -1918,6 +1918,15 @@ function fillFormWithRecord(record) {
     const guestCount = getIntField(record, 'guestCount');
     const sponsor = getField(record, 'sponsor');
 
+    // ★ 偵測純贊助狀態（familyCount 儲存值為 -1）
+    const rawFamily = findCaseInsensitiveValue(record, ['FamilyCount', 'familyCount', '眉屬人數']);
+    const isSponsorOnly = (parseInt(rawFamily, 10) === -1);
+    const noAttendCb = document.getElementById('no-attendance-sponsor');
+    if (noAttendCb) {
+        noAttendCb.checked = isSponsorOnly;
+        toggleNoAttendance(noAttendCb);
+    }
+
     // 填入欄位
     document.getElementById('family-count').value = family;
     if (tableCount) document.getElementById('table-count').value = tableCount;
@@ -1960,6 +1969,10 @@ async function handleSubmit(e) {
     DOM.submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 處理中...';
     refreshIcons();
 
+    // ★ 不克出席，僅贊助：familyCount 送 -1 讓後端識別
+    const noAttendCb = document.getElementById('no-attendance-sponsor');
+    const isSponsorOnly = noAttendCb && noAttendCb.checked;
+
     const formData = {
         action: DOM.formAction.value,
         eventId: appState.currentEvent.id,
@@ -1968,11 +1981,11 @@ async function handleSubmit(e) {
         userId: appState.user.userId,
         pictureUrl: appState.user.pictureUrl,
         displayName: DOM.userName.value,
-        familyCount: parseInt(document.getElementById('family-count').value, 10) - 1,
-        guestList: JSON.stringify(appState.guestList),
+        familyCount: isSponsorOnly ? -1 : (parseInt(document.getElementById('family-count').value, 10) - 1),
+        guestList: JSON.stringify(isSponsorOnly ? [] : appState.guestList),
         sponsorList: JSON.stringify(appState.sponsorList),
-        roomType: document.getElementById('room-type').value,
-        pickupLoc: document.getElementById('pickup-loc').value,
+        roomType: isSponsorOnly ? '' : document.getElementById('room-type').value,
+        pickupLoc: isSponsorOnly ? '' : document.getElementById('pickup-loc').value,
         tableCount: document.getElementById('table-count').value
     };
 
@@ -2065,6 +2078,13 @@ function resetFormState() {
     DOM.cancelBtn.classList.add('hidden');
     DOM.formTitle.innerText = "填寫報名資料";
     DOM.userName.value = appState.user.displayName;
+
+    // ★ 重置「不克出席」核取方塊
+    const noAttendCb = document.getElementById('no-attendance-sponsor');
+    if (noAttendCb) {
+        noAttendCb.checked = false;
+        toggleNoAttendance(noAttendCb); // 確保欄位狀態恢復
+    }
 }
 
 function renderEventStaticInfo() {
@@ -2671,6 +2691,36 @@ function parseLocalDate(s) {
         return new Date(`${y}-${mo}-${d}T${h}:${mi}:${sec}+08:00`);
     }
     return new Date(str);
+}
+
+function formatDateShort(isoStr) {
+    if (!isoStr) return '';
+    if (isoStr.includes('~')) {
+        const start = isoStr.split('~')[0];
+        const d = parseLocalDate(start);
+        if (isNaN(d.getTime())) return start;
+        return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}...`;
+    }
+    const d = parseLocalDate(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
+    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} (${week})`;
+}
+
+function formatDate(isoStr) {
+    if (!isoStr) return '';
+    const d = parseLocalDate(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
+    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+    return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+}
+
+function formatDateOnly(isoStr) {
+    if (!isoStr) return '';
+    const d = parseLocalDate(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
+    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+    return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week})`;
 }
 
 /**
@@ -3679,6 +3729,7 @@ function isEventOpen(e) {
 
 // 新增：檢查是否可以修改（當天仍可修改）
 function canModifyEvent(e) {
+    if (!e) return false;
     if (!e.time) return true;
 
     let eventDate = null;
@@ -3897,47 +3948,298 @@ function renderShareAllEventsList() {
     });
 }
 
-function confirmShareCopy() {
-    // 取得使用者勾選狀態
-    const includeSponsor = document.getElementById('share-opt-sponsor').checked && !document.getElementById('opt-container-sponsor').classList.contains('hidden');
-    const includeTravel = document.getElementById('share-opt-travel').checked && !document.getElementById('opt-container-travel').classList.contains('hidden');
-    const includeMap = document.getElementById('share-opt-map').checked;
-    const includeNames = document.getElementById('share-opt-names').checked;
-    const includeLink = document.getElementById('share-opt-link').checked;
-
-    // 關閉視窗
-    document.getElementById('share-modal').classList.add('hidden');
-
-    // 執行複製，傳入參數
-    performCopy({ includeSponsor, includeTravel, includeMap, includeNames, includeLink });
+// 輔助函式：將 Canvas 轉成 File 物件
+async function canvasToFile(canvas, filename) {
+    return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+            const file = new File([blob], filename, { type: 'image/png' });
+            resolve(file);
+        }, 'image/png');
+    });
 }
 
-function confirmAllShareCopy() {
-    const checkedBoxes = document.querySelectorAll('input[name="share-all-active-checkbox"]:checked');
-    if (checkedBoxes.length === 0) {
-        showToast("⚠️ 請至少選擇一個活動");
-        return;
-    }
+// 輔助函式：單活動分享 fallback (下載 + 複製)
+function fallbackShareSingle(file, text, eventName) {
+    copyTextToClipboardOnly(text);
+    const link = document.createElement('a');
+    link.download = `${eventName || '活動'}_名單.png`;
+    link.href = URL.createObjectURL(file);
+    link.click();
+    showToast('已複製分享文字並下載名單圖片！');
+}
 
-    const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
-    const selectedEvents = appState.events.filter(e => selectedIds.includes(e.id));
-
-    let text = `📅 【大老二兄弟會】近期舉辦中活動 👥\n\n`;
-    selectedEvents.forEach((e, idx) => {
-        text += `${idx + 1}. 📅 ${e.name}\n`;
-        if (e.organizer) text += `   👤 主辦人：${e.organizer}\n`;
-        const timeDisplay = formatTimeForShare(e.time);
-        if (timeDisplay) text += `   🕒 時間：${timeDisplay}\n`;
-        if (e.location) text += `   📍 地點：${e.location}\n`;
-        text += `\n`;
+// 輔助函式：多活動分享 fallback (下載 + 複製)
+function fallbackShareAll(files, text) {
+    copyTextToClipboardOnly(text);
+    files.forEach((file, idx) => {
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.download = file.name;
+            link.href = URL.createObjectURL(file);
+            link.click();
+        }, idx * 300); // 延遲下載避免被瀏覽器阻擋
     });
+    showToast('已複製分享文字並下載所有名單圖片！');
+}
 
-    text += `---------------------\n`;
-    text += `歡迎大家踴躍報名！🍻\n`;
+// 輔助函式：純複製文字
+function copyTextToClipboardOnly(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {
+            fallbackCopyOnly(text);
+        });
+    } else {
+        fallbackCopyOnly(text);
+    }
+}
+
+// 輔助函式：純複製 fallback 寫法
+function fallbackCopyOnly(txt) {
+    const textArea = document.createElement("textarea");
+    textArea.value = txt;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+    } catch (err) {
+        openManualCopyModal(txt);
+    }
+    document.body.removeChild(textArea);
+}
+
+// 輔助函式：數字圖示
+function getNumberIcon(num) {
+    const icons = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+    if (num >= 0 && num <= 10) return icons[num];
+    return `[${num}]`;
+}
+
+// 產生單一活動文字（無名單、必含贊助）
+function generateSingleShareText(e, data, stats, options = {}) {
+    let text = `📅 【活動報名】${e.name}\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    if (e.organizer) text += `👤 主辦人：${e.organizer}\n`;
+    const timeDisplay = formatTimeForShare(e.time);
+    if (timeDisplay) text += `🕒 時間：${timeDisplay}\n`;
+    if (e.location) text += `📍 地點：${e.location}\n`;
+    if (e.address) text += `🚗 地址：${e.address}\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    
+    // 贊助 / 認桌資訊
+    text += `💰 贊助 / 認桌：\n`;
+    let sponsorParts = [];
+    data.forEach(p => {
+        let moneyParts = [];
+        const tc = getIntField(p, 'tableCount');
+        if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+        const sponsorRaw = getField(p, 'sponsor');
+        const sponsorList = parseSponsorData(sponsorRaw);
+        sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+        if (moneyParts.length > 0) {
+            sponsorParts.push(`- ${p.name}：${moneyParts.join('、')}`);
+        }
+    });
+    if (sponsorParts.length > 0) {
+        text += sponsorParts.join('\n') + `\n`;
+    } else {
+        text += `- 無\n`;
+    }
+    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    text += `📊 統計：共 ${stats.totalPeople || 0} 人報名\n`;
+    
+    let addedMap = false;
+    if (options.includeMap && e.address) {
+        text += `🗺️ Google 地圖：https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.address)}\n`;
+        addedMap = true;
+    }
+    
+    if (options.includeLink !== false) {
+        if (!addedMap && isEventDay(e) && (e.address || e.location)) {
+            const mapQuery = e.address || e.location;
+            text += `🗺️ Google 地圖👇：https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}\n`;
+        } else {
+            text += `🔗 報名連結：https://liff.line.me/${LIFF_ID}\n`;
+        }
+    }
+    return text;
+}
+
+// 產生多活動文字（無名單、必含個別贊助）
+async function generateAllShareText(eventDataList, options = {}) {
+    let text = `📅 【大老二兄弟會】近期舉辦中活動 👥\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    
+    for (let i = 0; i < eventDataList.length; i++) {
+        const { event: e, data, stats } = eventDataList[i];
+        
+        const numIcon = getNumberIcon(i + 1);
+        text += `${numIcon} ${e.name}\n`;
+        
+        let infoLine = [];
+        if (e.organizer) infoLine.push(`👤 主辦人：${e.organizer}`);
+        const timeDisplay = formatTimeForShare(e.time);
+        if (timeDisplay) infoLine.push(`🕒 ${timeDisplay}`);
+        if (infoLine.length > 0) {
+            text += `   ${infoLine.join(' | ')}\n`;
+        }
+        if (e.location) text += `   📍 地點：${e.location}\n`;
+        
+        // 贊助資訊
+        text += `   💰 贊助 / 認桌：\n`;
+        let sponsorParts = [];
+        data.forEach(p => {
+            let moneyParts = [];
+            const tc = getIntField(p, 'tableCount');
+            if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+            const sponsorRaw = getField(p, 'sponsor');
+            const sponsorList = parseSponsorData(sponsorRaw);
+            sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+            if (moneyParts.length > 0) {
+                sponsorParts.push(`   - ${p.name}：${moneyParts.join('、')}`);
+            }
+        });
+        if (sponsorParts.length > 0) {
+            text += sponsorParts.join('\n') + `\n`;
+        } else {
+            text += `   - 無\n`;
+        }
+        
+        text += `   📊 統計：共 ${stats.totalPeople || 0} 人報名\n\n`;
+    }
+    
+    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `🔗 統一報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+    return text;
+}
 
-    document.getElementById('share-modal').classList.add('hidden');
-    copyTextToClipboard(text);
+// 統一執行分享邏輯 (合併文字與圖片)
+async function executeShare(mode) {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (mode === 'single') {
+        const e = appState.currentEvent;
+        if (!e) return;
+        
+        const btn = document.getElementById('btn-share-single');
+        const origHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
+        if (window.lucide) window.lucide.createIcons();
+        
+        try {
+            const data = appState.cachedDetails || [];
+            const stats = appState.currentStats || {};
+            
+            // 1. 生成 Canvas 與圖片檔案
+            const canvas = await generateEventCanvas(e, data, stats);
+            const file = await canvasToFile(canvas, `${e.name}_名單.png`);
+            
+            // 2. 生成排版文字
+            const includeMap = document.getElementById('share-opt-map')?.checked || false;
+            const includeLink = document.getElementById('share-opt-link')?.checked !== false;
+            const shareText = generateSingleShareText(e, data, stats, { includeMap, includeLink });
+            
+            // 3. 關閉彈窗
+            document.getElementById('share-modal').classList.add('hidden');
+            
+            // 4. 執行分享
+            if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        text: shareText
+                    });
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        fallbackShareSingle(file, shareText, e.name);
+                    }
+                }
+            } else {
+                fallbackShareSingle(file, shareText, e.name);
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("分享產生失敗，請重試");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+            if (window.lucide) window.lucide.createIcons();
+        }
+        
+    } else if (mode === 'all') {
+        const checkedBoxes = document.querySelectorAll('input[name="share-all-active-checkbox"]:checked');
+        if (checkedBoxes.length === 0) {
+            showToast("⚠️ 請至少選擇一個活動");
+            return;
+        }
+        
+        const btn = document.getElementById('btn-share-all');
+        const origHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
+        if (window.lucide) window.lucide.createIcons();
+        
+        try {
+            const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+            const selectedEvents = appState.events.filter(e => selectedIds.includes(e.id));
+            
+            // 1. 並行拉取所有活動的資料
+            const eventDataPromises = selectedEvents.map(async (e) => {
+                let data = [];
+                let stats = {};
+                if (appState.currentEvent && e.id === appState.currentEvent.id) {
+                    data = appState.cachedDetails || [];
+                    stats = appState.currentStats || {};
+                } else {
+                    [data, stats] = await Promise.all([
+                        fetchDetailsForEvent(e.id),
+                        fetchStatsForEvent(e.id)
+                    ]);
+                }
+                return { event: e, data, stats };
+            });
+            const eventDataList = await Promise.all(eventDataPromises);
+
+            // 2. 並行產生所有圖片與 Canvas
+            const filePromises = eventDataList.map(async ({ event: e, data, stats }) => {
+                const canvas = await generateEventCanvas(e, data, stats);
+                return canvasToFile(canvas, `${e.name}_名單.png`);
+            });
+            const files = await Promise.all(filePromises);
+            
+            // 3. 生成多活動彙整排版文字 (傳入已獲取的資料)
+            const shareText = await generateAllShareText(eventDataList);
+            
+            // 3. 關閉彈窗
+            document.getElementById('share-modal').classList.add('hidden');
+            
+            // 4. 執行分享
+            if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: files })) {
+                try {
+                    await navigator.share({
+                        files: files,
+                        text: shareText
+                    });
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        fallbackShareAll(files, shareText);
+                    }
+                }
+            } else {
+                fallbackShareAll(files, shareText);
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("分享產生失敗，請重試");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+            if (window.lucide) window.lucide.createIcons();
+        }
+    }
 }
 
 // 舊按鈕 (名單視窗下方) 呼叫此函式：統一呼叫 openShareModal 以提供選項
@@ -3998,11 +4300,14 @@ async function generateEventCanvas(e, data, stats) {
         html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
         let count = 0;
         data.forEach(p => {
-            count++;
             const family = getIntField(p, 'family');
             const guestData = parseGuestData(p);
             const finalGuestCount = calculateFinalGuestCount(p, guestData);
             const total = family + finalGuestCount;
+            
+            if (total === 0) return;
+
+            count++;
             const num = count.toString().padStart(2, '0');
             const status = p.status || p.note || '';
             let prefix = status ? status : '';
@@ -4063,6 +4368,11 @@ async function generateEventCanvas(e, data, stats) {
     if (data.length > 0) {
         let sponsorHtml = '';
         data.forEach(p => {
+            const family = getIntField(p, 'family');
+            const guestData = parseGuestData(p);
+            const finalGuestCount = calculateFinalGuestCount(p, guestData);
+            const total = family + finalGuestCount;
+
             let moneyParts = [];
             const tc = getIntField(p, 'tableCount');
             if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
@@ -4070,7 +4380,8 @@ async function generateEventCanvas(e, data, stats) {
             const sponsorList = parseSponsorData(sponsorRaw);
             sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
             if (moneyParts.length > 0) {
-                sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+                const label = (total === 0) ? ' (純贊助)' : '';
+                sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}${label}</span>：${moneyParts.join('、')}</div>`;
             }
         });
         if (sponsorHtml) {
@@ -4106,377 +4417,7 @@ async function generateEventCanvas(e, data, stats) {
     return canvas;
 }
 
-// --- 單一活動圖片分享功能 ---
-async function shareAsImage() {
-    const e = appState.currentEvent;
-    if (!e) return;
-    const data = appState.cachedDetails || [];
-    const stats = appState.currentStats || {};
 
-    const btn = document.getElementById('btn-share-image');
-    const origHtml = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
-    refreshIcons();
-
-    try {
-        const canvas = await generateEventCanvas(e, data, stats);
-
-        // --- 轉為 blob 並分享或下載 ---
-        canvas.toBlob(async (blob) => {
-            if (!blob) { showToast('圖片產生失敗'); return; }
-            const file = new File([blob], `${e.name}_名單.png`, { type: 'image/png' });
-
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-            if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    let shareText = `📅 ${e.name}\n`;
-                    if (e.organizer) shareText += `👤 主辦人：${e.organizer}\n`;
-                    // ★ 使用共用工具函式格式化時間
-                    const shareTD = formatTimeForShare(e.time);
-                    if (shareTD) shareText += `🕒 時間：${shareTD}\n`;
-                    if (e.location) shareText += `📍 地點：${e.location}\n`;
-                    if (e.address) shareText += `🚗 地址：${e.address}\n`;
-                    shareText += `---------------------\n`;
-                    shareText += `共 ${stats.totalPeople || 0} 人報名\n`;
-
-                    // ★ 使用共用工具函式判斷活動日
-                    if (isEventDay(e) && (e.address || e.location)) {
-                        const mapQuery = e.address || e.location;
-                        shareText += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}`;
-                    } else {
-                        shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
-                    }
-
-                    await navigator.share({
-                        files: [file],
-                        title: e.name,
-                        text: shareText
-                    });
-                    showToast('圖片分享成功！');
-                } catch (err) {
-                    if (err.name !== 'AbortError') {
-                        console.error('圖片分享失敗:', err);
-                        fallbackDownloadImage(canvas, e.name);
-                    }
-                }
-            } else {
-                fallbackDownloadImage(canvas, e.name);
-            }
-
-            document.getElementById('share-modal').classList.add('hidden');
-        }, 'image/png');
-
-    } catch (err) {
-        console.error('圖片產生失敗', err);
-        showToast('產生圖片失敗：' + err.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = origHtml;
-        refreshIcons();
-    }
-}
-
-// --- 多活動同時圖片分享功能 ---
-async function shareAllAsImage() {
-    const checkedBoxes = document.querySelectorAll('input[name="share-all-active-checkbox"]:checked');
-    if (checkedBoxes.length === 0) {
-        showToast("⚠️ 請至少選擇一個活動");
-        return;
-    }
-
-    const btn = document.getElementById('btn-share-all-image');
-    const origHtml = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-white"></i> 產生中...';
-    refreshIcons();
-
-    try {
-        const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
-        const selectedEvents = appState.events.filter(e => selectedIds.includes(e.id));
-
-        showToast("正在背景加載多活動名單，請稍候...");
-
-        // 依序或平行抓取每個活動的數據並繪製
-        const promises = selectedEvents.map(async (e) => {
-            const [details, stats] = await Promise.all([
-                fetchDetailsForEvent(e.id),
-                fetchStatsForEvent(e.id)
-            ]);
-            const canvas = await generateEventCanvas(e, details, stats);
-            return new Promise((resolve) => {
-                canvas.toBlob((blob) => {
-                    resolve({ canvas, blob, eventName: e.name });
-                }, 'image/png');
-            });
-        });
-
-        const results = await Promise.all(promises);
-        const files = [];
-
-        results.forEach(res => {
-            if (res.blob) {
-                const file = new File([res.blob], `${res.eventName}_名單.png`, { type: 'image/png' });
-                files.push(file);
-            }
-        });
-
-        if (files.length === 0) {
-            showToast('圖片產生失敗');
-            return;
-        }
-
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-        if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files })) {
-            try {
-                let shareText = `📅 【大老二兄弟會】近期舉辦中活動名單 👥\n`;
-                shareText += `---------------------\n`;
-                shareText += `🔗 統一報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
-
-                await navigator.share({
-                    files: files,
-                    title: '近期活動名單',
-                    text: shareText
-                });
-                showToast('圖片打包分享成功！');
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    console.error('多圖分享失敗，轉為逐一下載:', err);
-                    results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
-                }
-            }
-        } else {
-            // PC 端或不支援多檔案分享的瀏覽器直接依序下載
-            results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
-        }
-
-        document.getElementById('share-modal').classList.add('hidden');
-    } catch (err) {
-        console.error('多圖生成/分享發生錯誤:', err);
-        showToast('多圖產生失敗：' + err.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = origHtml;
-        refreshIcons();
-    }
-}
-
-function fallbackDownloadImage(canvas, evtName) {
-    const link = document.createElement('a');
-    link.download = `${evtName || '活動'}_名單.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    showToast('已下載名單圖片！');
-}
-
-// --- Telegram 發送功能 ---
-async function sendToTelegram() {
-    if (!appState.currentEvent) return;
-
-    showToast("正在發送至 Telegram...");
-
-    try {
-        const result = await apiSubmit({
-            action: 'sendListToTelegram',
-            eventId: appState.currentEvent.id
-        });
-
-        if (result.success) {
-            showToast("✅ 名單已發送至 Telegram");
-        } else {
-            showToast("❌ 發送失敗: " + (result.error || "未知錯誤"));
-        }
-    } catch (err) {
-        console.error(err);
-        showToast("❌ 發送失敗，請檢查網路");
-    }
-}
-
-// 核心複製邏輯：支援參數與格式化
-function performCopy(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true, includeLink: true }) {
-    // ★ 修改為同步讀取快取資料
-    const data = appState.cachedDetails || [];
-
-    if (!data || data.length === 0) {
-        // Try to fetch if cache is empty (though unlikely if modal is open)
-        // But fetching async here will break mobile copy. 
-        // So we just warn.
-        return showToast("資料讀取中或無資料，請稍後再試");
-    }
-
-    // Sync execution continues...
-    { // Block to keep variable scope clean equivalent to previous .then callback
-
-        const e = appState.currentEvent;
-
-        let text = `📅 ${e.name}\n`;
-        // 判斷並加入活動資訊
-        if (e.organizer) text += `👤 主辦人：${e.organizer}\n`;
-
-        // ★ 修正：使用共用工具函式格式化時間
-        const timeDisplay = formatTimeForShare(e.time);
-        if (timeDisplay) text += `🕒 時間：${timeDisplay}\n`;
-
-        if (e.location) text += `📍 地點：${e.location}\n`;
-        if (e.address) text += `🚗 地址：${e.address}\n`;
-        text += `---------------------\n`;
-
-
-
-        if (options.includeNames !== false) {
-            let count = 0;
-            data.forEach((p, i) => {
-                count++;
-                const family = getIntField(p, 'family');
-                const guestData = parseGuestData(p);
-                // 冗餘處理：使用統一計算函數
-                const finalGuestCount = calculateFinalGuestCount(p, guestData);
-
-                // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
-                const total = family + finalGuestCount;
-
-                const num = count.toString().padStart(2, '0');
-                const status = p.status || p.note || '';
-                const prefix = status ? status : '';
-
-                // ★ 新增：純文字複製時附加文字標籤
-                const roles = getParticipantRoles(p.name, e);
-                let textTags = '';
-                if (roles.length > 0) {
-                    textTags = ' ' + roles.map(r => r.textLabel).join('');
-                }
-
-                // ★ 小瑪莉前三名勳章（文字名單分享用）
-                let maryMedalCopy = '';
-                if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
-                    const rankIdx = appState.jackpotRankings.findIndex(r => r.name === p.name);
-                    if (rankIdx === 0) maryMedalCopy = '🥇';
-                    else if (rankIdx === 1) maryMedalCopy = '🥈';
-                    else if (rankIdx === 2) maryMedalCopy = '🥉';
-                }
-
-                text += `${num}. ${maryMedalCopy}${prefix}${p.name}${textTags}`;
-                if (total > 1) text += ` *${total}`;
-                text += `\n`;
-
-                // ★ 修改：來賓名單整合為單行，顯示在下方 ★
-                if (guestData.length > 0) {
-                    const guestParts = guestData.map(g => {
-                        return g.count > 1 ? `${g.name}*${g.count}` : g.name;
-                    });
-                    text += `      來賓：${guestParts.join('、')}\n`;
-                } else {
-                    const guestNameStr = getField(p, 'guestName');
-                    if (guestNameStr && guestNameStr !== '無') {
-                        text += `      來賓：${guestNameStr}\n`;
-                    }
-                }
-
-                // 贊助/認桌不在名單內顯示，改由下方獨立區塊統一列出
-
-                if (options.includeTravel) {
-                    let travelLines = [];
-                    if (p.pickup && p.pickup !== '無') travelLines.push(`[主]車: ${p.pickup}`);
-                    if (p.room && p.room !== '無') travelLines.push(`[主]房: ${p.room}`);
-
-                    if (guestData.length > 0) {
-                        guestData.forEach(g => {
-                            let extras = [];
-                            if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
-                            if (g.room && g.room !== '無') extras.push(g.room);
-                            if (extras.length > 0) {
-                                travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
-                            }
-                        });
-                    }
-                    if (travelLines.length > 0) {
-                        travelLines.forEach(l => text += `      ${l}\n`);
-                    }
-                }
-            });
-        }
-
-        // ★ 贊助/認桌獨立區塊（不論是否勾選名單，只要有資料就顯示）
-        if (options.includeSponsor) {
-            let hasSponsorData = false;
-            let sponsorText = '';
-            data.forEach(p => {
-                let moneyLines = [];
-                const tc = getIntField(p, 'tableCount');
-                if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
-
-                const sponsorRaw = getField(p, 'sponsor');
-                const sponsorList = parseSponsorData(sponsorRaw);
-                sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
-
-                if (moneyLines.length > 0) {
-                    hasSponsorData = true;
-                    sponsorText += `${p.name}：${moneyLines.join('、')}\n`;
-                }
-            });
-            if (hasSponsorData) {
-                text += `【贊助/認桌】\n${sponsorText}`;
-            }
-        }
-
-        text += `---------------------\n`;
-        text += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
-
-        if (options.includeMap && e.address) {
-            text += `🗺️ Google 地圖：\nhttps://www.google.com/maps/search/?api=1&query=${e.address}\n`;
-        }
-
-        // ★ 活動日當天自動替換：報名連結 → Google 地圖連結
-        if (options.includeLink !== false) {
-            // ★ 使用共用工具函式判斷活動日
-            if (isEventDay(e) && (e.address || e.location)) {
-                const mapQuery = e.address || e.location;
-                text += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}\n`;
-            } else {
-                text += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
-            }
-        }
-
-        copyTextToClipboard(text);
-    }
-}
-
-// --- ★★★ 這裡就是修正的關鍵，原本遺失的函式 ★★★ ---
-function formatDateShort(isoStr) {
-    if (!isoStr) return '';
-
-    // 如果是旅遊活動的時間範圍 (例如: 2023-10-10~2023-10-12)
-    if (isoStr.includes('~')) {
-        const start = isoStr.split('~')[0];
-        const d = parseLocalDate(start); // ★ 改用 parseLocalDate
-        if (isNaN(d.getTime())) return start;
-        return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}...`;
-    }
-
-    const d = parseLocalDate(isoStr); // ★ 改用 parseLocalDate
-    if (isNaN(d.getTime())) return isoStr;
-
-    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} (${week})`;
-}
-
-function formatDate(isoStr) {
-    if (!isoStr) return '';
-    const d = parseLocalDate(isoStr); // ★ 核心修復：改用 parseLocalDate 避免 UTC 時差，18:29不再變0:00
-    if (isNaN(d.getTime())) return isoStr;
-    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-    return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-}
-
-function formatDateOnly(isoStr) {
-    if (!isoStr) return '';
-    const d = parseLocalDate(isoStr); // ★ 改用 parseLocalDate
-    if (isNaN(d.getTime())) return isoStr;
-    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-    return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week})`;
-}
 
 
 
@@ -4497,8 +4438,12 @@ function validateForm() {
         return false;
     }
 
-    // ★ 旅遊活動：上車地點與房型需求為必選
-    if (appState.currentEvent && appState.currentEvent.type === 'travel') {
+    // ★ 純贊助者：跳過旅遊欄位驗證
+    const noAttendCb = document.getElementById('no-attendance-sponsor');
+    const isSponsorOnly = noAttendCb && noAttendCb.checked;
+
+    // ★ 旅遊活動：上車地點與房型需求為必選（純贊助者豁免）
+    if (!isSponsorOnly && appState.currentEvent && appState.currentEvent.type === 'travel') {
         const pickupEl = document.getElementById('pickup-loc');
         const roomEl = document.getElementById('room-type');
 
@@ -4514,7 +4459,45 @@ function validateForm() {
         }
     }
 
+    // ★ 純贊助者：至少需要有贊助項目或認桌
+    if (isSponsorOnly) {
+        const tc = parseInt(document.getElementById('table-count').value, 10) || 0;
+        if (appState.sponsorList.length === 0 && tc === 0) {
+            showToast('⚠️ 僅贊助模式下，請至少新增一筆贊助或認桌');
+            return false;
+        }
+    }
+
     return true;
+}
+
+// ★ 不克出席，僅贊助 — 切換邏輯
+function toggleNoAttendance(checkbox) {
+    const isChecked = checkbox.checked;
+    const familySelect = document.getElementById('family-count');
+    const guestSection = document.getElementById('guest-section');
+    const travelField = document.getElementById('field-travel');
+
+    if (isChecked) {
+        // 禁用人數（鎖定為最小值）
+        if (familySelect) {
+            familySelect.value = familySelect.options[0]?.value || '1';
+            familySelect.disabled = true;
+        }
+        // 隱藏來賓區塊
+        if (guestSection) guestSection.classList.add('hidden');
+        // 隱藏旅遊欄位
+        if (travelField) travelField.classList.add('hidden');
+    } else {
+        // 恢復人數選擇
+        if (familySelect) familySelect.disabled = false;
+        // 恢復來賓區塊
+        if (guestSection) guestSection.classList.remove('hidden');
+        // 恢復旅遊欄位（若為旅遊活動）
+        if (travelField && appState.currentEvent && appState.currentEvent.type === 'travel') {
+            travelField.classList.remove('hidden');
+        }
+    }
 }
 
 // ★ 捲動至指定欄位並加上紅色高亮閃爍效果
