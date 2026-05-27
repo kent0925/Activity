@@ -4028,24 +4028,20 @@ function generateSingleShareText(e, data, stats, options = {}) {
     if (e.address) text += `🚗 地址：${e.address}\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     
-    // 贊助 / 認桌資訊
-    text += `💰 贊助 / 認桌：\n`;
     let sponsorParts = [];
     data.forEach(p => {
         let moneyParts = [];
         const tc = getIntField(p, 'tableCount');
-        if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+        if (tc > 0) moneyParts.push(`認桌 ${tc}桌`);
         const sponsorRaw = getField(p, 'sponsor');
         const sponsorList = parseSponsorData(sponsorRaw);
-        sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+        sponsorList.forEach(s => moneyParts.push(s));
         if (moneyParts.length > 0) {
-            sponsorParts.push(`- ${p.name}：${moneyParts.join('、')}`);
+            sponsorParts.push(`    ❖ ${p.name} ━ ${moneyParts.join('、')}`);
         }
     });
     if (sponsorParts.length > 0) {
-        text += sponsorParts.join('\n') + `\n`;
-    } else {
-        text += `- 無\n`;
+        text += `🎁 贊助與認桌鳴謝：\n` + sponsorParts.join('\n') + `\n`;
     }
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `📊 統計：共 ${stats.totalPeople || 0} 人報名\n`;
@@ -4084,23 +4080,20 @@ async function generateAllShareText(eventDataList, options = {}) {
         if (e.location) text += `   📍 地點：${e.location}\n`;
         
         // 贊助資訊
-        text += `   💰 贊助 / 認桌：\n`;
         let sponsorParts = [];
         data.forEach(p => {
             let moneyParts = [];
             const tc = getIntField(p, 'tableCount');
-            if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+            if (tc > 0) moneyParts.push(`認桌 ${tc}桌`);
             const sponsorRaw = getField(p, 'sponsor');
             const sponsorList = parseSponsorData(sponsorRaw);
-            sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+            sponsorList.forEach(s => moneyParts.push(s));
             if (moneyParts.length > 0) {
-                sponsorParts.push(`   - ${p.name}：${moneyParts.join('、')}`);
+                sponsorParts.push(`    ❖ ${p.name} ━ ${moneyParts.join('、')}`);
             }
         });
         if (sponsorParts.length > 0) {
-            text += sponsorParts.join('\n') + `\n`;
-        } else {
-            text += `   - 無\n`;
+            text += `   🎁 贊助與認桌鳴謝：\n` + sponsorParts.join('\n') + `\n`;
         }
         
         text += `   📊 統計：共 ${stats.totalPeople || 0} 人報名\n\n`;
