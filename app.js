@@ -4037,11 +4037,15 @@ function generateSingleShareText(e, data, stats, options = {}) {
         const sponsorList = parseSponsorData(sponsorRaw);
         sponsorList.forEach(s => moneyParts.push(s));
         if (moneyParts.length > 0) {
-            sponsorParts.push(`    ❖ ${p.name} ━ ${moneyParts.join('、')}`);
+            sponsorParts.push(`❖ ${p.name} ━ ${moneyParts.join('、')}`);
         }
     });
     if (sponsorParts.length > 0) {
-        text += `🎁 贊助與認桌鳴謝：\n` + sponsorParts.join('\n') + `\n`;
+        const treeParts = sponsorParts.map((part, idx) => {
+            const isLast = idx === sponsorParts.length - 1;
+            return `   ${isLast ? '└─' : '├─'} ${part}`;
+        });
+        text += `🎁 贊助與認桌鳴謝：\n` + treeParts.join('\n') + `\n`;
     }
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `📊 統計：共 ${stats.totalPeople || 0} 人報名\n`;
@@ -4089,11 +4093,15 @@ async function generateAllShareText(eventDataList, options = {}) {
             const sponsorList = parseSponsorData(sponsorRaw);
             sponsorList.forEach(s => moneyParts.push(s));
             if (moneyParts.length > 0) {
-                sponsorParts.push(`    ❖ ${p.name} ━ ${moneyParts.join('、')}`);
+                sponsorParts.push(`❖ ${p.name} ━ ${moneyParts.join('、')}`);
             }
         });
         if (sponsorParts.length > 0) {
-            text += `   🎁 贊助與認桌鳴謝：\n` + sponsorParts.join('\n') + `\n`;
+            const treeParts = sponsorParts.map((part, idx) => {
+                const isLast = idx === sponsorParts.length - 1;
+                return `      ${isLast ? '└─' : '├─'} ${part}`;
+            });
+            text += `   🎁 贊助與認桌鳴謝：\n` + treeParts.join('\n') + `\n`;
         }
         
         text += `   📊 統計：共 ${stats.totalPeople || 0} 人報名\n\n`;
