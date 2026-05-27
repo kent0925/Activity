@@ -2845,7 +2845,7 @@ function switchView(viewId) {
 
     if (viewId === 'view-home') {
         DOM.btnBack.classList.add('hidden');
-        DOM.btnShare.classList.add('hidden');
+        DOM.btnShare.classList.remove('hidden');
         appState.historyStack = ['home'];
     } else if (viewId === 'view-activity-detail') {
         DOM.btnBack.classList.remove('hidden');
@@ -3754,74 +3754,147 @@ function getParticipantRoles(pName, event) {
 
 // --- Share Modal Logic ---
 
-async function openShareModal() {
+async function openShareModal(mode) {
     const e = appState.currentEvent;
-    const s = appState.currentStats;
-    if (!e) return;
+    if (!mode) {
+        mode = e ? 'single' : 'all';
+    }
 
-    // ★ 修正：若無快取資料，先嘗試抓取
-    if (!appState.cachedDetails || appState.cachedDetails.length === 0) {
-        // 顯示讀取中 Toast
-        showToast("正在讀取名單...");
-        const details = await fetchDetails();
-        appState.cachedDetails = details;
-
-        // 若讀取後仍無資料 (或失敗)，提示使用者
-        if (!appState.cachedDetails || appState.cachedDetails.length === 0) {
-            // 雖然無名單，但活動資訊仍可分享，故不阻擋，僅提示
-            // showToast("目前無報名資料");
+    const tabsContainer = document.getElementById('share-tabs-container');
+    if (tabsContainer) {
+        if (!e) {
+            tabsContainer.classList.add('hidden');
+            mode = 'all';
         } else {
-            showToast("名單讀取完成");
+            tabsContainer.classList.remove('hidden');
         }
     }
 
-    // 重置 checkbox 狀態
-    document.getElementById('share-opt-sponsor').checked = true;
-    document.getElementById('share-opt-travel').checked = true;
+    if (e) {
+        const s = appState.currentStats;
+        // ★ 修正：若無快取資料，先嘗試抓取
+        if (!appState.cachedDetails || appState.cachedDetails.length === 0) {
+            showToast("正在讀取名單...");
+            const details = await fetchDetails();
+            appState.cachedDetails = details;
 
-    // 判斷是否顯示「贊助/認桌」選項
-    const hasTable = s.tableCount && s.tableCount > 0;
-    // 除了檢查統計數據，也從快取名單實際檢查是否有人有贊助資料
-    const detailsHasSponsor = (appState.cachedDetails || []).some(p => {
-        const tc = getIntField(p, 'tableCount');
-        const spRaw = getField(p, 'sponsor');
-        const spList = parseSponsorData(spRaw);
-        return tc > 0 || spList.length > 0;
-    });
-    const hasSponsor = hasTable || detailsHasSponsor || (e.type !== 'travel' && s.secondary > 0);
+            if (!appState.cachedDetails || appState.cachedDetails.length === 0) {
+                // 雖然無名單，但活動資訊仍可分享，故不阻擋，僅提示
+            } else {
+                showToast("名單讀取完成");
+            }
+        }
 
-    const sponsorEl = document.getElementById('opt-container-sponsor');
-    if (hasSponsor) {
-        sponsorEl.classList.remove('hidden');
-    } else {
-        sponsorEl.classList.add('hidden');
+        // 重置 checkbox 狀態
+        document.getElementById('share-opt-sponsor').checked = true;
+        document.getElementById('share-opt-travel').checked = true;
+
+        // 判斷是否顯示「贊助/認桌」選項
+        const hasTable = s.tableCount && s.tableCount > 0;
+        const detailsHasSponsor = (appState.cachedDetails || []).some(p => {
+            const tc = getIntField(p, 'tableCount');
+            const spRaw = getField(p, 'sponsor');
+            const spList = parseSponsorData(spRaw);
+            return tc > 0 || spList.length > 0;
+        });
+        const hasSponsor = hasTable || detailsHasSponsor || (e.type !== 'travel' && s.secondary > 0);
+
+        const sponsorEl = document.getElementById('opt-container-sponsor');
+        if (sponsorEl) {
+            if (hasSponsor) {
+                sponsorEl.classList.remove('hidden');
+            } else {
+                sponsorEl.classList.add('hidden');
+            }
+        }
+
+        // 判斷是否顯示「上車/房型」選項
+        const isTravel = e.type === 'travel';
+        const travelEl = document.getElementById('opt-container-travel');
+        if (travelEl) {
+            if (isTravel) {
+                travelEl.classList.remove('hidden');
+            } else {
+                travelEl.classList.add('hidden');
+            }
+        }
+
+        // 確保隱藏無選項提示
+        const noOptsEl = document.getElementById('share-no-opts');
+        if (noOptsEl) noOptsEl.classList.add('hidden');
+
+        // 重置選項預設狀態
+        const mapCheckbox = document.getElementById('share-opt-map');
+        const namesCheckbox = document.getElementById('share-opt-names');
+        const linkCheckbox = document.getElementById('share-opt-link');
+        if (mapCheckbox) mapCheckbox.checked = false;
+        if (namesCheckbox) namesCheckbox.checked = false;
+        if (linkCheckbox) linkCheckbox.checked = true;
     }
-
-    // 判斷是否顯示「上車/房型」選項
-    const isTravel = e.type === 'travel';
-    const travelEl = document.getElementById('opt-container-travel');
-    if (isTravel) {
-        travelEl.classList.remove('hidden');
-    } else {
-        travelEl.classList.add('hidden');
-    }
-
-    // 移除智慧判斷，確保必定顯示視窗供使用者選擇分享格式（圖片或文字）
-
-    // 確保隱藏無選項提示
-    const noOptsEl = document.getElementById('share-no-opts');
-    if (noOptsEl) noOptsEl.classList.add('hidden');
-
-    // 重置選項預設狀態（僅勾選贊助/認桌及報名連結）
-    const mapCheckbox = document.getElementById('share-opt-map');
-    const namesCheckbox = document.getElementById('share-opt-names');
-    const linkCheckbox = document.getElementById('share-opt-link');
-    if (mapCheckbox) mapCheckbox.checked = false;
-    if (namesCheckbox) namesCheckbox.checked = false;
-    if (linkCheckbox) linkCheckbox.checked = true;
 
     document.getElementById('share-modal').classList.remove('hidden');
+    switchShareTab(mode);
+}
+
+function switchShareTab(tab) {
+    const tabSingle = document.getElementById('share-tab-single');
+    const tabAll = document.getElementById('share-tab-all');
+    const contentSingle = document.getElementById('share-single-content');
+    const contentAll = document.getElementById('share-all-content');
+
+    if (!tabSingle || !tabAll || !contentSingle || !contentAll) return;
+
+    if (tab === 'single') {
+        tabSingle.classList.add('text-green-600', 'bg-white', 'shadow-sm');
+        tabSingle.classList.remove('text-gray-400');
+        tabAll.classList.remove('text-green-600', 'bg-white', 'shadow-sm');
+        tabAll.classList.add('text-gray-400');
+
+        contentSingle.classList.remove('hidden');
+        contentAll.classList.add('hidden');
+    } else {
+        tabAll.classList.add('text-green-600', 'bg-white', 'shadow-sm');
+        tabAll.classList.remove('text-gray-400');
+        tabSingle.classList.remove('text-green-600', 'bg-white', 'shadow-sm');
+        tabSingle.classList.add('text-gray-400');
+
+        contentSingle.classList.add('hidden');
+        contentAll.classList.remove('hidden');
+
+        // 渲染所有舉辦中活動清單
+        renderShareAllEventsList();
+    }
     refreshIcons();
+}
+
+function renderShareAllEventsList() {
+    const container = document.getElementById('share-all-events-list');
+    if (!container) return;
+
+    const activeEvents = appState.events.filter(e => isEventOpen(e));
+    if (activeEvents.length === 0) {
+        container.innerHTML = '<div class="text-center text-xs text-gray-400 py-4">目前無舉辦中活動</div>';
+        return;
+    }
+
+    container.innerHTML = '';
+    activeEvents.forEach(e => {
+        const item = document.createElement('label');
+        item.className = "flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100";
+        item.innerHTML = `
+            <div class="relative flex items-center">
+                <input type="checkbox" name="share-all-active-checkbox" value="${e.id}" checked
+                    class="peer w-4.5 h-4.5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                <i data-lucide="check"
+                    class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <span class="text-xs font-bold text-gray-800 block truncate">${escapeHtml(e.name)}</span>
+                <span class="text-[10px] text-gray-400 block">${formatDateShort(e.time)}</span>
+            </div>
+        `;
+        container.appendChild(item);
+    });
 }
 
 function confirmShareCopy() {
@@ -3839,16 +3912,206 @@ function confirmShareCopy() {
     performCopy({ includeSponsor, includeTravel, includeMap, includeNames, includeLink });
 }
 
+function confirmAllShareCopy() {
+    const checkedBoxes = document.querySelectorAll('input[name="share-all-active-checkbox"]:checked');
+    if (checkedBoxes.length === 0) {
+        showToast("⚠️ 請至少選擇一個活動");
+        return;
+    }
+
+    const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+    const selectedEvents = appState.events.filter(e => selectedIds.includes(e.id));
+
+    let text = `📅 【大老二兄弟會】近期舉辦中活動 👥\n\n`;
+    selectedEvents.forEach((e, idx) => {
+        text += `${idx + 1}. 📅 ${e.name}\n`;
+        if (e.organizer) text += `   👤 主辦人：${e.organizer}\n`;
+        const timeDisplay = formatTimeForShare(e.time);
+        if (timeDisplay) text += `   🕒 時間：${timeDisplay}\n`;
+        if (e.location) text += `   📍 地點：${e.location}\n`;
+        text += `\n`;
+    });
+
+    text += `---------------------\n`;
+    text += `歡迎大家踴躍報名！🍻\n`;
+    text += `🔗 統一報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+
+    document.getElementById('share-modal').classList.add('hidden');
+    copyTextToClipboard(text);
+}
+
 // 舊按鈕 (名單視窗下方) 呼叫此函式：統一呼叫 openShareModal 以提供選項
 function copyDetailsToClipboard() {
     openShareModal();
 }
 
-// --- 圖片分享功能 ---
+// 輔助獲取非當前活動之名單及統計資料的 API
+async function fetchDetailsForEvent(eventId) {
+    if (!GAS_URL || !eventId) return [];
+    try {
+        const res = await fetch(`${GAS_URL}?action=getDetails&eventId=${eventId}`);
+        return await res.json();
+    } catch (e) { return []; }
+}
+
+async function fetchStatsForEvent(eventId) {
+    if (!GAS_URL || !eventId) return {};
+    try {
+        const res = await fetch(`${GAS_URL}?action=stats&eventId=${eventId}&_=${Date.now()}`);
+        return await res.json();
+    } catch (e) { return {}; }
+}
+
+// 通用活動圖片 Canvas 生成邏輯 (完全保留原本內容樣式不更動)
+async function generateEventCanvas(e, data, stats) {
+    const includeSponsor = false; // 名單內不顯示贊助，改由下方獨立區塊顯示
+    const includeTravel = true;
+    const includeMap = false;     // 圖片不含地圖連結
+    const includeNames = true;    // 圖片固定包含詳細名單
+    const includeLink = false;    // 圖片不含報名連結
+
+    // --- 1. 動態產生分享卡片 HTML ---
+    const card = document.createElement('div');
+    card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#1f2937;z-index:-1;';
+
+    // 活動標題區
+    let html = '';
+    html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
+    html += `<div style="font-size:22px;font-weight:800;">📅 ${escapeHtml(e.name)}</div>`;
+    html += '</div>';
+
+    // 活動資訊區
+    html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+    if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
+    const timeDisplay = formatTimeForShare(e.time);
+    if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${escapeHtml(timeDisplay)}</div>`;
+    if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${escapeHtml(e.location)}</div>`;
+    if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${escapeHtml(e.address)}</div>`;
+    if (e.note) {
+        html += `<div style="font-size:13px;margin-top:12px;padding:10px;background:#fffbeb;color:#b45309;border:1px solid #fde68a;border-radius:8px;line-height:1.5;">💡 <b>備註：</b><br>${escapeHtml(e.note).replace(/\n/g, '<br>')}</div>`;
+    }
+    html += '</div>';
+
+    // 名單區
+    if (includeNames && data.length > 0) {
+        html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+        html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
+        let count = 0;
+        data.forEach(p => {
+            count++;
+            const family = getIntField(p, 'family');
+            const guestData = parseGuestData(p);
+            const finalGuestCount = calculateFinalGuestCount(p, guestData);
+            const total = family + finalGuestCount;
+            const num = count.toString().padStart(2, '0');
+            const status = p.status || p.note || '';
+            let prefix = status ? status : '';
+
+            const roles = getParticipantRoles(p.name, e);
+            let tagHtml = '';
+            if (roles.length > 0) {
+                tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
+            }
+
+            let nameColor = 'inherit';
+            let maryMedal = '';
+            if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
+                if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
+                else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
+                else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
+            }
+
+            html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+            html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
+            if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
+            html += '</div>';
+
+            // 來賓
+            if (guestData.length > 0) {
+                const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
+                html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+            } else {
+                const guestNameStr = getField(p, 'guestName');
+                if (guestNameStr && guestNameStr !== '無') {
+                    html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                }
+            }
+
+            // 上車/房型
+            if (includeTravel) {
+                let travelLines = [];
+                if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
+                if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                if (guestData.length > 0) {
+                    guestData.forEach(g => {
+                        let extras = [];
+                        if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                        if (g.room && g.room !== '無') extras.push(g.room);
+                        if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                    });
+                }
+                if (travelLines.length > 0) {
+                    html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+                }
+            }
+        });
+        html += '</div>';
+    }
+
+    // 贊助/認桌彙總區（獨立區塊，不論是否勾選名單都會顯示）
+    if (data.length > 0) {
+        let sponsorHtml = '';
+        data.forEach(p => {
+            let moneyParts = [];
+            const tc = getIntField(p, 'tableCount');
+            if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+            const sponsorRaw = getField(p, 'sponsor');
+            const sponsorList = parseSponsorData(sponsorRaw);
+            sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+            if (moneyParts.length > 0) {
+                sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+            }
+        });
+        if (sponsorHtml) {
+            html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+            html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
+            html += sponsorHtml;
+            html += '</div>';
+        }
+    }
+
+    // 統計區
+    html += '<div style="text-align:center;font-size:14px;font-weight:700;color:#374151;padding:8px 0;">';
+    html += `共 ${stats.totalPeople || 0} 人報名`;
+    html += '</div>';
+
+    // 浮水印
+    html += '<div style="text-align:center;font-size:11px;color:#9ca3af;margin-top:8px;">大老二兄弟會 活動報名系統</div>';
+
+    card.innerHTML = html;
+    document.body.appendChild(card);
+
+    // --- 2. 使用 html2canvas 截取卡片 ---
+    const canvas = await html2canvas(card, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+        width: card.scrollWidth,
+        height: card.scrollHeight
+    });
+
+    // 移除暫時卡片
+    document.body.removeChild(card);
+    return canvas;
+}
+
+// --- 單一活動圖片分享功能 ---
 async function shareAsImage() {
     const e = appState.currentEvent;
     if (!e) return;
     const data = appState.cachedDetails || [];
+    const stats = appState.currentStats || {};
 
     const btn = document.getElementById('btn-share-image');
     const origHtml = btn.innerHTML;
@@ -3856,11 +4119,149 @@ async function shareAsImage() {
     btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
     refreshIcons();
 
-    // ======================================================
-    // ⚠️ 注意：圖片分享為「固定內容」，不依照 checkbox 勾選！
-    //    只有「複製文字」(confirmShareCopy) 才依照 checkbox。
-    //    請勿修改以下固定值！
-    // ======================================================
+    try {
+        const canvas = await generateEventCanvas(e, data, stats);
+
+        // --- 轉為 blob 並分享或下載 ---
+        canvas.toBlob(async (blob) => {
+            if (!blob) { showToast('圖片產生失敗'); return; }
+            const file = new File([blob], `${e.name}_名單.png`, { type: 'image/png' });
+
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    let shareText = `📅 ${e.name}\n`;
+                    if (e.organizer) shareText += `👤 主辦人：${e.organizer}\n`;
+                    // ★ 使用共用工具函式格式化時間
+                    const shareTD = formatTimeForShare(e.time);
+                    if (shareTD) shareText += `🕒 時間：${shareTD}\n`;
+                    if (e.location) shareText += `📍 地點：${e.location}\n`;
+                    if (e.address) shareText += `🚗 地址：${e.address}\n`;
+                    shareText += `---------------------\n`;
+                    shareText += `共 ${stats.totalPeople || 0} 人報名\n`;
+
+                    // ★ 使用共用工具函式判斷活動日
+                    if (isEventDay(e) && (e.address || e.location)) {
+                        const mapQuery = e.address || e.location;
+                        shareText += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+                    } else {
+                        shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
+                    }
+
+                    await navigator.share({
+                        files: [file],
+                        title: e.name,
+                        text: shareText
+                    });
+                    showToast('圖片分享成功！');
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        console.error('圖片分享失敗:', err);
+                        fallbackDownloadImage(canvas, e.name);
+                    }
+                }
+            } else {
+                fallbackDownloadImage(canvas, e.name);
+            }
+
+            document.getElementById('share-modal').classList.add('hidden');
+        }, 'image/png');
+
+    } catch (err) {
+        console.error('圖片產生失敗', err);
+        showToast('產生圖片失敗：' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        refreshIcons();
+    }
+}
+
+// --- 多活動同時圖片分享功能 ---
+async function shareAllAsImage() {
+    const checkedBoxes = document.querySelectorAll('input[name="share-all-active-checkbox"]:checked');
+    if (checkedBoxes.length === 0) {
+        showToast("⚠️ 請至少選擇一個活動");
+        return;
+    }
+
+    const btn = document.getElementById('btn-share-all-image');
+    const origHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-white"></i> 產生中...';
+    refreshIcons();
+
+    try {
+        const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+        const selectedEvents = appState.events.filter(e => selectedIds.includes(e.id));
+
+        showToast("正在背景加載多活動名單，請稍候...");
+
+        // 依序或平行抓取每個活動的數據並繪製
+        const promises = selectedEvents.map(async (e) => {
+            const [details, stats] = await Promise.all([
+                fetchDetailsForEvent(e.id),
+                fetchStatsForEvent(e.id)
+            ]);
+            const canvas = await generateEventCanvas(e, details, stats);
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => {
+                    resolve({ canvas, blob, eventName: e.name });
+                }, 'image/png');
+            });
+        });
+
+        const results = await Promise.all(promises);
+        const files = [];
+
+        results.forEach(res => {
+            if (res.blob) {
+                const file = new File([res.blob], `${res.eventName}_名單.png`, { type: 'image/png' });
+                files.push(file);
+            }
+        });
+
+        if (files.length === 0) {
+            showToast('圖片產生失敗');
+            return;
+        }
+
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files })) {
+            try {
+                let shareText = `📅 【大老二兄弟會】近期舉辦中活動名單 👥\n`;
+                shareText += `---------------------\n`;
+                shareText += `🔗 統一報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+
+                await navigator.share({
+                    files: files,
+                    title: '近期活動名單',
+                    text: shareText
+                });
+                showToast('圖片打包分享成功！');
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('多圖分享失敗，轉為逐一下載:', err);
+                    results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
+                }
+            }
+        } else {
+            // PC 端或不支援多檔案分享的瀏覽器直接依序下載
+            results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
+        }
+
+        document.getElementById('share-modal').classList.add('hidden');
+    } catch (err) {
+        console.error('多圖生成/分享發生錯誤:', err);
+        showToast('多圖產生失敗：' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        refreshIcons();
+    }
+}====================
     const includeSponsor = false; // 名單內不顯示贊助，改由下方獨立區塊顯示
     const includeTravel = true;
     const includeMap = false;     // 圖片不含地圖連結
