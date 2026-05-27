@@ -4041,9 +4041,8 @@ function generateSingleShareText(e, data, stats, options = {}) {
         }
     });
     if (sponsorParts.length > 0) {
-        const treeParts = sponsorParts.map((part, idx) => {
-            const isLast = idx === sponsorParts.length - 1;
-            return `   ${isLast ? '╰' : '├'} ${part}`;
+        const treeParts = sponsorParts.map((part) => {
+            return `   ${part}`;
         });
         text += `🎁 贊助與認桌鳴謝：\n` + treeParts.join('\n') + `\n`;
     }
@@ -4097,9 +4096,8 @@ async function generateAllShareText(eventDataList, options = {}) {
             }
         });
         if (sponsorParts.length > 0) {
-            const treeParts = sponsorParts.map((part, idx) => {
-                const isLast = idx === sponsorParts.length - 1;
-                return `      ${isLast ? '╰' : '├'} ${part}`;
+            const treeParts = sponsorParts.map((part) => {
+                return `      ${part}`;
             });
             text += `   🎁 贊助與認桌鳴謝：\n` + treeParts.join('\n') + `\n`;
         }
