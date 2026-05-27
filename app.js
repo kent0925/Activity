@@ -4078,13 +4078,9 @@ async function generateAllShareText(eventDataList, options = {}) {
         const numIcon = getNumberIcon(i + 1);
         text += `${numIcon} ${e.name}\n`;
         
-        let infoLine = [];
-        if (e.organizer) infoLine.push(`👤 主辦人：${e.organizer}`);
+        if (e.organizer) text += `   👤 主辦人：${e.organizer}\n`;
         const timeDisplay = formatTimeForShare(e.time);
-        if (timeDisplay) infoLine.push(`🕒 ${timeDisplay}`);
-        if (infoLine.length > 0) {
-            text += `   ${infoLine.join(' | ')}\n`;
-        }
+        if (timeDisplay) text += `   🕒 時間：${timeDisplay}\n`;
         if (e.location) text += `   📍 地點：${e.location}\n`;
         
         // 贊助資訊
