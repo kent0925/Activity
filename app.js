@@ -4513,6 +4513,12 @@ function addGuest() {
     const pickup = document.getElementById('add-guest-pickup').value;
     const room = document.getElementById('add-guest-room').value;
 
+    // 旅遊活動時，上車地點與房型為必選
+    if (appState.currentEvent && appState.currentEvent.type === 'travel') {
+        if (!pickup) return showToast("請選擇來賓的上車地點");
+        if (!room) return showToast("請選擇來賓的房型");
+    }
+
     // 產生簡易暫時 ID
     const id = 'g_' + Date.now() + Math.random().toString(36).substring(2, 7);
 
