@@ -4463,6 +4463,35 @@ function validateForm() {
         }
     }
 
+    // ★ 防呆：檢查是否已有來賓資料缺少必填項目（針對舊資料）
+    if (!isSponsorOnly && appState.currentEvent && appState.currentEvent.type === 'travel') {
+        const invalidGuest = appState.guestList.find(g => !g.pickup || !g.room);
+        if (invalidGuest) {
+            showToast(`⚠️ 來賓「${invalidGuest.name}」缺少上車地點或房型，請先移除後重新加入`);
+            return false;
+        }
+    }
+
+    // ★ 防呆：檢查來賓欄位是否有填寫但未點擊加入
+    const addGuestNameEl = document.getElementById('add-guest-name');
+    const addGuestPickupEl = document.getElementById('add-guest-pickup');
+    const addGuestRoomEl = document.getElementById('add-guest-room');
+    const guestTravelVisible = document.getElementById('guest-travel-options') &&
+                               !document.getElementById('guest-travel-options').classList.contains('hidden');
+    
+    if (!isSponsorOnly) {
+        const hasUnaddedName = addGuestNameEl && addGuestNameEl.value.trim() !== '';
+        const hasUnaddedTravel = guestTravelVisible && (
+            (addGuestPickupEl && addGuestPickupEl.value !== '') ||
+            (addGuestRoomEl && addGuestRoomEl.value !== '')
+        );
+        if (hasUnaddedName || hasUnaddedTravel) {
+            showToast('⚠️ 您有填寫來賓資料但尚未點選「加入名單」，請先加入或清空欄位');
+            scrollToAndHighlight(addGuestNameEl || addGuestPickupEl);
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -4523,7 +4552,15 @@ function addGuest() {
     const id = 'g_' + Date.now() + Math.random().toString(36).substring(2, 7);
 
     appState.guestList.push({ id, name, count, pickup, room });
+
+    // ★ 清空所有輸入欄，避免殘留資料
     document.getElementById('add-guest-name').value = '';
+    const pickupEl = document.getElementById('add-guest-pickup');
+    const roomEl = document.getElementById('add-guest-room');
+    if (pickupEl) pickupEl.value = '';
+    if (roomEl) roomEl.value = '';
+
+    showToast(`✅ 來賓「${name}」已加入名單`);
     renderGuestList();
 }
 function removeGuest(id) {
