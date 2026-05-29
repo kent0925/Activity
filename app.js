@@ -3090,12 +3090,12 @@ async function openHistoryImage(eventId) {
             data.forEach(p => {
                 let moneyParts = [];
                 const tc = getIntField(p, 'tableCount');
-                if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+                if (tc > 0) moneyParts.push(`認桌 ${tc}桌`);
                 const sponsorRaw = getField(p, 'sponsor');
                 const sponsorList = parseSponsorData(sponsorRaw);
-                sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+                sponsorList.forEach(s => moneyParts.push(s));
                 if (moneyParts.length > 0) {
-                    sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+                    sponsorHtml += `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f3f4f6;padding-left:16px;">❖ <span style="font-weight:600;">${p.name}</span> ━ ${moneyParts.join('、')}</div>`;
                 }
             });
             if (sponsorHtml) {
@@ -4370,13 +4370,13 @@ async function generateEventCanvas(e, data, stats) {
 
             let moneyParts = [];
             const tc = getIntField(p, 'tableCount');
-            if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+            if (tc > 0) moneyParts.push(`認桌 ${tc}桌`);
             const sponsorRaw = getField(p, 'sponsor');
             const sponsorList = parseSponsorData(sponsorRaw);
-            sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+            sponsorList.forEach(s => moneyParts.push(s));
             if (moneyParts.length > 0) {
-                const label = (total === 0) ? ' (純贊助)' : '';
-                sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}${label}</span>：${moneyParts.join('、')}</div>`;
+                const label = (total === 0) ? '<span style="font-size:11px;color:#d97706;margin-left:4px;">(純贊助)</span>' : '';
+                sponsorHtml += `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f3f4f6;padding-left:16px;">❖ <span style="font-weight:600;">${p.name}</span>${label} ━ ${moneyParts.join('、')}</div>`;
             }
         });
         if (sponsorHtml) {
