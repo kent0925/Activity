@@ -3095,7 +3095,7 @@ async function openHistoryImage(eventId) {
                 const sponsorList = parseSponsorData(sponsorRaw);
                 sponsorList.forEach(s => moneyParts.push(s));
                 if (moneyParts.length > 0) {
-                    sponsorHtml += `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f3f4f6;padding-left:16px;">❖ <span style="font-weight:600;">${p.name}</span> ━ ${moneyParts.join('、')}</div>`;
+                    sponsorHtml += `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f3f4f6;padding-left:16px;">🎁 <span style="font-weight:600;">${p.name}</span> ━ ${moneyParts.join('、')}</div>`;
                 }
             });
             if (sponsorHtml) {
@@ -4037,14 +4037,14 @@ function generateSingleShareText(e, data, stats, options = {}) {
         const sponsorList = parseSponsorData(sponsorRaw);
         sponsorList.forEach(s => moneyParts.push(s));
         if (moneyParts.length > 0) {
-            sponsorParts.push(`❖ ${p.name} ━ ${moneyParts.join('、')}`);
+            sponsorParts.push(`🎁 ${p.name} ━ ${moneyParts.join('、')}`);
         }
     });
     if (sponsorParts.length > 0) {
         const treeParts = sponsorParts.map((part) => {
             return `   ${part}`;
         });
-        text += `🎁 贊助與認桌鳴謝：\n` + treeParts.join('\n') + `\n`;
+        text += `💰 贊助 / 認桌資訊\n` + treeParts.join('\n') + `\n`;
     }
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `📊 統計：共 ${stats.totalPeople || 0} 人報名\n`;
@@ -4092,14 +4092,14 @@ async function generateAllShareText(eventDataList, options = {}) {
             const sponsorList = parseSponsorData(sponsorRaw);
             sponsorList.forEach(s => moneyParts.push(s));
             if (moneyParts.length > 0) {
-                sponsorParts.push(`❖ ${p.name} ━ ${moneyParts.join('、')}`);
+                sponsorParts.push(`🎁 ${p.name} ━ ${moneyParts.join('、')}`);
             }
         });
         if (sponsorParts.length > 0) {
             const treeParts = sponsorParts.map((part) => {
                 return `      ${part}`;
             });
-            text += `   🎁 贊助與認桌鳴謝：\n` + treeParts.join('\n') + `\n`;
+            text += `   💰 贊助 / 認桌資訊\n` + treeParts.join('\n') + `\n`;
         }
         
         text += `   📊 統計：共 ${stats.totalPeople || 0} 人報名\n\n`;
@@ -4376,7 +4376,7 @@ async function generateEventCanvas(e, data, stats) {
             sponsorList.forEach(s => moneyParts.push(s));
             if (moneyParts.length > 0) {
                 const label = (total === 0) ? '<span style="font-size:11px;color:#d97706;margin-left:4px;">(純贊助)</span>' : '';
-                sponsorHtml += `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f3f4f6;padding-left:16px;">❖ <span style="font-weight:600;">${p.name}</span>${label} ━ ${moneyParts.join('、')}</div>`;
+                sponsorHtml += `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f3f4f6;padding-left:16px;">🎁 <span style="font-weight:600;">${p.name}</span>${label} ━ ${moneyParts.join('、')}</div>`;
             }
         });
         if (sponsorHtml) {
