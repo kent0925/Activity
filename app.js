@@ -3703,27 +3703,21 @@ function isEventOpen(e) {
     // 2. 檢查活動日期 - 當天仍顯示在報名區（隔天才移到歷史）
     if (!e.time) return true;
 
-    let eventDate = null;
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // 歸零到當天開始
+    today.setHours(0, 0, 0, 0);
 
-    // 處理旅遊活動的日期範圍
-    if (e.time.includes('~')) {
-        eventDate = new Date(e.time.split('~')[0]);
-    } else {
-        eventDate = new Date(e.time);
-    }
+    // ★ 改用 parseLocalDate，防止 LINE WebView 的 new Date("yyyy-MM-dd HH:mm") 解析偏移
+    const timeStr = e.time.includes('~') ? e.time.split('~')[0].trim() : e.time;
+    const eventDate = parseLocalDate(timeStr);
 
-    // 如果事件日期無效，允許報名
+    // 如果事件日期無效，允許顯示
     if (isNaN(eventDate.getTime())) return true;
 
     eventDate.setHours(0, 0, 0, 0);
 
-    // 計算明天
+    // 明天之後的活動才移到歷史區（當天仍留在報名區）
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-
-    // 明天之後的活動才移到歷史區（當天仍留在報名區）
     return eventDate.getTime() >= tomorrow.getTime();
 }
 
@@ -3732,23 +3726,16 @@ function canModifyEvent(e) {
     if (!e) return false;
     if (!e.time) return true;
 
-    let eventDate = null;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (e.time.includes('~')) {
-        eventDate = new Date(e.time.split('~')[0]);
-    } else {
-        eventDate = new Date(e.time);
-    }
+    // ★ 改用 parseLocalDate，防止 LINE WebView 的 new Date("yyyy-MM-dd HH:mm") 解析偏移
+    const timeStr = e.time.includes('~') ? e.time.split('~')[0].trim() : e.time;
+    const eventDate = parseLocalDate(timeStr);
 
     if (isNaN(eventDate.getTime())) return true;
 
     eventDate.setHours(0, 0, 0, 0);
-
-    // 計算明天
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
 
     // 當天及未來活動都可修改（隔天才進歷史）
     return eventDate.getTime() >= today.getTime();
