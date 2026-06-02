@@ -108,6 +108,8 @@ function switchRankTab(type) {
 
 function renderDetailedRankings() {
     const container = document.getElementById('rankings-list-container');
+    // ★ Bug 修正：container null 保護，防止 TypeError 白屏
+    if (!container) return;
     const type = appState.currentRankTab;
     const data = type === 'attendance' ? appState.attendanceRankings : appState.jackpotRankings;
 
@@ -577,6 +579,9 @@ async function maryStartSpin() {
 
     maryState.isSpinning = true;
     document.getElementById('mary-btn-start').disabled = true;
+    // ★ Bug 修正：用 try/finally 確保 isSpinning 一定會被解鎖，
+    //   防止網路異常或例外導致遊戲永久卡死
+    try {
 
     // (下注面板歸零已移至遊戲結束後)
 
@@ -795,9 +800,12 @@ async function maryStartSpin() {
             winPoints: winScore,
             symbol: displayMsg
         });
-        if (res.success) {
-            maryState.points = res.points;
-            maryState.monthlyGift = res.monthlyGift;
+        if (res && res.success) {
+            // ★ Bug 修正：管理員模式不覆蓋本地點數（避免 999999 被後端真實值覆蓋）
+            if (!ADMIN_USER_IDS.includes(appState.user?.userId)) {
+                maryState.points = res.points;
+                maryState.monthlyGift = res.monthlyGift;
+            }
             maryState.totalMaryScore = res.totalMaryScore;
             if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
             updateMaryUI();
@@ -834,6 +842,12 @@ async function maryStartSpin() {
         maryState.doubleUpStreak = 0;
         document.getElementById('mary-btn-start').disabled = false;
         showToast(`未中獎 — 落在 ${displayMsg}，再試一次！`);
+    }
+    } finally {
+        // ★ Bug 修正：確保 isSpinning 一定被解鎖（try/finally 配對）
+        // 注意：正常流程已在 maryState.isSpinning = false 這行設好，
+        // finally 只在例外發生時起作用，雙重保險
+        if (maryState.isSpinning) maryState.isSpinning = false;
     }
 }
 
@@ -1351,7 +1365,8 @@ window.onload = async function () {
     renderAddSponsorUI();
 
     // 介面初始化
-    DOM.headerTitle.innerText = "活動與報名";
+    // ★ Bug 修正：加入 null 保護，防止 DOM 元素不存在時 TypeError 白屏
+    if (DOM.headerTitle) DOM.headerTitle.innerText = "活動與報名";
     switchView('view-home');
 
     // ★ 離線偵測與佇列處理
@@ -1439,12 +1454,33 @@ window.onload = async function () {
     updateUserProfileUI();
 
     // 先嘗試從 LocalStorage 讀取快取以加速最初始渲染
+    // ★ 優化：加入時效驗證（1 小時），防止舊資料格式不符導致渲染異常
+    const CACHE_MAX_AGE = 60 * 60 * 1000; // 1 小時
     try {
-        const cachedEvents = localStorage.getItem('events_cache');
-        if (cachedEvents) appState.events = JSON.parse(cachedEvents);
+        const cachedEventsRaw = localStorage.getItem('events_cache');
+        if (cachedEventsRaw) {
+            try {
+                const parsed = JSON.parse(cachedEventsRaw);
+                // 支援新版（含 ts）與舊版（純陣列）兩種格式
+                if (Array.isArray(parsed)) {
+                    appState.events = parsed; // 舊版快取，直接使用（首次讀取後會被新版覆蓋）
+                } else if (parsed && parsed.data && (Date.now() - (parsed.ts || 0) < CACHE_MAX_AGE)) {
+                    appState.events = parsed.data;
+                }
+            } catch (e) { /* 快取損壞，忽略 */ }
+        }
 
-        const cachedSettings = localStorage.getItem('settings_cache');
-        if (cachedSettings) appState.settings = JSON.parse(cachedSettings);
+        const cachedSettingsRaw = localStorage.getItem('settings_cache');
+        if (cachedSettingsRaw) {
+            try {
+                const parsed = JSON.parse(cachedSettingsRaw);
+                if (parsed && parsed.data && (Date.now() - (parsed.ts || 0) < CACHE_MAX_AGE)) {
+                    appState.settings = parsed.data;
+                } else if (parsed && !parsed.data && !parsed.error) {
+                    appState.settings = parsed; // 舊版快取
+                }
+            } catch (e) { /* 快取損壞，忽略 */ }
+        }
 
         if (appState.user && appState.user.userId) {
             const cachedRegs = localStorage.getItem('registrations_cache_' + appState.user.userId);
@@ -1545,7 +1581,8 @@ async function fetchEvents() {
         const res = await fetch(`${GAS_URL}?action=getEvents`);
         const data = await res.json();
         appState.events = Array.isArray(data) ? data : [];
-        localStorage.setItem('events_cache', JSON.stringify(appState.events));
+        // ★ 優化：新版快取格式加入時間戳
+        localStorage.setItem('events_cache', JSON.stringify({ data: appState.events, ts: Date.now() }));
     } catch (e) {
         console.warn("API Error (getEvents)", e);
     }
@@ -1555,8 +1592,12 @@ async function fetchSettings() {
     if (!GAS_URL) return;
     try {
         const res = await fetch(`${GAS_URL}?action=getSettings`);
-        appState.settings = await res.json();
-        localStorage.setItem('settings_cache', JSON.stringify(appState.settings));
+        const data = await res.json();
+        // ★ Bug 修正：驗證回傳值，若後端回傳錯誤物件則不覆蓋 settings
+        if (data && !data.error) {
+            appState.settings = data;
+            localStorage.setItem('settings_cache', JSON.stringify({ data: appState.settings, ts: Date.now() }));
+        }
         // 已移除下拉選單填入邏輯（改為手動輸入）
     } catch (e) {
         console.warn("API Error (getSettings)", e);
@@ -2302,7 +2343,9 @@ function editSponsor(i) {
         document.querySelector('input[name="addSponsorType"][value="money"]').checked = true;
         renderAddSponsorUI();
         // "紅包: 1000元"
-        const money = parseInt(s.match(/\d+/)[0]);
+        // ★ Bug 修正：match 可能為 null，加入安全保護
+        const moneyMatch = s.match(/\d+/);
+        const money = moneyMatch ? parseInt(moneyMatch[0]) : 0;
         document.getElementById('sp-money').value = money;
 
     } else {
@@ -2336,20 +2379,19 @@ function renderEventGrid(type) {
         if (type === 'all') return isVisible;
         return normalizeType(e.type) === type && isVisible;
     }).sort((a, b) => {
-        // 解析日期（處理日期範圍與驗證 ISO 格式）
+        // ★ Bug 修正：改用 parseLocalDate，防止 yyyy/mm/dd 格式在 Safari 時區偏移
         const getTime = (t) => {
             if (!t) return 0;
-            // 若為範圍 "start~end"，取開始日期
-            const start = t.includes('~') ? t.split('~')[0] : t;
-            return new Date(start).getTime();
+            const start = t.includes('~') ? t.split('~')[0].trim() : t;
+            return parseLocalDate(start).getTime() || 0;
         };
         return getTime(a.time) - getTime(b.time);
     });
 
     if (filtered.length === 0) {
-        DOM.noEventsMsg.classList.remove('hidden');
+        if (DOM.noEventsMsg) DOM.noEventsMsg.classList.remove('hidden');
     } else {
-        DOM.noEventsMsg.classList.add('hidden');
+        if (DOM.noEventsMsg) DOM.noEventsMsg.classList.add('hidden');
         filtered.forEach(e => {
             const card = document.createElement('div');
             card.className = "bg-white p-4 rounded-2xl shadow-sm border border-gray-100 card-hover cursor-pointer flex items-center gap-4 relative overflow-hidden group";
@@ -2372,15 +2414,16 @@ function renderEventGrid(type) {
             }
 
             // ★ 倒數標記：距離活動還有幾天
+            // ★ Bug 修正：改用 parseLocalDate 計算，防止 Safari 時區偏移導致天數錯誤
             let countdownBadge = '';
             if (e.time) {
                 const now = new Date();
                 const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 let eventStart;
                 if (typeof e.time === 'string' && e.time.includes('~')) {
-                    eventStart = new Date(e.time.split('~')[0].trim());
+                    eventStart = parseLocalDate(e.time.split('~')[0].trim());
                 } else {
-                    eventStart = new Date(e.time);
+                    eventStart = parseLocalDate(e.time);
                 }
                 if (!isNaN(eventStart.getTime())) {
                     const eventMid = new Date(eventStart.getFullYear(), eventStart.getMonth(), eventStart.getDate());
@@ -2479,7 +2522,8 @@ async function openDetailsModal(filterType = 'all') {
 
     // ★ 根據 filterType 隱藏不需要的區塊
     const listP = document.getElementById('details-list-people');
-    const labelP = listP.previousElementSibling;
+    // ★ Bug 修正：加入 null 保護，防止 HTML 結構變動時 TypeError
+    const labelP = listP ? listP.previousElementSibling : null;
     const listT = document.getElementById('details-list-travel');
     const labelT = document.getElementById('travel-separator');
     const listI = document.getElementById('details-list-items');
@@ -2490,8 +2534,8 @@ async function openDetailsModal(filterType = 'all') {
         if (labelT) labelT.classList.add('hidden');
         if (listI) listI.classList.add('hidden');
         if (labelI) labelI.classList.add('hidden');
-        listP.classList.remove('hidden');
-        labelP.classList.remove('hidden');
+        if (listP) listP.classList.remove('hidden');
+        if (labelP) labelP.classList.remove('hidden');
     } else if (filterType === 'secondary') {
         listP.classList.add('hidden');
         labelP.classList.add('hidden');
@@ -2688,7 +2732,8 @@ function parseLocalDate(s) {
         const y = match[1], mo = match[2], d = match[3];
         const h = match[4] || '00', mi = match[5] || '00', sec = match[6] || '00';
         // 加上 +08:00 確保聲明 GMT+8 解析
-        return new Date(`${y}-${mo}-${d}T${h}:${mi}:${sec}+08:00`);
+        // ★ Bug 修正：月日時分補零，確保 RFC 3339 格式，防止部分 Safari 解析失敗
+        return new Date(`${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}T${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}:${String(sec).padStart(2,'0')}+08:00`);
     }
     return new Date(str);
 }
@@ -2734,7 +2779,8 @@ function formatTimeForShare(timeStr) {
         const [start, end] = timeStr.split('~');
         return `${formatDateOnly(start.trim())} ~ ${formatDateOnly(end.trim())}`;
     }
-    const d = new Date(timeStr);
+    // ★ Bug 修正：改用 parseLocalDate，防止 LINE WebView 的 new Date() 時區偏移 8 小時
+    const d = parseLocalDate(timeStr);
     if (isNaN(d.getTime())) return timeStr;
     const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
     return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
@@ -2759,8 +2805,14 @@ function isEventDay(event) {
         const startD = parseLocalDate(startStr); // ★ 改用 parseLocalDate
         const endD = parseLocalDate(endStr);     // ★ 改用 parseLocalDate
         if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
-            const todayDate = parseLocalDate(todayStr);
-            return todayDate >= new Date(startD.toDateString()) && todayDate <= new Date(endD.toDateString());
+            // ★ Bug 修正：避免 toDateString() 跨瀏覽器不一致，改為直接比較年月日
+            const tY = todayDate.getFullYear(), tM = todayDate.getMonth(), tD = todayDate.getDate();
+            const sY = startD.getFullYear(), sM = startD.getMonth(), sD = startD.getDate();
+            const eY = endD.getFullYear(), eM = endD.getMonth(), eD = endD.getDate();
+            const todayNum = tY * 10000 + tM * 100 + tD;
+            const startNum = sY * 10000 + sM * 100 + sD;
+            const endNum = eY * 10000 + eM * 100 + eD;
+            return todayNum >= startNum && todayNum <= endNum;
         }
     } else {
         const eventDate = parseLocalDate(t); // ★ 改用 parseLocalDate
@@ -3162,15 +3214,21 @@ function saveHistoryImage() {
     showToast('圖片已下載！');
 }
 
+// ★ Bug 修正：Toast 計時器變數，防止多次呼叫時前一個計時器未清除導致提前消失
+let _toastTimer = null;
 function showToast(msg) {
     const toast = document.getElementById('toast');
+    if (!toast) return;
     document.getElementById('toast-msg').innerText = msg;
     toast.classList.remove('opacity-0', 'pointer-events-none', 'top-6');
     toast.classList.add('top-20', 'opacity-100');
 
-    setTimeout(() => {
+    // ★ 清除前一個計時器，確保每次都從頭計 2.5 秒
+    if (_toastTimer) clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(() => {
         toast.classList.remove('top-20', 'opacity-100');
         toast.classList.add('opacity-0', 'pointer-events-none', 'top-6');
+        _toastTimer = null;
     }, 2500);
 }
 
