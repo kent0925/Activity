@@ -3070,69 +3070,77 @@ async function openHistoryImage(eventId) {
         html += '</div>';
 
         // 名單區
-        if (data.length > 0) {
+        if (true) {
             html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
             html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
-            let count = 0;
-            data.forEach(p => {
-                count++;
-                const family = getIntField(p, 'family');
-                const guestData = parseGuestData(p);
-                // 冗餘處理：使用統一計算函數
-                const finalGuestCount = calculateFinalGuestCount(p, guestData);
-
-                // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
-                const total = family + finalGuestCount;
-                const num = count.toString().padStart(2, '0');
-                const status = p.status || p.note || '';
-                let prefix = status ? status : '';
-                const roles = getParticipantRoles(p.name, e);
-                let tagHtml = '';
-                if (roles.length > 0) {
-                    tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
-                }
-                // ★ 新增：檢查是否為小瑪莉前三名
-                let nameColor = 'inherit';
-                let maryMedal = '';
-                if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
-                    const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
-                    if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
-                    else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
-                    else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
-                }
-
-                html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
-                html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
-                if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
-                html += '</div>';
-                if (guestData.length > 0) {
-                    const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
-                    html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
-                } else {
-                    const guestNameStr = getField(p, 'guestName');
-                    if (guestNameStr && guestNameStr !== '無') {
-                        html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+            
+            if (data.length > 0) {
+                let count = 0;
+                data.forEach(p => {
+                    const family = getIntField(p, 'family');
+                    // 純贊助者不顯示在名單區
+                    if (family === -1) return;
+                    
+                    const guestData = parseGuestData(p);
+                    const finalGuestCount = calculateFinalGuestCount(p, guestData);
+                    
+                    // ★ 修正：計算總人數必須包含「本人(+1)」
+                    const total = 1 + family + finalGuestCount;
+                    
+                    count++;
+                    const num = count.toString().padStart(2, '0');
+                    const status = p.status || p.note || '';
+                    let prefix = status ? status : '';
+                    const roles = getParticipantRoles(p.name, e);
+                    let tagHtml = '';
+                    if (roles.length > 0) {
+                        tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
                     }
-                }
+                    
+                    let nameColor = 'inherit';
+                    let maryMedal = '';
+                    if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                        const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
+                        if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
+                        else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
+                        else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
+                    }
 
-                // 上車/房型
-                {
-                    let travelLines = [];
-                    if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
-                    if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                    html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+                    html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
+                    if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
+                    html += '</div>';
                     if (guestData.length > 0) {
-                        guestData.forEach(g => {
-                            let extras = [];
-                            if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
-                            if (g.room && g.room !== '無') extras.push(g.room);
-                            if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
-                        });
+                        const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
+                        html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+                    } else {
+                        const guestNameStr = getField(p, 'guestName');
+                        if (guestNameStr && guestNameStr !== '無') {
+                            html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                        }
                     }
-                    if (travelLines.length > 0) {
-                        html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+
+                    // 上車/房型
+                    {
+                        let travelLines = [];
+                        if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
+                        if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                        if (guestData.length > 0) {
+                            guestData.forEach(g => {
+                                let extras = [];
+                                if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                                if (g.room && g.room !== '無') extras.push(g.room);
+                                if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                            });
+                        }
+                        if (travelLines.length > 0) {
+                            html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                html += '<div style="text-align:center;font-size:13px;color:#9ca3af;padding:12px 0;">目前尚無人報名</div>';
+            }
             html += '</div>';
         }
 
@@ -4170,8 +4178,21 @@ async function executeShare(mode) {
         if (window.lucide) window.lucide.createIcons();
         
         try {
-            const data = appState.cachedDetails || [];
-            const stats = appState.currentStats || {};
+            // ★ Bug 修正：防止在資料未完全載入前就按下分享導致 0 人
+            let data = appState.cachedDetails;
+            let stats = appState.currentStats;
+            
+            if (!data || !stats || Object.keys(stats).length === 0) {
+                showToast("正在載入最新資料...");
+                const [dRes, sRes] = await Promise.all([
+                    fetch(`${GAS_URL}?action=getDetails&eventId=${encodeURIComponent(e.id)}`),
+                    fetch(`${GAS_URL}?action=stats&eventId=${encodeURIComponent(e.id)}&_=${Date.now()}`)
+                ]);
+                data = await dRes.json();
+                stats = await sRes.json();
+                appState.cachedDetails = data;
+                appState.currentStats = stats;
+            }
             
             // 1. 生成 Canvas 與圖片檔案
             const canvas = await generateEventCanvas(e, data, stats);
@@ -4291,7 +4312,7 @@ function copyDetailsToClipboard() {
 async function fetchDetailsForEvent(eventId) {
     if (!GAS_URL || !eventId) return [];
     try {
-        const res = await fetch(`${GAS_URL}?action=getDetails&eventId=${eventId}`);
+        const res = await fetch(`${GAS_URL}?action=getDetails&eventId=${encodeURIComponent(eventId)}`);
         return await res.json();
     } catch (e) { return []; }
 }
@@ -4299,7 +4320,7 @@ async function fetchDetailsForEvent(eventId) {
 async function fetchStatsForEvent(eventId) {
     if (!GAS_URL || !eventId) return {};
     try {
-        const res = await fetch(`${GAS_URL}?action=stats&eventId=${eventId}&_=${Date.now()}`);
+        const res = await fetch(`${GAS_URL}?action=stats&eventId=${encodeURIComponent(eventId)}&_=${Date.now()}`);
         return await res.json();
     } catch (e) { return {}; }
 }
@@ -4335,72 +4356,80 @@ async function generateEventCanvas(e, data, stats) {
     html += '</div>';
 
     // 名單區
-    if (includeNames && data.length > 0) {
+    if (includeNames) {
         html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
         html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
-        let count = 0;
-        data.forEach(p => {
-            const family = getIntField(p, 'family');
-            const guestData = parseGuestData(p);
-            const finalGuestCount = calculateFinalGuestCount(p, guestData);
-            const total = family + finalGuestCount;
-            
-            if (total === 0) return;
+        
+        if (data.length > 0) {
+            let count = 0;
+            data.forEach(p => {
+                const family = getIntField(p, 'family');
+                // 純贊助者不顯示在名單區
+                if (family === -1) return;
 
-            count++;
-            const num = count.toString().padStart(2, '0');
-            const status = p.status || p.note || '';
-            let prefix = status ? status : '';
+                const guestData = parseGuestData(p);
+                const finalGuestCount = calculateFinalGuestCount(p, guestData);
+                
+                // ★ 修正：計算總人數必須包含「本人(+1)」
+                const total = 1 + family + finalGuestCount;
 
-            const roles = getParticipantRoles(p.name, e);
-            let tagHtml = '';
-            if (roles.length > 0) {
-                tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
-            }
+                count++;
+                const num = count.toString().padStart(2, '0');
+                const status = p.status || p.note || '';
+                let prefix = status ? status : '';
 
-            let nameColor = 'inherit';
-            let maryMedal = '';
-            if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
-                const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
-                if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
-                else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
-                else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
-            }
-
-            html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
-            html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
-            if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
-            html += '</div>';
-
-            // 來賓
-            if (guestData.length > 0) {
-                const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
-                html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
-            } else {
-                const guestNameStr = getField(p, 'guestName');
-                if (guestNameStr && guestNameStr !== '無') {
-                    html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                const roles = getParticipantRoles(p.name, e);
+                let tagHtml = '';
+                if (roles.length > 0) {
+                    tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
                 }
-            }
 
-            // 上車/房型
-            if (includeTravel) {
-                let travelLines = [];
-                if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
-                if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                let nameColor = 'inherit';
+                let maryMedal = '';
+                if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                    const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
+                    if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
+                    else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
+                    else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
+                }
+
+                html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+                html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
+                if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
+                html += '</div>';
+
+                // 來賓
                 if (guestData.length > 0) {
-                    guestData.forEach(g => {
-                        let extras = [];
-                        if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
-                        if (g.room && g.room !== '無') extras.push(g.room);
-                        if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
-                    });
+                    const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
+                    html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+                } else {
+                    const guestNameStr = getField(p, 'guestName');
+                    if (guestNameStr && guestNameStr !== '無') {
+                        html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                    }
                 }
-                if (travelLines.length > 0) {
-                    html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+
+                // 上車/房型
+                if (includeTravel) {
+                    let travelLines = [];
+                    if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
+                    if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                    if (guestData.length > 0) {
+                        guestData.forEach(g => {
+                            let extras = [];
+                            if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                            if (g.room && g.room !== '無') extras.push(g.room);
+                            if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                        });
+                    }
+                    if (travelLines.length > 0) {
+                        html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            html += '<div style="text-align:center;font-size:13px;color:#9ca3af;padding:12px 0;">目前尚無人報名</div>';
+        }
         html += '</div>';
     }
 
