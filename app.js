@@ -4370,8 +4370,8 @@ async function generateEventCanvas(e, data, stats) {
                 const guestData = parseGuestData(p);
                 const finalGuestCount = calculateFinalGuestCount(p, guestData);
                 
-                // ★ 修正：計算總人數必須包含「本人(+1)」
-                const total = 1 + family + finalGuestCount;
+                // ★ 說明：getIntField('family') 已包含本人(+1)，不需再多加 1
+                const total = family + finalGuestCount;
 
                 count++;
                 const num = count.toString().padStart(2, '0');
