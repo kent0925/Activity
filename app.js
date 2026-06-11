@@ -2806,7 +2806,7 @@ function isEventDay(event) {
         const endD = parseLocalDate(endStr);     // ★ 改用 parseLocalDate
         if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
             // ★ Bug 修正：避免 toDateString() 跨瀏覽器不一致，改為直接比較年月日
-            const tY = todayDate.getFullYear(), tM = todayDate.getMonth(), tD = todayDate.getDate();
+            const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
             const sY = startD.getFullYear(), sM = startD.getMonth(), sD = startD.getDate();
             const eY = endD.getFullYear(), eM = endD.getMonth(), eD = endD.getDate();
             const todayNum = tY * 10000 + tM * 100 + tD;
