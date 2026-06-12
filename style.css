@@ -4,16 +4,37 @@
    ========================================== */
 
 :root {
-    --primary: #B8922A;
-    --primary-dark: #9A7820;
-    --primary-light: rgba(184, 146, 42, 0.15);
-    --accent: #D4A843;
-    --danger: #ef4444;
-    --bg-gray: #162544;
-    --card-bg: #1E3052;
-    --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
-    --glass-bg: rgba(255, 255, 255, 0.06);
-    --glass-border: rgba(255, 255, 255, 0.12);
+  /* 背景與卡片 */
+  --bg-main: #0D131A;                 /* 網頁主背景：極深藏青 */
+  --card-dark-bg: rgba(24, 34, 46, 0.75); /* 深色卡片背景：帶微透明的午夜藍 */
+  --card-light-bg: #FAF8F5;            /* 底部統計卡片：暖米白 */
+  
+  /* 深色背景上的文字（確保不消失、不刺眼） */
+  --text-on-dark-primary: #EFECE5;    /* 主標題/姓名：暖珍珠白 */
+  --text-on-dark-secondary: #B8B2A7;  /* 次要資訊/時間地址：淺灰褐色 */
+  
+  /* 淺色背景上的文字 */
+  --text-on-light-primary: #2B2622;   /* 統計數字/標題：深炭棕色 */
+  
+  /* 靈魂強調色與點綴 */
+  --accent-brass: #C49A6C;            /* 按鈕/描邊/開關：古典黃銅金 */
+  --accent-brass-hover: #B3885B;      /* 按鈕懸停色：深玫瑰銅 */
+  --text-warning: #A47E5C;            /* 警告提示文字（取代純紅）：暗銅色 */
+  
+  /* 邊框線條 */
+  --border-color: rgba(196, 154, 108, 0.2); /* 輕微的古銅金細描邊 */
+
+  /* 系統相容變數 (對應到舊有設定) */
+  --primary: var(--accent-brass);
+  --primary-dark: var(--accent-brass-hover);
+  --primary-light: rgba(196, 154, 108, 0.15);
+  --accent: var(--accent-brass);
+  --danger: var(--text-warning);
+  --bg-gray: var(--bg-main);
+  --card-bg: var(--card-dark-bg);
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
 }
 
 body {
