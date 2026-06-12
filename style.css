@@ -17,8 +17,8 @@
   --text-on-light-primary: #2B2622;   /* 統計數字/標題：深炭棕色 */
   
   /* 靈魂強調色與點綴 */
-  --accent-brass: #C49A6C;            /* 按鈕/描邊/開關：古典黃銅金 */
-  --accent-brass-hover: #B3885B;      /* 按鈕懸停色：深玫瑰銅 */
+  --accent-brass: #D4AF37;            /* 按鈕/描邊/開關：古典黃銅金 */
+  --accent-brass-hover: #B58728;      /* 按鈕懸停色：深玫瑰銅 */
   --text-warning: #A47E5C;            /* 警告提示文字（取代純紅）：暗銅色 */
   
   /* 邊框線條 */
@@ -62,7 +62,7 @@ body {
 }
 
 .premium-gradient {
-    background: linear-gradient(135deg, #9A7820 0%, #B8922A 50%, #D4A843 100%);
+    background: linear-gradient(135deg, #9A7820 0%, #B8922A 50%, #EFC958 100%);
 }
 
 .premium-card {
@@ -315,7 +315,7 @@ details[open]>summary .arrow-icon {
 
 .slot-result.jackpot {
     animation: jackpotPulse 1s ease-in-out infinite;
-    color: #D4A843;
+    color: #EFC958;
 }
 
 /* --- Premium Rankings --- */
@@ -397,126 +397,99 @@ details[open]>summary .arrow-icon {
 /* --- 所有灰色輸入框 --- */
 .bg-gray-200 { background-color: #253A63 !important; }
 
-/* --- 文字顏色：深灰 → 暖珍珠白 (#EFECE5) 與淺灰褐色 (#B8B2A7) --- */
-.text-gray-900, .text-gray-800,
-#display-name, #form-title, h1, h2, h3, h4 { color: #EFECE5 !important; }
-
-.text-gray-700, .text-gray-600, .text-gray-500, .text-gray-400,
-.text-white\/90, .text-white\/80, .text-white\/70, .text-white\/50,
-#display-address, #display-organizer, #display-time-container, #display-note { color: #B8B2A7 !important; }
+/* --- 文字顏色：深灰 → 白 --- */
+.text-gray-900, .text-gray-800 { color: rgba(255, 255, 255, 0.92) !important; }
+.text-gray-700 { color: rgba(255, 255, 255, 0.80) !important; }
+.text-gray-600, .text-gray-500 { color: rgba(255, 255, 255, 0.55) !important; }
+.text-gray-400 { color: rgba(255, 255, 255, 0.38) !important; }
 
 /* --- 邊框顏色 --- */
-.border-gray-100, .border-gray-200 { border-color: rgba(239, 236, 229, 0.1) !important; }
-.border-gray-300 { border-color: rgba(239, 236, 229, 0.2) !important; }
-.divide-gray-100 > * + * { border-color: rgba(239, 236, 229, 0.08) !important; }
+.border-gray-100, .border-gray-200 { border-color: rgba(255, 255, 255, 0.1) !important; }
+.border-gray-300 { border-color: rgba(255, 255, 255, 0.2) !important; }
+.divide-gray-100 > * + * { border-color: rgba(255, 255, 255, 0.08) !important; }
 
 /* --- 彩色圖示背景 → 金色半透明 --- */
-.bg-green-50  { background-color: rgba(196, 154, 108, 0.15) !important; }
-.bg-blue-50   { background-color: rgba(239, 236, 229, 0.08) !important; }
-.bg-red-50    { background-color: rgba(239, 236, 229, 0.08) !important; }
-.bg-amber-50  { background-color: rgba(196, 154, 108, 0.12) !important; }
-.bg-yellow-50 { background-color: rgba(196, 154, 108, 0.10) !important; }
+.bg-green-50  { background-color: rgba(184, 146, 42, 0.15) !important; }
+.bg-blue-50   { background-color: rgba(255, 255, 255, 0.08) !important; }
+.bg-red-50    { background-color: rgba(255, 255, 255, 0.08) !important; }
+.bg-amber-50  { background-color: rgba(184, 146, 42, 0.12) !important; }
+.bg-yellow-50 { background-color: rgba(184, 146, 42, 0.10) !important; }
 .bg-orange-50\/50, .bg-orange-50\/30 { background-color: rgba(255, 255, 255, 0.04) !important; }
 .bg-blue-50\/50   { background-color: rgba(255, 255, 255, 0.04) !important; }
 .bg-red-50\/50    { background-color: rgba(255, 255, 255, 0.04) !important; }
 
-/* --- 強調色 / 圖標色 → 古典黃銅金 (#C49A6C) --- */
-.text-green-600, .text-[#D4A843], .text-[#B8922A] { color: #C49A6C !important; }
-.text-amber-600, .text-yellow-700 { color: #C49A6C !important; }
-.text-orange-600, .text-orange-500, .text-orange-800 { color: #C49A6C !important; }
-.text-purple-600, .text-purple-500 { color: #C49A6C !important; }
-
-/* --- 次要圖示色 --- */
-.text-blue-600  { color: #B8B2A7 !important; }
-
-/* --- 警告與提示文字 → 暗銅色 (#A47E5C) --- */
-.text-red-500, .text-red-600 { color: #A47E5C !important; }
+/* --- 彩色圖示文字 → 金色 --- */
+.text-green-600 { color: #EFC958 !important; }
+.text-blue-600  { color: rgba(255, 255, 255, 0.65) !important; }
+.text-red-600   { color: rgba(255, 255, 255, 0.65) !important; }
+.text-amber-600 { color: #EFC958 !important; }
+.text-yellow-700{ color: #EFC958 !important; }
 
 /* --- 彩色section標題文字 --- */
-.text-blue-800  { color: #EFECE5 !important; }
-.text-red-800   { color: #EFECE5 !important; }
+.text-blue-800  { color: rgba(255, 255, 255, 0.88) !important; }
+.text-red-800   { color: rgba(255, 255, 255, 0.88) !important; }
+.text-orange-800{ color: rgba(255, 255, 255, 0.88) !important; }
 
-/* --- 彩色 border → 金屬邊框 --- */
+/* --- 彩色 border → 金色邊框 --- */
 .border-orange-100, .border-orange-100\/50,
-.border-orange-200  { border-color: rgba(196, 154, 108, 0.20) !important; }
-.border-blue-100    { border-color: rgba(196, 154, 108, 0.15) !important; }
-.border-red-100     { border-color: rgba(196, 154, 108, 0.15) !important; }
-.border-yellow-200  { border-color: rgba(196, 154, 108, 0.25) !important; }
-.border-amber-200   { border-color: rgba(196, 154, 108, 0.25) !important; }
+.border-orange-200  { border-color: rgba(184, 146, 42, 0.20) !important; }
+.border-blue-100    { border-color: rgba(184, 146, 42, 0.15) !important; }
+.border-red-100     { border-color: rgba(184, 146, 42, 0.15) !important; }
+.border-yellow-200  { border-color: rgba(184, 146, 42, 0.25) !important; }
+.border-amber-200   { border-color: rgba(184, 146, 42, 0.25) !important; }
+
+/* --- 橘/紫色特殊文字 --- */
+.text-orange-600  { color: #EFC958 !important; }
+.text-orange-500  { color: #EFC958 !important; }
+.text-purple-600  { color: #EFC958 !important; }
+.text-purple-500  { color: #EFC958 !important; }
 
 /* --- 橘/紫色 badge 背景 --- */
-.bg-orange-100, .bg-purple-100 { 
-    background-color: rgba(196, 154, 108, 0.15) !important; 
-    color: #C49A6C !important;
-}
-.bg-orange-500  { background-color: #B3885B !important; }
-.hover\:bg-orange-600:hover { background-color: #9c754d !important; }
+.bg-orange-100  { background-color: rgba(184, 146, 42, 0.15) !important; }
+.bg-purple-100  { background-color: rgba(184, 146, 42, 0.15) !important; }
+.bg-orange-500  { background-color: #B8922A !important; }
+.hover\:bg-orange-600:hover { background-color: #9A7820 !important; }
 
-/* --- 輸入框（select / input 統一深藍底 + 極細古銅金描邊） --- */
+/* --- 輸入框（select / input 統一深藍底） --- */
 #view-activity-detail select,
 #regForm select,
-#regForm input[type="text"]:not(#user-name),
-#regForm input[type="number"],
+#regForm input[type="text"],
 #view-create select,
 #view-create input {
     background-color: #162544 !important;
-    color: #EFECE5 !important;
-    border-color: rgba(196, 154, 108, 0.3) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
 }
 #regForm select option,
-#view-create select option { background-color: #1E3052; color: #EFECE5; }
-
-/* --- 贊助項目 / 來賓 / 表單內部淺色背景覆蓋 --- */
-#regForm .bg-white,
-#regForm .bg-gray-50,
-#regForm .bg-gray-50\/30,
-#regForm .bg-orange-50\/50,
-#regForm .bg-red-50\/50 {
-    background-color: var(--card-dark-bg) !important;
-    border-color: var(--border-color) !important;
-}
+#view-create select option { background-color: #1E3052; color: white; }
 
 /* --- 深灰按鈕 → 深藍 --- */
 .bg-gray-800 { background-color: #253A63 !important; }
-.bg-gray-900 { background-color: #C49A6C !important; color: #2B2622 !important; }
+.bg-gray-900 { background-color: #B8922A !important; }
 .hover\:bg-gray-700:hover { background-color: #1E3052 !important; }
-.hover\:bg-gray-800:hover { background-color: #B3885B !important; }
+.hover\:bg-gray-800:hover { background-color: #9A7820 !important; }
 
-/* --- 統計區：改成奶油米白 (#EFECE5) 與深炭棕 (#2B2622) --- */
+/* --- 統計區：改成奶油米白 --- */
 .premium-gradient {
-    background: linear-gradient(135deg, #EFECE5 0%, #DFDCD5 100%) !important;
-    color: #2B2622 !important;
+    background: #EDE5CC !important;
+    color: #1E2D4A !important;
 }
-.premium-gradient.metallic-shadow {
-    background: linear-gradient(135deg, #DFB989 0%, #C49A6C 50%, #B3885B 100%) !important;
-    color: #162544 !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.3) !important;
-}
-.premium-gradient .text-white { color: #2B2622 !important; }
-.premium-gradient .text-green-100 { color: rgba(43, 38, 34, 0.6) !important; }
-.premium-gradient .text-accent { color: #C49A6C !important; }
+.premium-gradient .text-white { color: #1E2D4A !important; }
+.premium-gradient .text-green-100 { color: rgba(30, 45, 74, 0.6) !important; }
+.premium-gradient .text-accent { color: #B8922A !important; }
 .premium-gradient .glass-effect {
     background: rgba(255, 255, 255, 0.45) !important;
-    border: 1px solid rgba(196, 154, 108, 0.25) !important;
-    color: #2B2622 !important;
+    border: 1px solid rgba(184, 146, 42, 0.25) !important;
 }
 
 /* --- 詳細名單彈窗 --- */
 #modal-content {
-    background-color: rgba(13, 19, 26, 0.85) !important;
-    backdrop-filter: blur(24px) !important;
-    -webkit-backdrop-filter: blur(24px) !important;
-    border: 1px solid rgba(196, 154, 108, 0.2) !important;
-    border-top: 1px solid rgba(196, 154, 108, 0.35) !important;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+    background-color: #1E3052 !important;
 }
 #modal-content .bg-gray-50\/80 {
-    background-color: rgba(22, 37, 68, 0.5) !important;
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(196, 154, 108, 0.15) !important;
+    background-color: rgba(22, 37, 68, 0.85) !important;
 }
-#modal-content h3 { color: white; }
+#modal-content h3, #modal-content .font-bold { color: white; }
 #modal-summary {
     background-color: rgba(255, 255, 255, 0.05) !important;
     color: rgba(255, 255, 255, 0.65) !important;
@@ -565,47 +538,10 @@ details[open]>summary .arrow-icon {
 }
 #tutorial-modal-content .text-amber-800 { color: rgba(255, 255, 255, 0.85) !important; }
 
-/* --- 詳細名單彈窗 --- */
-#rankings-modal-content {
-    background: #162544 !important;
-    border-color: rgba(196, 154, 108, 0.3) !important;
-}
-
-/* --- 行程表區塊 (覆蓋原本的淺色背景) --- */
-#travel-itinerary-section .bg-gray-50\/50,
-#travel-itinerary-section .bg-white,
-#travel-itinerary-section .bg-gray-50,
-#travel-itinerary-section details.open\:bg-white[open] {
-    background-color: var(--card-dark-bg) !important;
-}
-#travel-itinerary-section details {
-    background-color: var(--bg-main) !important;
-    border-color: var(--border-color) !important;
-}
-#travel-itinerary-section .border-gray-100,
-#travel-itinerary-section .border-gray-200 {
-    border-color: var(--border-color) !important;
-}
-#travel-itinerary-section .bg-gray-100 {
-    background-color: var(--border-color) !important;
-}
-#travel-itinerary-section .text-green-600 {
-    color: var(--accent-brass) !important;
-}
-#travel-itinerary-section .bg-green-50,
-#travel-itinerary-section .bg-green-100 {
-    background-color: rgba(196, 154, 108, 0.15) !important;
-    color: var(--accent-brass) !important;
-}
-
 /* --- 建立活動區 --- */
 #view-create > div.bg-white {
-    background: rgba(22, 37, 68, 0.65) !important;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(196, 154, 108, 0.3) !important;
-    border-color: rgba(196, 154, 108, 0.2) !important;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+    background-color: #1E3052 !important;
+    border-color: rgba(184, 146, 42, 0.2) !important;
 }
 
 /* --- 歷史活動與小瑪莉按鈕（半透明白 → 暗色） --- */
