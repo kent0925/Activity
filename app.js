@@ -2614,7 +2614,7 @@ function renderDetailLists(data) {
         }
 
         const liP = document.createElement('li');
-        liP.className = 'px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0';
+        liP.className = 'px-4 py-3 hover:bg-[#1E3052] transition';
 
         // ★ 小瑪莉前三名勳章（網頁名單內顯示）
         let maryMedal = '';
@@ -2628,8 +2628,8 @@ function renderDetailLists(data) {
 
         liP.innerHTML = `
             <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                <span class="text-gray-400 font-mono text-sm">${num}.</span>
-                <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap" style="${maryNameColor}">${maryMedal}${safeName}${tagHtml}${nameSuffix}</span>
+                <span class="text-[#B8B2A7] font-mono text-sm">${num}.</span>
+                <span class="font-bold text-[#EFECE5] text-base inline-flex items-center flex-wrap" style="${maryNameColor}">${maryMedal}${safeName}${tagHtml}${nameSuffix}</span>
             </div>
             ${subHtml}`;
         fragP.appendChild(liP);
@@ -2639,12 +2639,12 @@ function renderDetailLists(data) {
             if ((pickup && pickup !== '無') || (room && room !== '無')) {
                 hasTravel = true;
                 const liT = document.createElement('li');
-                liT.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
+                liT.className = 'px-4 py-2 flex justify-between items-center hover:bg-[#1E3052] text-sm';
                 liT.innerHTML = `
-                    <span class="font-medium text-gray-700">${safeName}</span>
-                    <div class="text-right text-xs text-gray-500">
-                        ${pickup && pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(pickup)}</div>` : ''}
-                        ${room && room !== '無' ? `<div class="text-orange-600">${escapeHtml(room)}</div>` : ''}
+                    <span class="font-medium text-[#EFECE5]">${safeName}</span>
+                    <div class="text-right text-xs text-[#B8B2A7]">
+                        ${pickup && pickup !== '無' ? `<div class="text-[#C49A6C]">${escapeHtml(pickup)}</div>` : ''}
+                        ${room && room !== '無' ? `<div class="text-[#D4A843]">${escapeHtml(room)}</div>` : ''}
                     </div>`;
                 fragT.appendChild(liT);
             }
@@ -2654,12 +2654,12 @@ function renderDetailLists(data) {
                 if ((g.pickup && g.pickup !== '無') || (g.room && g.room !== '無')) {
                     hasTravel = true;
                     const liTG = document.createElement('li');
-                    liTG.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
+                    liTG.className = 'px-4 py-2 flex justify-between items-center hover:bg-[#1E3052] text-sm';
                     liTG.innerHTML = `
-                        <span class="font-medium text-gray-700"><span class="text-xs text-gray-400 mr-1">賓</span>${escapeHtml(g.name)}</span>
-                        <div class="text-right text-xs text-gray-500">
-                            ${g.pickup && g.pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(g.pickup)}</div>` : ''}
-                            ${g.room && g.room !== '無' ? `<div class="text-orange-600">${escapeHtml(g.room)}</div>` : ''}
+                        <span class="font-medium text-[#EFECE5]"><span class="text-xs text-[#B8B2A7] mr-1">賓</span>${escapeHtml(g.name)}</span>
+                        <div class="text-right text-xs text-[#B8B2A7]">
+                            ${g.pickup && g.pickup !== '無' ? `<div class="text-[#C49A6C]">${escapeHtml(g.pickup)}</div>` : ''}
+                            ${g.room && g.room !== '無' ? `<div class="text-[#D4A843]">${escapeHtml(g.room)}</div>` : ''}
                         </div>`;
                     fragT.appendChild(liTG);
                 }
@@ -2678,12 +2678,12 @@ function renderDetailLists(data) {
         if (items.length > 0) {
             hasItems = true;
             const liI = document.createElement('li');
-            liI.className = 'px-4 py-3 hover:bg-gray-50';
+            liI.className = 'px-4 py-3 hover:bg-[#1E3052]';
             liI.innerHTML = `
                 <div class="flex justify-between items-start">
-                    <span class="font-medium text-gray-800 text-sm">${safeName}</span>
+                    <span class="font-medium text-[#EFECE5] text-sm">${safeName}</span>
                     <div class="text-right flex-1 pl-4">
-                        ${items.map(i => `<div class="text-xs text-purple-600 bg-purple-50 inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
+                        ${items.map(i => `<div class="text-xs text-[#162544] bg-[#C49A6C] font-bold inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
                     </div>
                 </div>`;
             fragI.appendChild(liI);
