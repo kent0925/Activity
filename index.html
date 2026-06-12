@@ -297,26 +297,28 @@
                         </div>
                         <input type="hidden" id="user-id">
                     </div>
-                    <!-- 人數 -->
-                    <div class="mt-6 mb-4">
-                        <label class="block text-sm font-medium text-[#EFECE5] mb-2">人數(含眷屬)</label>
-                        <div class="relative w-1/2">
-                            <i data-lucide="users" class="absolute left-3 top-2.5 w-4 h-4 text-[#B8B2A7]"></i>
-                            <select id="family-count"
-                                class="w-full border border-[#C49A6C]/40 rounded-lg pl-9 pr-3 py-2 bg-[#162544] text-[#EFECE5] text-sm focus:ring-1 focus:ring-[#C49A6C] focus:border-[#C49A6C] outline-none appearance-none transition-colors">
-                            </select>
-                            <i data-lucide="chevron-down"
-                                class="absolute right-3 top-3 w-3 h-3 text-[#B8B2A7] pointer-events-none"></i>
+                    <div class="flex justify-between items-end mt-6 mb-4">
+                        <!-- 人數 -->
+                        <div class="w-1/2 pr-4">
+                            <label class="block text-sm font-medium text-[#EFECE5] mb-2">人數(含眷屬)</label>
+                            <div class="relative">
+                                <i data-lucide="users" class="absolute left-3 top-2.5 w-4 h-4 text-[#B8B2A7]"></i>
+                                <select id="family-count"
+                                    class="w-full border border-[#C49A6C]/40 rounded-lg pl-9 pr-3 py-2 bg-[#162544] text-[#EFECE5] text-sm focus:ring-1 focus:ring-[#C49A6C] focus:border-[#C49A6C] outline-none appearance-none transition-colors">
+                                </select>
+                                <i data-lucide="chevron-down"
+                                    class="absolute right-3 top-3 w-3 h-3 text-[#B8B2A7] pointer-events-none"></i>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- 僅贊助開關 -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-[#EFECE5] mb-2">僅贊助 / 認桌</label>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
-                            <div class="w-11 h-6 bg-[#162544] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gradient-to-b after:from-[#D4A843] after:to-[#8C6D1F] after:border-[#162544] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-[#C49A6C] peer-checked:to-[#8C6D1F] border border-[#C49A6C]/40 shadow-inner"></div>
-                        </label>
+                        
+                        <!-- 僅贊助開關 -->
+                        <div class="flex flex-col items-end">
+                            <label class="block text-sm font-medium text-[#EFECE5] mb-2">僅贊助 / 認桌</label>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
+                                <div class="w-11 h-6 bg-[#162544] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gradient-to-b after:from-[#D4A843] after:to-[#8C6D1F] after:border-[#162544] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-[#C49A6C] peer-checked:to-[#8C6D1F] border border-[#C49A6C]/40 shadow-inner"></div>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <!-- ★ 修復：補回被意外刪除的動態欄位區塊 -->
@@ -1072,7 +1074,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=202606120942"></script>
+    <script src="app.js?v=202606120948"></script>
 </body>
 
 </html>
