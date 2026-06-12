@@ -66,13 +66,13 @@ body {
 }
 
 .premium-card {
-    background: rgba(22, 37, 68, 0.65); /* #162544 with opacity */
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(13, 19, 26, 0.4); /* Darker and more transparent */
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border-radius: 1.5rem;
     border: 1px solid rgba(212, 175, 55, 0.25);
     border-top: 1px solid rgba(212, 175, 55, 0.5); /* Stronger Top highlight */
-    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7), inset 0 2px 0 0 rgba(255, 255, 255, 0.08); /* Deeper shadow, softer inset */
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), inset 0 2px 0 0 rgba(255, 255, 255, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

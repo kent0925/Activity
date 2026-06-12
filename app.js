@@ -2268,18 +2268,18 @@ function renderGuestList() {
         if (g.count > 1) details.push(`${g.count}人`);
         if (g.pickup) details.push(escapeHtml(g.pickup));
         if (g.room) details.push(escapeHtml(g.room));
-        const subtext = details.length > 0 ? `<span class="text-xs text-gray-400 ml-1">(${details.join(', ')})</span>` : '';
+        const subtext = details.length > 0 ? `<span class="text-xs text-[#D4AF37]/60 ml-1">(${details.join(', ')})</span>` : '';
 
         const div = document.createElement('div');
-        div.className = 'flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
+        div.className = 'flex justify-between items-center bg-[#0D131A] border border-[#D4AF37]/30 pl-3 pr-2 py-2 rounded-lg text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] animate-fade-in';
         div.innerHTML = `
             <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
-                <span class="font-medium text-gray-700">${escapeHtml(g.name)} ${subtext}</span>
+                <div class="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></div>
+                <span class="font-medium text-[#EFECE5]">${escapeHtml(g.name)} ${subtext}</span>
             </div>
-            <div class="flex gap-2 items-center">
-                <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editGuest(${i})"></i>
-                <i data-lucide="x" class="w-4 h-4 tag-action tag-remove" onclick="removeGuest('${g.id}')"></i>
+            <div class="flex gap-2 items-center text-[#D4AF37]/60">
+                <i data-lucide="edit-2" class="w-4 h-4 hover:text-[#D4AF37] transition cursor-pointer" onclick="editGuest(${i})"></i>
+                <i data-lucide="x" class="w-4 h-4 hover:text-red-400 transition cursor-pointer" onclick="removeGuest('${g.id}')"></i>
             </div>`;
         fragment.appendChild(div);
     });
@@ -2292,15 +2292,15 @@ function renderSponsorList() {
     const fragment = document.createDocumentFragment();
     appState.sponsorList.forEach((s, i) => {
         const div = document.createElement('div');
-        div.className = 'flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
+        div.className = 'flex justify-between items-center bg-[#0D131A] border border-[#D4AF37]/30 pl-3 pr-2 py-2 rounded-lg text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] animate-fade-in';
         div.innerHTML = `
             <div class="flex items-center gap-2">
-                <i data-lucide="gift" class="w-3.5 h-3.5 text-purple-500"></i>
-                <span class="font-medium text-gray-700">${escapeHtml(s)}</span>
+                <i data-lucide="gift" class="w-3.5 h-3.5 text-[#EFC958]"></i>
+                <span class="font-medium text-[#EFECE5]">${escapeHtml(s)}</span>
             </div>
-            <div class="flex gap-2 items-center">
-                <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editSponsor(${i})"></i>
-                <i data-lucide="x" class="w-4 h-4 tag-action tag-remove" onclick="removeSponsor(${i})"></i>
+            <div class="flex gap-2 items-center text-[#D4AF37]/60">
+                <i data-lucide="edit-2" class="w-4 h-4 hover:text-[#D4AF37] transition cursor-pointer" onclick="editSponsor(${i})"></i>
+                <i data-lucide="x" class="w-4 h-4 hover:text-red-400 transition cursor-pointer" onclick="removeSponsor(${i})"></i>
             </div>`;
         fragment.appendChild(div);
     });
@@ -3260,15 +3260,15 @@ function renderAddSponsorUI() {
     const area = document.getElementById('sponsor-input-area');
     if (type === 'alcohol') {
         area.innerHTML = `
-            <input id="sp-qty" type="number" class="w-20 border border-gray-300 rounded px-2 py-1 text-sm" placeholder="數量" min="1">
-            <select id="sp-unit" class="border border-gray-300 rounded px-2 py-1 text-sm bg-white">
+            <input id="sp-qty" type="number" class="w-20 border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-3 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none" placeholder="數量" min="1">
+            <select id="sp-unit" class="border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none">
                 <option value="瓶">瓶</option>
                 <option value="箱">箱</option>
             </select>`;
     } else if (type === 'money') {
-        area.innerHTML = `<input id="sp-money" type="number" class="w-full border border-gray-300 rounded px-2 py-1 text-sm" placeholder="金額 (100為單位)" min="100" step="100">`;
+        area.innerHTML = `<input id="sp-money" type="number" class="w-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-3 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none" placeholder="金額 (100為單位)" min="100" step="100">`;
     } else {
-        area.innerHTML = `<input id="sp-other" type="text" class="w-full border border-gray-300 rounded px-2 py-1 text-sm" placeholder="贊助內容">`;
+        area.innerHTML = `<input id="sp-other" type="text" class="w-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-3 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none" placeholder="贊助內容">`;
     }
 }
 
@@ -3439,7 +3439,7 @@ function renderItinerary(str, timeStr) {
 
     // 建立手風琴外框
     const wrapper = document.createElement('div');
-    wrapper.className = "border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm";
+    wrapper.className = "border border-[#D4AF37]/30 rounded-2xl overflow-hidden bg-[#0D131A] shadow-[0_4px_15px_rgba(0,0,0,0.3)]";
 
     // 2. 渲染 HTML
     const sortedDayNums = Array.from(groupedDays.keys()).sort((a, b) => a - b);
@@ -3462,7 +3462,7 @@ function renderItinerary(str, timeStr) {
         const accordionMainTitle = `第 ${dayNum} 天行程`;
 
         let allContentHtml = '<div class="space-y-4 relative pl-2 pt-2 pb-2">';
-        allContentHtml += '<div class="absolute left-[5px] top-4 bottom-2 w-0.5 bg-gray-100"></div>';
+        allContentHtml += '<div class="absolute left-[5px] top-4 bottom-2 w-0.5 bg-[#D4AF37]/20"></div>';
 
         group.rawTexts.forEach(text => {
             if (!text.trim()) return;
@@ -3519,33 +3519,33 @@ function renderItinerary(str, timeStr) {
 
             // --- HTML 生成區塊 ---
             const mapIconHtml = itemUrl ?
-                `<a href="${itemUrl}" target="_blank" class="inline-flex items-center justify-center w-6 h-6 bg-blue-50 text-blue-500 rounded-full hover:bg-blue-100 transition ml-2 shrink-0 self-center" title="導航" onclick="event.stopPropagation()">
+                `<a href="${itemUrl}" target="_blank" class="inline-flex items-center justify-center w-6 h-6 bg-[#1E3052] text-[#D4AF37] rounded-full hover:bg-[#162544] border border-[#D4AF37]/30 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1)] transition ml-2 shrink-0 self-center" title="導航" onclick="event.stopPropagation()">
                     <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
                  </a>` : '';
 
             if (timeDisplay) {
                 allContentHtml += `
                     <div class="relative flex gap-3 items-start pl-4 group/item">
-                        <div class="absolute left-0 top-1.5 w-3 h-3 bg-white border-[3px] border-green-500 rounded-full z-10 shadow-sm"></div>
-                        <div class="font-mono font-bold text-green-700 shrink-0 pt-0.5 w-[42px] text-right mr-1">${timeDisplay}</div>
+                        <div class="absolute left-0 top-1.5 w-3 h-3 bg-[#0D131A] border-[3px] border-[#D4AF37] rounded-full z-10 shadow-[0_0_8px_rgba(212,175,55,0.5)]"></div>
+                        <div class="font-mono font-bold text-[#EFC958] shrink-0 pt-0.5 w-[42px] text-right mr-1">${timeDisplay}</div>
                         <div class="flex-1 min-w-0 pt-0.5">
                             <div class="flex items-center flex-wrap">
-                                <span class="text-gray-800 font-bold leading-tight">${itemTitle}</span>
+                                <span class="text-[#EFECE5] font-bold leading-tight">${itemTitle}</span>
                                 ${mapIconHtml}
                             </div>
-                            ${itemDesc ? `<p class="text-xs text-gray-500 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
+                            ${itemDesc ? `<p class="text-xs text-[#D4AF37]/70 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
                         </div>
                     </div>`;
             } else {
                 allContentHtml += `
                     <div class="relative flex gap-3 items-start pl-4">
-                        <div class="absolute left-1 top-2.5 w-1.5 h-1.5 bg-gray-300 rounded-full z-10"></div>
+                        <div class="absolute left-1 top-2.5 w-1.5 h-1.5 bg-[#D4AF37]/50 rounded-full z-10"></div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center flex-wrap">
-                                <span class="text-gray-700 font-medium leading-tight">${itemTitle}</span>
+                                <span class="text-[#EFECE5]/90 font-medium leading-tight">${itemTitle}</span>
                                 ${mapIconHtml}
                             </div>
-                            ${itemDesc ? `<p class="text-xs text-gray-500 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
+                            ${itemDesc ? `<p class="text-xs text-[#D4AF37]/70 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
                         </div>
                     </div>`;
             }
@@ -3557,25 +3557,25 @@ function renderItinerary(str, timeStr) {
 
         const details = document.createElement('details');
         details.setAttribute('name', 'itinerary-group');
-        details.className = "group border-b border-gray-100 last:border-0 transition-all itinerary-group";
+        details.className = "group border-b border-[#D4AF37]/20 last:border-0 transition-all itinerary-group";
         if (isOpen) details.setAttribute('open', '');
 
         const summary = document.createElement('summary');
-        summary.className = "flex justify-between items-center p-4 cursor-pointer select-none bg-white hover:bg-gray-50 transition list-none relative";
+        summary.className = "flex justify-between items-center p-4 cursor-pointer select-none bg-[#162544]/30 hover:bg-[#162544]/60 transition list-none relative";
 
         summary.innerHTML = `
             <div class="flex items-center gap-3 overflow-hidden">
-                <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap">${dayLabel}</span>
-                <span class="font-bold text-gray-800 text-base truncate">${accordionMainTitle}</span>
+                <span class="bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap shadow-sm">${dayLabel}</span>
+                <span class="font-bold text-[#EFECE5] text-base truncate">${accordionMainTitle}</span>
             </div>
-            <div class="w-6 h-6 flex items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-gray-400 font-bold shrink-0 ml-2">
+            <div class="w-6 h-6 flex items-center justify-center rounded-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#D4AF37] font-bold shrink-0 ml-2 shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)]">
                 <span class="icon-plus">+</span>
                 <span class="icon-minus">−</span>
             </div>
         `;
 
         const contentDiv = document.createElement('div');
-        contentDiv.className = "px-4 pb-4 pt-0 bg-white text-sm text-gray-600 leading-relaxed space-y-2 group-content";
+        contentDiv.className = "px-4 pb-4 pt-0 bg-[#0D131A]/80 text-sm text-[#EFECE5]/80 leading-relaxed space-y-2 group-content";
         contentDiv.innerHTML = allContentHtml;
 
         details.appendChild(summary);
