@@ -2142,11 +2142,16 @@ function renderEventStaticInfo() {
     // ★ 新增：根據活動類型替換 Logo (右上角圖示)
     const logoContainer = document.getElementById('event-logo-container');
     if (logoContainer) {
-        let iconName = 'calendar';
-        if (e.type === 'banquet') iconName = 'utensils-crossed';
-        else if (e.type === 'travel') iconName = 'bus';
-        logoContainer.innerHTML = `<i data-lucide="${iconName}" class="w-8 h-8 text-[#162544]"></i>`;
-        if (window.lucide) window.lucide.createIcons({ nameAttr: 'data-lucide' });
+        if (e.type === 'banquet') {
+            logoContainer.innerHTML = `<i data-lucide="utensils-crossed" class="w-8 h-8 text-[#162544]"></i>`;
+            if (window.lucide) window.lucide.createIcons({ nameAttr: 'data-lucide' });
+        } else if (e.type === 'travel') {
+            logoContainer.innerHTML = `<i data-lucide="bus" class="w-8 h-8 text-[#162544]"></i>`;
+            if (window.lucide) window.lucide.createIcons({ nameAttr: 'data-lucide' });
+        } else {
+            // 一般聚會使用 🥂 Emoji
+            logoContainer.innerHTML = `<div class="text-[28px] leading-none flex items-center justify-center w-8 h-8 select-none" style="text-shadow: 0 2px 4px rgba(0,0,0,0.15);">🥂</div>`;
+        }
     }
 
     // 文字欄位
