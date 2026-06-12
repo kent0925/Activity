@@ -66,11 +66,14 @@ body {
 }
 
 .premium-card {
-    background: #1E3052;
+    background: rgba(22, 37, 68, 0.65); /* #162544 with opacity */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 1.5rem;
-    border: 1px solid rgba(184, 146, 42, 0.2);
-    box-shadow: var(--card-shadow);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(196, 154, 108, 0.2);
+    border-top: 1px solid rgba(196, 154, 108, 0.35); /* Top highlight */
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .premium-card:active {
@@ -501,10 +504,17 @@ details[open]>summary .arrow-icon {
 
 /* --- 詳細名單彈窗 --- */
 #modal-content {
-    background-color: #1E3052 !important;
+    background-color: rgba(13, 19, 26, 0.85) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border: 1px solid rgba(196, 154, 108, 0.2) !important;
+    border-top: 1px solid rgba(196, 154, 108, 0.35) !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
 }
 #modal-content .bg-gray-50\/80 {
-    background-color: rgba(22, 37, 68, 0.85) !important;
+    background-color: rgba(22, 37, 68, 0.5) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(196, 154, 108, 0.15) !important;
 }
 #modal-content h3 { color: white; }
 #modal-summary {
@@ -590,8 +600,12 @@ details[open]>summary .arrow-icon {
 
 /* --- 建立活動區 --- */
 #view-create > div.bg-white {
-    background-color: #1E3052 !important;
-    border-color: rgba(184, 146, 42, 0.2) !important;
+    background: rgba(22, 37, 68, 0.65) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(196, 154, 108, 0.3) !important;
+    border-color: rgba(196, 154, 108, 0.2) !important;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
 }
 
 /* --- 歷史活動與小瑪莉按鈕（半透明白 → 暗色） --- */
