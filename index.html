@@ -314,10 +314,12 @@
                         <!-- 僅贊助開關 -->
                         <div class="flex flex-col items-end">
                             <label class="block text-sm font-medium text-[#EFECE5] mb-2">僅贊助 / 認桌</label>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
-                                <div class="w-11 h-6 bg-[#162544] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gradient-to-b after:from-[#D4A843] after:to-[#8C6D1F] after:border-[#162544] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-[#C49A6C] peer-checked:to-[#8C6D1F] border border-[#C49A6C]/40 shadow-inner"></div>
-                            </label>
+                            <div class="h-[38px] flex items-center">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-[#162544] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gradient-to-b after:from-[#D4A843] after:to-[#8C6D1F] after:border-[#162544] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-[#C49A6C] peer-checked:to-[#8C6D1F] border border-[#C49A6C]/40 shadow-inner"></div>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1074,7 +1076,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=202606120958"></script>
+    <script src="app.js?v=202606121003"></script>
 </body>
 
 </html>
