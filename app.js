@@ -1937,8 +1937,6 @@ function fillFormWithRecord(record) {
     } else if (isOpen) {
         // 未來活動：正常修改
         DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
-        DOM.submitBtn.classList.replace('bg-[#06c755]', 'bg-blue-600');
-        DOM.submitBtn.classList.replace('hover:bg-green-600', 'hover:bg-blue-700');
         DOM.submitBtn.disabled = false;
         DOM.cancelBtn.classList.remove('hidden');
     } else {
