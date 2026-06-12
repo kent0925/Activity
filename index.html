@@ -36,14 +36,14 @@
 
 <body class="bg-[#0D131A] min-h-screen pb-safe relative">
 
-    <!-- 🌟 環境氛圍光暈 (Ambient Glows) -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <!-- 左上角：深幽微光 -->
-        <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-[#1E3052]/60 blur-[100px]"></div>
-        <!-- 右下角：暖金光暈 -->
-        <div class="absolute -bottom-[10%] -right-[10%] w-[70vw] h-[70vw] rounded-full bg-[#D4AF37]/30 blur-[120px]"></div>
-        <!-- 右側中部：極淡的紫色/深藍層次 -->
-        <div class="absolute top-[40%] -right-[20%] w-[50vw] h-[50vw] rounded-full bg-[#162544]/70 blur-[100px]"></div>
+    <!-- 🌟 餐廳天花板背景 (Restaurant Ceiling Background) -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0 bg-[#0D131A]">
+        <img src="restaurant_ceiling_bg.png" class="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-lighten" alt="ceiling background">
+        <!-- 保留原本極淡的光暈，增加立體層次 -->
+        <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-[#1E3052]/40 blur-[100px]"></div>
+        <div class="absolute -bottom-[10%] -right-[10%] w-[70vw] h-[70vw] rounded-full bg-[#D4AF37]/20 blur-[120px]"></div>
+        <!-- 加上一層暗色漸層遮罩，確保文字與卡片依舊清晰且深色主調不變 -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0D131A]/40 via-[#162544]/30 to-[#0D131A]/60"></div>
     </div>
     
     <!-- 確保主要內容層級在光暈之上 -->
@@ -325,7 +325,7 @@
 
                         <!-- 僅贊助 / 認桌 (右側) -->
                         <div class="flex flex-col justify-between">
-                            <label class="block text-sm font-medium text-[#EFECE5] mb-1.5">僅贊助 / 認桌</label>
+                            <label class="block text-sm font-medium text-[#EFECE5] mb-1.5 text-right pr-2">僅贊助 / 認桌</label>
                             <div class="h-[42px] flex items-center justify-end pr-2">
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
@@ -403,20 +403,20 @@
                         <span class="text-xs text-[#D4AF37]/60 bg-[#D4AF37]/10 px-2 py-0.5 rounded-full">選填</span>
                     </div>
                     <div id="guest-list-container" class="space-y-2 mb-3 empty:hidden"></div>
-                    <div class="bg-white p-3 rounded-lg border border-orange-200 shadow-sm space-y-2">
+                    <div class="bg-[#162544] p-3 rounded-lg border border-[#D4AF37]/20 shadow-sm space-y-2">
                         <div class="flex gap-2">
                             <input type="text" id="add-guest-name" placeholder="來賓姓名"
-                                class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none">
+                                class="flex-1 border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-[#D4AF37] outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
                             <select id="add-guest-count"
-                                class="w-24 border border-gray-300 rounded-lg px-2 py-2 text-sm bg-gray-50 text-center"></select>
+                                class="w-24 border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm focus:ring-1 focus:ring-[#D4AF37] text-center outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]"></select>
                         </div>
                         <div id="guest-travel-options" class="hidden grid grid-cols-2 gap-2">
                             <select id="add-guest-pickup"
-                                class="w-full border border-gray-300 rounded-lg px-2 py-2 text-sm bg-gray-50 text-gray-700">
+                                class="w-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none">
                                 <option value="">上車地點 (*必選)</option>
                             </select>
                             <select id="add-guest-room"
-                                class="w-full border border-gray-300 rounded-lg px-2 py-2 text-sm bg-gray-50 text-gray-700">
+                                class="w-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none">
                                 <option value="">房型 (*必選)</option>
                             </select>
                         </div>
@@ -1092,7 +1092,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=202606121625"></script>
+    <script src="app.js?v=202606121635"></script>
 </body>
 
 </html>
