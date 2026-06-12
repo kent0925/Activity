@@ -22,12 +22,12 @@
   --text-warning: #A47E5C;            /* 警告提示文字（取代純紅）：暗銅色 */
   
   /* 邊框線條 */
-  --border-color: rgba(196, 154, 108, 0.2); /* 輕微的古銅金細描邊 */
+  --border-color: rgba(212, 175, 55, 0.25); /* 輕微的香檳金細描邊 */
 
   /* 系統相容變數 (對應到舊有設定) */
   --primary: var(--accent-brass);
-  --primary-dark: var(--accent-brass-hover);
-  --primary-light: rgba(196, 154, 108, 0.15);
+  --primary-dark: var(--accent-brass-hover);  /* 玻璃效果專用顏色 */
+  --primary-light: rgba(212, 175, 55, 0.15);
   --accent: var(--accent-brass);
   --danger: var(--text-warning);
   --bg-gray: var(--bg-main);
@@ -70,9 +70,9 @@ body {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-radius: 1.5rem;
-    border: 1px solid rgba(196, 154, 108, 0.2);
-    border-top: 1px solid rgba(196, 154, 108, 0.35); /* Top highlight */
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-top: 1px solid rgba(212, 175, 55, 0.5); /* Stronger Top highlight */
+    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7), inset 0 2px 0 0 rgba(255, 255, 255, 0.08); /* Deeper shadow, softer inset */
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
