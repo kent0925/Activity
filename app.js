@@ -2491,8 +2491,8 @@ async function openDetailsModal(filterType = 'all') {
         const pMap = appState.currentStats.pickupCounts || {};
         const rMap = appState.currentStats.roomCounts || {};
         let html = '';
-        if (Object.keys(pMap).length) html += `<div class="bg-white rounded p-1.5"><div class="font-bold mb-1 text-gray-500">📍 上車地點</div>${Object.entries(pMap).map(([k, v]) => `<span class="inline-block bg-gray-100 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
-        if (Object.keys(rMap).length) html += `<div class="bg-white rounded p-1.5"><div class="font-bold mb-1 text-gray-500">🛏 房型統計</div>${Object.entries(rMap).map(([k, v]) => `<span class="inline-block bg-gray-100 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
+        if (Object.keys(pMap).length) html += `<div class="bg-[#1E3052] rounded p-1.5 border border-[#C49A6C]/30"><div class="font-bold mb-1 text-[#C49A6C]">📍 上車地點</div>${Object.entries(pMap).map(([k, v]) => `<span class="inline-block bg-[#162544] text-[#EFECE5] border border-[#C49A6C]/20 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
+        if (Object.keys(rMap).length) html += `<div class="bg-[#1E3052] rounded p-1.5 border border-[#C49A6C]/30"><div class="font-bold mb-1 text-[#C49A6C]">🛏 房型統計</div>${Object.entries(rMap).map(([k, v]) => `<span class="inline-block bg-[#162544] text-[#EFECE5] border border-[#C49A6C]/20 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
         sumDiv.innerHTML = html;
     } else if (appState.currentEvent.type === 'banquet') {
         sumDiv.innerHTML = `<div class="col-span-2 bg-white rounded p-2 text-center font-bold text-red-500">總計預訂: ${appState.currentStats.tableCount} 桌</div>`;
@@ -4394,7 +4394,7 @@ async function generateEventCanvas(e, data, stats) {
                     else if (rankIndex === 2) { nameColor = '#C49A6C'; maryMedal = '🥉'; } 
                 }
 
-                html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid rgba(239,236,229,0.08);display:flex;align-items:center;">`;
+                html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid rgba(196,154,108,0.2);display:flex;align-items:center;">`;
                 html += `<span style="color:#C49A6C;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'bold'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
                 if (total > 1) html += `<span style="color:#C49A6C;font-weight:600;margin-left:6px;">×${total}</span>`;
                 html += '</div>';
@@ -4448,7 +4448,7 @@ async function generateEventCanvas(e, data, stats) {
             sponsorList.forEach(s => moneyParts.push(s));
             if (moneyParts.length > 0) {
                 const label = (total === 0) ? '<span style="font-size:11px;color:#C49A6C;margin-left:4px;">(純贊助)</span>' : '';
-                sponsorHtml += `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid rgba(239,236,229,0.08);padding-left:16px;">🎁 <span style="font-weight:600;color:#EFECE5;">${p.name}</span>${label} <span style="color:#C49A6C;">━ ${moneyParts.join('、')}</span></div>`;
+                sponsorHtml += `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid rgba(196,154,108,0.2);padding-left:16px;">🎁 <span style="font-weight:600;color:#EFECE5;">${p.name}</span>${label} <span style="color:#C49A6C;">━ ${moneyParts.join('、')}</span></div>`;
             }
         });
         if (sponsorHtml) {
