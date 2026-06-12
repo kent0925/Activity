@@ -309,10 +309,23 @@
                     </div>
                     <!-- 開關與人數 (Grid 左右排列) -->
                     <div class="grid grid-cols-2 gap-4">
-                        <!-- 僅贊助 / 認桌 (左側) -->
+                        <!-- 人數 (左側) -->
+                        <div>
+                            <label class="block text-sm font-medium text-[#EFECE5] mb-1.5">人數(含眷屬)</label>
+                            <div class="relative">
+                                <i data-lucide="users" class="absolute left-3 top-2.5 w-4 h-4 text-[#D4AF37]/60"></i>
+                                <select id="family-count"
+                                    class="w-full border border-[#D4AF37]/30 rounded-lg pl-9 pr-3 py-2 bg-[#162544]/80 text-[#EFECE5] text-sm focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] outline-none appearance-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
+                                </select>
+                                <i data-lucide="chevron-down"
+                                    class="absolute right-3 top-3 w-3 h-3 text-[#D4AF37]/60 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- 僅贊助 / 認桌 (右側) -->
                         <div class="flex flex-col justify-between">
                             <label class="block text-sm font-medium text-[#EFECE5] mb-1.5">僅贊助 / 認桌</label>
-                            <div class="h-[42px] flex items-center">
+                            <div class="h-[42px] flex items-center justify-end pr-2">
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
                                     <!-- 3D Liquid Toggle -->
@@ -324,19 +337,6 @@
                                         peer-checked:bg-gradient-to-r peer-checked:from-[#D4AF37] peer-checked:to-[#A67C00] 
                                         border border-[#D4AF37]/40 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]"></div>
                                 </label>
-                            </div>
-                        </div>
-                        
-                        <!-- 人數 (右側) -->
-                        <div>
-                            <label class="block text-sm font-medium text-[#EFECE5] mb-1.5">人數(含眷屬)</label>
-                            <div class="relative">
-                                <i data-lucide="users" class="absolute left-3 top-2.5 w-4 h-4 text-gray-400"></i>
-                                <select id="family-count"
-                                    class="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2 bg-white text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none appearance-none">
-                                </select>
-                                <i data-lucide="chevron-down"
-                                    class="absolute right-3 top-3 w-3 h-3 text-gray-400 pointer-events-none"></i>
                             </div>
                         </div>
                     </div>
@@ -395,11 +395,11 @@
                         </div>
                     </div>
                 </div>
-                <div id="guest-section" class="bg-orange-50/50 p-4 rounded-xl border border-orange-100">
+                <div id="guest-section" class="bg-[#162544]/50 p-4 rounded-xl border border-[#D4AF37]/20 shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)] space-y-3">
                     <div class="flex justify-between items-center mb-3">
-                        <label class="text-sm font-bold text-orange-800 flex items-center gap-1.5"><i
-                                data-lucide="user-plus" class="w-4 h-4"></i> 來賓</label>
-                        <span class="text-xs text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">選填</span>
+                        <label class="text-sm font-bold text-[#EFECE5] flex items-center gap-1.5"><i
+                                data-lucide="user-plus" class="w-4 h-4 text-[#D4AF37]"></i> 來賓</label>
+                        <span class="text-xs text-[#D4AF37]/60 bg-[#D4AF37]/10 px-2 py-0.5 rounded-full">選填</span>
                     </div>
                     <div id="guest-list-container" class="space-y-2 mb-3 empty:hidden"></div>
                     <div class="bg-white p-3 rounded-lg border border-orange-200 shadow-sm space-y-2">
@@ -420,10 +420,10 @@
                             </select>
                         </div>
                         <button type="button" onclick="addGuest()"
-                            class="w-full premium-gradient text-[#162544] py-2 rounded-lg text-sm font-bold hover:brightness-110 transition flex justify-center items-center gap-1 active:scale-95 metallic-shadow">
-                            <i data-lucide="plus" class="w-4 h-4"></i> 加入名單
+                            class="w-full py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] rounded-lg text-sm font-bold shadow-[0_4px_15px_rgba(212,175,55,0.4)] hover:brightness-110 transition flex justify-center items-center gap-1 active:scale-95">
+                            <i data-lucide="plus" class="w-4 h-4 text-[#0D131A]"></i> 加入名單
                         </button>
-                        <p class="text-[10px] text-red-500 mt-1 font-medium text-center">※ 請務必點擊「加入名單」按鈕，資料才會增加。</p>
+                        <p class="text-[10px] text-[#D4AF37]/80 mt-1 font-medium text-center">※ 請務必點擊「加入名單」按鈕，資料才會增加。</p>
                     </div>
                 </div>
 
@@ -450,8 +450,8 @@
                         </div>
                         <div id="sponsor-input-area" class="flex flex-wrap gap-2 items-center min-h-[36px]"></div>
                         <button type="button" onclick="addSponsor()"
-                            class="w-full bg-[#1E3052] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-[#253A63] transition flex justify-center items-center gap-1.5 active:scale-95 border border-[#B8922A]/25">
-                            <i data-lucide="plus" class="w-3.5 h-3.5 text-[#EFC958]"></i> 新增贊助
+                            class="w-full py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] rounded-lg text-sm font-bold shadow-[0_4px_15px_rgba(212,175,55,0.4)] hover:brightness-110 transition flex justify-center items-center gap-1.5 active:scale-95">
+                            <i data-lucide="plus" class="w-3.5 h-3.5 text-[#0D131A]"></i> 新增贊助
                         </button>
                         <p class="text-[10px] text-red-400 mt-1 font-medium text-center">※ 請務必點擊「新增贊助」按鈕，資料才會增加。</p>
                     </div>
@@ -459,11 +459,11 @@
 
                 <div class="flex gap-3 pt-2">
                     <button type="submit" id="submit-btn"
-                        class="flex-1 bg-[#B8922A] text-white font-bold py-3.5 rounded-xl hover:bg-[#9A7820] transition shadow-md active:scale-95 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="flex-1 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] font-bold py-3.5 rounded-xl hover:brightness-110 transition shadow-[0_4px_15px_rgba(212,175,55,0.4)] active:scale-95 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
                         <span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>
                     </button>
                     <button type="button" id="cancel-reg-btn" onclick="handleCancel()"
-                        class="hidden bg-red-900/30 text-red-400 border border-red-500/30 font-bold py-3.5 px-4 rounded-xl hover:bg-red-900/50 transition shadow-sm active:scale-95">
+                        class="hidden bg-[#3A1418] text-[#FF6B6B] border border-[#FF6B6B]/30 font-bold py-3.5 px-4 rounded-xl hover:bg-[#4A1A1F] transition shadow-sm active:scale-95">
                         <i data-lucide="trash-2" class="w-5 h-5"></i>
                     </button>
                 </div>
@@ -1050,48 +1050,48 @@
 
     <!-- 報名操作教學彈窗 -->
     <div id="tutorial-modal"
-        class="hidden fixed inset-0 z-[130] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4">
-        <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[85dvh] sm:max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
+        class="hidden fixed inset-0 z-[130] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-0 sm:p-4">
+        <div class="premium-card rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[85dvh] sm:max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
             id="tutorial-modal-content">
             <!-- 標頭 -->
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/80 rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
-                <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                    <i data-lucide="help-circle" class="w-5 h-5 text-green-600"></i> 報名操作教學
+            <div class="p-4 border-b border-[#D4AF37]/20 flex justify-between items-center bg-[#162544]/80 rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
+                <h3 class="font-bold text-[#EFECE5] flex items-center gap-2">
+                    <i data-lucide="help-circle" class="w-5 h-5 text-[#D4AF37]"></i> 報名操作教學
                 </h3>
                 <button onclick="closeTutorialModal()"
-                    class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition text-gray-600">
+                    class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition text-white/60">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
             <!-- 內容區 -->
-            <div class="p-5 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe space-y-5 bg-gray-50/50">
+            <div class="p-5 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe space-y-5 bg-[#0D131A]/60">
                 <!-- 報名操作教學圖片 -->
-                <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-white p-1">
-                    <img src="./registration_tutorial.png" alt="報名教學圖解" class="w-full h-auto object-contain rounded-xl">
+                <div class="rounded-2xl overflow-hidden border border-[#D4AF37]/20 shadow-md bg-[#162544]/50 p-1">
+                    <img src="./registration_tutorial.png" alt="報名教學圖解" class="w-full h-auto object-contain rounded-xl opacity-90">
                 </div>
                 
                 <!-- 提示 Banner -->
-                <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 flex gap-3 text-xs text-amber-800">
-                    <i data-lucide="alert-circle" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+                <div class="bg-[#B8922A]/10 border border-[#B8922A]/30 rounded-2xl p-4 flex gap-3 text-xs text-[#EFECE5]">
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5"></i>
                     <div class="space-y-1 leading-relaxed">
-                        <strong class="block font-bold">💡 填寫提示：</strong>
-                        若漏填 <span class="text-red-600 font-bold">*必選</span> 欄位（例如：<strong>上車地點</strong>或<strong>房型需求</strong>），點擊確認時網頁會自動捲動至該欄位，並以 <span class="text-red-600 font-bold">紅色外框高亮顯示</span> 提示您補選。
+                        <strong class="block font-bold text-[#D4AF37]">💡 填寫提示：</strong>
+                        若漏填 <span class="text-[#FF6B6B] font-bold">*必選</span> 欄位（例如：<strong>上車地點</strong>或<strong>房型需求</strong>），點擊確認時網頁會自動捲動至該欄位，並以 <span class="text-[#FF6B6B] font-bold">紅色外框高亮顯示</span> 提示您補選。
                     </div>
                 </div>
             </div>
 
             <!-- 底部關閉按鈕 -->
-            <div class="p-4 border-t border-gray-100 bg-gray-50 flex gap-2 rounded-b-2xl">
+            <div class="p-4 border-t border-[#D4AF37]/20 bg-[#162544]/80 flex gap-2 rounded-b-2xl">
                 <button onclick="closeTutorialModal()"
-                    class="w-full py-3 bg-[#06c755] hover:bg-[#05b04b] text-white font-bold rounded-xl shadow-md transition active:scale-95 text-center text-sm">
+                    class="w-full py-3 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] hover:brightness-110 text-[#0D131A] font-bold rounded-xl shadow-[0_4px_15px_rgba(212,175,55,0.4)] transition active:scale-95 text-center text-sm">
                     我懂了，開始報名！
                 </button>
             </div>
         </div>
     </div>
 
-    <script src="app.js?v=202606121550"></script>
+    <script src="app.js?v=202606121610"></script>
 </body>
 
 </html>

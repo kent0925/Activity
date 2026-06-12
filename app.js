@@ -2111,7 +2111,7 @@ function resetFormState() {
 
     DOM.formAction.value = 'register';
     DOM.submitBtn.innerHTML = '<span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>';
-    DOM.submitBtn.className = "flex-1 bg-[#06c755] text-white font-bold py-3.5 rounded-xl hover:bg-green-600 transition shadow-md active:scale-95 flex justify-center items-center gap-2";
+    DOM.submitBtn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] font-bold py-3.5 rounded-xl hover:brightness-110 transition shadow-[0_4px_15px_rgba(212,175,55,0.4)] active:scale-95 flex justify-center items-center gap-2";
     DOM.submitBtn.disabled = false;
 
     DOM.cancelBtn.classList.add('hidden');
@@ -2209,7 +2209,7 @@ function renderEventStaticInfo() {
             DOM.submitBtn.disabled = true;
             DOM.submitBtn.innerText = "報名已截止";
             DOM.submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
-            DOM.submitBtn.classList.remove('bg-[#06c755]', 'hover:bg-green-600');
+            DOM.submitBtn.classList.remove('from-[#D4AF37]', 'to-[#A67C00]', 'text-[#0D131A]');
         }
     }
 
@@ -4646,7 +4646,7 @@ function ensureManualCopyModalExists() {
 </div>
 <div class="p-4 border-t border-gray-100 bg-gray-50 flex gap-3 shrink-0">
      <button onclick="document.getElementById('manual-copy-modal').classList.add('hidden')" class="flex-1 py-3 rounded-xl font-bold text-gray-500 bg-white border border-gray-200 hover:bg-gray-50 transition">關閉</button>
-     <button onclick="retryCopy()" class="flex-1 py-3 rounded-xl font-bold text-white bg-[#06c755] hover:bg-green-600 shadow-md active:scale-95 transition flex justify-center items-center gap-2">
+     <button onclick="retryCopy()" class="flex-1 py-3 rounded-xl font-bold text-[#0D131A] bg-gradient-to-r from-[#D4AF37] to-[#A67C00] shadow-[0_4px_15px_rgba(212,175,55,0.4)] active:scale-95 transition flex justify-center items-center gap-2">
         <i data-lucide="copy" class="w-4 h-4"></i> 點擊複製
      </button>
 </div>
