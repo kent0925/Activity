@@ -152,7 +152,7 @@ async function fetchJackpotTop3() {
     if (cachedData) {
         try {
             const top3 = JSON.parse(cachedData);
-            appState.jackpotRankings = top3; // ★ 快取時也同步更新，名單顯示才能正確
+            if (typeof appState !== 'undefined') appState.jackpotRankings = top3; // ★ 快取時也同步更新，名單顯示才能正確
             renderJackpotTop3(top3);
             if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
             if (homeContainer) homeContainer.classList.remove('hidden');
@@ -162,6 +162,7 @@ async function fetchJackpotTop3() {
     }
 
     // 2. 背景呼叫 API 更新數據
+    if (typeof GAS_URL === 'undefined') return;
     try {
         // 原先為 getJackpotAll (拉霸排行榜)，現改為拿取小瑪莉專屬的英雄榜
         const res = await fetch(`${GAS_URL}?action=getMaryRankings&_=${Date.now()}`);
@@ -204,7 +205,7 @@ async function fetchAttendanceTop3() {
     if (cachedData) {
         try {
             const top3 = JSON.parse(cachedData);
-            appState.attendanceRankings = top3; // ★ 優化：快取讀取後同步更新，排行榜 Modal 可即時顯示
+            if (typeof appState !== 'undefined') appState.attendanceRankings = top3; // ★ 優化：快取讀取後同步更新，排行榜 Modal 可即時顯示
             renderAttendanceTop3(top3);
             if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
             if (homeContainer) homeContainer.classList.remove('hidden');
@@ -214,6 +215,7 @@ async function fetchAttendanceTop3() {
     }
 
     // 2. 背景呼叫 API 更新數據
+    if (typeof GAS_URL === 'undefined') return;
     try {
         const res = await fetch(`${GAS_URL}?action=getParticipationStats&_=${Date.now()}`);
         const allData = await res.json();
@@ -482,6 +484,7 @@ async function recordJackpotResult(symbolKey, score) {
         !appState.user?.userId ||
         appState.user.userId === '') return;
 
+    if (typeof apiSubmit === 'undefined') return;
     try {
         await apiSubmit({
             action: 'recordJackpot',

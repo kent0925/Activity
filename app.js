@@ -1264,10 +1264,14 @@ async function maryConfirmExchange() {
 
 /** HTML 跳脫：防止使用者輸入的 XSS 攻擊 */
 function escapeHtml(str) {
+    if (typeof str !== 'string') str = String(str || '');
     if (!str) return '';
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
+    return str
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
 }
 
 /** 統一欄位鍵值映射表 */
@@ -1742,7 +1746,7 @@ async function fetchStats(forceRefresh = false) {
 async function fetchDetails() {
     if (!GAS_URL) return [];
     try {
-        const res = await fetch(`${GAS_URL}?action=getDetails&eventId=${appState.currentEvent.id}`);
+        const res = await fetch(`${GAS_URL}?action=getDetails&eventId=${encodeURIComponent(appState.currentEvent.id)}`);
         return await res.json();
     } catch (e) { return []; }
 }
@@ -1765,11 +1769,15 @@ async function apiSubmit(data) {
     }
 
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
         const res = await fetch(GAS_URL, {
             method: 'POST',
             headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            signal: controller.signal
         });
+        clearTimeout(timeoutId);
         const text = await res.text();
         try {
             return JSON.parse(text);
@@ -2535,8 +2543,8 @@ async function openDetailsModal(filterType = 'all') {
         if (listP) listP.classList.remove('hidden');
         if (labelP) labelP.classList.remove('hidden');
     } else if (filterType === 'secondary') {
-        listP.classList.add('hidden');
-        labelP.classList.add('hidden');
+        if (listP) listP.classList.add('hidden');
+        if (labelP) labelP.classList.add('hidden');
         const evtType = appState.currentEvent.type;
         if (evtType === 'travel') {
             if (listT) listT.classList.remove('hidden');
@@ -2720,8 +2728,8 @@ function parseLocalDate(s) {
     if (!s) return new Date(NaN);
     if (s instanceof Date) return s;
     const str = String(s).trim();
-    // 如果已包含 +時區資訊（+08:00, Z, UTC 等），直接解析
-    if (/[Z+]\d{2}:?\d{2}$/.test(str) || str.endsWith('Z')) {
+    // 如果已包含 + 或 - 時區資訊（+08:00, -05:00, Z, UTC 等），直接解析
+    if (/[Z+-]\d{2}:?\d{2}$/.test(str) || str.endsWith('Z')) {
         return new Date(str);
     }
     // 匹配 yyyy-MM-dd HH:mm(:ss) 或 yyyy/MM/dd HH:mm(:ss)（月份/日期支援不補零）
@@ -3002,8 +3010,8 @@ function toggleHistoryView() {
                 div.onclick = () => openHistoryImage(e.id);
                 div.innerHTML = `
                     <div>
-                        <h4 class="font-bold text-gray-700">${e.name}</h4>
-                        <div class="text-xs text-gray-500 mt-0.5">主辦：${e.organizer || '未指定'}</div>
+                        <h4 class="font-bold text-gray-700">${escapeHtml(e.name)}</h4>
+                        <div class="text-xs text-gray-500 mt-0.5">主辦：${escapeHtml(e.organizer || '未指定')}</div>
                         <div class="text-xs text-gray-400 mt-1">${formatDateShort(e.time)}</div>
                     </div>
                     <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">已結束</span>`;
@@ -3041,6 +3049,8 @@ async function openHistoryImage(eventId) {
         appState.currentStats = await statsRes.json();
     } catch (err) {
         console.error('抓取歷史報名資料失敗:', err);
+        showToast('無法取得歷史資料，請稍後再試');
+        return;
     }
 
     const e = appState.currentEvent;
@@ -3077,13 +3087,9 @@ async function openHistoryImage(eventId) {
                 data.forEach(p => {
                     const family = getIntField(p, 'family');
                     // 純贊助者不顯示在名單區
-                    if (family === -1) return;
+                    if (family <= 0 && finalGuestCount === 0) return;
                     
-                    const guestData = parseGuestData(p);
-                    const finalGuestCount = calculateFinalGuestCount(p, guestData);
-                    
-                    // ★ 修正：計算總人數必須包含「本人(+1)」
-                    const total = 1 + family + finalGuestCount;
+                    const total = family + finalGuestCount;
                     
                     count++;
                     const num = count.toString().padStart(2, '0');
@@ -3172,6 +3178,11 @@ async function openHistoryImage(eventId) {
 
         card.innerHTML = html;
         document.body.appendChild(card);
+
+        if (typeof html2canvas === 'undefined') {
+            document.body.removeChild(card);
+            return showToast('圖片產生物件載入中，請稍後再試');
+        }
 
         const canvas = await html2canvas(card, {
             scale: 2, useCORS: true, backgroundColor: null,
@@ -4172,9 +4183,11 @@ async function executeShare(mode) {
         if (!e) return;
         
         const btn = document.getElementById('btn-share-single');
-        const origHtml = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
+        const origHtml = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
+        }
         if (window.lucide) window.lucide.createIcons();
         
         try {
@@ -4225,8 +4238,10 @@ async function executeShare(mode) {
             console.error(err);
             showToast("分享產生失敗，請重試");
         } finally {
-            btn.disabled = false;
-            btn.innerHTML = origHtml;
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
             if (window.lucide) window.lucide.createIcons();
         }
         
@@ -4238,9 +4253,11 @@ async function executeShare(mode) {
         }
         
         const btn = document.getElementById('btn-share-all');
-        const origHtml = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
+        const origHtml = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
+        }
         if (window.lucide) window.lucide.createIcons();
         
         try {
@@ -4296,8 +4313,10 @@ async function executeShare(mode) {
             console.error(err);
             showToast("分享產生失敗，請重試");
         } finally {
-            btn.disabled = false;
-            btn.innerHTML = origHtml;
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
             if (window.lucide) window.lucide.createIcons();
         }
     }
@@ -4364,10 +4383,10 @@ async function generateEventCanvas(e, data, stats) {
             let count = 0;
             data.forEach(p => {
                 const family = getIntField(p, 'family');
-                if (family === -1) return;
-
                 const guestData = parseGuestData(p);
                 const finalGuestCount = calculateFinalGuestCount(p, guestData);
+                if (family <= 0 && finalGuestCount === 0) return;
+
                 const total = family + finalGuestCount;
 
                 count++;
@@ -4469,6 +4488,11 @@ async function generateEventCanvas(e, data, stats) {
     document.body.appendChild(card);
 
     // --- 2. 使用 html2canvas 截取卡片 ---
+    if (typeof html2canvas === 'undefined') {
+        document.body.removeChild(card);
+        throw new Error('html2canvas 尚未載入');
+    }
+
     const canvas = await html2canvas(card, {
         scale: 2,
         useCORS: true,
@@ -4625,6 +4649,7 @@ function addGuest() {
 
     // ★ 清空所有輸入欄，避免殘留資料
     document.getElementById('add-guest-name').value = '';
+    document.getElementById('add-guest-count').value = '1';
     const pickupEl = document.getElementById('add-guest-pickup');
     const roomEl = document.getElementById('add-guest-room');
     if (pickupEl) pickupEl.value = '';
