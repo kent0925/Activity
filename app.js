@@ -2139,6 +2139,16 @@ function renderEventStaticInfo() {
     // ★ 安全檢查：防止資料尚未載入時報錯
     if (!e) return;
 
+    // ★ 新增：根據活動類型替換 Logo (右上角圖示)
+    const logoContainer = document.getElementById('event-logo-container');
+    if (logoContainer) {
+        let iconName = 'calendar';
+        if (e.type === 'banquet') iconName = 'utensils-crossed';
+        else if (e.type === 'travel') iconName = 'bus';
+        logoContainer.innerHTML = `<i data-lucide="${iconName}" class="w-8 h-8 text-[#162544]"></i>`;
+        if (window.lucide) window.lucide.createIcons({ nameAttr: 'data-lucide' });
+    }
+
     // 文字欄位
     document.getElementById('display-name').innerText = e.name;
     document.getElementById('display-organizer').innerText = e.organizer;
