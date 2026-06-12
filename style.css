@@ -452,7 +452,7 @@ details[open]>summary .arrow-icon {
 /* --- 輸入框（select / input 統一深藍底 + 極細古銅金描邊） --- */
 #view-activity-detail select,
 #regForm select,
-#regForm input[type="text"],
+#regForm input[type="text"]:not(#user-name),
 #regForm input[type="number"],
 #view-create select,
 #view-create input {
@@ -506,7 +506,7 @@ details[open]>summary .arrow-icon {
 #modal-content .bg-gray-50\/80 {
     background-color: rgba(22, 37, 68, 0.85) !important;
 }
-#modal-content h3, #modal-content .font-bold { color: white; }
+#modal-content h3 { color: white; }
 #modal-summary {
     background-color: rgba(255, 255, 255, 0.05) !important;
     color: rgba(255, 255, 255, 0.65) !important;
