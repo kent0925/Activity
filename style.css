@@ -453,6 +453,7 @@ details[open]>summary .arrow-icon {
 #view-activity-detail select,
 #regForm select,
 #regForm input[type="text"],
+#regForm input[type="number"],
 #view-create select,
 #view-create input {
     background-color: #162544 !important;
@@ -461,6 +462,16 @@ details[open]>summary .arrow-icon {
 }
 #regForm select option,
 #view-create select option { background-color: #1E3052; color: #EFECE5; }
+
+/* --- 贊助項目 / 來賓 / 表單內部淺色背景覆蓋 --- */
+#regForm .bg-white,
+#regForm .bg-gray-50,
+#regForm .bg-gray-50\/30,
+#regForm .bg-orange-50\/50,
+#regForm .bg-red-50\/50 {
+    background-color: var(--card-dark-bg) !important;
+    border-color: var(--border-color) !important;
+}
 
 /* --- 深灰按鈕 → 深藍 --- */
 .bg-gray-800 { background-color: #253A63 !important; }
@@ -543,6 +554,39 @@ details[open]>summary .arrow-icon {
     border-color: rgba(184, 146, 42, 0.3) !important;
 }
 #tutorial-modal-content .text-amber-800 { color: rgba(255, 255, 255, 0.85) !important; }
+
+/* --- 詳細名單彈窗 --- */
+#rankings-modal-content {
+    background: #162544 !important;
+    border-color: rgba(196, 154, 108, 0.3) !important;
+}
+
+/* --- 行程表區塊 (覆蓋原本的淺色背景) --- */
+#travel-itinerary-section .bg-gray-50\/50,
+#travel-itinerary-section .bg-white,
+#travel-itinerary-section .bg-gray-50,
+#travel-itinerary-section details.open\:bg-white[open] {
+    background-color: var(--card-dark-bg) !important;
+}
+#travel-itinerary-section details {
+    background-color: var(--bg-main) !important;
+    border-color: var(--border-color) !important;
+}
+#travel-itinerary-section .border-gray-100,
+#travel-itinerary-section .border-gray-200 {
+    border-color: var(--border-color) !important;
+}
+#travel-itinerary-section .bg-gray-100 {
+    background-color: var(--border-color) !important;
+}
+#travel-itinerary-section .text-green-600 {
+    color: var(--accent-brass) !important;
+}
+#travel-itinerary-section .bg-green-50,
+#travel-itinerary-section .bg-green-100 {
+    background-color: rgba(196, 154, 108, 0.15) !important;
+    color: var(--accent-brass) !important;
+}
 
 /* --- 建立活動區 --- */
 #view-create > div.bg-white {

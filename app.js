@@ -3266,17 +3266,19 @@ function closeDetailsModal() {
 function renderAddSponsorUI() {
     const type = document.querySelector('input[name="addSponsorType"]:checked').value;
     const area = document.getElementById('sponsor-input-area');
+    const inputClass = "border border-[#C49A6C]/40 rounded-lg px-3 py-1.5 text-sm bg-[#162544] text-[#EFECE5] placeholder-[#B8B2A7]/60 focus:ring-1 focus:ring-[#C49A6C] focus:border-[#C49A6C] outline-none transition-colors";
+    
     if (type === 'alcohol') {
         area.innerHTML = `
-            <input id="sp-qty" type="number" class="w-20 border border-gray-300 rounded px-2 py-1 text-sm" placeholder="數量" min="1">
-            <select id="sp-unit" class="border border-gray-300 rounded px-2 py-1 text-sm bg-white">
+            <input id="sp-qty" type="number" class="w-24 ${inputClass}" placeholder="數量" min="1">
+            <select id="sp-unit" class="${inputClass}">
                 <option value="瓶">瓶</option>
                 <option value="箱">箱</option>
             </select>`;
     } else if (type === 'money') {
-        area.innerHTML = `<input id="sp-money" type="number" class="w-full border border-gray-300 rounded px-2 py-1 text-sm" placeholder="金額 (100為單位)" min="100" step="100">`;
+        area.innerHTML = `<input id="sp-money" type="number" class="w-full ${inputClass}" placeholder="金額 (100為單位)" min="100" step="100">`;
     } else {
-        area.innerHTML = `<input id="sp-other" type="text" class="w-full border border-gray-300 rounded px-2 py-1 text-sm" placeholder="贊助內容">`;
+        area.innerHTML = `<input id="sp-other" type="text" class="w-full ${inputClass}" placeholder="贊助內容">`;
     }
 }
 
