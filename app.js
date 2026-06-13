@@ -4228,17 +4228,16 @@ async function generateEventCanvas(e, data, stats) {
     
     let html = '';
     
-    // --- 頂級流線尊榮金標題 (完全移除僵硬的方角) ---
-    // 使用頂級圓角 (border-radius: 20px) 與多層次的真實金屬漸層，展現極致流線高級感
-    html += '<div style="background:linear-gradient(135deg, #E5C158 0%, #FDE68A 30%, #D4AF37 70%, #B89025 100%);border-radius:20px;display:flex;align-items:center;padding:8px 24px 8px 12px;margin-bottom:28px;box-shadow:0 8px 20px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.6);height:76px;box-sizing:border-box;border: 1px solid rgba(255,255,255,0.3);">';
+    // --- 頂級真實金屬質感標題 ---
+    // 解決 html2canvas 對於漸層+圓角產生的「白角Bug」，改用高質感「純色霧面真金」搭配打光內陰影，呈現真實金屬銘牌的厚重感
+    // 移除固定高度，改由 padding 撐開，徹底解決內容往下偏移的 Bug
+    html += '<div style="background:#D4AF37;border-radius:12px;padding:16px 20px;margin-bottom:24px;box-shadow:inset 0 4px 10px rgba(255,255,255,0.5), inset 0 -4px 10px rgba(139,101,8,0.3), 0 6px 15px rgba(0,0,0,0.4);border:1px solid #B8860B;display:flex;align-items:center;">';
     
-    // 左側圖示區：加上一個微透明的深色質感圓形凹槽來襯托圖案，比單純放著更精緻
-    html += `<div style="background:rgba(15,23,42,0.1);border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 2px 6px rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.2);">
-                <div style="font-size:36px;line-height:1;padding-bottom:4px;">${iconEmoji}</div>
-             </div>`;
+    // 左側圖示區：單純放大，利用 drop-shadow 營造立體感，避免複雜包裹層導致偏移
+    html += `<div style="font-size:40px;line-height:1;margin-right:16px;filter:drop-shadow(0 3px 5px rgba(0,0,0,0.4));">${iconEmoji}</div>`;
              
-    // 右側標題文字 (深邃藍色，保留立體感)
-    html += `<div style="color:#0f172a;font-size:24px;font-weight:900;letter-spacing:1.5px;white-space:nowrap;flex:1;text-shadow: 0 1px 2px rgba(255,255,255,0.5);line-height:1.2;margin-left:16px;padding-bottom:4px;">${escapeHtml(e.name)}</div>`;
+    // 右側標題文字 (深邃藍黑金屬刻字感)
+    html += `<div style="color:#111827;font-size:24px;font-weight:900;letter-spacing:1px;white-space:nowrap;text-shadow: 0 1px 1px rgba(255,255,255,0.7);line-height:1.2;">${escapeHtml(e.name)}</div>`;
     
     html += '</div>';
 
