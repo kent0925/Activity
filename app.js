@@ -4219,54 +4219,107 @@ async function generateEventCanvas(e, data, stats) {
     const includeLink = false;    // 圖片不含報名連結
 
     // --- 1. 動態產生分享卡片 HTML ---
+    // --- 1. 動態產生分享卡片 HTML ---
     const card = document.createElement('div');
-    // 使用高貴深色背景，並增加質感邊距與圓角
-    card.style.cssText = 'position:fixed;left:-9999px;top:0;width:440px;padding:32px 24px;background:#0D131A;font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#f3f4f6;z-index:-1;box-sizing:border-box;';
+    card.style.cssText = 'position:fixed;left:-9999px;top:0;width:440px;z-index:-1;';
 
-    // 判斷是否有自訂圖示，預設依照活動名稱自動帶入合適的高質感 Emoji
     const iconEmoji = e.icon || getEventEmoji(e.name);
     
-    let html = '';
+    let html = `
+    <style>
+      .app-container {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+        background-color: #0A111D;
+        font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+        color: #f3f4f6;
+      }
+      /* 頂部標題區塊 */
+      .header-wrapper { width: 100%; margin-bottom: 1.5rem; position: relative; }
+      .header-card {
+        background-color: #D2BCA2; border-radius: 0.75rem; padding: 1.25rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); display: flex;
+        align-items: center; justify-content: center; gap: 0.75rem;
+        position: relative; overflow: hidden; border: 2px solid rgba(225, 205, 168, 0.5);
+      }
+      .header-icon { font-size: 2.25rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+      .header-title { font-size: 1.3rem; font-weight: bold; letter-spacing: 0.05em; color: #1E293B; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; line-height: 1.2; padding-bottom: 2px; }
+      /* 標題裝飾邊角 */
+      .corner { position: absolute; width: 1rem; height: 1rem; background-color: #B59C7D; }
+      .corner-tl { top: 0; left: 0; border-bottom-right-radius: 0.5rem; }
+      .corner-tr { top: 0; right: 0; border-bottom-left-radius: 0.5rem; }
+      .corner-bl { bottom: 0; left: 0; border-top-right-radius: 0.5rem; }
+      .corner-br { bottom: 0; right: 0; border-top-left-radius: 0.5rem; }
+      /* 通用卡片設計 */
+      .card { width: 100%; background-color: #1B2433; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); margin-bottom: 1.5rem; border: 1px solid rgba(75, 85, 99, 0.3); box-sizing: border-box; }
+      /* 活動資訊列表 */
+      .info-list { list-style: none; padding: 0; margin: 0; font-size: 0.95rem; }
+      .info-list li { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
+      .info-list li:last-child { margin-bottom: 0; }
+      .info-list .icon { font-size: 1.25rem; }
+      .info-list .text { color: #d1d5db; line-height: 1.5; padding-top: 0.125rem; }
+      /* 備註區塊 */
+      .note-box { margin-top: 1.25rem; background-color: #252D3D; border-radius: 0.75rem; padding: 1rem; border: 1px solid rgba(75, 85, 99, 0.2); }
+      .note-box p { margin: 0; font-size: 0.875rem; color: #D2BCA2; line-height: 1.6; }
+      .note-title { color: #D2BCA2; margin-right: 0.25rem; font-weight: bold; }
+      /* 報名名單卡片 */
+      .list-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(75, 85, 99, 0.4); }
+      .list-header .icon { font-size: 1.25rem; }
+      .list-header h2 { font-size: 1.125rem; font-weight: bold; color: #D2BCA2; letter-spacing: 0.05em; margin: 0; }
+      /* 名單項目 */
+      .list-item { padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(75, 85, 99, 0.3); }
+      .list-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+      .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.25rem; flex-wrap: wrap; font-size: 1.05rem; }
+      .item-title .name { margin-right: 0.5rem; color: #f8fafc; }
+      .item-title .count { color: #D2BCA2; margin-left: 0.5rem; font-size: 0.9rem; }
+      .item-detail { font-size: 0.9rem; color: #9ca3af; margin-left: 2.25rem; padding-top: 0.25rem; line-height: 1.4; }
+      /* 底部總計 */
+      .footer-wrapper { width: 100%; text-align: center; margin-top: 0.5rem; }
+      .total-count { color: #D2BCA2; font-weight: bold; font-size: 1.125rem; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+      .copyright { color: #6b7280; font-size: 0.75rem; letter-spacing: 0.05em; }
+    </style>
     
-    // --- 頂級真實金屬質感標題 ---
-    // 解決 html2canvas 對於漸層+圓角產生的「白角Bug」，改用高質感「純色霧面真金」搭配打光內陰影，呈現真實金屬銘牌的厚重感
-    // 移除固定高度，改由 padding 撐開，徹底解決內容往下偏移的 Bug
-    html += '<div style="background:#D4AF37;border-radius:12px;padding:16px 20px;margin-bottom:24px;box-shadow:inset 0 4px 10px rgba(255,255,255,0.5), inset 0 -4px 10px rgba(139,101,8,0.3), 0 6px 15px rgba(0,0,0,0.4);border:1px solid #B8860B;display:flex;align-items:center;">';
-    
-    // 左側圖示區：單純放大，利用 drop-shadow 營造立體感，避免複雜包裹層導致偏移
-    html += `<div style="font-size:40px;line-height:1;margin-right:16px;filter:drop-shadow(0 3px 5px rgba(0,0,0,0.4));">${iconEmoji}</div>`;
-             
-    // 右側標題文字 (深邃藍黑金屬刻字感)
-    html += `<div style="color:#111827;font-size:24px;font-weight:900;letter-spacing:1px;white-space:nowrap;text-shadow: 0 1px 1px rgba(255,255,255,0.7);line-height:1.2;">${escapeHtml(e.name)}</div>`;
-    
-    html += '</div>';
-
-    // 共用卡片樣式
-    const cardStyle = 'background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.5);';
-
-    // 活動資訊區
-    html += `<div style="${cardStyle}">`;
-    if (e.organizer) html += `<div style="font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:10px;color:#cbd5e1;"><span style="font-size:18px;">👤</span> <span>主辦人：${escapeHtml(e.organizer)}</span></div>`;
+    <div class="app-container">
+      <div class="header-wrapper">
+        <div class="header-card">
+          <div class="corner corner-tl"></div>
+          <div class="corner corner-tr"></div>
+          <div class="corner corner-bl"></div>
+          <div class="corner corner-br"></div>
+          <div class="header-icon">${iconEmoji}</div>
+          <h1 class="header-title">${escapeHtml(e.name)}</h1>
+        </div>
+      </div>
+      
+      <div class="card">
+        <ul class="info-list">`;
+        
+    if (e.organizer) html += `<li><span class="icon">👤</span><div class="text">主辦人：${escapeHtml(e.organizer)}</div></li>`;
     const timeDisplay = formatTimeForShare(e.time);
-    if (timeDisplay) html += `<div style="font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:10px;color:#cbd5e1;"><span style="font-size:18px;">🕒</span> <span>時間：${escapeHtml(timeDisplay)}</span></div>`;
-    if (e.location) html += `<div style="font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:10px;color:#cbd5e1;"><span style="font-size:18px;">📍</span> <span>地點：${escapeHtml(e.location)}</span></div>`;
-    if (e.address) html += `<div style="font-size:15px;margin-bottom:0;display:flex;align-items:center;gap:10px;color:#cbd5e1;"><span style="font-size:18px;">🚗</span> <span>地址：${escapeHtml(e.address)}</span></div>`;
+    if (timeDisplay) html += `<li><span class="icon">🕒</span><div class="text">時間：${escapeHtml(timeDisplay)}</div></li>`;
+    if (e.location)  html += `<li><span class="icon">📍</span><div class="text">地點：${escapeHtml(e.location)}</div></li>`;
+    if (e.address)   html += `<li><span class="icon">🚗</span><div class="text">地址：${escapeHtml(e.address)}</div></li>`;
+    
+    html += `</ul>`;
+    
     if (e.note) {
-        html += `<div style="font-size:14px;margin-top:16px;padding:12px;background:rgba(212,175,55,0.1);color:#fbbf24;border:1px solid rgba(212,175,55,0.3);border-radius:8px;line-height:1.6;">💡 <b>備註：</b><br>${escapeHtml(e.note).replace(/\n/g, '<br>')}</div>`;
+        html += `<div class="note-box"><p><span class="note-title">💡 備註：</span>${escapeHtml(e.note).replace(/\n/g, '<br>')}</p></div>`;
     }
-    html += '</div>';
+    html += `</div>`;
 
     // 名單區
     if (includeNames && data.length > 0) {
-        html += `<div style="${cardStyle}">`;
-        html += '<div style="font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #334155;color:#d4af37;display:flex;align-items:center;gap:10px;letter-spacing:1px;"><span style="font-size:20px;">👥</span> 報名名單</div>';
+        html += `<div class="card">
+                   <div class="list-header"><span class="icon">👥</span><h2>報名名單</h2></div>`;
         let count = 0;
         data.forEach(p => {
             const family = getIntField(p, 'family');
             const guestData = parseGuestData(p);
             const finalGuestCount = calculateFinalGuestCount(p, guestData);
             const total = family + finalGuestCount;
-            
             if (total === 0) return;
 
             count++;
@@ -4279,10 +4332,11 @@ async function generateEventCanvas(e, data, stats) {
             if (roles.length > 0) {
                 tagHtml = roles.map(r => {
                     let textColor = r.color;
-                    if(r.label === '會長') { textColor = '#fbbf24'; prefix += '👑 '; }
-                    else if(r.label === '輔導會長') { textColor = '#c084fc'; prefix += '🧙‍♂️ '; }
-                    else if(r.label === '壽星') { textColor = '#f472b6'; prefix += '🎂 '; }
-                    return `<span style="color:${textColor};font-size:12px;font-weight:bold;margin-left:8px;display:inline-flex;align-items:center;">${r.label}</span>`;
+                    let emojiPrefix = '';
+                    if(r.label === '會長') { textColor = '#EAB308'; emojiPrefix = '👑 '; }
+                    else if(r.label === '輔導會長') { textColor = '#A855F7'; emojiPrefix = '🧙‍♂️ '; }
+                    else if(r.label === '壽星') { textColor = '#EC4899'; emojiPrefix = '🎂 '; }
+                    return `<span style="color:${textColor};font-size:0.8rem;font-weight:bold;margin-left:0.5rem;">${emojiPrefix}${r.label}</span>`;
                 }).join('');
             }
 
@@ -4290,24 +4344,27 @@ async function generateEventCanvas(e, data, stats) {
             let maryMedal = '';
             if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
                 const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
-                if (rankIndex === 0) { nameColor = '#fbbf24'; maryMedal = '🥇 '; }
+                if (rankIndex === 0) { nameColor = '#EAB308'; maryMedal = '🥇 '; }
                 else if (rankIndex === 1) { nameColor = '#e2e8f0'; maryMedal = '🥈 '; }
                 else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉 '; }
             }
 
-            html += `<div style="font-size:16px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;">`;
-            html += `<span style="color:#d4af37;font-weight:700;margin-right:10px;font-family:monospace;font-size:15px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== '#f8fafc' ? '800' : 'normal'};letter-spacing:0.5px;">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
-            if (total > 1) html += `<span style="color:#d4af37;font-weight:700;margin-left:10px;font-size:15px;">×${total}</span>`;
-            html += '</div>';
+            html += `<div class="list-item">
+                       <div class="item-title">
+                         <span style="color:#D2BCA2;margin-right:0.5rem;font-family:monospace;">${num}.</span>
+                         <span class="name" style="color:${nameColor};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}</span>
+                         ${tagHtml}
+                         ${total > 1 ? `<span class="count">×${total}</span>` : ''}
+                       </div>`;
 
             // 來賓
             if (guestData.length > 0) {
                 const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
-                html += `<div style="font-size:14px;color:#94a3b8;padding:4px 0 6px 30px;display:flex;align-items:center;gap:6px;"><span>↳</span> 來賓：${guestParts.join('、')}</div>`;
+                html += `<div class="item-detail">↳ 來賓：${guestParts.join('、')}</div>`;
             } else {
                 const guestNameStr = getField(p, 'guestName');
                 if (guestNameStr && guestNameStr !== '無') {
-                    html += `<div style="font-size:14px;color:#94a3b8;padding:4px 0 6px 30px;display:flex;align-items:center;gap:6px;"><span>↳</span> 來賓：${guestNameStr}</div>`;
+                    html += `<div class="item-detail">↳ 來賓：${guestNameStr}</div>`;
                 }
             }
 
@@ -4325,11 +4382,12 @@ async function generateEventCanvas(e, data, stats) {
                     });
                 }
                 if (travelLines.length > 0) {
-                    html += `<div style="font-size:14px;color:#D4AF37;padding:4px 0 8px 30px;font-weight:500;">${travelLines.join('、')}</div>`;
+                    html += `<div class="item-detail" style="color:#D2BCA2;">${travelLines.join('、')}</div>`;
                 }
             }
+            html += `</div>`;
         });
-        html += '</div>';
+        html += `</div>`;
     }
 
     // 贊助/認桌彙總區
@@ -4347,26 +4405,32 @@ async function generateEventCanvas(e, data, stats) {
             const sponsorRaw = getField(p, 'sponsor');
             const sponsorList = parseSponsorData(sponsorRaw);
             sponsorList.forEach(s => moneyParts.push(s));
+            
             if (moneyParts.length > 0) {
-                const label = (total === 0) ? '<span style="font-size:12px;color:#fbbf24;margin-left:6px;opacity:0.8;">(純贊助)</span>' : '';
-                sponsorHtml += `<div style="font-size:15px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);padding-left:12px;color:#e2e8f0;display:flex;align-items:center;gap:10px;">🎁 <span style="font-weight:600;color:#f8fafc;">${p.name}</span>${label} <span style="color:#475569;">—</span> <span style="color:#d4af37;">${moneyParts.join('、')}</span></div>`;
+                const label = (total === 0) ? '<span style="font-size:0.8rem;color:#EAB308;margin-left:0.5rem;opacity:0.8;">(純贊助)</span>' : '';
+                sponsorHtml += `<div class="list-item" style="border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0.5rem;">
+                                  <span class="icon">🎁</span> 
+                                  <span class="name" style="color:#f8fafc;font-weight:bold;">${p.name}</span>${label} 
+                                  <span style="color:#6b7280;">—</span> 
+                                  <span style="color:#D2BCA2;font-size:0.95rem;">${moneyParts.join('、')}</span>
+                                </div>`;
             }
         });
         if (sponsorHtml) {
-            html += `<div style="${cardStyle}">`;
-            html += '<div style="font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #334155;color:#d4af37;display:flex;align-items:center;gap:10px;letter-spacing:1px;"><span style="font-size:20px;">💰</span> 贊助 / 認桌資訊</div>';
-            html += sponsorHtml;
-            html += '</div>';
+            html += `<div class="card">
+                       <div class="list-header"><span class="icon">💰</span><h2>贊助 / 認桌資訊</h2></div>
+                       ${sponsorHtml}
+                     </div>`;
         }
     }
 
-    // 統計區
-    html += '<div style="text-align:center;font-size:18px;font-weight:700;color:#d4af37;padding:16px 0 8px 0;letter-spacing:2px;text-shadow:0 2px 4px rgba(0,0,0,0.5);">';
-    html += `共 ${stats.totalPeople || 0} 人報名`;
-    html += '</div>';
-
-    // 浮水印
-    html += '<div style="text-align:center;font-size:12px;color:#64748b;margin-top:16px;letter-spacing:1px;">大老二兄弟會 活動報名系統</div>';
+    // 底部統計區
+    html += `
+      <div class="footer-wrapper">
+        <div class="total-count">共 ${stats.totalPeople || 0} 人報名</div>
+        <div class="copyright">大老二兄弟會 活動報名系統</div>
+      </div>
+    </div>`;
 
     card.innerHTML = html;
     document.body.appendChild(card);
