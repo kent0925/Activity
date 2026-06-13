@@ -4276,11 +4276,11 @@ async function generateEventCanvas(e, data, stats) {
       .item-title .count { color: #D4AF7A; margin-left: 0.5rem; font-size: 0.9rem; }
       .item-detail { font-size: 0.875rem; color: #8C7A65; margin-left: 1.75rem; padding-top: 0; line-height: 1.4; }
       /* ==================== 獨立標籤配色 ==================== */
-      .tag { font-size: 0.7rem; font-weight: bold; letter-spacing: 0.05em; margin-right: 0.25rem; margin-left: 0.5rem; padding: 0.15rem 0.4rem; border-radius: 0.25rem; color: #FFF3D8; box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2); text-shadow: 0 1px 2px rgba(0,0,0,0.6); display: inline-flex; align-items: center;}
-      .tag-orange { background: linear-gradient(135deg, #C85A17 0%, #8A3604 100%); border: 1px solid #A84810; }
-      .tag-pink { background: linear-gradient(135deg, #B03060 0%, #5C102A 100%); border: 1px solid #8C2048; }
-      .tag-purple { background: linear-gradient(135deg, #6B3FA0 0%, #301755 100%); border: 1px solid #583088; }
-      .tag-gold { background: linear-gradient(135deg, #D4AF7A 0%, #9C7132 100%); border: 1px solid #B8925A; color: #24170E; text-shadow: 0 1px 1px rgba(255,255,255,0.4); }
+      .tag { font-size: 0.8rem; font-weight: bold; margin-left: 0.5rem; display: inline-flex; align-items: center; letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+      .tag-orange { color: #F97316; } /* 亮橘色 */
+      .tag-pink { color: #EC4899; }   /* 亮粉色 */
+      .tag-purple { color: #A855F7; } /* 亮紫色 */
+      .tag-gold { color: #EAB308; }   /* 亮金色 */
       /* ==================== 底部總計 ==================== */
       .footer-wrapper { width: 100%; text-align: center; margin-top: 0.5rem; }
       .total-count { color: #D4AF7A; font-weight: bold; font-size: 1.125rem; letter-spacing: 0.1em; margin-bottom: 0.75rem; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
