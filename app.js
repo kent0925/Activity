@@ -4227,59 +4227,72 @@ async function generateEventCanvas(e, data, stats) {
     
     let html = `
     <style>
+      /* ==================== 基礎與排版設定 ==================== */
       .app-container {
-        padding: 2rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        box-sizing: border-box;
-        background-color: #0A111D;
-        font-family: "Segoe UI", "Noto Sans TC", sans-serif;
-        color: #f3f4f6;
+        padding: 2rem; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+        background-color: #15110E; background-image: radial-gradient(#2A221C 1px, transparent 1px); background-size: 4px 4px;
+        font-family: sans-serif; color: #EAD7BA;
       }
-      /* 頂部標題區塊 */
+      /* ==================== 頂部標題區塊 ==================== */
       .header-wrapper { width: 100%; margin-bottom: 1.5rem; position: relative; }
       .header-card {
-        background-color: #D2BCA2; border-radius: 0.75rem; padding: 1.25rem;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); display: flex;
-        align-items: center; justify-content: center; gap: 0.75rem;
-        position: relative; border: 2px solid rgba(225, 205, 168, 0.5);
+        background: linear-gradient(135deg, #3A2818 0%, #24170E 40%, #150D08 60%, #302013 100%);
+        border-radius: 0.75rem; padding: 1.5rem;
+        box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.9), inset 0 2px 5px rgba(200, 160, 110, 0.3), inset 0 -3px 8px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 0, 0, 0.8);
+        border: 2px solid #755536; outline: 1px solid #1C110A; outline-offset: -4px;
+        display: flex; align-items: center; justify-content: center; gap: 0.75rem; position: relative;
       }
-      .header-icon { font-size: 2.25rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); padding-bottom: 4px; }
-      .header-title { font-size: 1.3rem; font-weight: bold; letter-spacing: 0.05em; color: #1E293B; margin: 0; white-space: nowrap; flex: 1; line-height: 1.2; padding-bottom: 4px; }
-      /* 標題裝飾邊角 */
-      .corner { position: absolute; width: 1rem; height: 1rem; background-color: #B59C7D; }
-      .corner-tl { top: 0; left: 0; border-bottom-right-radius: 0.5rem; }
-      .corner-tr { top: 0; right: 0; border-bottom-left-radius: 0.5rem; }
-      .corner-bl { bottom: 0; left: 0; border-top-right-radius: 0.5rem; }
-      .corner-br { bottom: 0; right: 0; border-top-left-radius: 0.5rem; }
-      /* 通用卡片設計 */
-      .card { width: 100%; background-color: #1B2433; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); margin-bottom: 1.5rem; border: 1px solid rgba(75, 85, 99, 0.3); box-sizing: border-box; }
-      /* 活動資訊列表 */
-      .info-list { list-style: none; padding: 0; margin: 0; font-size: 0.95rem; }
+      .header-icon { font-size: 2.25rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); padding-bottom: 4px; }
+      .header-title {
+        font-size: 1.35rem; font-weight: bold; letter-spacing: 0.1em; margin: 0;
+        /* 改為亮金屬純色配合 html2canvas 支援度，避免 background-clip 失效變成透明 */
+        color: #F8E1B9; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+        white-space: nowrap; flex: 1; line-height: 1.2; padding-bottom: 4px;
+      }
+      /* 裝飾邊角：模擬金屬螺絲/鉚釘底座 */
+      .corner {
+        position: absolute; width: 1.5rem; height: 1.5rem; background: linear-gradient(135deg, #755536 0%, #3A2818 50%, #1C110A 100%);
+        border: 1px solid #8C6A47; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6); z-index: 10;
+      }
+      .corner-tl { top: -2px; left: -2px; border-bottom-right-radius: 0.5rem; }
+      .corner-tr { top: -2px; right: -2px; border-bottom-left-radius: 0.5rem; }
+      .corner-bl { bottom: -2px; left: -2px; border-top-right-radius: 0.5rem; }
+      .corner-br { bottom: -2px; right: -2px; border-top-left-radius: 0.5rem; }
+      /* ==================== 通用卡片與資訊 ==================== */
+      .card {
+        width: 100%; background: linear-gradient(180deg, #221B16 0%, #15110E 100%); border-radius: 1rem; padding: 1.5rem;
+        box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.05); margin-bottom: 1.5rem; border: 1px solid #4A3A2A; box-sizing: border-box;
+      }
+      .info-list { list-style: none; padding: 0; margin: 0; font-size: 0.875rem; }
       .info-list li { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
       .info-list li:last-child { margin-bottom: 0; }
-      .info-list .icon { font-size: 1.25rem; }
-      .info-list .text { color: #d1d5db; line-height: 1.5; padding-top: 0.125rem; }
+      .info-list .icon { font-size: 1.125rem; filter: sepia(0.5) hue-rotate(340deg) saturate(1.5); }
+      .info-list .text { color: #D1C0A8; line-height: 1.6; padding-top: 0.125rem; }
       /* 備註區塊 */
-      .note-box { margin-top: 1.25rem; background-color: #252D3D; border-radius: 0.75rem; padding: 1rem; border: 1px solid rgba(75, 85, 99, 0.2); }
-      .note-box p { margin: 0; font-size: 0.875rem; color: #D2BCA2; line-height: 1.6; }
-      .note-title { color: #D2BCA2; margin-right: 0.25rem; font-weight: bold; }
-      /* 報名名單卡片 */
-      .list-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(75, 85, 99, 0.4); }
-      .list-header .icon { font-size: 1.25rem; }
-      .list-header h2 { font-size: 1.125rem; font-weight: bold; color: #D2BCA2; letter-spacing: 0.05em; margin: 0; }
+      .note-box { margin-top: 1.25rem; background-color: #0E0A08; border-radius: 0.75rem; padding: 1rem; border: 1px solid #2A221C; box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8); }
+      .note-box p { margin: 0; font-size: 0.875rem; color: #9A8C7A; line-height: 1.6; }
+      .note-title { color: #D4AF7A; margin-right: 0.25rem; font-weight: bold; }
+      /* ==================== 報名名單 ==================== */
+      .list-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #4A3A2A; }
+      .list-header .icon { font-size: 1.25rem; filter: sepia(0.5) hue-rotate(340deg) saturate(1.5); }
+      .list-header h2 { font-size: 1.125rem; font-weight: bold; color: #D4AF7A; letter-spacing: 0.05em; margin: 0; }
       /* 名單項目 */
-      .list-item { padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(75, 85, 99, 0.3); }
+      .list-item { padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid #2A221C; }
       .list-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
-      .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.25rem; flex-wrap: wrap; font-size: 1.05rem; }
-      .item-title .name { margin-right: 0.5rem; color: #f8fafc; }
-      .item-title .count { color: #D2BCA2; margin-left: 0.5rem; font-size: 0.9rem; }
-      .item-detail { font-size: 0.9rem; color: #9ca3af; margin-left: 2.25rem; padding-top: 0.25rem; line-height: 1.4; }
-      /* 底部總計 */
+      .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.35rem; flex-wrap: wrap; font-size: 1.05rem; }
+      .item-title .name { margin-right: 0.5rem; color: #EAD7BA; }
+      .item-title .count { color: #D4AF7A; margin-left: 0.5rem; font-size: 0.9rem; }
+      .item-detail { font-size: 0.875rem; color: #8C7A65; margin-left: 2.25rem; padding-top: 0.25rem; line-height: 1.4; }
+      /* ==================== 獨立標籤配色 ==================== */
+      .tag { font-size: 0.7rem; font-weight: bold; letter-spacing: 0.05em; margin-right: 0.25rem; margin-left: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 0.25rem; color: #FFF3D8; box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2); text-shadow: 0 1px 2px rgba(0,0,0,0.6); display: inline-flex; align-items: center;}
+      .tag-orange { background: linear-gradient(135deg, #C85A17 0%, #8A3604 100%); border: 1px solid #A84810; }
+      .tag-pink { background: linear-gradient(135deg, #B03060 0%, #5C102A 100%); border: 1px solid #8C2048; }
+      .tag-purple { background: linear-gradient(135deg, #6B3FA0 0%, #301755 100%); border: 1px solid #583088; }
+      .tag-gold { background: linear-gradient(135deg, #D4AF7A 0%, #9C7132 100%); border: 1px solid #B8925A; color: #24170E; text-shadow: 0 1px 1px rgba(255,255,255,0.4); }
+      /* ==================== 底部總計 ==================== */
       .footer-wrapper { width: 100%; text-align: center; margin-top: 0.5rem; }
-      .total-count { color: #D2BCA2; font-weight: bold; font-size: 1.125rem; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
-      .copyright { color: #6b7280; font-size: 0.75rem; letter-spacing: 0.05em; }
+      .total-count { color: #D4AF7A; font-weight: bold; font-size: 1.125rem; letter-spacing: 0.1em; margin-bottom: 0.75rem; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+      .copyright { color: #6B5D4D; font-size: 0.75rem; letter-spacing: 0.05em; }
     </style>
     
     <div class="app-container">
@@ -4331,12 +4344,15 @@ async function generateEventCanvas(e, data, stats) {
             let tagHtml = '';
             if (roles.length > 0) {
                 tagHtml = roles.map(r => {
-                    let textColor = r.color;
-                    let emojiPrefix = '';
-                    if(r.label === '會長') { textColor = '#EAB308'; emojiPrefix = '👑 '; }
-                    else if(r.label === '輔導會長') { textColor = '#A855F7'; emojiPrefix = '🧙‍♂️ '; }
-                    else if(r.label === '壽星') { textColor = '#EC4899'; emojiPrefix = '🎂 '; }
-                    return `<span style="color:${textColor};font-size:0.8rem;font-weight:bold;margin-left:0.5rem;">${emojiPrefix}${r.label}</span>`;
+                    let tagClass = 'tag-orange'; // default/爐主
+                    let prefixIcon = '🍻 '; 
+                    
+                    if(r.label === '會長') { tagClass = 'tag-gold'; prefixIcon = '👑 '; }
+                    else if(r.label === '輔導會長') { tagClass = 'tag-purple'; prefixIcon = '🧙‍♂️ '; }
+                    else if(r.label.includes('壽星')) { tagClass = 'tag-pink'; prefixIcon = '🎂 '; }
+                    else if(r.label === '爐主') { tagClass = 'tag-orange'; prefixIcon = '🍻 '; }
+                    
+                    return `<span class="tag ${tagClass}">${prefixIcon}${r.label}</span>`;
                 }).join('');
             }
 
