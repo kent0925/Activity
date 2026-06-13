@@ -3995,7 +3995,8 @@ function canvasToFile(canvas, filename) {
 }
 
 function generateSingleShareText(e, data, stats, options) {
-    let text = `✨ 【${e.name}】活動資訊 ✨\n`;
+    const iconEmoji = e.icon || getEventEmoji(e.name);
+    let text = `${iconEmoji} 【${e.name}】活動資訊 ${iconEmoji}\n`;
     text += `🕒 時間: ${formatTimeForShare(e.time) || '無時間'}\n`;
     text += `📍 地點: ${e.location || '無地點'}\n`;
     if (stats.total > 0) {
@@ -4013,7 +4014,8 @@ function generateSingleShareText(e, data, stats, options) {
 async function generateAllShareText(eventDataList) {
     let text = `🎉 近期活動總覽 🎉\n\n`;
     eventDataList.forEach(({ event: e, stats }) => {
-        text += `✨ 【${e.name}】\n`;
+        const iconEmoji = e.icon || getEventEmoji(e.name);
+        text += `${iconEmoji} 【${e.name}】\n`;
         text += `🕒 ${formatTimeForShare(e.time) || '無時間'}\n`;
         text += `📍 ${e.location || '無地點'}\n`;
         if (stats.total > 0) {
@@ -4199,6 +4201,15 @@ async function fetchStatsForEvent(eventId) {
     } catch (e) { return {}; }
 }
 
+// 依據活動名稱自動判斷合適的 Emoji
+function getEventEmoji(eventName) {
+    if (!eventName) return '📅';
+    if (eventName.includes('家庭日')) return '📸';
+    if (eventName.includes('小型餐會')) return '🍽️';
+    if (eventName.includes('餐會') || eventName.includes('聚餐')) return '🍾';
+    return '📅';
+}
+
 // 通用活動圖片 Canvas 生成邏輯 (高貴質感深色版)
 async function generateEventCanvas(e, data, stats) {
     const includeSponsor = false; // 名單內不顯示贊助，改由下方獨立區塊顯示
@@ -4212,8 +4223,8 @@ async function generateEventCanvas(e, data, stats) {
     // 使用高貴深色背景，並增加質感邊距與圓角
     card.style.cssText = 'position:fixed;left:-9999px;top:0;width:440px;padding:32px 24px;background:#0D131A;font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#f3f4f6;z-index:-1;box-sizing:border-box;';
 
-    // 判斷是否有自訂圖示，預設為 📅 (依據活動調整)
-    const iconEmoji = e.icon || '📅';
+    // 判斷是否有自訂圖示，預設依照活動名稱自動帶入合適的高質感 Emoji
+    const iconEmoji = e.icon || getEventEmoji(e.name);
     
     let html = '';
     
@@ -4222,8 +4233,8 @@ async function generateEventCanvas(e, data, stats) {
     // 裝飾性光影
     html += '<div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);"></div>';
     
-    // 高質感的圓形 Emoji 圖示
-    html += `<div style="background:linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);border:2px solid rgba(255,255,255,0.8);border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.15);font-size:26px;flex-shrink:0;">
+    // 移除原本的白色底框，直接使用大尺寸 Emoji 搭配立體陰影，顯得更簡潔高貴
+    html += `<div style="font-size:42px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
                 ${iconEmoji}
              </div>`;
     // 標題文字優化字體與間距
