@@ -4228,25 +4228,19 @@ async function generateEventCanvas(e, data, stats) {
     
     let html = '';
     
-    // 活動標題區 (棋盤方格質感 - 修正切邊與底色)
-    html += '<div style="position:relative;background:#CBAF87;border-radius:12px;padding:8px;margin-bottom:24px;box-shadow:0 6px 15px rgba(0,0,0,0.4);">';
+    // --- 頂級流線尊榮金標題 (完全移除僵硬的方角) ---
+    // 使用頂級圓角 (border-radius: 20px) 與多層次的真實金屬漸層，展現極致流線高級感
+    html += '<div style="background:linear-gradient(135deg, #E5C158 0%, #FDE68A 30%, #D4AF37 70%, #B89025 100%);border-radius:20px;display:flex;align-items:center;padding:8px 24px 8px 12px;margin-bottom:28px;box-shadow:0 8px 20px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.6);height:76px;box-sizing:border-box;border: 1px solid rgba(255,255,255,0.3);">';
     
-    // 四角淺色方塊
-    html += '<div style="position:absolute;top:0;left:0;width:14px;height:14px;background:#EBE0C5;border-bottom-right-radius:6px;"></div>';
-    html += '<div style="position:absolute;top:0;right:0;width:14px;height:14px;background:#EBE0C5;border-bottom-left-radius:6px;"></div>';
-    html += '<div style="position:absolute;bottom:0;left:0;width:14px;height:14px;background:#EBE0C5;border-top-right-radius:6px;"></div>';
-    html += '<div style="position:absolute;bottom:0;right:0;width:14px;height:14px;background:#EBE0C5;border-top-left-radius:6px;"></div>';
-    
-    // 內層標題區塊 (金色底色，設定固定高度避免 html2canvas 高度計算 Bug 導致切邊)
-    html += '<div style="background:linear-gradient(135deg, #FDE68A 0%, #D4AF37 100%);border-radius:8px;display:flex;align-items:center;padding:0 20px;gap:16px;height:76px;box-sizing:border-box;">';
-    
-    // 大尺寸 Emoji (確保不被切邊)
-    html += `<div style="font-size:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;padding-bottom:4px;">
-                ${iconEmoji}
+    // 左側圖示區：加上一個微透明的深色質感圓形凹槽來襯托圖案，比單純放著更精緻
+    html += `<div style="background:rgba(15,23,42,0.1);border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 2px 6px rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.2);">
+                <div style="font-size:36px;line-height:1;padding-bottom:4px;">${iconEmoji}</div>
              </div>`;
-    // 標題文字 (移除 overflow:hidden 改用 fixed line-height 確保完整顯示)
-    html += `<div style="color:#0f172a;font-size:24px;font-weight:900;letter-spacing:1px;white-space:nowrap;flex:1;text-shadow: 0 1px 2px rgba(255,255,255,0.4);line-height:1.2;padding-bottom:4px;">${escapeHtml(e.name)}</div>`;
-    html += '</div></div>';
+             
+    // 右側標題文字 (深邃藍色，保留立體感)
+    html += `<div style="color:#0f172a;font-size:24px;font-weight:900;letter-spacing:1.5px;white-space:nowrap;flex:1;text-shadow: 0 1px 2px rgba(255,255,255,0.5);line-height:1.2;margin-left:16px;padding-bottom:4px;">${escapeHtml(e.name)}</div>`;
+    
+    html += '</div>';
 
     // 共用卡片樣式
     const cardStyle = 'background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.5);';
