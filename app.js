@@ -4228,18 +4228,24 @@ async function generateEventCanvas(e, data, stats) {
     
     let html = '';
     
-    // 活動標題區 (金色漸層質感)
-    html += '<div style="background:linear-gradient(135deg, #d4af37 0%, #e5c158 50%, #b89025 100%);color:#0f172a;padding:20px 24px;border-radius:12px;margin-bottom:24px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 15px rgba(212, 175, 55, 0.2);position:relative;overflow:hidden;">';
-    // 裝飾性光影
-    html += '<div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);"></div>';
+    // 活動標題區 (頂級精品方格質感 - 強化光影與漸層)
+    html += '<div style="position:relative;background:linear-gradient(135deg, #CBAF87 0%, #D4B991 50%, #B89A70 100%);border-radius:12px;padding:8px;margin-bottom:24px;overflow:hidden;box-shadow:0 6px 15px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);">';
+    // 四角淺色方塊 (加入光澤)
+    html += '<div style="position:absolute;top:0;left:0;width:14px;height:14px;background:linear-gradient(135deg, #F3EAD3 0%, #EBE0C5 100%);border-bottom-right-radius:6px;box-shadow: 1px 1px 4px rgba(0,0,0,0.15);"></div>';
+    html += '<div style="position:absolute;top:0;right:0;width:14px;height:14px;background:linear-gradient(225deg, #F3EAD3 0%, #EBE0C5 100%);border-bottom-left-radius:6px;box-shadow: -1px 1px 4px rgba(0,0,0,0.15);"></div>';
+    html += '<div style="position:absolute;bottom:0;left:0;width:14px;height:14px;background:linear-gradient(45deg, #F3EAD3 0%, #EBE0C5 100%);border-top-right-radius:6px;box-shadow: 1px -1px 4px rgba(0,0,0,0.15);"></div>';
+    html += '<div style="position:absolute;bottom:0;right:0;width:14px;height:14px;background:linear-gradient(315deg, #F3EAD3 0%, #EBE0C5 100%);border-top-left-radius:6px;box-shadow: -1px -1px 4px rgba(0,0,0,0.15);"></div>';
     
-    // 移除原本的白色底框，直接使用大尺寸 Emoji 搭配立體陰影，顯得更簡潔高貴
-    html += `<div style="font-size:42px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+    // 內層標題區塊 (微亮珍珠底色，提升對比與尊榮感)
+    html += '<div style="background:linear-gradient(180deg, #F8F4EA 0%, #EBE0C5 100%);border-radius:8px;display:flex;align-items:center;padding:12px 20px;gap:16px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.8);">';
+    
+    // 大尺寸 Emoji
+    html += `<div style="font-size:44px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.25));">
                 ${iconEmoji}
              </div>`;
-    // 標題文字優化字體與間距
-    html += `<div style="font-size:26px;font-weight:900;letter-spacing:2px;text-shadow: 0 2px 4px rgba(255,255,255,0.6);">${escapeHtml(e.name)}</div>`;
-    html += '</div>';
+    // 標題文字 (深邃的藏青色，帶有極淡的金色陰影)
+    html += `<div style="color:#0f172a;font-size:24px;font-weight:900;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-shadow: 0 1px 2px rgba(203,175,135,0.4);">${escapeHtml(e.name)}</div>`;
+    html += '</div></div>';
 
     // 共用卡片樣式
     const cardStyle = 'background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.5);';
