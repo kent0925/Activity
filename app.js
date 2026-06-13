@@ -4210,7 +4210,7 @@ async function generateEventCanvas(e, data, stats) {
     // --- 1. 動態產生分享卡片 HTML ---
     const card = document.createElement('div');
     // 使用高貴深色背景，並增加質感邊距與圓角
-    card.style.cssText = 'position:fixed;left:-9999px;top:0;width:440px;padding:32px 24px;background:#0f172a;font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#f3f4f6;z-index:-1;box-sizing:border-box;';
+    card.style.cssText = 'position:fixed;left:-9999px;top:0;width:440px;padding:32px 24px;background:#0D131A;font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#f3f4f6;z-index:-1;box-sizing:border-box;';
 
     // 日期處理，提取月和日給日曆圖示
     const eventDate = new Date(e.time);
@@ -4367,7 +4367,7 @@ async function generateEventCanvas(e, data, stats) {
     const canvas = await html2canvas(card, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#0f172a',
+        backgroundColor: '#0D131A',
         width: card.scrollWidth,
         height: card.scrollHeight
     });
