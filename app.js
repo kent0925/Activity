@@ -4212,11 +4212,8 @@ async function generateEventCanvas(e, data, stats) {
     // 使用高貴深色背景，並增加質感邊距與圓角
     card.style.cssText = 'position:fixed;left:-9999px;top:0;width:440px;padding:32px 24px;background:#0D131A;font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#f3f4f6;z-index:-1;box-sizing:border-box;';
 
-    // 日期處理，提取月和日給日曆圖示
-    const eventDate = new Date(e.time);
-    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    const monthStr = isNaN(eventDate.getTime()) ? "📅" : monthNames[eventDate.getMonth()];
-    const dayStr = isNaN(eventDate.getTime()) ? "" : eventDate.getDate().toString().padStart(2, '0');
+    // 判斷是否有自訂圖示，預設為 📅 (依據活動調整)
+    const iconEmoji = e.icon || '📅';
     
     let html = '';
     
@@ -4225,12 +4222,12 @@ async function generateEventCanvas(e, data, stats) {
     // 裝飾性光影
     html += '<div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);"></div>';
     
-    // 日曆圖示
-    html += `<div style="background:white;border-radius:8px;padding:6px 10px;text-align:center;min-width:44px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">
-                <div style="font-size:11px;font-weight:800;color:#b89025;border-bottom:1px solid #e5e7eb;padding-bottom:3px;margin-bottom:3px;letter-spacing:1px;">${monthStr}</div>
-                <div style="font-size:18px;font-weight:800;color:#1e293b;">${dayStr}</div>
+    // 高質感的圓形 Emoji 圖示
+    html += `<div style="background:linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);border:2px solid rgba(255,255,255,0.8);border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.15);font-size:26px;flex-shrink:0;">
+                ${iconEmoji}
              </div>`;
-    html += `<div style="font-size:22px;font-weight:800;letter-spacing:1px;text-shadow: 0 1px 2px rgba(255,255,255,0.5);">${escapeHtml(e.name)}</div>`;
+    // 標題文字優化字體與間距
+    html += `<div style="font-size:26px;font-weight:900;letter-spacing:2px;text-shadow: 0 2px 4px rgba(255,255,255,0.6);">${escapeHtml(e.name)}</div>`;
     html += '</div>';
 
     // 共用卡片樣式
@@ -4317,7 +4314,7 @@ async function generateEventCanvas(e, data, stats) {
                     });
                 }
                 if (travelLines.length > 0) {
-                    html += `<div style="font-size:13px;color:#818cf8;padding:2px 0 8px 30px;">${travelLines.join('、')}</div>`;
+                    html += `<div style="font-size:14px;color:#D4AF37;padding:4px 0 8px 30px;font-weight:500;">${travelLines.join('、')}</div>`;
                 }
             }
         });
