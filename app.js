@@ -3973,17 +3973,18 @@ function renderShareAllEventsList() {
 
     container.innerHTML = '';
     activeEvents.forEach(e => {
-        const item = document.createElement('label');
-        item.className = "flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition";
+        const item = document.createElement('div');
+        item.className = "flex items-center gap-3 p-2.5 bg-gray-50/10 rounded-xl border border-white/5";
         item.innerHTML = `
-            <input type="radio" name="share-event-radio" value="${e.id}" class="w-4 h-4 text-emerald-500 focus:ring-emerald-500 border-gray-300">
             <div class="flex-1 min-w-0">
-                <div class="font-medium text-gray-800 truncate">${escapeHtml(e.name)}</div>
-                <div class="text-xs text-gray-500 truncate">${formatTimeForShare(e.time) || '無時間'}</div>
+                <div class="font-medium text-[#EFECE5] truncate">${escapeHtml(e.name)}</div>
+                <div class="text-xs text-[#D4AF37]/80 truncate">${formatTimeForShare(e.time) || '無時間'}</div>
             </div>
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-[#D4AF37]"></i>
         `;
         container.appendChild(item);
     });
+    if (window.lucide) window.lucide.createIcons();
 }
 async function executeShare(mode) {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -4039,9 +4040,9 @@ async function executeShare(mode) {
         }
         
     } else if (mode === 'all') {
-        const checkedBoxes = document.querySelectorAll('input[name="share-all-active-checkbox"]:checked');
-        if (checkedBoxes.length === 0) {
-            showToast("⚠️ 請至少選擇一個活動");
+        const selectedEvents = appState.events.filter(e => isEventOpen(e));
+        if (selectedEvents.length === 0) {
+            showToast("⚠️ 目前沒有舉辦中的活動");
             return;
         }
         
@@ -4052,8 +4053,6 @@ async function executeShare(mode) {
         if (window.lucide) window.lucide.createIcons();
         
         try {
-            const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
-            const selectedEvents = appState.events.filter(e => selectedIds.includes(e.id));
             
             // 1. 並行拉取所有活動的資料
             const eventDataPromises = selectedEvents.map(async (e) => {
