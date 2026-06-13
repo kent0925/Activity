@@ -3995,35 +3995,99 @@ function canvasToFile(canvas, filename) {
 }
 
 function generateSingleShareText(e, data, stats, options) {
-    const iconEmoji = e.icon || getEventEmoji(e.name);
-    let text = `${iconEmoji} 【${e.name}】活動資訊 ${iconEmoji}\n`;
-    text += `🕒 時間: ${formatTimeForShare(e.time) || '無時間'}\n`;
-    text += `📍 地點: ${e.location || '無地點'}\n`;
-    if (stats.total > 0) {
-        text += `👥 目前報名: ${stats.total}人\n`;
+    let text = `📅 【大老二兄弟會】近期舉辦中活動 👥\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    
+    text += `1️⃣ ${e.name}\n`;
+    if (e.organizer) {
+        text += `   👤 主辦人：${e.organizer}\n`;
     }
-    if (options.includeMap && e.mapLink) {
-        text += `🗺️ 地圖: ${e.mapLink}\n`;
+    text += `   🕒 時間：${formatTimeForShare(e.time) || '無時間'}\n`;
+    if (e.location) {
+        text += `   📍 地點：${e.location}\n`;
     }
-    if (options.includeLink) {
-        text += `🔗 報名連結: ${window.location.href}\n`;
+
+    let sponsorHtml = '';
+    if (data && data.length > 0) {
+        data.forEach(p => {
+            let moneyParts = [];
+            const tc = getIntField(p, 'tableCount');
+            if (tc > 0) moneyParts.push(`認桌 ${tc}桌`);
+            const sponsorRaw = getField(p, 'sponsor');
+            const sponsorList = parseSponsorData(sponsorRaw);
+            sponsorList.forEach(s => moneyParts.push(s));
+            
+            if (moneyParts.length > 0) {
+                sponsorHtml += `      🎁 ${p.name} ━ ${moneyParts.join('、')}\n`;
+            }
+        });
+    }
+    if (sponsorHtml) {
+        text += `   💰 贊助 / 認桌資訊\n${sponsorHtml}`;
+    }
+
+    const total = stats.totalPeople || stats.total || 0;
+    if (total > 0) {
+        text += `   📊 統計：共 ${total} 人報名\n`;
+    }
+    
+    if (options && options.includeMap && e.mapLink) {
+        text += `   🗺️ 地圖：${e.mapLink}\n`;
+    }
+    
+    text += `\n━━━━━━━━━━━━━━━━━━━━━\n`;
+    if (!options || options.includeLink !== false) {
+        text += `🔗 統一報名連結👇：\nhttps://liff.line.me/2008678090-aXTesgDK\n`;
     }
     return text;
 }
 
 async function generateAllShareText(eventDataList) {
-    let text = `🎉 近期活動總覽 🎉\n\n`;
-    eventDataList.forEach(({ event: e, stats }) => {
-        const iconEmoji = e.icon || getEventEmoji(e.name);
-        text += `${iconEmoji} 【${e.name}】\n`;
-        text += `🕒 ${formatTimeForShare(e.time) || '無時間'}\n`;
-        text += `📍 ${e.location || '無地點'}\n`;
-        if (stats.total > 0) {
-            text += `👥 已報名: ${stats.total}人\n`;
+    let text = `📅 【大老二兄弟會】近期舉辦中活動 👥\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    
+    const numberEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+
+    eventDataList.forEach(({ event: e, data, stats }, index) => {
+        const numEmoji = numberEmojis[index] || `${index+1}.`;
+        text += `${numEmoji} ${e.name}\n`;
+        
+        if (e.organizer) {
+            text += `   👤 主辦人：${e.organizer}\n`;
+        }
+        text += `   🕒 時間：${formatTimeForShare(e.time) || '無時間'}\n`;
+        if (e.location) {
+            text += `   📍 地點：${e.location}\n`;
+        }
+
+        let sponsorHtml = '';
+        if (data && data.length > 0) {
+            data.forEach(p => {
+                let moneyParts = [];
+                const tc = getIntField(p, 'tableCount');
+                if (tc > 0) moneyParts.push(`認桌 ${tc}桌`);
+                const sponsorRaw = getField(p, 'sponsor');
+                const sponsorList = parseSponsorData(sponsorRaw);
+                sponsorList.forEach(s => moneyParts.push(s));
+                
+                if (moneyParts.length > 0) {
+                    sponsorHtml += `      🎁 ${p.name} ━ ${moneyParts.join('、')}\n`;
+                }
+            });
+        }
+        if (sponsorHtml) {
+            text += `   💰 贊助 / 認桌資訊\n${sponsorHtml}`;
+        }
+
+        const total = stats.totalPeople || stats.total || 0;
+        if (total > 0) {
+            text += `   📊 統計：共 ${total} 人報名\n`;
         }
         text += `\n`;
     });
-    text += `🔗 點擊這裡查看詳情與報名: ${window.location.href}\n`;
+    
+    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    text += `🔗 統一報名連結👇：\nhttps://liff.line.me/2008678090-aXTesgDK\n`;
     return text;
 }
 
