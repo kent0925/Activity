@@ -3994,6 +3994,65 @@ function canvasToFile(canvas, filename) {
     });
 }
 
+function generateSingleShareText(e, data, stats, options) {
+    let text = `✨ 【${e.name}】活動資訊 ✨\n`;
+    text += `🕒 時間: ${formatTimeForShare(e.time) || '無時間'}\n`;
+    text += `📍 地點: ${e.location || '無地點'}\n`;
+    if (stats.total > 0) {
+        text += `👥 目前報名: ${stats.total}人\n`;
+    }
+    if (options.includeMap && e.mapLink) {
+        text += `🗺️ 地圖: ${e.mapLink}\n`;
+    }
+    if (options.includeLink) {
+        text += `🔗 報名連結: ${window.location.href}\n`;
+    }
+    return text;
+}
+
+async function generateAllShareText(eventDataList) {
+    let text = `🎉 近期活動總覽 🎉\n\n`;
+    eventDataList.forEach(({ event: e, stats }) => {
+        text += `✨ 【${e.name}】\n`;
+        text += `🕒 ${formatTimeForShare(e.time) || '無時間'}\n`;
+        text += `📍 ${e.location || '無地點'}\n`;
+        if (stats.total > 0) {
+            text += `👥 已報名: ${stats.total}人\n`;
+        }
+        text += `\n`;
+    });
+    text += `🔗 點擊這裡查看詳情與報名: ${window.location.href}\n`;
+    return text;
+}
+
+function fallbackShareSingle(file, text, eventName) {
+    showToast("瀏覽器不支援原生分享，請手動儲存圖片");
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(file);
+    a.download = `${eventName}_名單.png`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    navigator.clipboard.writeText(text).then(() => {
+        setTimeout(() => showToast("已複製活動資訊文字"), 1000);
+    });
+}
+
+function fallbackShareAll(files, text) {
+    showToast(`不支援一次分享多張圖片，將分批下載圖片`);
+    files.forEach((file, idx) => {
+        setTimeout(() => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(file);
+            a.download = file.name;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }, idx * 500);
+    });
+    navigator.clipboard.writeText(text).then(() => {
+        setTimeout(() => showToast("已複製活動資訊文字"), files.length * 500 + 500);
+    });
+}
+
 async function executeShare(mode) {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
