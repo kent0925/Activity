@@ -4243,10 +4243,10 @@ async function generateEventCanvas(e, data, stats) {
         background-color: #D2BCA2; border-radius: 0.75rem; padding: 1.25rem;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); display: flex;
         align-items: center; justify-content: center; gap: 0.75rem;
-        position: relative; overflow: hidden; border: 2px solid rgba(225, 205, 168, 0.5);
+        position: relative; border: 2px solid rgba(225, 205, 168, 0.5);
       }
-      .header-icon { font-size: 2.25rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-      .header-title { font-size: 1.3rem; font-weight: bold; letter-spacing: 0.05em; color: #1E293B; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; line-height: 1.2; padding-bottom: 2px; }
+      .header-icon { font-size: 2.25rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); padding-bottom: 4px; }
+      .header-title { font-size: 1.3rem; font-weight: bold; letter-spacing: 0.05em; color: #1E293B; margin: 0; white-space: nowrap; flex: 1; line-height: 1.2; padding-bottom: 4px; }
       /* 標題裝飾邊角 */
       .corner { position: absolute; width: 1rem; height: 1rem; background-color: #B59C7D; }
       .corner-tl { top: 0; left: 0; border-bottom-right-radius: 0.5rem; }
