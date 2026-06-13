@@ -4237,27 +4237,19 @@ async function generateEventCanvas(e, data, stats) {
       .header-wrapper { width: 100%; margin-bottom: 1.5rem; position: relative; }
       .header-card {
         background: linear-gradient(135deg, #3A2818 0%, #24170E 40%, #150D08 60%, #302013 100%);
-        border-radius: 0.75rem; padding: 1.5rem;
-        box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.9), inset 0 2px 5px rgba(200, 160, 110, 0.3), inset 0 -3px 8px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 0, 0, 0.8);
-        border: 2px solid #755536; outline: 1px solid #1C110A; outline-offset: -4px;
+        border-radius: 20px; padding: 1.25rem 1.5rem;
+        /* 改用 html2canvas 支援較好的標準實體邊框與漸層，營造真實金屬立體圓角感 */
+        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.9);
+        border: 2px solid #8C6A47;
+        border-bottom: 3px solid #3A2818;
         display: flex; align-items: center; justify-content: center; gap: 0.75rem; position: relative;
       }
       .header-icon { font-size: 2.25rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); padding-bottom: 4px; }
       .header-title {
         font-size: 1.35rem; font-weight: bold; letter-spacing: 0.1em; margin: 0;
-        /* 改為亮金屬純色配合 html2canvas 支援度，避免 background-clip 失效變成透明 */
         color: #F8E1B9; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
         white-space: nowrap; flex: 1; line-height: 1.2; padding-bottom: 4px;
       }
-      /* 裝飾邊角：模擬金屬螺絲/鉚釘底座 */
-      .corner {
-        position: absolute; width: 1.5rem; height: 1.5rem; background: linear-gradient(135deg, #755536 0%, #3A2818 50%, #1C110A 100%);
-        border: 1px solid #8C6A47; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6); z-index: 10;
-      }
-      .corner-tl { top: -2px; left: -2px; border-bottom-right-radius: 0.5rem; }
-      .corner-tr { top: -2px; right: -2px; border-bottom-left-radius: 0.5rem; }
-      .corner-bl { bottom: -2px; left: -2px; border-top-right-radius: 0.5rem; }
-      .corner-br { bottom: -2px; right: -2px; border-top-left-radius: 0.5rem; }
       /* ==================== 通用卡片與資訊 ==================== */
       .card {
         width: 100%; background: linear-gradient(180deg, #221B16 0%, #15110E 100%); border-radius: 1rem; padding: 1.5rem;
@@ -4273,18 +4265,18 @@ async function generateEventCanvas(e, data, stats) {
       .note-box p { margin: 0; font-size: 0.875rem; color: #9A8C7A; line-height: 1.6; }
       .note-title { color: #D4AF7A; margin-right: 0.25rem; font-weight: bold; }
       /* ==================== 報名名單 ==================== */
-      .list-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #4A3A2A; }
+      .list-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #4A3A2A; }
       .list-header .icon { font-size: 1.25rem; filter: sepia(0.5) hue-rotate(340deg) saturate(1.5); }
       .list-header h2 { font-size: 1.125rem; font-weight: bold; color: #D4AF7A; letter-spacing: 0.05em; margin: 0; }
-      /* 名單項目 */
-      .list-item { padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid #2A221C; }
+      /* 名單項目 (縮小行距恢復緊湊感) */
+      .list-item { padding-bottom: 0.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid #2A221C; }
       .list-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
-      .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.35rem; flex-wrap: wrap; font-size: 1.05rem; }
+      .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.15rem; flex-wrap: wrap; font-size: 1.05rem; }
       .item-title .name { margin-right: 0.5rem; color: #EAD7BA; }
       .item-title .count { color: #D4AF7A; margin-left: 0.5rem; font-size: 0.9rem; }
-      .item-detail { font-size: 0.875rem; color: #8C7A65; margin-left: 2.25rem; padding-top: 0.25rem; line-height: 1.4; }
+      .item-detail { font-size: 0.875rem; color: #8C7A65; margin-left: 1.75rem; padding-top: 0; line-height: 1.4; }
       /* ==================== 獨立標籤配色 ==================== */
-      .tag { font-size: 0.7rem; font-weight: bold; letter-spacing: 0.05em; margin-right: 0.25rem; margin-left: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 0.25rem; color: #FFF3D8; box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2); text-shadow: 0 1px 2px rgba(0,0,0,0.6); display: inline-flex; align-items: center;}
+      .tag { font-size: 0.7rem; font-weight: bold; letter-spacing: 0.05em; margin-right: 0.25rem; margin-left: 0.5rem; padding: 0.15rem 0.4rem; border-radius: 0.25rem; color: #FFF3D8; box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2); text-shadow: 0 1px 2px rgba(0,0,0,0.6); display: inline-flex; align-items: center;}
       .tag-orange { background: linear-gradient(135deg, #C85A17 0%, #8A3604 100%); border: 1px solid #A84810; }
       .tag-pink { background: linear-gradient(135deg, #B03060 0%, #5C102A 100%); border: 1px solid #8C2048; }
       .tag-purple { background: linear-gradient(135deg, #6B3FA0 0%, #301755 100%); border: 1px solid #583088; }
@@ -4298,10 +4290,6 @@ async function generateEventCanvas(e, data, stats) {
     <div class="app-container">
       <div class="header-wrapper">
         <div class="header-card">
-          <div class="corner corner-tl"></div>
-          <div class="corner corner-tr"></div>
-          <div class="corner corner-bl"></div>
-          <div class="corner corner-br"></div>
           <div class="header-icon">${iconEmoji}</div>
           <h1 class="header-title">${escapeHtml(e.name)}</h1>
         </div>
@@ -4345,14 +4333,14 @@ async function generateEventCanvas(e, data, stats) {
             if (roles.length > 0) {
                 tagHtml = roles.map(r => {
                     let tagClass = 'tag-orange'; // default/爐主
-                    let prefixIcon = '🍻 '; 
                     
-                    if(r.label === '會長') { tagClass = 'tag-gold'; prefixIcon = '👑 '; }
-                    else if(r.label === '輔導會長') { tagClass = 'tag-purple'; prefixIcon = '🧙‍♂️ '; }
-                    else if(r.label.includes('壽星')) { tagClass = 'tag-pink'; prefixIcon = '🎂 '; }
-                    else if(r.label === '爐主') { tagClass = 'tag-orange'; prefixIcon = '🍻 '; }
+                    if(r.label.includes('會長') && !r.label.includes('輔導')) { tagClass = 'tag-gold'; }
+                    else if(r.label.includes('輔導會長')) { tagClass = 'tag-purple'; }
+                    else if(r.label.includes('壽星')) { tagClass = 'tag-pink'; }
+                    else if(r.label.includes('爐主')) { tagClass = 'tag-orange'; }
                     
-                    return `<span class="tag ${tagClass}">${prefixIcon}${r.label}</span>`;
+                    // r.label 本身已經帶有 emoji (例如 "🎂 8月壽星")，因此直接顯示即可，不再重複加 prefix
+                    return `<span class="tag ${tagClass}">${r.label}</span>`;
                 }).join('');
             }
 
