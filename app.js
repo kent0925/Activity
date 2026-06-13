@@ -4237,15 +4237,15 @@ async function generateEventCanvas(e, data, stats) {
     html += '<div style="position:absolute;bottom:0;left:0;width:14px;height:14px;background:#EBE0C5;border-top-right-radius:6px;"></div>';
     html += '<div style="position:absolute;bottom:0;right:0;width:14px;height:14px;background:#EBE0C5;border-top-left-radius:6px;"></div>';
     
-    // 內層標題區塊 (金色底色，呈現尊榮感)
-    html += '<div style="background:linear-gradient(135deg, #FDE68A 0%, #D4AF37 100%);border-radius:8px;display:flex;align-items:center;padding:12px 20px;gap:16px;">';
+    // 內層標題區塊 (金色底色，設定固定高度避免 html2canvas 高度計算 Bug 導致切邊)
+    html += '<div style="background:linear-gradient(135deg, #FDE68A 0%, #D4AF37 100%);border-radius:8px;display:flex;align-items:center;padding:0 20px;gap:16px;height:76px;box-sizing:border-box;">';
     
-    // 大尺寸 Emoji (移除複雜 filter，避免 html2canvas 渲染異常)
-    html += `<div style="font-size:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+    // 大尺寸 Emoji (確保不被切邊)
+    html += `<div style="font-size:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;padding-bottom:4px;">
                 ${iconEmoji}
              </div>`;
-    // 標題文字 (深色文字搭配極淡光暈確保清晰度)
-    html += `<div style="color:#0f172a;font-size:24px;font-weight:900;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-shadow: 0 1px 2px rgba(255,255,255,0.4);">${escapeHtml(e.name)}</div>`;
+    // 標題文字 (移除 overflow:hidden 改用 fixed line-height 確保完整顯示)
+    html += `<div style="color:#0f172a;font-size:24px;font-weight:900;letter-spacing:1px;white-space:nowrap;flex:1;text-shadow: 0 1px 2px rgba(255,255,255,0.4);line-height:1.2;padding-bottom:4px;">${escapeHtml(e.name)}</div>`;
     html += '</div></div>';
 
     // 共用卡片樣式
