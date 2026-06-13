@@ -3986,6 +3986,14 @@ function renderShareAllEventsList() {
     });
     if (window.lucide) window.lucide.createIcons();
 }
+function canvasToFile(canvas, filename) {
+    return new Promise(resolve => {
+        canvas.toBlob(blob => {
+            resolve(new File([blob], filename, { type: 'image/png' }));
+        }, 'image/png');
+    });
+}
+
 async function executeShare(mode) {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
