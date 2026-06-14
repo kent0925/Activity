@@ -4301,8 +4301,11 @@ async function generateEventCanvas(e, data, stats) {
       }
       .main-frame {
         width: 100%;
-        /* 深藍皮革底色 */
+        /* 頂級深藍皮革底色 */
         background: url('images/leather-bg.jpg') repeat;
+        background-size: 350px;
+        background-color: #1A2436;
+        background-blend-mode: multiply;
         border-radius: 12px;
         /* 移除實體邊框，改用陰影加深立體感 */
         box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
