@@ -4265,13 +4265,13 @@ async function fetchStatsForEvent(eventId) {
     } catch (e) { return {}; }
 }
 
-// 依據活動名稱自動判斷合適的 Icon
-function getEventIconPath(eventName) {
-    if (!eventName) return 'images/icon-champagne.png';
-    if (eventName.includes('家庭日')) return 'images/icon-champagne.png'; // 暫時以香檳替代，未來可換 icon-camera
-    if (eventName.includes('小型餐會')) return 'images/icon-champagne.png';
-    if (eventName.includes('餐會') || eventName.includes('聚餐')) return 'images/icon-champagne.png';
-    return 'images/icon-champagne.png';
+// 依據活動名稱自動判斷合適的 Emoji
+function getEventEmoji(eventName) {
+    if (!eventName) return '📅';
+    if (eventName.includes('家庭日')) return '📸';
+    if (eventName.includes('小型餐會')) return '🍽️';
+    if (eventName.includes('餐會') || eventName.includes('聚餐')) return '🍾';
+    return '📅';
 }
 
 // 通用活動圖片 Canvas 生成邏輯 (高貴質感深色版)
@@ -4287,7 +4287,7 @@ async function generateEventCanvas(e, data, stats) {
     const card = document.createElement('div');
     card.style.cssText = 'position:fixed;left:-9999px;top:0;width:440px;z-index:-1;';
 
-    const iconSrc = getEventIconPath(e.name);
+    const iconEmoji = e.icon || getEventEmoji(e.name);
     
     let html = `
     <style>
@@ -4361,7 +4361,7 @@ async function generateEventCanvas(e, data, stats) {
         background: linear-gradient(180deg, rgba(42,56,82,1) 0%, rgba(26,36,54,1) 100%);
         border-radius: 8px;
       }
-      .header-icon { display: none; } /* 不再使用純文字 icon 容器 */
+      .header-icon { font-size: 2.5rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); padding-bottom: 4px; margin-right: 0.5rem; }
       .header-title {
         font-size: 1.25rem; font-weight: bold; letter-spacing: 0.05em; margin: 0;
         color: #F3E5AB; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
@@ -4405,10 +4405,8 @@ async function generateEventCanvas(e, data, stats) {
       .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.15rem; flex-wrap: wrap; font-size: 1.1rem; }
       .item-title .name { margin-right: 0.5rem; color: #F3E5AB; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
       .item-title .count { 
-        color: #1A2436; background: linear-gradient(135deg, #EAD7BA, #A88B60); 
-        padding: 1px 5px 1px; border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem; 
-        box-shadow: 0 1px 2px rgba(0,0,0,0.5); font-weight: bold;
-        display: inline-block; line-height: 1.1; vertical-align: middle; transform: translateY(-1px);
+        color: #EAD7BA; font-size: 0.85rem; margin-left: 0.5rem; 
+        font-weight: bold; font-family: monospace;
       }
       .item-detail { font-size: 0.85rem; color: #A89580; margin-left: 2rem; padding-top: 0.2rem; line-height: 1.4; }
       
@@ -4447,7 +4445,7 @@ async function generateEventCanvas(e, data, stats) {
         
         <div class="inner-box">
           <div class="header-card">
-            <img src="${iconSrc}" class="header-icon-img">
+            <div class="header-icon">${iconEmoji}</div>
             <h1 class="header-title">${escapeHtml(e.name)}</h1>
           </div>
         </div>
@@ -4456,11 +4454,11 @@ async function generateEventCanvas(e, data, stats) {
           <div class="info-card">
             <ul class="info-list">`;
             
-    if (e.organizer) html += `<li><img src="images/icon-host.png" class="custom-icon" style="width:1.25rem;height:1.25rem;"><div class="text">主辦人：${escapeHtml(e.organizer)}</div></li>`;
+    if (e.organizer) html += `<li><span class="icon">👤</span><div class="text">主辦人：${escapeHtml(e.organizer)}</div></li>`;
     const timeDisplay = formatTimeForShare(e.time);
-    if (timeDisplay) html += `<li><img src="images/icon-clock.png" class="custom-icon" style="width:1.25rem;height:1.25rem;"><div class="text">時間：${escapeHtml(timeDisplay)}</div></li>`;
-    if (e.location)  html += `<li><img src="images/icon-map.png" class="custom-icon" style="width:1.25rem;height:1.25rem;"><div class="text">地點：${escapeHtml(e.location)}</div></li>`;
-    if (e.address)   html += `<li><img src="images/icon-car.png" class="custom-icon" style="width:1.25rem;height:1.25rem;"><div class="text">地址：${escapeHtml(e.address)}</div></li>`;
+    if (timeDisplay) html += `<li><span class="icon">🕒</span><div class="text">時間：${escapeHtml(timeDisplay)}</div></li>`;
+    if (e.location)  html += `<li><span class="icon">📍</span><div class="text">地點：${escapeHtml(e.location)}</div></li>`;
+    if (e.address)   html += `<li><span class="icon">🚗</span><div class="text">地址：${escapeHtml(e.address)}</div></li>`;
     
     html += `</ul>`;
     
@@ -4473,7 +4471,7 @@ async function generateEventCanvas(e, data, stats) {
     if (includeNames && data.length > 0) {
         html += `<div class="inner-box">
                    <div class="list-card">
-                     <div class="list-header"><img src="images/icon-members.png" class="custom-icon" style="margin-right:0.5rem;width:1.5rem;height:1.5rem;"><h2>報名名單</h2></div>`;
+                     <div class="list-header"><span class="icon" style="margin-right:0.5rem;">👥</span><h2>報名名單</h2></div>`;
         let count = 0;
         data.forEach(p => {
             const family = getIntField(p, 'family');
@@ -4492,15 +4490,15 @@ async function generateEventCanvas(e, data, stats) {
             if (roles.length > 0) {
                 tagHtml = roles.map(r => {
                     let tagClass = 'tag-orange'; 
-                    let iconImg = '';
+                    let iconHtml = '';
                     let pureText = r.label.replace(/[👑👸🍻🎂]/g, '').trim();
                     
-                    if(r.label.includes('會長') && !r.label.includes('輔導')) { tagClass = 'tag-gold'; iconImg = '<img src="images/icon-crown-gold.png" class="custom-icon" style="width:1.1rem;height:1.1rem;margin-right:4px;">'; }
-                    else if(r.label.includes('輔導會長')) { tagClass = 'tag-purple'; iconImg = '<img src="images/icon-crown-purple.png" class="custom-icon" style="width:1.1rem;height:1.1rem;margin-right:4px;">'; }
-                    else if(r.label.includes('壽星')) { tagClass = 'tag-pink'; iconImg = '<img src="images/icon-cake.png" class="custom-icon" style="width:1.1rem;height:1.1rem;margin-right:4px;">'; }
-                    else if(r.label.includes('爐主')) { tagClass = 'tag-orange'; iconImg = '<img src="images/icon-medal.png" class="custom-icon" style="width:1.1rem;height:1.1rem;margin-right:4px;">'; }
+                    if(r.label.includes('會長') && !r.label.includes('輔導')) { tagClass = 'tag-gold'; iconHtml = '<span style="margin-right:4px;">👑</span>'; }
+                    else if(r.label.includes('輔導會長')) { tagClass = 'tag-purple'; iconHtml = '<span style="margin-right:4px;">👸</span>'; }
+                    else if(r.label.includes('壽星')) { tagClass = 'tag-pink'; iconHtml = '<span style="margin-right:4px;">🎂</span>'; }
+                    else if(r.label.includes('爐主')) { tagClass = 'tag-orange'; iconHtml = '<span style="margin-right:4px;">🍻</span>'; }
                     
-                    return `<span class="tag ${tagClass}">${iconImg}${pureText}</span>`;
+                    return `<span class="tag ${tagClass}">${iconHtml}${pureText}</span>`;
                 }).join('');
             }
 
@@ -4508,9 +4506,9 @@ async function generateEventCanvas(e, data, stats) {
             let maryMedal = '';
             if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
                 const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
-                if (rankIndex === 0) { nameColor = '#EAB308'; maryMedal = '<img src="images/icon-crown-gold.png" class="custom-icon" style="width:1.2rem;height:1.2rem;margin-right:4px;">'; }
+                if (rankIndex === 0) { nameColor = '#EAB308'; maryMedal = '<span style="margin-right:4px;">🥇</span>'; }
                 else if (rankIndex === 1) { nameColor = '#e2e8f0'; maryMedal = '<span style="margin-right:4px;">🥈</span>'; } 
-                else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '<img src="images/icon-medal.png" class="custom-icon" style="width:1.2rem;height:1.2rem;margin-right:4px;">'; }
+                else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '<span style="margin-right:4px;">🥉</span>'; }
             }
 
             html += `<div class="list-item">
@@ -4573,7 +4571,7 @@ async function generateEventCanvas(e, data, stats) {
             if (moneyParts.length > 0) {
                 const label = (total === 0) ? '<span style="font-size:0.8rem;color:#EAB308;margin-left:0.5rem;opacity:0.8;">(純贊助)</span>' : '';
                 sponsorHtml += `<div class="list-item" style="border-bottom:1px dashed rgba(212,175,122,0.2);display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0.5rem;">
-                                  <img src="images/icon-gift.png" class="custom-icon" style="width:1.25rem;height:1.25rem;"> 
+                                  <span class="icon" style="font-size:1.25rem;">🎁</span> 
                                   <span class="name" style="color:#F3E5AB;font-weight:bold;text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${p.name}</span>${label} 
                                   <span style="color:#A88B60;">—</span> 
                                   <span style="color:#EAD7BA;font-size:0.95rem;">${moneyParts.join('、')}</span>
@@ -4583,7 +4581,7 @@ async function generateEventCanvas(e, data, stats) {
         if (sponsorHtml) {
             html += `<div class="inner-box" style="margin-bottom:0;">
                        <div class="sponsor-card">
-                         <div class="list-header"><img src="images/icon-money-bag.png" class="custom-icon" style="margin-right:0.5rem;width:1.5rem;height:1.5rem;"><h2>贊助 / 認桌資訊</h2></div>
+                         <div class="list-header"><span class="icon" style="margin-right:0.5rem;">💰</span><h2>贊助 / 認桌資訊</h2></div>
                          ${sponsorHtml}
                        </div>
                      </div>`;
