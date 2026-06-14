@@ -4293,62 +4293,66 @@ async function generateEventCanvas(e, data, stats) {
     <style>
       /* ==================== 基礎與排版設定 ==================== */
       .app-container {
-        padding: 2.5rem; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
-        /* 深色木紋風格底圖 (以漸層和顏色模擬) */
-        background-color: #2D231A;
-        background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 8px);
+        padding: 3rem 2.5rem; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+        /* 高質感木紋底板 */
+        background-color: #3b2518;
+        background-image: 
+          repeating-linear-gradient(180deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 6px),
+          linear-gradient(90deg, #2b1810 0%, #4a2e1b 50%, #2b1810 100%);
         font-family: "PingFang TC", "Helvetica Neue", sans-serif; color: #EAD7BA;
       }
       .main-frame {
         width: 100%;
         background-color: #1A2436; /* 深藍皮革底色 */
         background-image: 
-          radial-gradient(rgba(0,0,0,0.2) 1px, transparent 1px),
-          radial-gradient(rgba(0,0,0,0.2) 1px, transparent 1px);
+          radial-gradient(rgba(0,0,0,0.3) 1px, transparent 1px),
+          radial-gradient(rgba(0,0,0,0.3) 1px, transparent 1px);
         background-size: 20px 20px;
         background-position: 0 0, 10px 10px;
-        border-radius: 16px;
-        border: 6px solid transparent;
-        /* 金屬拉絲邊框效果 */
-        background-clip: padding-box;
-        box-shadow: 
-          0 0 0 4px #b89b72, 
-          0 0 0 5px #8C6A47,
-          inset 0 0 30px rgba(0,0,0,0.8),
-          0 15px 35px rgba(0,0,0,0.9);
+        border-radius: 12px;
+        /* 移除實體邊框，改用陰影加深立體感 */
+        box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
         padding: 1.5rem;
         position: relative;
-        /* 外框漸層 */
+        z-index: 1;
       }
       .main-frame::before {
-        content: ""; position: absolute; inset: -4px; border-radius: 18px; z-index: -1;
-        background: linear-gradient(135deg, #d4af37, #8a6a3b, #f3e5ab, #8a6a3b);
+        content: ""; position: absolute; inset: -8px; border-radius: 18px; z-index: -1;
+        /* 更明亮、偏白金/香檳金的金屬漸層 */
+        background: linear-gradient(135deg, #e5d3b3, #9e8156, #fdf6e3, #9e8156);
+        box-shadow: inset 0 0 4px rgba(255,255,255,0.6), 0 10px 25px rgba(0,0,0,0.9);
+      }
+      .main-frame::after {
+        content: ""; position: absolute; inset: 0px; border-radius: 12px; z-index: -1;
+        border: 2px solid #0d131c; /* 內層細黑線增加層次 */
       }
       /* 螺絲釘 */
       .rivet {
-        position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #e2cfb3 0%, #8C6A47 100%);
+        position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #e2cfb3 0%, #7c5c3b 100%);
         border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
-        border: 1px solid #4a3620; z-index: 10;
+        border: 1px solid #332414; z-index: 10;
       }
       .rivet::after { content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 1.5px; background: rgba(0,0,0,0.5); transform: translateY(-50%) rotate(45deg); }
-      .rivet.tl { top: 12px; left: 12px; }
-      .rivet.tr { top: 12px; right: 12px; }
-      .rivet.bl { bottom: 12px; left: 12px; }
-      .rivet.br { bottom: 12px; right: 12px; }
+      .rivet.tl { top: -2px; left: -2px; }
+      .rivet.tr { top: -2px; right: -2px; }
+      .rivet.bl { bottom: -2px; left: -2px; }
+      .rivet.br { bottom: -2px; right: -2px; }
       
       /* ==================== 內部區塊通用 ==================== */
       .inner-box {
         background-color: rgba(26, 36, 54, 0.8);
-        border: 2px solid #a88b60;
+        border: 2px solid transparent;
         border-radius: 8px;
         box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.3);
         margin-bottom: 1.25rem;
         position: relative;
+        z-index: 1;
       }
       /* 內部區塊漸層金屬框線 */
       .inner-box::before {
         content: ""; position: absolute; inset: -2px; border-radius: 10px; z-index: -1;
-        background: linear-gradient(180deg, #d4af37, #8a6a3b);
+        /* 內部金屬框也調亮一點 */
+        background: linear-gradient(180deg, #e5d3b3, #9e8156);
       }
 
       /* ==================== 頂部標題區塊 ==================== */
@@ -4359,12 +4363,9 @@ async function generateEventCanvas(e, data, stats) {
       }
       .header-icon { font-size: 2.25rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); padding-bottom: 4px; }
       .header-title {
-        font-size: 1.4rem; font-weight: bold; letter-spacing: 0.1em; margin: 0;
+        font-size: 1.25rem; font-weight: bold; letter-spacing: 0.05em; margin: 0;
         color: #F3E5AB; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
-        background: linear-gradient(to bottom, #FFF1CD, #D4AF7A);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        white-space: nowrap; flex: 1; line-height: 1.2; padding-bottom: 4px;
+        white-space: normal; word-break: keep-all; flex: 1; line-height: 1.4;
       }
 
       /* ==================== 資訊區塊 ==================== */
@@ -4405,8 +4406,9 @@ async function generateEventCanvas(e, data, stats) {
       .item-title .name { margin-right: 0.5rem; color: #F3E5AB; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
       .item-title .count { 
         color: #1A2436; background: linear-gradient(135deg, #EAD7BA, #A88B60); 
-        padding: 0 6px; border-radius: 4px; font-size: 0.85rem; margin-left: 0.5rem; 
+        padding: 0 5px; border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem; 
         box-shadow: 0 1px 2px rgba(0,0,0,0.5); font-weight: bold;
+        display: inline-flex; align-items: center; justify-content: center; height: 1.2rem;
       }
       .item-detail { font-size: 0.85rem; color: #A89580; margin-left: 2rem; padding-top: 0.2rem; line-height: 1.4; }
       
@@ -4603,7 +4605,7 @@ async function generateEventCanvas(e, data, stats) {
     const canvas = await html2canvas(card, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#2D231A',
+        backgroundColor: '#3b2518',
         width: card.scrollWidth,
         height: card.scrollHeight
     });
