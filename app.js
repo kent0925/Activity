@@ -4293,75 +4293,167 @@ async function generateEventCanvas(e, data, stats) {
     <style>
       /* ==================== 基礎與排版設定 ==================== */
       .app-container {
-        padding: 2rem; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
-        background-color: #15110E; background-image: radial-gradient(#2A221C 1px, transparent 1px); background-size: 4px 4px;
-        font-family: sans-serif; color: #EAD7BA;
+        padding: 2.5rem; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+        /* 深色木紋風格底圖 (以漸層和顏色模擬) */
+        background-color: #2D231A;
+        background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 8px);
+        font-family: "PingFang TC", "Helvetica Neue", sans-serif; color: #EAD7BA;
       }
+      .main-frame {
+        width: 100%;
+        background-color: #1A2436; /* 深藍皮革底色 */
+        background-image: 
+          radial-gradient(rgba(0,0,0,0.2) 1px, transparent 1px),
+          radial-gradient(rgba(0,0,0,0.2) 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+        border-radius: 16px;
+        border: 6px solid transparent;
+        /* 金屬拉絲邊框效果 */
+        background-clip: padding-box;
+        box-shadow: 
+          0 0 0 4px #b89b72, 
+          0 0 0 5px #8C6A47,
+          inset 0 0 30px rgba(0,0,0,0.8),
+          0 15px 35px rgba(0,0,0,0.9);
+        padding: 1.5rem;
+        position: relative;
+        /* 外框漸層 */
+      }
+      .main-frame::before {
+        content: ""; position: absolute; inset: -4px; border-radius: 18px; z-index: -1;
+        background: linear-gradient(135deg, #d4af37, #8a6a3b, #f3e5ab, #8a6a3b);
+      }
+      /* 螺絲釘 */
+      .rivet {
+        position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #e2cfb3 0%, #8C6A47 100%);
+        border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
+        border: 1px solid #4a3620; z-index: 10;
+      }
+      .rivet::after { content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 1.5px; background: rgba(0,0,0,0.5); transform: translateY(-50%) rotate(45deg); }
+      .rivet.tl { top: 12px; left: 12px; }
+      .rivet.tr { top: 12px; right: 12px; }
+      .rivet.bl { bottom: 12px; left: 12px; }
+      .rivet.br { bottom: 12px; right: 12px; }
+      
+      /* ==================== 內部區塊通用 ==================== */
+      .inner-box {
+        background-color: rgba(26, 36, 54, 0.8);
+        border: 2px solid #a88b60;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.3);
+        margin-bottom: 1.25rem;
+        position: relative;
+      }
+      /* 內部區塊漸層金屬框線 */
+      .inner-box::before {
+        content: ""; position: absolute; inset: -2px; border-radius: 10px; z-index: -1;
+        background: linear-gradient(180deg, #d4af37, #8a6a3b);
+      }
+
       /* ==================== 頂部標題區塊 ==================== */
-      .header-wrapper { width: 100%; margin-bottom: 1.5rem; position: relative; }
       .header-card {
-        background: linear-gradient(135deg, #3A2818 0%, #24170E 40%, #150D08 60%, #302013 100%);
-        border-radius: 20px; padding: 1.25rem 1.5rem;
-        /* 改用 html2canvas 支援較好的標準實體邊框與漸層，營造真實金屬立體圓角感 */
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.9);
-        border: 2px solid #8C6A47;
-        border-bottom: 3px solid #3A2818;
-        display: flex; align-items: center; justify-content: center; gap: 0.75rem; position: relative;
+        padding: 1.25rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+        background: linear-gradient(180deg, rgba(42,56,82,1) 0%, rgba(26,36,54,1) 100%);
+        border-radius: 8px;
       }
-      .header-icon { font-size: 2.25rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); padding-bottom: 4px; }
+      .header-icon { font-size: 2.25rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); padding-bottom: 4px; }
       .header-title {
-        font-size: 1.35rem; font-weight: bold; letter-spacing: 0.1em; margin: 0;
-        color: #F8E1B9; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+        font-size: 1.4rem; font-weight: bold; letter-spacing: 0.1em; margin: 0;
+        color: #F3E5AB; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+        background: linear-gradient(to bottom, #FFF1CD, #D4AF7A);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         white-space: nowrap; flex: 1; line-height: 1.2; padding-bottom: 4px;
       }
-      /* ==================== 通用卡片與資訊 ==================== */
-      .card {
-        width: 100%; background: linear-gradient(180deg, #221B16 0%, #15110E 100%); border-radius: 1rem; padding: 1.5rem;
-        box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.05); margin-bottom: 1.5rem; border: 1px solid #4A3A2A; box-sizing: border-box;
+
+      /* ==================== 資訊區塊 ==================== */
+      .info-card {
+        padding: 1.25rem;
+        background: linear-gradient(180deg, rgba(34,46,68,1) 0%, rgba(20,28,42,1) 100%);
+        border-radius: 8px;
       }
-      .info-list { list-style: none; padding: 0; margin: 0; font-size: 0.875rem; }
-      .info-list li { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
+      .info-list { list-style: none; padding: 0; margin: 0; font-size: 0.9rem; }
+      .info-list li { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.85rem; }
       .info-list li:last-child { margin-bottom: 0; }
-      .info-list .icon { font-size: 1.125rem; filter: sepia(0.5) hue-rotate(340deg) saturate(1.5); }
-      .info-list .text { color: #D1C0A8; line-height: 1.6; padding-top: 0.125rem; }
-      /* 備註區塊 */
-      .note-box { margin-top: 1.25rem; background-color: #0E0A08; border-radius: 0.75rem; padding: 1rem; border: 1px solid #2A221C; box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8); }
-      .note-box p { margin: 0; font-size: 0.875rem; color: #9A8C7A; line-height: 1.6; }
-      .note-title { color: #D4AF7A; margin-right: 0.25rem; font-weight: bold; }
-      /* ==================== 報名名單 ==================== */
-      .list-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #4A3A2A; }
-      .list-header .icon { font-size: 1.25rem; filter: sepia(0.5) hue-rotate(340deg) saturate(1.5); }
-      .list-header h2 { font-size: 1.125rem; font-weight: bold; color: #D4AF7A; letter-spacing: 0.05em; margin: 0; }
-      /* 名單項目 (縮小行距恢復緊湊感) */
-      .list-item { padding-bottom: 0.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid #2A221C; }
+      .info-list .icon { font-size: 1.25rem; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
+      .info-list .text { color: #EAD7BA; line-height: 1.5; padding-top: 0.125rem; font-weight: 500; letter-spacing: 0.05em; }
+      
+      .note-box { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(212,175,122,0.3); }
+      .note-box p { margin: 0; font-size: 0.85rem; color: #B0A08A; line-height: 1.5; }
+      .note-title { color: #D4AF7A; font-weight: bold; }
+
+      /* ==================== 名單區塊 ==================== */
+      .list-card {
+        padding: 1.25rem;
+        border-radius: 8px;
+        /* 棋盤格背景 */
+        background-color: rgba(26,36,54,1);
+        background-image: 
+          linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03)),
+          linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03));
+        background-size: 40px 40px;
+        background-position: 0 0, 20px 20px;
+      }
+      .list-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(212,175,122,0.5); }
+      .list-header .icon { font-size: 1.35rem; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
+      .list-header h2 { font-size: 1.15rem; font-weight: bold; color: #D4AF7A; letter-spacing: 0.1em; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+      
+      .list-item { padding-bottom: 0.65rem; margin-bottom: 0.65rem; border-bottom: 1px dashed rgba(212,175,122,0.2); }
       .list-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
-      .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.15rem; flex-wrap: wrap; font-size: 1.05rem; }
-      .item-title .name { margin-right: 0.5rem; color: #EAD7BA; }
-      .item-title .count { color: #D4AF7A; margin-left: 0.5rem; font-size: 0.9rem; }
-      .item-detail { font-size: 0.875rem; color: #8C7A65; margin-left: 1.75rem; padding-top: 0; line-height: 1.4; }
+      .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.15rem; flex-wrap: wrap; font-size: 1.1rem; }
+      .item-title .name { margin-right: 0.5rem; color: #F3E5AB; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+      .item-title .count { 
+        color: #1A2436; background: linear-gradient(135deg, #EAD7BA, #A88B60); 
+        padding: 0 6px; border-radius: 4px; font-size: 0.85rem; margin-left: 0.5rem; 
+        box-shadow: 0 1px 2px rgba(0,0,0,0.5); font-weight: bold;
+      }
+      .item-detail { font-size: 0.85rem; color: #A89580; margin-left: 2rem; padding-top: 0.2rem; line-height: 1.4; }
+      
       /* ==================== 獨立標籤配色 ==================== */
-      .tag { font-size: 0.8rem; font-weight: bold; margin-left: 0.5rem; display: inline-flex; align-items: center; letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
-      .tag-orange { color: #F97316; } /* 亮橘色 */
-      .tag-pink { color: #EC4899; }   /* 亮粉色 */
-      .tag-purple { color: #A855F7; } /* 亮紫色 */
-      .tag-gold { color: #EAB308; }   /* 亮金色 */
+      .tag { 
+        font-size: 0.8rem; font-weight: bold; margin-left: 0.5rem; display: inline-flex; align-items: center; 
+        letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8); 
+      }
+      .tag-orange { color: #F97316; } 
+      .tag-pink { color: #EC4899; }   
+      .tag-purple { color: #D8B4FE; } 
+      .tag-gold { color: #EAB308; }   
+
+      /* ==================== 贊助區塊 ==================== */
+      .sponsor-card {
+        padding: 1.25rem;
+        background: linear-gradient(180deg, rgba(34,46,68,1) 0%, rgba(20,28,42,1) 100%);
+        border-radius: 8px; margin-bottom: 0;
+      }
+
       /* ==================== 底部總計 ==================== */
-      .footer-wrapper { width: 100%; text-align: center; margin-top: 0.5rem; }
-      .total-count { color: #D4AF7A; font-weight: bold; font-size: 1.125rem; letter-spacing: 0.1em; margin-bottom: 0.75rem; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
-      .copyright { color: #6B5D4D; font-size: 0.75rem; letter-spacing: 0.05em; }
+      .footer-wrapper { width: 100%; text-align: center; margin-top: 1rem; position: relative; z-index: 10; }
+      .total-count { 
+        color: #D4AF7A; font-weight: bold; font-size: 1.2rem; letter-spacing: 0.15em; 
+        margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.9); 
+      }
+      .copyright { color: #A89580; font-size: 0.8rem; letter-spacing: 0.1em; }
     </style>
     
     <div class="app-container">
-      <div class="header-wrapper">
-        <div class="header-card">
-          <div class="header-icon">${iconEmoji}</div>
-          <h1 class="header-title">${escapeHtml(e.name)}</h1>
-        </div>
-      </div>
-      
-      <div class="card">
-        <ul class="info-list">`;
+      <div class="main-frame">
+        <div class="rivet tl"></div>
+        <div class="rivet tr"></div>
+        <div class="rivet bl"></div>
+        <div class="rivet br"></div>
         
+        <div class="inner-box">
+          <div class="header-card">
+            <div class="header-icon">${iconEmoji}</div>
+            <h1 class="header-title">${escapeHtml(e.name)}</h1>
+          </div>
+        </div>
+        
+        <div class="inner-box">
+          <div class="info-card">
+            <ul class="info-list">`;
+            
     if (e.organizer) html += `<li><span class="icon">👤</span><div class="text">主辦人：${escapeHtml(e.organizer)}</div></li>`;
     const timeDisplay = formatTimeForShare(e.time);
     if (timeDisplay) html += `<li><span class="icon">🕒</span><div class="text">時間：${escapeHtml(timeDisplay)}</div></li>`;
@@ -4373,12 +4465,13 @@ async function generateEventCanvas(e, data, stats) {
     if (e.note) {
         html += `<div class="note-box"><p><span class="note-title">💡 備註：</span>${escapeHtml(e.note).replace(/\n/g, '<br>')}</p></div>`;
     }
-    html += `</div>`;
+    html += `</div></div>`;
 
     // 名單區
     if (includeNames && data.length > 0) {
-        html += `<div class="card">
-                   <div class="list-header"><span class="icon">👥</span><h2>報名名單</h2></div>`;
+        html += `<div class="inner-box">
+                   <div class="list-card">
+                     <div class="list-header"><span class="icon">👥</span><h2>報名名單</h2></div>`;
         let count = 0;
         data.forEach(p => {
             const family = getIntField(p, 'family');
@@ -4396,19 +4489,18 @@ async function generateEventCanvas(e, data, stats) {
             let tagHtml = '';
             if (roles.length > 0) {
                 tagHtml = roles.map(r => {
-                    let tagClass = 'tag-orange'; // default/爐主
+                    let tagClass = 'tag-orange'; 
                     
                     if(r.label.includes('會長') && !r.label.includes('輔導')) { tagClass = 'tag-gold'; }
                     else if(r.label.includes('輔導會長')) { tagClass = 'tag-purple'; }
                     else if(r.label.includes('壽星')) { tagClass = 'tag-pink'; }
                     else if(r.label.includes('爐主')) { tagClass = 'tag-orange'; }
                     
-                    // r.label 本身已經帶有 emoji (例如 "🎂 8月壽星")，因此直接顯示即可，不再重複加 prefix
                     return `<span class="tag ${tagClass}">${r.label}</span>`;
                 }).join('');
             }
 
-            let nameColor = '#f8fafc';
+            let nameColor = '#F3E5AB';
             let maryMedal = '';
             if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
                 const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
@@ -4419,7 +4511,7 @@ async function generateEventCanvas(e, data, stats) {
 
             html += `<div class="list-item">
                        <div class="item-title">
-                         <span style="color:#D2BCA2;margin-right:0.5rem;font-family:monospace;">${num}.</span>
+                         <span style="color:#A88B60;margin-right:0.5rem;font-family:monospace;font-size:1.1rem;">${num}.</span>
                          <span class="name" style="color:${nameColor};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}</span>
                          ${tagHtml}
                          ${total > 1 ? `<span class="count">×${total}</span>` : ''}
@@ -4450,12 +4542,12 @@ async function generateEventCanvas(e, data, stats) {
                     });
                 }
                 if (travelLines.length > 0) {
-                    html += `<div class="item-detail" style="color:#D2BCA2;">${travelLines.join('、')}</div>`;
+                    html += `<div class="item-detail" style="color:#A88B60;">${travelLines.join('、')}</div>`;
                 }
             }
             html += `</div>`;
         });
-        html += `</div>`;
+        html += `</div></div>`;
     }
 
     // 贊助/認桌彙總區
@@ -4476,24 +4568,28 @@ async function generateEventCanvas(e, data, stats) {
             
             if (moneyParts.length > 0) {
                 const label = (total === 0) ? '<span style="font-size:0.8rem;color:#EAB308;margin-left:0.5rem;opacity:0.8;">(純贊助)</span>' : '';
-                sponsorHtml += `<div class="list-item" style="border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0.5rem;">
-                                  <span class="icon">🎁</span> 
-                                  <span class="name" style="color:#f8fafc;font-weight:bold;">${p.name}</span>${label} 
-                                  <span style="color:#6b7280;">—</span> 
-                                  <span style="color:#D2BCA2;font-size:0.95rem;">${moneyParts.join('、')}</span>
+                sponsorHtml += `<div class="list-item" style="border-bottom:1px dashed rgba(212,175,122,0.2);display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0.5rem;">
+                                  <span class="icon" style="font-size:1.25rem;">🎁</span> 
+                                  <span class="name" style="color:#F3E5AB;font-weight:bold;text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${p.name}</span>${label} 
+                                  <span style="color:#A88B60;">—</span> 
+                                  <span style="color:#EAD7BA;font-size:0.95rem;">${moneyParts.join('、')}</span>
                                 </div>`;
             }
         });
         if (sponsorHtml) {
-            html += `<div class="card">
-                       <div class="list-header"><span class="icon">💰</span><h2>贊助 / 認桌資訊</h2></div>
-                       ${sponsorHtml}
+            html += `<div class="inner-box" style="margin-bottom:0;">
+                       <div class="sponsor-card">
+                         <div class="list-header"><span class="icon">💰</span><h2>贊助 / 認桌資訊</h2></div>
+                         ${sponsorHtml}
+                       </div>
                      </div>`;
         }
     }
 
     // 底部統計區
     html += `
+      </div>
+      <!-- 底部統計區 -->
       <div class="footer-wrapper">
         <div class="total-count">共 ${stats.totalPeople || 0} 人報名</div>
         <div class="copyright">大老二兄弟會 活動報名系統</div>
@@ -4507,7 +4603,7 @@ async function generateEventCanvas(e, data, stats) {
     const canvas = await html2canvas(card, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#0D131A',
+        backgroundColor: '#2D231A',
         width: card.scrollWidth,
         height: card.scrollHeight
     });
