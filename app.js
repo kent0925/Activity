@@ -4313,7 +4313,8 @@ async function generateEventCanvas(e, data, stats) {
       .main-frame::before {
         content: ""; position: absolute; inset: -14px; border-radius: 18px; z-index: -1;
         /* 金屬框底圖 */
-        background: url('images/metal-border.png') repeat;
+        background: url('images/metal-border.png') no-repeat center center;
+        background-size: 100% 100%;
         box-shadow: inset 0 0 4px rgba(255,255,255,0.6), 0 10px 25px rgba(0,0,0,0.9);
       }
       .main-frame::after {
@@ -4345,7 +4346,8 @@ async function generateEventCanvas(e, data, stats) {
       /* 內部區塊漸層金屬框線 */
       .inner-box::before {
         content: ""; position: absolute; inset: -2px; border-radius: 10px; z-index: -1;
-        background: url('images/metal-border.png') repeat;
+        background: url('images/metal-border.png') no-repeat center center;
+        background-size: 100% 100%;
         filter: brightness(0.8) sepia(0.3); /* 稍微黯淡以凸顯外框 */
       }
       
@@ -4491,13 +4493,14 @@ async function generateEventCanvas(e, data, stats) {
                 tagHtml = roles.map(r => {
                     let tagClass = 'tag-orange'; 
                     let iconImg = '';
+                    let pureText = r.label.replace(/[👑👸🍻🎂]/g, '').trim();
                     
                     if(r.label.includes('會長') && !r.label.includes('輔導')) { tagClass = 'tag-gold'; iconImg = '<img src="images/icon-crown-gold.png" class="custom-icon" style="width:1.1rem;height:1.1rem;margin-right:4px;">'; }
                     else if(r.label.includes('輔導會長')) { tagClass = 'tag-purple'; iconImg = '<img src="images/icon-crown-purple.png" class="custom-icon" style="width:1.1rem;height:1.1rem;margin-right:4px;">'; }
                     else if(r.label.includes('壽星')) { tagClass = 'tag-pink'; iconImg = '<img src="images/icon-cake.png" class="custom-icon" style="width:1.1rem;height:1.1rem;margin-right:4px;">'; }
                     else if(r.label.includes('爐主')) { tagClass = 'tag-orange'; iconImg = '<img src="images/icon-medal.png" class="custom-icon" style="width:1.1rem;height:1.1rem;margin-right:4px;">'; }
                     
-                    return `<span class="tag ${tagClass}">${iconImg}${r.label}</span>`;
+                    return `<span class="tag ${tagClass}">${iconImg}${pureText}</span>`;
                 }).join('');
             }
 
