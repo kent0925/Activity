@@ -230,7 +230,11 @@ function adjustMaryScale() {
     }, 0);
 }
 
-window.addEventListener('resize', adjustMaryScale);
+let _maryResizeTimer = null;
+window.addEventListener('resize', () => {
+    clearTimeout(_maryResizeTimer);
+    _maryResizeTimer = setTimeout(adjustMaryScale, 200);
+});
 
 function closeSmallMary() {
     if (maryState.isSpinning) return;
@@ -751,12 +755,8 @@ async function maryStartSpin() {
             // 第 2, 3 次旋轉 (快速跑圈，1圈，稍快)
             // 為了有趣，送燈時隨機送大獎以外的圖案
             let extraTargetIdx = Math.floor(Math.random() * trackLen);
-            const extraSym = MARY_GRID[extraTargetIdx];
-            if (extraSym === 'bar' || extraSym === 'seven' || extraSym === 'lucky') {
+            while (['bar', 'seven', 'lucky'].includes(MARY_GRID[extraTargetIdx])) {
                 extraTargetIdx = (extraTargetIdx + 1) % trackLen; // 避開大獎死板防錯
-                if (MARY_GRID[extraTargetIdx] === 'bar' || MARY_GRID[extraTargetIdx] === 'seven') {
-                    extraTargetIdx = (extraTargetIdx + 1) % trackLen;
-                }
             }
 
             await doSpinAnim(extraTargetIdx, 1, 30);
@@ -2804,7 +2804,7 @@ function isEventDay(event) {
         const endD = parseLocalDate(endStr);     // ★ 改用 parseLocalDate
         if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
             // ★ Bug 修正：避免 toDateString() 跨瀏覽器不一致，改為直接比較年月日
-            const tY = todayDate.getFullYear(), tM = todayDate.getMonth(), tD = todayDate.getDate();
+            const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
             const sY = startD.getFullYear(), sM = startD.getMonth(), sD = startD.getDate();
             const eY = endD.getFullYear(), eM = endD.getMonth(), eD = endD.getDate();
             const todayNum = tY * 10000 + tM * 100 + tD;
@@ -3093,26 +3093,32 @@ function saveHistoryImage() {
 
 // ★ Bug 修正：Toast 計時器變數，防止多次呼叫時前一個計時器未清除導致提前消失
 let _toastTimer = null;
-function showToast(msg) {
+function showToast(msg, duration = 2500) {
     const toast = document.getElementById('toast');
     if (!toast) return;
     document.getElementById('toast-msg').innerText = msg;
     toast.classList.remove('opacity-0', 'pointer-events-none', 'top-6');
     toast.classList.add('top-20', 'opacity-100');
 
-    // ★ 清除前一個計時器，確保每次都從頭計 2.5 秒
+    // ★ 清除前一個計時器，確保每次都從頭計
     if (_toastTimer) clearTimeout(_toastTimer);
     _toastTimer = setTimeout(() => {
         toast.classList.remove('top-20', 'opacity-100');
         toast.classList.add('opacity-0', 'pointer-events-none', 'top-6');
         _toastTimer = null;
-    }, 2500);
+    }, duration);
 }
 
 function showConfirm(msg) {
     return new Promise((resolve) => {
         const modal = document.getElementById('confirm-modal');
-        document.getElementById('confirm-msg').innerHTML = msg;
+        const safeMsg = msg.replace(/&/g, "&amp;")
+                           .replace(/</g, "&lt;")
+                           .replace(/>/g, "&gt;")
+                           .replace(/"/g, "&quot;")
+                           .replace(/'/g, "&#039;")
+                           .replace(/&lt;br\s*\/?[^>]*&gt;/gi, "<br>");
+        document.getElementById('confirm-msg').innerHTML = safeMsg;
         modal.classList.remove('hidden');
 
         const cleanup = () => {
@@ -4479,7 +4485,7 @@ async function generateEventCanvas(e, data, stats) {
     });
     await Promise.all(loadPromises);
     // 稍微延遲讓瀏覽器渲染背景圖
-    await new Promise(r => setTimeout(r, 600));
+    // await new Promise(r => setTimeout(r, 600)); // 移除多餘延遲
 
     // --- 2. 使用 html2canvas 截取卡片 ---
     const canvas = await html2canvas(card, {

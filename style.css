@@ -40,8 +40,14 @@
 body {
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     -webkit-tap-highlight-color: transparent;
-    background-color: #162544;
-    color: #ffffff;
+    background-color: var(--bg-main, #0D131A);
+    color: var(--text-on-dark-primary, #EFECE5);
+}
+
+/* Accessibility Focus */
+*:focus-visible {
+    outline: 2px solid var(--accent, #D4AF37);
+    outline-offset: 2px;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
@@ -72,7 +78,7 @@ body {
     background: 
         linear-gradient(rgba(26,36,54,0.3), rgba(26,36,54,0.3)) padding-box,
         url('images/leather-bg.jpg') padding-box,
-        url('images/champagne-gold-border.png') border-box;
+        url('images/champagne-gold-border.jpg') border-box;
     background-size: auto, 350px, 100% 100%;
     background-repeat: no-repeat, repeat, no-repeat;
     box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 15px 35px rgba(0,0,0,0.6);
@@ -330,7 +336,7 @@ details[open]>summary .arrow-icon {
     background: 
         linear-gradient(rgba(26,36,54,0.3), rgba(26,36,54,0.3)) padding-box,
         url('images/leather-bg.jpg') padding-box,
-        url('images/champagne-gold-border.png') border-box;
+        url('images/champagne-gold-border.jpg') border-box;
     background-size: auto, 350px, 100% 100%;
     background-repeat: no-repeat, repeat, no-repeat;
     box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 10px 25px rgba(0, 0, 0, 0.6);
@@ -483,7 +489,7 @@ details[open]>summary .arrow-icon {
 /* --- 統計區與金屬按鈕：改成真實香檳金材質與立體雕刻感 --- */
 .premium-gradient,
 button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
-    background: url('images/champagne-gold-border.png') center/cover !important;
+    background: url('images/champagne-gold-border.jpg') center/cover !important;
     color: #3d2600 !important; /* 深古銅色文字 */
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important; /* 雕刻反光感 */
     box-shadow: 0 6px 15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.7), inset 0 -3px 5px rgba(0,0,0,0.2) !important;
@@ -507,7 +513,7 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     background: 
         linear-gradient(rgba(30,48,82,0.5), rgba(30,48,82,0.5)) padding-box,
         url('images/leather-bg.jpg') padding-box,
-        url('images/champagne-gold-border.png') border-box !important;
+        url('images/champagne-gold-border.jpg') border-box !important;
     background-size: auto, 350px, 100% 100% !important;
     background-repeat: no-repeat, repeat, no-repeat !important;
     box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
@@ -532,7 +538,7 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     background: 
         linear-gradient(rgba(30,48,82,0.5), rgba(30,48,82,0.5)) padding-box,
         url('images/leather-bg.jpg') padding-box,
-        url('images/champagne-gold-border.png') border-box !important;
+        url('images/champagne-gold-border.jpg') border-box !important;
     background-size: auto, 350px, 100% 100% !important;
     background-repeat: no-repeat, repeat, no-repeat !important;
     box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
@@ -551,7 +557,7 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     background: 
         linear-gradient(rgba(30,48,82,0.5), rgba(30,48,82,0.5)) padding-box,
         url('images/leather-bg.jpg') padding-box,
-        url('images/champagne-gold-border.png') border-box !important;
+        url('images/champagne-gold-border.jpg') border-box !important;
     background-size: auto, 350px, 100% 100% !important;
     background-repeat: no-repeat, repeat, no-repeat !important;
     box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);

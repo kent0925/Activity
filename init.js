@@ -260,11 +260,12 @@ function renderJackpotTop3(data) {
 
         const glowClass = isFirst ? 'ring-2 ring-amber-400/30 rounded-full p-2 bg-amber-500/10 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : '';
 
+        const safeName = p.name ? p.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : '';
         html += `
                 <div class="flex flex-col items-center ${sizeClass}">
                     <div class="flex flex-col items-center ${glowClass}">
                         <span class="text-xl leading-none mb-0.5">${medal}</span>
-                        <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${p.name}</span>
+                        <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${safeName}</span>
                     </div>
                     <span class="text-template-count-color text-[9px] font-black mt-0.5">${p.score !== undefined ? p.score + ' 分' : p.count + ' 次'}</span>
                 </div>
@@ -310,11 +311,12 @@ function renderAttendanceTop3(data) {
 
         const glowClass = isFirst ? 'ring-2 ring-amber-400/30 rounded-full p-2 bg-amber-500/10 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : '';
 
+        const safeName = p.name ? p.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : '';
         html += `
             <div class="flex flex-col items-center ${sizeClass}">
                 <div class="flex flex-col items-center ${glowClass}">
                     <span class="text-xl leading-none mb-0.5">${medal}</span>
-                    <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${p.name}</span>
+                    <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${safeName}</span>
                 </div>
                 <span class="text-template-count-color text-[9px] font-black mt-0.5">${p.count}次</span>
             </div>
@@ -381,10 +383,10 @@ function startSlotMachine(onComplete) {
             reels[index].querySelector('.slot-symbol').textContent = sym;
             reels[index].classList.remove('spinning');
             reels[index].classList.add('stopped');
-            finalSymbols.push(sym);
+            finalSymbols[index] = sym;
 
-            // 最後一輪顯示結果
-            if (index === 2) showResult();
+            // 所有轉輪皆已停止時顯示結果
+            if (finalSymbols.filter(s => s !== undefined).length === 3) showResult();
         }, delay);
     }
 
