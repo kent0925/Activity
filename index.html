@@ -36,14 +36,11 @@
 
 <body class="bg-[#0D131A] min-h-screen pb-safe relative">
 
-    <!-- 🌟 餐廳天花板背景 (Restaurant Ceiling Background) -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0 bg-[#0D131A]">
-        <img src="restaurant_ceiling_bg.png" class="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-lighten" alt="ceiling background">
-        <!-- 保留原本極淡的光暈，增加立體層次 -->
-        <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-[#1E3052]/40 blur-[100px]"></div>
-        <div class="absolute -bottom-[10%] -right-[10%] w-[70vw] h-[70vw] rounded-full bg-[#D4AF37]/20 blur-[120px]"></div>
-        <!-- 加上一層暗色漸層遮罩，確保文字與卡片依舊清晰且深色主調不變 -->
-        <div class="absolute inset-0 bg-gradient-to-b from-[#0D131A]/40 via-[#162544]/30 to-[#0D131A]/60"></div>
+    <!-- 🌟 頂級實木背景 (Premium Wood Background) -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute inset-0 w-full h-full" style="background: url('images/wood-bg.jpg') repeat; background-size: cover; opacity: 0.95;"></div>
+        <!-- 保留邊緣暗角，增加螢幕邊框的層次與聚焦感 -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.6)_100%)]"></div>
     </div>
     
     <!-- 確保主要內容層級在光暈之上 -->
@@ -80,7 +77,8 @@
     </div>
 
     <header
-        class="bg-[#162544] border-b border-[#B8922A]/20 text-white px-4 py-3 shadow-md sticky top-0 z-50 flex justify-between items-center h-14 lg:h-16">
+        class="text-white px-4 py-3 shadow-xl sticky top-0 z-50 flex justify-between items-center h-14 lg:h-16"
+        style="background: url('images/leather-bg.jpg') repeat; border-bottom: 2px solid rgba(212, 175, 55, 0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.8);">
         <div class="flex items-center gap-3">
             <button id="btn-back" onclick="handleBackNav()"
                 class="hidden p-1.5 hover:bg-white/20 rounded-full transition active:scale-90">
@@ -100,6 +98,10 @@
         <div id="view-home" class="view-section space-y-2 animate-fade-in">
             <!-- Premium 排行榜核心區塊 -->
             <div id="home-rankings-section" class="premium-dark-card p-4 pb-2 animate-fade-in relative overflow-hidden">
+                <!-- 裝飾螺絲釘 -->
+                <div class="rivet tl"></div><div class="rivet tr"></div>
+                <div class="rivet bl"></div><div class="rivet br"></div>
+                
                 <!-- 背景微光裝飾 -->
                 <div class="absolute top-0 left-0 w-32 h-32 bg-amber-500/10 rounded-full -ml-16 -mt-16 blur-3xl"></div>
                 <div class="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mb-16 blur-3xl"></div>
@@ -207,6 +209,12 @@
 
         <div id="view-activity-detail" class="view-section hidden space-y-6 animate-fade-in">
             <div id="event-info-card" class="premium-card p-6 relative overflow-hidden">
+                <!-- 裝飾螺絲釘 -->
+                <div class="rivet tl" style="top: 8px; left: 8px;"></div>
+                <div class="rivet tr" style="top: 8px; right: 8px;"></div>
+                <div class="rivet bl" style="bottom: 8px; left: 8px;"></div>
+                <div class="rivet br" style="bottom: 8px; right: 8px;"></div>
+
                 <div class="absolute -right-12 -top-12 w-32 h-32 bg-[#B8922A]/10 rounded-full blur-2xl opacity-60"></div>
                 <div class="absolute top-0 right-0 p-3">
                     <div id="manager-controls" class="hidden">
@@ -277,7 +285,13 @@
             </div>
 
             <form id="regForm" class="premium-card p-6 space-y-8 relative" onsubmit="handleSubmit(event)">
-                <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                <!-- 裝飾螺絲釘 -->
+                <div class="rivet tl" style="top: 8px; left: 8px;"></div>
+                <div class="rivet tr" style="top: 8px; right: 8px;"></div>
+                <div class="rivet bl" style="bottom: 8px; left: 8px;"></div>
+                <div class="rivet br" style="bottom: 8px; right: 8px;"></div>
+
+                <div class="flex items-center justify-between pb-4 border-b border-white/10 relative z-10">
                     <div class="flex items-center gap-3">
                         <div class="bg-[#B8922A]/20 p-2 rounded-xl"><i data-lucide="edit-3"
                                 class="w-6 h-6 text-[#EFC958]"></i></div>
