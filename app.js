@@ -4491,7 +4491,8 @@ async function generateEventCanvas(e, data, stats) {
                 tagHtml = roles.map(r => {
                     let tagClass = 'tag-orange'; 
                     let iconHtml = '';
-                    let pureText = r.label.replace(/[👑<img src="images/icons/princess.png" class="inline-block w-[1.2em] h-[1.2em] align-text-bottom drop-shadow-md" alt="👸"><img src="images/icons/beer.png" class="inline-block w-[1.2em] h-[1.2em] align-text-bottom drop-shadow-md" alt="🍻"><img src="images/icons/cake.png" class="inline-block w-[1.2em] h-[1.2em] align-text-bottom drop-shadow-md" alt="🎂">]/g, '').trim();
+                    // 移除任何 img 標籤以及舊版的純文字 Emoji，以取得乾淨的文字
+                    let pureText = r.label.replace(/<img[^>]*>/g, '').replace(/[👑👸🍻🎂]/g, '').trim();
                     
                     if(r.label.includes('會長') && !r.label.includes('輔導')) { tagClass = 'tag-gold'; iconHtml = '<span style="margin-right:4px;">👑</span>'; }
                     else if(r.label.includes('輔導會長')) { tagClass = 'tag-purple'; iconHtml = '<span style="margin-right:4px;"><img src="images/icons/princess.png" class="inline-block w-[1.2em] h-[1.2em] align-text-bottom drop-shadow-md" alt="👸"></span>'; }
