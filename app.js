@@ -413,7 +413,7 @@ function openMaryKeypad(id, label) {
     const input = document.getElementById('mary-keypad-input');
 
     if (overlay) overlay.classList.remove('hidden');
-    if (title) title.innerText = `押注: ${label}`;
+    if (title) title.innerHTML = `押注: ${label}`;
 
     const currentVal = maryState.currentBet[id] || 0;
     if (input) {
