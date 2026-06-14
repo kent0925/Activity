@@ -598,7 +598,7 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
 .rivet {
     position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #e2cfb3 0%, #7c5c3b 100%);
     border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
-    border: 1px solid #332414; z-index: 20;
+    border: 1px solid #332414; z-index: 20; margin: 0 !important;
 }
 .rivet::after { content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 1.5px; background: rgba(0,0,0,0.5); transform: translateY(-50%) rotate(45deg); }
 .rivet.tl { top: 6px; left: 6px; }
