@@ -4406,9 +4406,9 @@ async function generateEventCanvas(e, data, stats) {
       .item-title .name { margin-right: 0.5rem; color: #F3E5AB; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
       .item-title .count { 
         color: #1A2436; background: linear-gradient(135deg, #EAD7BA, #A88B60); 
-        padding: 0 5px; border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem; 
+        padding: 1px 5px 1px; border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem; 
         box-shadow: 0 1px 2px rgba(0,0,0,0.5); font-weight: bold;
-        display: inline-flex; align-items: center; justify-content: center; height: 1.2rem;
+        display: inline-block; line-height: 1.1; vertical-align: middle; transform: translateY(-1px);
       }
       .item-detail { font-size: 0.85rem; color: #A89580; margin-left: 2rem; padding-top: 0.2rem; line-height: 1.4; }
       
