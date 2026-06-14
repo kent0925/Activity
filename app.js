@@ -4316,6 +4316,7 @@ async function generateEventCanvas(e, data, stats) {
         background: url('images/metal-border.png') no-repeat center center;
         background-size: 100% 100%;
         box-shadow: inset 0 0 4px rgba(255,255,255,0.6), 0 10px 25px rgba(0,0,0,0.9);
+        filter: sepia(0.7) hue-rotate(-10deg) saturate(2) brightness(0.9) contrast(1.1); /* 將銀色鍍成香檳金 */
       }
       .main-frame::after {
         content: ""; position: absolute; inset: -4px; border-radius: 14px; z-index: -1;
@@ -4348,7 +4349,7 @@ async function generateEventCanvas(e, data, stats) {
         content: ""; position: absolute; inset: -2px; border-radius: 10px; z-index: -1;
         background: url('images/metal-border.png') no-repeat center center;
         background-size: 100% 100%;
-        filter: brightness(0.8) sepia(0.3); /* 稍微黯淡以凸顯外框 */
+        filter: sepia(0.7) hue-rotate(-10deg) saturate(2) brightness(0.75) contrast(1.1); /* 稍微黯淡的香檳金 */
       }
       
       /* 圖片 Icon 共用樣式 */
