@@ -66,14 +66,18 @@ body {
 }
 
 .premium-card {
-    background: rgba(13, 19, 26, 0.4); /* Darker and more transparent */
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-radius: 1.5rem;
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    border-top: 1px solid rgba(212, 175, 55, 0.5); /* Stronger Top highlight */
-    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), inset 0 2px 0 0 rgba(255, 255, 255, 0.08);
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: 1.25rem;
+    background: 
+        linear-gradient(rgba(26,36,54,0.3), rgba(26,36,54,0.3)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/champagne-gold-border.png') border-box;
+    background-size: auto, 350px, 100% 100%;
+    background-repeat: no-repeat, repeat, no-repeat;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 15px 35px rgba(0,0,0,0.6);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #EAD7BA;
 }
 
 .premium-card:active {
@@ -320,11 +324,18 @@ details[open]>summary .arrow-icon {
 
 /* --- Premium Rankings --- */
 .premium-dark-card {
-    background: linear-gradient(135deg, #1E3052 0%, #162544 100%);
-    border-radius: 1.5rem;
-    border: 1px solid rgba(184, 146, 42, 0.2);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: 1.25rem;
+    background: 
+        linear-gradient(rgba(26,36,54,0.3), rgba(26,36,54,0.3)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/champagne-gold-border.png') border-box;
+    background-size: auto, 350px, 100% 100%;
+    background-repeat: no-repeat, repeat, no-repeat;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 10px 25px rgba(0, 0, 0, 0.6);
     cursor: pointer;
+    color: #EAD7BA;
 }
 
 /* 詳細排行榜名單彈窗 */
@@ -456,9 +467,9 @@ details[open]>summary .arrow-icon {
 #regForm input[type="text"],
 #view-create select,
 #view-create input {
-    background-color: #162544 !important;
-    color: white !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
+    background-color: rgba(13, 19, 26, 0.6) !important; /* 透黑讓皮革底透出來 */
+    color: #EAD7BA !important;
+    border-color: rgba(212, 175, 55, 0.3) !important;
 }
 #regForm select option,
 #view-create select option { background-color: #1E3052; color: white; }
@@ -469,22 +480,37 @@ details[open]>summary .arrow-icon {
 .hover\:bg-gray-700:hover { background-color: #1E3052 !important; }
 .hover\:bg-gray-800:hover { background-color: #9A7820 !important; }
 
-/* --- 統計區：改成奶油米白 --- */
-.premium-gradient {
-    background: #EDE5CC !important;
-    color: #1E2D4A !important;
+/* --- 統計區與金屬按鈕：改成真實香檳金材質與立體雕刻感 --- */
+.premium-gradient,
+button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
+    background: url('images/champagne-gold-border.png') center/cover !important;
+    color: #3d2600 !important; /* 深古銅色文字 */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important; /* 雕刻反光感 */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.7), inset 0 -3px 5px rgba(0,0,0,0.2) !important;
+    border: 1px solid #8e6a3c !important;
+    font-weight: 900 !important;
 }
-.premium-gradient .text-white { color: #1E2D4A !important; }
-.premium-gradient .text-green-100 { color: rgba(30, 45, 74, 0.6) !important; }
-.premium-gradient .text-accent { color: #B8922A !important; }
+.premium-gradient .text-white,
+.premium-gradient .text-green-100 { color: #5a3c00 !important; font-weight: bold; }
+.premium-gradient .text-accent { color: #2b1d00 !important; }
 .premium-gradient .glass-effect {
-    background: rgba(255, 255, 255, 0.45) !important;
-    border: 1px solid rgba(184, 146, 42, 0.25) !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    color: #2b1d00 !important;
 }
+.premium-gradient .glass-effect i { color: #2b1d00 !important; }
 
 /* --- 詳細名單彈窗 --- */
 #modal-content {
-    background-color: #1E3052 !important;
+    border: 2px solid transparent;
+    background: 
+        linear-gradient(rgba(30,48,82,0.5), rgba(30,48,82,0.5)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/champagne-gold-border.png') border-box !important;
+    background-size: auto, 350px, 100% 100% !important;
+    background-repeat: no-repeat, repeat, no-repeat !important;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
 }
 #modal-content .bg-gray-50\/80 {
     background-color: rgba(22, 37, 68, 0.85) !important;
@@ -502,7 +528,14 @@ details[open]>summary .arrow-icon {
 
 /* --- 確認彈窗 --- */
 #confirm-modal > div > div {
-    background-color: #1E3052 !important;
+    border: 2px solid transparent;
+    background: 
+        linear-gradient(rgba(30,48,82,0.5), rgba(30,48,82,0.5)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/champagne-gold-border.png') border-box !important;
+    background-size: auto, 350px, 100% 100% !important;
+    background-repeat: no-repeat, repeat, no-repeat !important;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
 }
 #confirm-modal h3 { color: white !important; }
 #confirm-modal p  { color: rgba(255, 255, 255, 0.68) !important; }
@@ -514,7 +547,14 @@ details[open]>summary .arrow-icon {
 
 /* --- 報名教學彈窗 --- */
 #tutorial-modal-content {
-    background-color: #1E3052 !important;
+    border: 2px solid transparent;
+    background: 
+        linear-gradient(rgba(30,48,82,0.5), rgba(30,48,82,0.5)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/champagne-gold-border.png') border-box !important;
+    background-size: auto, 350px, 100% 100% !important;
+    background-repeat: no-repeat, repeat, no-repeat !important;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
 }
 #tutorial-modal-content .bg-gray-50\/80 {
     background-color: rgba(22, 37, 68, 0.85) !important;
@@ -553,3 +593,15 @@ details[open]>summary .arrow-icon {
 #btn-history-toggle:hover {
     background-color: rgba(255, 255, 255, 0.15) !important;
 }
+
+/* ==================== 網頁專用立體螺絲釘 ==================== */
+.rivet {
+    position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #e2cfb3 0%, #7c5c3b 100%);
+    border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
+    border: 1px solid #332414; z-index: 20;
+}
+.rivet::after { content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 1.5px; background: rgba(0,0,0,0.5); transform: translateY(-50%) rotate(45deg); }
+.rivet.tl { top: 6px; left: 6px; }
+.rivet.tr { top: 6px; right: 6px; }
+.rivet.bl { bottom: 6px; left: 6px; }
+.rivet.br { bottom: 6px; right: 6px; }
