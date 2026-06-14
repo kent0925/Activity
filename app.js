@@ -3873,6 +3873,7 @@ function canvasToFile(canvas, filename) {
     });
 }
 
+
 function generateSingleShareText(e, data, stats, options) {
     let text = `<img src="images/icons/calendar.png" class="inline-block w-[1.2em] h-[1.2em] align-text-bottom drop-shadow-md" alt="📅"> 【大老二兄弟會】近期舉辦中活動 👥\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
@@ -4179,56 +4180,42 @@ async function generateEventCanvas(e, data, stats) {
         font-family: "PingFang TC", "Helvetica Neue", sans-serif; color: #EAD7BA;
       }
       .main-frame {
-        width: 100%;
-        /* 確保 html2canvas 支援的深藍皮革疊加法 */
-        background: linear-gradient(rgba(10, 15, 25, 0.75), rgba(10, 15, 25, 0.75)), url('images/leather-bg.jpg') repeat;
-        background-size: auto, 350px;
-        border-radius: 12px;
-        /* 移除實體邊框，改用陰影加深立體感 */
-        box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
-        padding: 1.5rem;
-        position: relative;
-        z-index: 1;
-      }
-      .main-frame::before {
-        content: ""; position: absolute; inset: -14px; border-radius: 18px; z-index: -1;
-        /* 全新生成的香檳金屬框底圖 */
-        background: url('images/champagne-gold-border.png') no-repeat center center;
-        background-size: 100% 100%;
-        box-shadow: inset 0 0 4px rgba(255,255,255,0.6), 0 10px 25px rgba(0,0,0,0.9);
-      }
-      .main-frame::after {
-        content: ""; position: absolute; inset: -4px; border-radius: 14px; z-index: -1;
-        border: 2px solid #0d131c; /* 內層細黑線增加層次 */
-      }
+          width: 100%;
+          background: linear-gradient(rgba(10, 15, 25, 0.75), rgba(10, 15, 25, 0.75)), url('images/leather-bg.jpg') repeat;
+          background-size: auto, 350px;
+          border-radius: 12px;
+          border: 1px solid rgba(212, 175, 55, 0.3);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 2px 10px rgba(255, 255, 255, 0.05);
+          padding: 1.5rem;
+          position: relative;
+          z-index: 1;
+        }
+      
+      
       /* 螺絲釘 (純 CSS 3D 繪製，無去背問題) */
       .rivet {
-        position: absolute; width: 16px; height: 16px; background: radial-gradient(circle, #e2cfb3 0%, #7c5c3b 100%);
-        border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
-        border: 1px solid #332414; z-index: 10;
-      }
+          position: absolute; width: 16px; height: 16px; background: radial-gradient(circle, #e2cfb3 0%, #7c5c3b 100%);
+          border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
+          border: 1px solid #332414; z-index: 10; margin: 0 !important;
+        }
       .rivet::after { content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 1.5px; background: rgba(0,0,0,0.5); transform: translateY(-50%) rotate(45deg); }
-      .rivet.tl { top: -3px; left: -3px; }
-      .rivet.tr { top: -3px; right: -3px; }
-      .rivet.bl { bottom: -3px; left: -3px; }
-      .rivet.br { bottom: -3px; right: -3px; }
+      .rivet.tl { top: 8px; left: 8px; }
+      .rivet.tr { top: 8px; right: 8px; }
+      .rivet.bl { bottom: 8px; left: 8px; }
+      .rivet.br { bottom: 8px; right: 8px; }
       
       /* ==================== 內部區塊通用 ==================== */
       .inner-box {
-        background-color: rgba(26, 36, 54, 0.6);
-        border: 2px solid transparent;
-        border-radius: 8px;
-        box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.3);
-        margin-bottom: 1.25rem;
-        position: relative;
-        z-index: 1;
-      }
+          background-color: rgba(26, 36, 54, 0.6);
+          border: 1px solid rgba(212, 175, 55, 0.2);
+          border-radius: 8px;
+          box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.3);
+          margin-bottom: 1.25rem;
+          position: relative;
+          z-index: 1;
+        }
       /* 內部區塊漸層金屬框線 */
-      .inner-box::before {
-        content: ""; position: absolute; inset: -2px; border-radius: 10px; z-index: -1;
-        background: url('images/champagne-gold-border.png') no-repeat center center;
-        background-size: 100% 100%;
-      }
+      
       
       /* 圖片 Icon 共用樣式 */
       img.custom-icon { width: 1.5em; height: 1.5em; object-fit: contain; vertical-align: middle; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8)); }
