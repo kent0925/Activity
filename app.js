@@ -4312,27 +4312,26 @@ async function generateEventCanvas(e, data, stats) {
       }
       .main-frame::before {
         content: ""; position: absolute; inset: -14px; border-radius: 18px; z-index: -1;
-        /* 金屬框底圖 */
-        background: url('images/metal-border.png') no-repeat center center;
+        /* 全新生成的香檳金屬框底圖 */
+        background: url('images/champagne-gold-border.png') no-repeat center center;
         background-size: 100% 100%;
         box-shadow: inset 0 0 4px rgba(255,255,255,0.6), 0 10px 25px rgba(0,0,0,0.9);
-        filter: sepia(0.7) hue-rotate(-10deg) saturate(2) brightness(0.9) contrast(1.1); /* 將銀色鍍成香檳金 */
       }
       .main-frame::after {
         content: ""; position: absolute; inset: -4px; border-radius: 14px; z-index: -1;
         border: 2px solid #0d131c; /* 內層細黑線增加層次 */
       }
-      /* 螺絲釘 */
+      /* 螺絲釘 (純 CSS 3D 繪製，無去背問題) */
       .rivet {
-        position: absolute; width: 24px; height: 24px; 
-        background: url('images/rivet.png') center/contain no-repeat;
-        z-index: 10;
-        filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.8));
+        position: absolute; width: 16px; height: 16px; background: radial-gradient(circle, #e2cfb3 0%, #7c5c3b 100%);
+        border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
+        border: 1px solid #332414; z-index: 10;
       }
-      .rivet.tl { top: -8px; left: -8px; }
-      .rivet.tr { top: -8px; right: -8px; }
-      .rivet.bl { bottom: -8px; left: -8px; }
-      .rivet.br { bottom: -8px; right: -8px; }
+      .rivet::after { content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 1.5px; background: rgba(0,0,0,0.5); transform: translateY(-50%) rotate(45deg); }
+      .rivet.tl { top: -3px; left: -3px; }
+      .rivet.tr { top: -3px; right: -3px; }
+      .rivet.bl { bottom: -3px; left: -3px; }
+      .rivet.br { bottom: -3px; right: -3px; }
       
       /* ==================== 內部區塊通用 ==================== */
       .inner-box {
@@ -4347,9 +4346,8 @@ async function generateEventCanvas(e, data, stats) {
       /* 內部區塊漸層金屬框線 */
       .inner-box::before {
         content: ""; position: absolute; inset: -2px; border-radius: 10px; z-index: -1;
-        background: url('images/metal-border.png') no-repeat center center;
+        background: url('images/champagne-gold-border.png') no-repeat center center;
         background-size: 100% 100%;
-        filter: sepia(0.7) hue-rotate(-10deg) saturate(2) brightness(0.75) contrast(1.1); /* 稍微黯淡的香檳金 */
       }
       
       /* 圖片 Icon 共用樣式 */
@@ -4413,7 +4411,7 @@ async function generateEventCanvas(e, data, stats) {
       
       /* ==================== 獨立標籤配色 ==================== */
       .tag { 
-        font-size: 0.8rem; font-weight: bold; margin-left: 0.5rem; display: inline-flex; align-items: center; 
+        font-size: 0.95rem; font-weight: bold; margin-left: 0.5rem; display: inline-flex; align-items: center; 
         letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8); 
       }
       .tag-orange { color: #F97316; } 
