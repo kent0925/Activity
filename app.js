@@ -173,15 +173,15 @@ let maryState = {
 };
 
 const MARY_CONFIG = [
-    { id: 'apple', label: '<img src="images/icons/apple.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 drop-shadow-xl inline-block">', rate: 2, color: '#ff4444' }, // 🍎 2x
-    { id: 'orange', label: '<img src="images/icons/orange.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 drop-shadow-xl inline-block">', rate: 5, color: '#ffaa00' }, // 🍊 5x
-    { id: 'mango', label: '<img src="images/icons/mango.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 drop-shadow-xl inline-block">', rate: 10, color: '#ffee00' }, // 🥭 10x
-    { id: 'bell', label: '<img src="images/icons/bell.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 drop-shadow-xl inline-block">', rate: 20, color: '#ffdd00' }, // 🔔 20x
-    { id: 'watermelon', label: '<img src="images/icons/watermelon.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 drop-shadow-xl inline-block">', rate: 30, color: '#44ff44' }, // 🍉 30x
-    { id: 'star', label: '<img src="images/icons/star.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 drop-shadow-xl inline-block">', rate: 40, color: '#ffff44' }, // 🌟 40x
-    { id: 'seven', label: '<img src="images/icons/seven.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 drop-shadow-xl inline-block">', rate: 50, color: '#ff2222' }, // 7️⃣ 50x
-    { id: 'bar', label: '<img src="images/icons/bar.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 drop-shadow-xl inline-block">', rate: 100, color: '#44aaff' }, // BAR 100x
-    { id: 'lucky', label: '<img src="images/icons/lucky.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 drop-shadow-xl inline-block">', rate: 0, color: '#00ffaa' }  // 送燈 / 小獎
+    { id: 'apple', label: '<img src="images/icons/retro_apple_1781484109152.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block" style="image-rendering: pixelated;">', rate: 2, color: '#ff4444' }, // 🍎 2x
+    { id: 'orange', label: '<img src="images/icons/retro_orange_1781484120693.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block" style="image-rendering: pixelated;">', rate: 5, color: '#ffaa00' }, // 🍊 5x
+    { id: 'mango', label: '<img src="images/icons/retro_mango_1781484131034.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block" style="image-rendering: pixelated;">', rate: 10, color: '#ffee00' }, // 🥭 10x
+    { id: 'bell', label: '<img src="images/icons/retro_bell_1781484141969.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block" style="image-rendering: pixelated;">', rate: 20, color: '#ffdd00' }, // 🔔 20x
+    { id: 'watermelon', label: '<img src="images/icons/retro_watermelon_1781484149456.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block" style="image-rendering: pixelated;">', rate: 30, color: '#44ff44' }, // 🍉 30x
+    { id: 'star', label: '<img src="images/icons/retro_star_1781484160182.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block" style="image-rendering: pixelated;">', rate: 40, color: '#ffff44' }, // 🌟 40x
+    { id: 'seven', label: '<img src="images/icons/retro_seven_1781484170589.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block" style="image-rendering: pixelated;">', rate: 50, color: '#ff2222' }, // 7️⃣ 50x
+    { id: 'bar', label: '<img src="images/icons/retro_bar_1781484184240.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block" style="image-rendering: pixelated;">', rate: 100, color: '#44aaff' }, // BAR 100x
+    { id: 'lucky', label: '<img src="images/icons/lucky.png" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block" style="image-rendering: pixelated;">', rate: 0, color: '#00ffaa' }  // 送燈 / 小獎
 ];
 
 // 轉盤順序 (24格) 經典佈局，最大獎在上下中，次獎在左右中
@@ -360,9 +360,9 @@ function initMaryBetPanel() {
         const btn = document.createElement('div');
         btn.className = 'flex flex-col items-center justify-center bg-black/60 border border-[#5a3a00] rounded-md py-1 px-0.5 cursor-pointer select-none active:brightness-125 transition-all';
         btn.innerHTML = `
-            <div class="text-[8px] font-black text-[#ffcc00] mb-0.5">x${conf.rate}</div>
+            <div class="text-[12px] font-black text-[#ffcc00] mb-0.5">x${conf.rate}</div>
             <div class="text-xl leading-none mb-1">${conf.label}</div>
-            <div id="mary-bet-val-${conf.id}" class="w-full bg-black text-[#ff4444] font-mono text-[10px] font-black text-center border border-[#333] rounded-sm py-0.5 shadow-[inset_0_0_5px_rgba(255,0,0,0.5)]">0</div>
+            <div id="mary-bet-val-${conf.id}" class="w-full bg-black text-[#ff4444] font-mono text-[16px] font-black text-center border border-[#333] rounded-sm py-0.5 shadow-[inset_0_0_5px_rgba(255,0,0,0.5)]">0</div>
         `;
 
         // 長按跳出數字鍵盤
