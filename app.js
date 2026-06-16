@@ -2620,7 +2620,7 @@ function renderDetailLists(data) {
                 <div class="flex justify-between items-start">
                     <span class="font-medium text-[#EFECE5] text-sm">${safeName}</span>
                     <div class="text-right flex-1 pl-4">
-                        ${items.map(i => `<div class="text-xs text-purple-600 bg-purple-50 inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
+                        ${items.map(i => `<div class="text-xs font-bold text-[#FFD700] bg-[#0D131A] border border-[#D4AF37]/60 shadow-inner inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
                     </div>
                 </div>`;
             fragI.appendChild(liI);
@@ -4176,30 +4176,20 @@ async function shareAsImage() {
             if (!blob) { showToast('圖片產生失敗'); return; }
             const file = new File([blob], `${e.name}_名單.png`, { type: 'image/png' });
 
+            const options = {
+                includeNames: document.getElementById('share-opt-names')?.checked ?? true,
+                includeTravel: document.getElementById('share-opt-travel')?.checked ?? true,
+                includeSponsor: document.getElementById('share-opt-sponsor')?.checked ?? true,
+                includeMap: document.getElementById('share-opt-map')?.checked ?? true,
+                includeLink: document.getElementById('share-opt-link')?.checked ?? true
+            };
+            let shareText = buildFullShareText(options);
+
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
             if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
-                    let shareText = `📅 ${e.name}\n`;
-                    if (e.organizer) shareText += `👤 主辦人：${e.organizer}\n`;
-                    // ★ 使用共用工具函式格式化時間
-                    const shareTD = formatTimeForShare(e.time);
-                    if (shareTD) shareText += `🕒 時間：${shareTD}\n`;
-                    if (e.location) shareText += `📍 地點：${e.location}\n`;
-                    if (e.address) shareText += `🚗 地址：${e.address}\n`;
-                    shareText += `---------------------\n`;
-                    shareText += `共 ${stats.totalPeople || 0} 人報名\n`;
-
-                    // ★ 使用共用工具函式判斷活動日
-                    if (isEventDay(e) && (e.address || e.location)) {
-                        const mapQuery = e.address || e.location;
-                        shareText += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}`;
-                    } else {
-                        shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
-                    }
-
                     copyTextToClipboard(shareText);
-
                     await navigator.share({
                         files: [file],
                         title: e.name,
@@ -4209,10 +4199,12 @@ async function shareAsImage() {
                 } catch (err) {
                     if (err.name !== 'AbortError') {
                         console.error('圖片分享失敗:', err);
+                        copyTextToClipboard(shareText);
                         fallbackDownloadImage(canvas, e.name);
                     }
                 }
             } else {
+                copyTextToClipboard(shareText);
                 fallbackDownloadImage(canvas, e.name);
             }
 
@@ -4349,9 +4341,9 @@ async function sendToTelegram() {
 }
 
 // 核心複製邏輯：支援參數與格式化
-function performCopy(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true, includeLink: true }) {
-    // ★ 修改為同步讀取快取資料
-    const data = appState.cachedDetails || [];
+
+function buildFullShareText(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true, includeLink: true }) {
+const data = appState.cachedDetails || [];
 
     if (!data || data.length === 0) {
         // Try to fetch if cache is empty (though unlikely if modal is open)
@@ -4493,8 +4485,18 @@ function performCopy(options = { includeSponsor: true, includeTravel: true, incl
             }
         }
 
+        return text;
+}
+
+function performCopy(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true, includeLink: true }) {
+    const text = buildFullShareText(options);
+    if (text && text !== "資料讀取中或無資料，請稍後再試") {
         copyTextToClipboard(text);
+    } else if (text) {
+        showToast(text);
     }
+}
+
 }
 
 // --- ★★★ 這裡就是修正的關鍵，原本遺失的函式 ★★★ ---
