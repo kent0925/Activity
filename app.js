@@ -108,8 +108,6 @@ function switchRankTab(type) {
 
 function renderDetailedRankings() {
     const container = document.getElementById('rankings-list-container');
-    // ★ Bug 修正：container null 保護，防止 TypeError 白屏
-    if (!container) return;
     const type = appState.currentRankTab;
     const data = type === 'attendance' ? appState.attendanceRankings : appState.jackpotRankings;
 
@@ -128,9 +126,9 @@ function renderDetailedRankings() {
     data.forEach((item, index) => {
         const rank = index + 1;
         let rankIcon = '';
-        if (rank === 1) rankIcon = '<span class="ranking-medal"><img src="images/icons/medal_1.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥇"></span>';
-        else if (rank === 2) rankIcon = '<span class="ranking-medal"><img src="images/icons/medal_2.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥈"></span>';
-        else if (rank === 3) rankIcon = '<span class="ranking-medal"><img src="images/icons/medal_3.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥉"></span>';
+        if (rank === 1) rankIcon = '<span class="ranking-medal">🥇</span>';
+        else if (rank === 2) rankIcon = '<span class="ranking-medal">🥈</span>';
+        else if (rank === 3) rankIcon = '<span class="ranking-medal">🥉</span>';
         else rankIcon = `<span class="rank-number">${rank}</span>`;
 
         const valueLabel = type === 'attendance' ? `${item.count} 次` : `${item.score} 分`;
@@ -173,15 +171,15 @@ let maryState = {
 };
 
 const MARY_CONFIG = [
-    { id: 'apple', name: '蘋果', label: '<img src="images/icons/retro_apple_1781484109152.png" draggable="false" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block pointer-events-none select-none" style="image-rendering: pixelated; -webkit-user-drag: none; -webkit-touch-callout: none;">', rate: 2, color: '#ff4444' }, // 🍎 2x
-    { id: 'orange', name: '橘子', label: '<img src="images/icons/retro_orange_1781484120693.png" draggable="false" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block pointer-events-none select-none" style="image-rendering: pixelated; -webkit-user-drag: none; -webkit-touch-callout: none;">', rate: 5, color: '#ffaa00' }, // 🍊 5x
-    { id: 'mango', name: '芒果', label: '<img src="images/icons/retro_mango_1781484131034.png" draggable="false" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block pointer-events-none select-none" style="image-rendering: pixelated; -webkit-user-drag: none; -webkit-touch-callout: none;">', rate: 10, color: '#ffee00' }, // 🥭 10x
-    { id: 'bell', name: '鈴鐺', label: '<img src="images/icons/retro_bell_1781484141969.png" draggable="false" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block pointer-events-none select-none" style="image-rendering: pixelated; -webkit-user-drag: none; -webkit-touch-callout: none;">', rate: 20, color: '#ffdd00' }, // 🔔 20x
-    { id: 'watermelon', name: '西瓜', label: '<img src="images/icons/retro_watermelon_1781484149456.png" draggable="false" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block pointer-events-none select-none" style="image-rendering: pixelated; -webkit-user-drag: none; -webkit-touch-callout: none;">', rate: 30, color: '#44ff44' }, // 🍉 30x
-    { id: 'star', name: '星星', label: '<img src="images/icons/retro_star_1781484160182.png" draggable="false" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block pointer-events-none select-none" style="image-rendering: pixelated; -webkit-user-drag: none; -webkit-touch-callout: none;">', rate: 40, color: '#ffff44' }, // 🌟 40x
-    { id: 'seven', name: '77', label: '<img src="images/icons/retro_seven_1781484170589.png" draggable="false" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block pointer-events-none select-none" style="image-rendering: pixelated; -webkit-user-drag: none; -webkit-touch-callout: none;">', rate: 50, color: '#ff2222' }, // 7️⃣ 50x
-    { id: 'bar', name: 'BAR', label: '<img src="images/icons/retro_bar_1781484184240.png" draggable="false" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block pointer-events-none select-none" style="image-rendering: pixelated; -webkit-user-drag: none; -webkit-touch-callout: none;">', rate: 100, color: '#44aaff' }, // BAR 100x
-    { id: 'lucky', name: '送燈', label: '<img src="images/icons/lucky.png" draggable="false" class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block pointer-events-none select-none" style="image-rendering: pixelated; -webkit-user-drag: none; -webkit-touch-callout: none;">', rate: 0, color: '#00ffaa' }  // 送燈 / 小獎
+    { id: 'apple', label: '🍎', rate: 2, color: '#ff4444' }, // 🍎 2x
+    { id: 'orange', label: '🍊', rate: 5, color: '#ffaa00' }, // 🍊 5x
+    { id: 'mango', label: '🥭', rate: 10, color: '#ffee00' }, // 🥭 10x
+    { id: 'bell', label: '🔔', rate: 20, color: '#ffdd00' }, // 🔔 20x
+    { id: 'watermelon', label: '🍉', rate: 30, color: '#44ff44' }, // 🍉 30x
+    { id: 'star', label: '🌟', rate: 40, color: '#ffff44' }, // 🌟 40x
+    { id: 'seven', label: '7️⃣', rate: 50, color: '#ff2222' }, // 7️⃣ 50x
+    { id: 'bar', label: 'BAR', rate: 100, color: '#44aaff' }, // BAR 100x
+    { id: 'lucky', label: '🍀', rate: 0, color: '#00ffaa' }  // 送燈 / 小獎
 ];
 
 // 轉盤順序 (24格) 經典佈局，最大獎在上下中，次獎在左右中
@@ -195,13 +193,6 @@ const MARY_GRID = [
 async function openSmallMary() {
     if (!appState.user.userId) return showToast("請先登入 LINE");
     document.getElementById('small-mary-modal').classList.remove('hidden');
-
-    const pendingMsg = localStorage.getItem('maryPendingMessage');
-    if (pendingMsg) {
-        showToast("上局結果: " + pendingMsg);
-        localStorage.removeItem('maryPendingMessage');
-    }
-
     initMaryBoard();
     initMaryBetPanel();
     await refreshMaryData();
@@ -237,11 +228,7 @@ function adjustMaryScale() {
     }, 0);
 }
 
-let _maryResizeTimer = null;
-window.addEventListener('resize', () => {
-    clearTimeout(_maryResizeTimer);
-    _maryResizeTimer = setTimeout(adjustMaryScale, 200);
-});
+window.addEventListener('resize', adjustMaryScale);
 
 function closeSmallMary() {
     if (maryState.isSpinning) return;
@@ -367,9 +354,9 @@ function initMaryBetPanel() {
         const btn = document.createElement('div');
         btn.className = 'flex flex-col items-center justify-center bg-black/60 border border-[#5a3a00] rounded-md py-1 px-0.5 cursor-pointer select-none active:brightness-125 transition-all';
         btn.innerHTML = `
-            <div class="text-[12px] font-black text-[#ffcc00] mb-0.5">x${conf.rate}</div>
+            <div class="text-[8px] font-black text-[#ffcc00] mb-0.5">x${conf.rate}</div>
             <div class="text-xl leading-none mb-1">${conf.label}</div>
-            <div id="mary-bet-val-${conf.id}" class="w-full bg-black text-[#ff4444] font-mono text-[16px] font-black text-center border border-[#333] rounded-sm py-0.5 shadow-[inset_0_0_5px_rgba(255,0,0,0.5)]">0</div>
+            <div id="mary-bet-val-${conf.id}" class="w-full bg-black text-[#ff4444] font-mono text-[10px] font-black text-center border border-[#333] rounded-sm py-0.5 shadow-[inset_0_0_5px_rgba(255,0,0,0.5)]">0</div>
         `;
 
         // 長按跳出數字鍵盤
@@ -420,7 +407,7 @@ function openMaryKeypad(id, label) {
     const input = document.getElementById('mary-keypad-input');
 
     if (overlay) overlay.classList.remove('hidden');
-    if (title) title.innerHTML = `押注: ${label}`;
+    if (title) title.innerText = `押注: ${label}`;
 
     const currentVal = maryState.currentBet[id] || 0;
     if (input) {
@@ -590,9 +577,6 @@ async function maryStartSpin() {
 
     maryState.isSpinning = true;
     document.getElementById('mary-btn-start').disabled = true;
-    // ★ Bug 修正：用 try/finally 確保 isSpinning 一定會被解鎖，
-    //   防止網路異常或例外導致遊戲永久卡死
-    try {
 
     // (下注面板歸零已移至遊戲結束後)
 
@@ -762,8 +746,12 @@ async function maryStartSpin() {
             // 第 2, 3 次旋轉 (快速跑圈，1圈，稍快)
             // 為了有趣，送燈時隨機送大獎以外的圖案
             let extraTargetIdx = Math.floor(Math.random() * trackLen);
-            while (['bar', 'seven', 'lucky'].includes(MARY_GRID[extraTargetIdx])) {
+            const extraSym = MARY_GRID[extraTargetIdx];
+            if (extraSym === 'bar' || extraSym === 'seven' || extraSym === 'lucky') {
                 extraTargetIdx = (extraTargetIdx + 1) % trackLen; // 避開大獎死板防錯
+                if (MARY_GRID[extraTargetIdx] === 'bar' || MARY_GRID[extraTargetIdx] === 'seven') {
+                    extraTargetIdx = (extraTargetIdx + 1) % trackLen;
+                }
             }
 
             await doSpinAnim(extraTargetIdx, 1, 30);
@@ -807,12 +795,9 @@ async function maryStartSpin() {
             winPoints: winScore,
             symbol: displayMsg
         });
-        if (res && res.success) {
-            // ★ Bug 修正：管理員模式不覆蓋本地點數（避免 999999 被後端真實值覆蓋）
-            if (!ADMIN_USER_IDS.includes(appState.user?.userId)) {
-                maryState.points = res.points;
-                maryState.monthlyGift = res.monthlyGift;
-            }
+        if (res.success) {
+            maryState.points = res.points;
+            maryState.monthlyGift = res.monthlyGift;
             maryState.totalMaryScore = res.totalMaryScore;
             if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
             updateMaryUI();
@@ -825,53 +810,30 @@ async function maryStartSpin() {
             navigator.vibrate([500, 200, 500]);
         }
 
-        const msg = `🎊 中獎！${targetConfig.name} 獲得 ${winScore} 分`;
-        const modal = document.getElementById('small-mary-modal');
-        if (!modal.classList.contains('hidden')) {
-            showToast(msg);
-            const db = document.getElementById('mary-double-btns');
-            if (db) {
-                db.classList.remove('hidden');
-                db.style.display = 'flex';
-                const btns = db.querySelectorAll('button');
-                if (btns[2]) btns[2].textContent = '領獎';
-            }
-            maryState.doubleUpActive = true;
-            maryState.doubleUpStreak = 0; // ★ 重置過關計數
-
-            // ★ 3 秒後未操作自動領獎
-            if (maryState._autoCollectTimer) clearTimeout(maryState._autoCollectTimer);
-            maryState._autoCollectTimer = setTimeout(() => {
-                if (maryState.doubleUpActive && !maryState.isSpinning) {
-                    maryCollect();
-                }
-            }, 3000);
-        } else {
-            // 如果玩家已跳出遊戲，紀錄下來
-            localStorage.setItem('maryPendingMessage', msg);
-            maryClearBet();
-            maryState.winScore = 0;
-            maryState.doubleUpStreak = 0;
+        showToast(`🎊 中獎！${displayMsg} 獲得 ${winScore} 分`);
+        const db = document.getElementById('mary-double-btns');
+        if (db) {
+            db.classList.remove('hidden');
+            db.style.display = 'flex';
+            const btns = db.querySelectorAll('button');
+            if (btns[2]) btns[2].textContent = '領獎';
         }
+        maryState.doubleUpActive = true;
+        maryState.doubleUpStreak = 0; // ★ 重置過關計數
+
+        // ★ 3 秒後未操作自動領獎
+        if (maryState._autoCollectTimer) clearTimeout(maryState._autoCollectTimer);
+        maryState._autoCollectTimer = setTimeout(() => {
+            if (maryState.doubleUpActive && !maryState.isSpinning) {
+                maryCollect();
+            }
+        }, 3000);
     } else {
         maryClearBet();
         maryState.winScore = 0;
         maryState.doubleUpStreak = 0;
         document.getElementById('mary-btn-start').disabled = false;
-        
-        const msg = `未中獎 — 落在 ${targetConfig.name}，再試一次！`;
-        const modal = document.getElementById('small-mary-modal');
-        if (!modal.classList.contains('hidden')) {
-            showToast(msg);
-        } else {
-            localStorage.setItem('maryPendingMessage', msg);
-        }
-    }
-    } finally {
-        // ★ Bug 修正：確保 isSpinning 一定被解鎖（try/finally 配對）
-        // 注意：正常流程已在 maryState.isSpinning = false 這行設好，
-        // finally 只在例外發生時起作用，雙重保險
-        if (maryState.isSpinning) maryState.isSpinning = false;
+        showToast(`未中獎 — 落在 ${displayMsg}，再試一次！`);
     }
 }
 
@@ -1389,8 +1351,7 @@ window.onload = async function () {
     renderAddSponsorUI();
 
     // 介面初始化
-    // ★ Bug 修正：加入 null 保護，防止 DOM 元素不存在時 TypeError 白屏
-    if (DOM.headerTitle) DOM.headerTitle.innerText = "活動與報名";
+    DOM.headerTitle.innerText = "活動與報名";
     switchView('view-home');
 
     // ★ 離線偵測與佇列處理
@@ -1478,33 +1439,12 @@ window.onload = async function () {
     updateUserProfileUI();
 
     // 先嘗試從 LocalStorage 讀取快取以加速最初始渲染
-    // ★ 優化：加入時效驗證（1 小時），防止舊資料格式不符導致渲染異常
-    const CACHE_MAX_AGE = 60 * 60 * 1000; // 1 小時
     try {
-        const cachedEventsRaw = localStorage.getItem('events_cache');
-        if (cachedEventsRaw) {
-            try {
-                const parsed = JSON.parse(cachedEventsRaw);
-                // 支援新版（含 ts）與舊版（純陣列）兩種格式
-                if (Array.isArray(parsed)) {
-                    appState.events = parsed; // 舊版快取，直接使用（首次讀取後會被新版覆蓋）
-                } else if (parsed && parsed.data && (Date.now() - (parsed.ts || 0) < CACHE_MAX_AGE)) {
-                    appState.events = parsed.data;
-                }
-            } catch (e) { /* 快取損壞，忽略 */ }
-        }
+        const cachedEvents = localStorage.getItem('events_cache');
+        if (cachedEvents) appState.events = JSON.parse(cachedEvents);
 
-        const cachedSettingsRaw = localStorage.getItem('settings_cache');
-        if (cachedSettingsRaw) {
-            try {
-                const parsed = JSON.parse(cachedSettingsRaw);
-                if (parsed && parsed.data && (Date.now() - (parsed.ts || 0) < CACHE_MAX_AGE)) {
-                    appState.settings = parsed.data;
-                } else if (parsed && !parsed.data && !parsed.error) {
-                    appState.settings = parsed; // 舊版快取
-                }
-            } catch (e) { /* 快取損壞，忽略 */ }
-        }
+        const cachedSettings = localStorage.getItem('settings_cache');
+        if (cachedSettings) appState.settings = JSON.parse(cachedSettings);
 
         if (appState.user && appState.user.userId) {
             const cachedRegs = localStorage.getItem('registrations_cache_' + appState.user.userId);
@@ -1605,8 +1545,7 @@ async function fetchEvents() {
         const res = await fetch(`${GAS_URL}?action=getEvents`);
         const data = await res.json();
         appState.events = Array.isArray(data) ? data : [];
-        // ★ 優化：新版快取格式加入時間戳
-        localStorage.setItem('events_cache', JSON.stringify({ data: appState.events, ts: Date.now() }));
+        localStorage.setItem('events_cache', JSON.stringify(appState.events));
     } catch (e) {
         console.warn("API Error (getEvents)", e);
     }
@@ -1616,12 +1555,8 @@ async function fetchSettings() {
     if (!GAS_URL) return;
     try {
         const res = await fetch(`${GAS_URL}?action=getSettings`);
-        const data = await res.json();
-        // ★ Bug 修正：驗證回傳值，若後端回傳錯誤物件則不覆蓋 settings
-        if (data && !data.error) {
-            appState.settings = data;
-            localStorage.setItem('settings_cache', JSON.stringify({ data: appState.settings, ts: Date.now() }));
-        }
+        appState.settings = await res.json();
+        localStorage.setItem('settings_cache', JSON.stringify(appState.settings));
         // 已移除下拉選單填入邏輯（改為手動輸入）
     } catch (e) {
         console.warn("API Error (getSettings)", e);
@@ -1705,7 +1640,7 @@ function renderParticipationChart(data) {
         if (!top3[idx]) return;
         const p = top3[idx];
         const isFirst = idx === 0;
-        const medal = isFirst ? '<img src="images/icons/medal_1.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥇">' : (idx === 1 ? '<img src="images/icons/medal_2.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥈">' : '<img src="images/icons/medal_3.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥉">');
+        const medal = isFirst ? '🥇' : (idx === 1 ? '🥈' : '🥉');
         const sizeClass = isFirst ? 'scale-110 -translate-y-1' : 'scale-95 opacity-80';
         const countColor = isFirst ? 'text-amber-500' : 'text-gray-400';
 
@@ -1961,6 +1896,8 @@ function fillFormWithRecord(record) {
     } else if (isOpen) {
         // 未來活動：正常修改
         DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
+        DOM.submitBtn.classList.replace('bg-[#06c755]', 'bg-blue-600');
+        DOM.submitBtn.classList.replace('hover:bg-green-600', 'hover:bg-blue-700');
         DOM.submitBtn.disabled = false;
         DOM.cancelBtn.classList.remove('hidden');
     } else {
@@ -1980,15 +1917,6 @@ function fillFormWithRecord(record) {
     const pickup = getField(record, 'pickup');
     const guestCount = getIntField(record, 'guestCount');
     const sponsor = getField(record, 'sponsor');
-
-    // ★ 偵測純贊助狀態（familyCount 儲存值為 -1）
-    const rawFamily = findCaseInsensitiveValue(record, ['FamilyCount', 'familyCount', '眉屬人數']);
-    const isSponsorOnly = (parseInt(rawFamily, 10) === -1);
-    const noAttendCb = document.getElementById('no-attendance-sponsor');
-    if (noAttendCb) {
-        noAttendCb.checked = isSponsorOnly;
-        toggleNoAttendance(noAttendCb);
-    }
 
     // 填入欄位
     document.getElementById('family-count').value = family;
@@ -2032,10 +1960,6 @@ async function handleSubmit(e) {
     DOM.submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 處理中...';
     refreshIcons();
 
-    // ★ 不克出席，僅贊助：familyCount 送 -1 讓後端識別
-    const noAttendCb = document.getElementById('no-attendance-sponsor');
-    const isSponsorOnly = noAttendCb && noAttendCb.checked;
-
     const formData = {
         action: DOM.formAction.value,
         eventId: appState.currentEvent.id,
@@ -2044,11 +1968,11 @@ async function handleSubmit(e) {
         userId: appState.user.userId,
         pictureUrl: appState.user.pictureUrl,
         displayName: DOM.userName.value,
-        familyCount: isSponsorOnly ? -1 : (parseInt(document.getElementById('family-count').value, 10) - 1),
-        guestList: JSON.stringify(isSponsorOnly ? [] : appState.guestList),
+        familyCount: parseInt(document.getElementById('family-count').value, 10) - 1,
+        guestList: JSON.stringify(appState.guestList),
         sponsorList: JSON.stringify(appState.sponsorList),
-        roomType: isSponsorOnly ? '' : document.getElementById('room-type').value,
-        pickupLoc: isSponsorOnly ? '' : document.getElementById('pickup-loc').value,
+        roomType: document.getElementById('room-type').value,
+        pickupLoc: document.getElementById('pickup-loc').value,
         tableCount: document.getElementById('table-count').value
     };
 
@@ -2135,19 +2059,12 @@ function resetFormState() {
 
     DOM.formAction.value = 'register';
     DOM.submitBtn.innerHTML = '<span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>';
-    DOM.submitBtn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] font-bold py-3.5 rounded-xl hover:brightness-110 transition shadow-[0_4px_15px_rgba(212,175,55,0.4)] active:scale-95 flex justify-center items-center gap-2";
+    DOM.submitBtn.className = "flex-1 bg-[#06c755] text-white font-bold py-3.5 rounded-xl hover:bg-green-600 transition shadow-md active:scale-95 flex justify-center items-center gap-2";
     DOM.submitBtn.disabled = false;
 
     DOM.cancelBtn.classList.add('hidden');
     DOM.formTitle.innerText = "填寫報名資料";
     DOM.userName.value = appState.user.displayName;
-
-    // ★ 重置「不克出席」核取方塊
-    const noAttendCb = document.getElementById('no-attendance-sponsor');
-    if (noAttendCb) {
-        noAttendCb.checked = false;
-        toggleNoAttendance(noAttendCb); // 確保欄位狀態恢復
-    }
 }
 
 function renderEventStaticInfo() {
@@ -2233,7 +2150,7 @@ function renderEventStaticInfo() {
             DOM.submitBtn.disabled = true;
             DOM.submitBtn.innerText = "報名已截止";
             DOM.submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
-            DOM.submitBtn.classList.remove('from-[#D4AF37]', 'to-[#A67C00]', 'text-[#0D131A]');
+            DOM.submitBtn.classList.remove('bg-[#06c755]', 'hover:bg-green-600');
         }
     }
 
@@ -2292,18 +2209,18 @@ function renderGuestList() {
         if (g.count > 1) details.push(`${g.count}人`);
         if (g.pickup) details.push(escapeHtml(g.pickup));
         if (g.room) details.push(escapeHtml(g.room));
-        const subtext = details.length > 0 ? `<span class="text-xs text-[#D4AF37]/60 ml-1">(${details.join(', ')})</span>` : '';
+        const subtext = details.length > 0 ? `<span class="text-xs text-gray-400 ml-1">(${details.join(', ')})</span>` : '';
 
         const div = document.createElement('div');
-        div.className = 'flex justify-between items-center bg-[#0D131A] border border-[#D4AF37]/30 pl-3 pr-2 py-2 rounded-lg text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] animate-fade-in';
+        div.className = 'flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
         div.innerHTML = `
             <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></div>
-                <span class="font-medium text-[#EFECE5]">${escapeHtml(g.name)} ${subtext}</span>
+                <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
+                <span class="font-medium text-gray-700">${escapeHtml(g.name)} ${subtext}</span>
             </div>
-            <div class="flex gap-2 items-center text-[#D4AF37]/60">
-                <i data-lucide="edit-2" class="w-4 h-4 hover:text-[#D4AF37] transition cursor-pointer" onclick="editGuest(${i})"></i>
-                <i data-lucide="x" class="w-4 h-4 hover:text-red-400 transition cursor-pointer" onclick="removeGuest('${g.id}')"></i>
+            <div class="flex gap-2 items-center">
+                <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editGuest(${i})"></i>
+                <i data-lucide="x" class="w-4 h-4 tag-action tag-remove" onclick="removeGuest('${g.id}')"></i>
             </div>`;
         fragment.appendChild(div);
     });
@@ -2316,15 +2233,15 @@ function renderSponsorList() {
     const fragment = document.createDocumentFragment();
     appState.sponsorList.forEach((s, i) => {
         const div = document.createElement('div');
-        div.className = 'flex justify-between items-center bg-[#0D131A] border border-[#D4AF37]/30 pl-3 pr-2 py-2 rounded-lg text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] animate-fade-in';
+        div.className = 'flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
         div.innerHTML = `
             <div class="flex items-center gap-2">
-                <i data-lucide="gift" class="w-3.5 h-3.5 text-[#EFC958]"></i>
-                <span class="font-medium text-[#EFECE5]">${escapeHtml(s)}</span>
+                <i data-lucide="gift" class="w-3.5 h-3.5 text-purple-500"></i>
+                <span class="font-medium text-gray-700">${escapeHtml(s)}</span>
             </div>
-            <div class="flex gap-2 items-center text-[#D4AF37]/60">
-                <i data-lucide="edit-2" class="w-4 h-4 hover:text-[#D4AF37] transition cursor-pointer" onclick="editSponsor(${i})"></i>
-                <i data-lucide="x" class="w-4 h-4 hover:text-red-400 transition cursor-pointer" onclick="removeSponsor(${i})"></i>
+            <div class="flex gap-2 items-center">
+                <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editSponsor(${i})"></i>
+                <i data-lucide="x" class="w-4 h-4 tag-action tag-remove" onclick="removeSponsor(${i})"></i>
             </div>`;
         fragment.appendChild(div);
     });
@@ -2365,9 +2282,7 @@ function editSponsor(i) {
         document.querySelector('input[name="addSponsorType"][value="money"]').checked = true;
         renderAddSponsorUI();
         // "紅包: 1000元"
-        // ★ Bug 修正：match 可能為 null，加入安全保護
-        const moneyMatch = s.match(/\d+/);
-        const money = moneyMatch ? parseInt(moneyMatch[0]) : 0;
+        const money = parseInt(s.match(/\d+/)[0]);
         document.getElementById('sp-money').value = money;
 
     } else {
@@ -2401,19 +2316,20 @@ function renderEventGrid(type) {
         if (type === 'all') return isVisible;
         return normalizeType(e.type) === type && isVisible;
     }).sort((a, b) => {
-        // ★ Bug 修正：改用 parseLocalDate，防止 yyyy/mm/dd 格式在 Safari 時區偏移
+        // 解析日期（處理日期範圍與驗證 ISO 格式）
         const getTime = (t) => {
             if (!t) return 0;
-            const start = t.includes('~') ? t.split('~')[0].trim() : t;
-            return parseLocalDate(start).getTime() || 0;
+            // 若為範圍 "start~end"，取開始日期
+            const start = t.includes('~') ? t.split('~')[0] : t;
+            return new Date(start).getTime();
         };
         return getTime(a.time) - getTime(b.time);
     });
 
     if (filtered.length === 0) {
-        if (DOM.noEventsMsg) DOM.noEventsMsg.classList.remove('hidden');
+        DOM.noEventsMsg.classList.remove('hidden');
     } else {
-        if (DOM.noEventsMsg) DOM.noEventsMsg.classList.add('hidden');
+        DOM.noEventsMsg.classList.add('hidden');
         filtered.forEach(e => {
             const card = document.createElement('div');
             card.className = "bg-white p-4 rounded-2xl shadow-sm border border-gray-100 card-hover cursor-pointer flex items-center gap-4 relative overflow-hidden group";
@@ -2436,16 +2352,15 @@ function renderEventGrid(type) {
             }
 
             // ★ 倒數標記：距離活動還有幾天
-            // ★ Bug 修正：改用 parseLocalDate 計算，防止 Safari 時區偏移導致天數錯誤
             let countdownBadge = '';
             if (e.time) {
                 const now = new Date();
                 const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 let eventStart;
                 if (typeof e.time === 'string' && e.time.includes('~')) {
-                    eventStart = parseLocalDate(e.time.split('~')[0].trim());
+                    eventStart = new Date(e.time.split('~')[0].trim());
                 } else {
-                    eventStart = parseLocalDate(e.time);
+                    eventStart = new Date(e.time);
                 }
                 if (!isNaN(eventStart.getTime())) {
                     const eventMid = new Date(eventStart.getFullYear(), eventStart.getMonth(), eventStart.getDate());
@@ -2453,7 +2368,7 @@ function renderEventGrid(type) {
                     if (diffDays === 0) {
                         countdownBadge = '<span class="inline-flex items-center gap-0.5 text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded-full font-bold">🔴 今天！</span>';
                     } else if (diffDays === 1) {
-                        countdownBadge = '<span class="inline-flex items-center gap-0.5 text-[10px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-full font-bold"><img src="images/icons/clock.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="⏰"> 明天</span>';
+                        countdownBadge = '<span class="inline-flex items-center gap-0.5 text-[10px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-full font-bold">⏰ 明天</span>';
                     } else if (diffDays > 1 && diffDays <= 7) {
                         countdownBadge = `<span class="inline-flex items-center gap-0.5 text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-bold">📆 還有 ${diffDays} 天</span>`;
                     }
@@ -2515,8 +2430,8 @@ async function openDetailsModal(filterType = 'all') {
         const pMap = appState.currentStats.pickupCounts || {};
         const rMap = appState.currentStats.roomCounts || {};
         let html = '';
-        if (Object.keys(pMap).length) html += `<div class="bg-[#1E3052] rounded p-1.5 border border-[#D4AF37]/30"><div class="font-bold mb-1 text-[#D4AF37]"><img src="images/icons/pin.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="📍"> 上車地點</div>${Object.entries(pMap).map(([k, v]) => `<span class="inline-block bg-[#162544] text-[#EFECE5] border border-[#D4AF37]/20 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
-        if (Object.keys(rMap).length) html += `<div class="bg-[#1E3052] rounded p-1.5 border border-[#D4AF37]/30"><div class="font-bold mb-1 text-[#D4AF37]">🛏 房型統計</div>${Object.entries(rMap).map(([k, v]) => `<span class="inline-block bg-[#162544] text-[#EFECE5] border border-[#D4AF37]/20 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
+        if (Object.keys(pMap).length) html += `<div class="bg-white rounded p-1.5"><div class="font-bold mb-1 text-gray-500">📍 上車地點</div>${Object.entries(pMap).map(([k, v]) => `<span class="inline-block bg-gray-100 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
+        if (Object.keys(rMap).length) html += `<div class="bg-white rounded p-1.5"><div class="font-bold mb-1 text-gray-500">🛏 房型統計</div>${Object.entries(rMap).map(([k, v]) => `<span class="inline-block bg-gray-100 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
         sumDiv.innerHTML = html;
     } else if (appState.currentEvent.type === 'banquet') {
         sumDiv.innerHTML = `<div class="col-span-2 bg-white rounded p-2 text-center font-bold text-red-500">總計預訂: ${appState.currentStats.tableCount} 桌</div>`;
@@ -2544,8 +2459,7 @@ async function openDetailsModal(filterType = 'all') {
 
     // ★ 根據 filterType 隱藏不需要的區塊
     const listP = document.getElementById('details-list-people');
-    // ★ Bug 修正：加入 null 保護，防止 HTML 結構變動時 TypeError
-    const labelP = listP ? listP.previousElementSibling : null;
+    const labelP = listP.previousElementSibling;
     const listT = document.getElementById('details-list-travel');
     const labelT = document.getElementById('travel-separator');
     const listI = document.getElementById('details-list-items');
@@ -2556,8 +2470,8 @@ async function openDetailsModal(filterType = 'all') {
         if (labelT) labelT.classList.add('hidden');
         if (listI) listI.classList.add('hidden');
         if (labelI) labelI.classList.add('hidden');
-        if (listP) listP.classList.remove('hidden');
-        if (labelP) labelP.classList.remove('hidden');
+        listP.classList.remove('hidden');
+        labelP.classList.remove('hidden');
     } else if (filterType === 'secondary') {
         listP.classList.add('hidden');
         labelP.classList.add('hidden');
@@ -2638,22 +2552,22 @@ function renderDetailLists(data) {
         }
 
         const liP = document.createElement('li');
-        liP.className = 'px-4 py-3 hover:bg-[#1E3052] transition';
+        liP.className = 'px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0';
 
         // ★ 小瑪莉前三名勳章（網頁名單內顯示）
         let maryMedal = '';
         let maryNameColor = '';
         if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
             const rankIndex = appState.jackpotRankings.findIndex(r => r.name === name);
-            if (rankIndex === 0) { maryMedal = '<img src="images/icons/medal_1.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥇">'; maryNameColor = 'color:#d97706;font-weight:800;'; }
-            else if (rankIndex === 1) { maryMedal = '<img src="images/icons/medal_2.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥈">'; maryNameColor = 'color:#64748b;font-weight:800;'; }
-            else if (rankIndex === 2) { maryMedal = '<img src="images/icons/medal_3.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥉">'; maryNameColor = 'color:#b45309;font-weight:800;'; }
+            if (rankIndex === 0) { maryMedal = '🥇'; maryNameColor = 'color:#d97706;font-weight:800;'; }
+            else if (rankIndex === 1) { maryMedal = '🥈'; maryNameColor = 'color:#64748b;font-weight:800;'; }
+            else if (rankIndex === 2) { maryMedal = '🥉'; maryNameColor = 'color:#b45309;font-weight:800;'; }
         }
 
         liP.innerHTML = `
             <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                <span class="text-[#B8B2A7] font-mono text-sm">${num}.</span>
-                <span class="font-bold text-[#EFECE5] text-base inline-flex items-center flex-wrap" style="${maryNameColor}">${maryMedal}${safeName}${tagHtml}${nameSuffix}</span>
+                <span class="text-gray-400 font-mono text-sm">${num}.</span>
+                <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap" style="${maryNameColor}">${maryMedal}${safeName}${tagHtml}${nameSuffix}</span>
             </div>
             ${subHtml}`;
         fragP.appendChild(liP);
@@ -2663,12 +2577,12 @@ function renderDetailLists(data) {
             if ((pickup && pickup !== '無') || (room && room !== '無')) {
                 hasTravel = true;
                 const liT = document.createElement('li');
-                liT.className = 'px-4 py-2 flex justify-between items-center hover:bg-[#1E3052] text-sm';
+                liT.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
                 liT.innerHTML = `
-                    <span class="font-medium text-[#EFECE5]">${safeName}</span>
-                    <div class="text-right text-xs text-[#B8B2A7]">
-                        ${pickup && pickup !== '無' ? `<div class="text-[#D4AF37]">${escapeHtml(pickup)}</div>` : ''}
-                        ${room && room !== '無' ? `<div class="text-[#EFC958]">${escapeHtml(room)}</div>` : ''}
+                    <span class="font-medium text-gray-700">${safeName}</span>
+                    <div class="text-right text-xs text-gray-500">
+                        ${pickup && pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(pickup)}</div>` : ''}
+                        ${room && room !== '無' ? `<div class="text-orange-600">${escapeHtml(room)}</div>` : ''}
                     </div>`;
                 fragT.appendChild(liT);
             }
@@ -2678,12 +2592,12 @@ function renderDetailLists(data) {
                 if ((g.pickup && g.pickup !== '無') || (g.room && g.room !== '無')) {
                     hasTravel = true;
                     const liTG = document.createElement('li');
-                    liTG.className = 'px-4 py-2 flex justify-between items-center hover:bg-[#1E3052] text-sm';
+                    liTG.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
                     liTG.innerHTML = `
-                        <span class="font-medium text-[#EFECE5]"><span class="text-xs text-[#B8B2A7] mr-1">賓</span>${escapeHtml(g.name)}</span>
-                        <div class="text-right text-xs text-[#B8B2A7]">
-                            ${g.pickup && g.pickup !== '無' ? `<div class="text-[#D4AF37]">${escapeHtml(g.pickup)}</div>` : ''}
-                            ${g.room && g.room !== '無' ? `<div class="text-[#EFC958]">${escapeHtml(g.room)}</div>` : ''}
+                        <span class="font-medium text-gray-700"><span class="text-xs text-gray-400 mr-1">賓</span>${escapeHtml(g.name)}</span>
+                        <div class="text-right text-xs text-gray-500">
+                            ${g.pickup && g.pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(g.pickup)}</div>` : ''}
+                            ${g.room && g.room !== '無' ? `<div class="text-orange-600">${escapeHtml(g.room)}</div>` : ''}
                         </div>`;
                     fragT.appendChild(liTG);
                 }
@@ -2702,12 +2616,12 @@ function renderDetailLists(data) {
         if (items.length > 0) {
             hasItems = true;
             const liI = document.createElement('li');
-            liI.className = 'px-4 py-3 hover:bg-[#1E3052]';
+            liI.className = 'px-4 py-3 hover:bg-gray-50';
             liI.innerHTML = `
                 <div class="flex justify-between items-start">
-                    <span class="font-medium text-[#EFECE5] text-sm">${safeName}</span>
+                    <span class="font-medium text-gray-800 text-sm">${safeName}</span>
                     <div class="text-right flex-1 pl-4">
-                        ${items.map(i => `<div class="text-xs text-[#162544] bg-[#D4AF37] font-bold inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
+                        ${items.map(i => `<div class="text-xs text-purple-600 bg-purple-50 inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
                     </div>
                 </div>`;
             fragI.appendChild(liI);
@@ -2754,40 +2668,9 @@ function parseLocalDate(s) {
         const y = match[1], mo = match[2], d = match[3];
         const h = match[4] || '00', mi = match[5] || '00', sec = match[6] || '00';
         // 加上 +08:00 確保聲明 GMT+8 解析
-        // ★ Bug 修正：月日時分補零，確保 RFC 3339 格式，防止部分 Safari 解析失敗
-        return new Date(`${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}T${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}:${String(sec).padStart(2,'0')}+08:00`);
+        return new Date(`${y}-${mo}-${d}T${h}:${mi}:${sec}+08:00`);
     }
     return new Date(str);
-}
-
-function formatDateShort(isoStr) {
-    if (!isoStr) return '';
-    if (isoStr.includes('~')) {
-        const start = isoStr.split('~')[0];
-        const d = parseLocalDate(start);
-        if (isNaN(d.getTime())) return start;
-        return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}...`;
-    }
-    const d = parseLocalDate(isoStr);
-    if (isNaN(d.getTime())) return isoStr;
-    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} (${week})`;
-}
-
-function formatDate(isoStr) {
-    if (!isoStr) return '';
-    const d = parseLocalDate(isoStr);
-    if (isNaN(d.getTime())) return isoStr;
-    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-    return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-}
-
-function formatDateOnly(isoStr) {
-    if (!isoStr) return '';
-    const d = parseLocalDate(isoStr);
-    if (isNaN(d.getTime())) return isoStr;
-    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
-    return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week})`;
 }
 
 /**
@@ -2801,8 +2684,7 @@ function formatTimeForShare(timeStr) {
         const [start, end] = timeStr.split('~');
         return `${formatDateOnly(start.trim())} ~ ${formatDateOnly(end.trim())}`;
     }
-    // ★ Bug 修正：改用 parseLocalDate，防止 LINE WebView 的 new Date() 時區偏移 8 小時
-    const d = parseLocalDate(timeStr);
+    const d = new Date(timeStr);
     if (isNaN(d.getTime())) return timeStr;
     const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
     return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
@@ -2827,14 +2709,8 @@ function isEventDay(event) {
         const startD = parseLocalDate(startStr); // ★ 改用 parseLocalDate
         const endD = parseLocalDate(endStr);     // ★ 改用 parseLocalDate
         if (!isNaN(startD.getTime()) && !isNaN(endD.getTime())) {
-            // ★ Bug 修正：避免 toDateString() 跨瀏覽器不一致，改為直接比較年月日
-            const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
-            const sY = startD.getFullYear(), sM = startD.getMonth(), sD = startD.getDate();
-            const eY = endD.getFullYear(), eM = endD.getMonth(), eD = endD.getDate();
-            const todayNum = tY * 10000 + tM * 100 + tD;
-            const startNum = sY * 10000 + sM * 100 + sD;
-            const endNum = eY * 10000 + eM * 100 + eD;
-            return todayNum >= startNum && todayNum <= endNum;
+            const todayDate = parseLocalDate(todayStr);
+            return todayDate >= new Date(startD.toDateString()) && todayDate <= new Date(endD.toDateString());
         }
     } else {
         const eventDate = parseLocalDate(t); // ★ 改用 parseLocalDate
@@ -3022,15 +2898,15 @@ function toggleHistoryView() {
             const fragment = document.createDocumentFragment();
             history.forEach(e => {
                 const div = document.createElement('div');
-                div.className = "premium-dark-card p-4 rounded-xl shadow-sm flex justify-between items-center cursor-pointer hover:scale-[1.02] transition-transform";
+                div.className = "bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50";
                 div.onclick = () => openHistoryImage(e.id);
                 div.innerHTML = `
                     <div>
-                        <h4 class="font-bold text-[#EFECE5]">${e.name}</h4>
-                        <div class="text-xs text-[#B8B2A7] mt-0.5">主辦：${e.organizer || '未指定'}</div>
-                        <div class="text-xs text-[#8A8377] mt-1">${formatDateShort(e.time)}</div>
+                        <h4 class="font-bold text-gray-700">${e.name}</h4>
+                        <div class="text-xs text-gray-500 mt-0.5">主辦：${e.organizer || '未指定'}</div>
+                        <div class="text-xs text-gray-400 mt-1">${formatDateShort(e.time)}</div>
                     </div>
-                    <span class="text-xs bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30 px-2 py-1 rounded-full">已結束</span>`;
+                    <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">已結束</span>`;
                 fragment.appendChild(div);
             });
             list.appendChild(fragment);
@@ -3071,10 +2947,131 @@ async function openHistoryImage(eventId) {
     const data = appState.cachedDetails || [];
 
     try {
-        // 直接使用與首頁完全相同的尊榮版畫布生成邏輯
-        const canvas = await generateEventCanvas(e, data, appState.currentStats);
-        
-        // 取得圖檔 URL
+        // 產生圖卡 HTML（與 shareAsImage 相同邏輯）
+        const card = document.createElement('div');
+        card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#1f2937;z-index:-1;';
+
+        let html = '';
+        html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
+        html += `<div style="font-size:22px;font-weight:800;">📅 ${escapeHtml(e.name)}</div>`;
+        html += '<div style="font-size:12px;margin-top:6px;opacity:0.8;">已結束</div>';
+        html += '</div>';
+
+        // 活動資訊區
+        html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+        if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
+        // ★ 使用共用工具函式格式化時間
+        const timeDisplay = formatTimeForShare(e.time);
+        if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${escapeHtml(timeDisplay)}</div>`;
+        if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${escapeHtml(e.location)}</div>`;
+        if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${escapeHtml(e.address)}</div>`;
+        html += '</div>';
+
+        // 名單區
+        if (data.length > 0) {
+            html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+            html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
+            let count = 0;
+            data.forEach(p => {
+                count++;
+                const family = getIntField(p, 'family');
+                const guestData = parseGuestData(p);
+                // 冗餘處理：使用統一計算函數
+                const finalGuestCount = calculateFinalGuestCount(p, guestData);
+
+                // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
+                const total = family + finalGuestCount;
+                const num = count.toString().padStart(2, '0');
+                const status = p.status || p.note || '';
+                let prefix = status ? status : '';
+                const roles = getParticipantRoles(p.name, e);
+                let tagHtml = '';
+                if (roles.length > 0) {
+                    tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
+                }
+                // ★ 新增：檢查是否為小瑪莉前三名
+                let nameColor = 'inherit';
+                let maryMedal = '';
+                if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                    const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
+                    if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
+                    else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
+                    else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
+                }
+
+                html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+                html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
+                if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
+                html += '</div>';
+                if (guestData.length > 0) {
+                    const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
+                    html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+                } else {
+                    const guestNameStr = getField(p, 'guestName');
+                    if (guestNameStr && guestNameStr !== '無') {
+                        html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                    }
+                }
+
+                // 上車/房型
+                {
+                    let travelLines = [];
+                    if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
+                    if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                    if (guestData.length > 0) {
+                        guestData.forEach(g => {
+                            let extras = [];
+                            if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                            if (g.room && g.room !== '無') extras.push(g.room);
+                            if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                        });
+                    }
+                    if (travelLines.length > 0) {
+                        html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+                    }
+                }
+            });
+            html += '</div>';
+        }
+
+        // 贊助/認桌彙總區（獨立區塊）
+        if (data.length > 0) {
+            let sponsorHtml = '';
+            data.forEach(p => {
+                let moneyParts = [];
+                const tc = getIntField(p, 'tableCount');
+                if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+                const sponsorRaw = getField(p, 'sponsor');
+                const sponsorList = parseSponsorData(sponsorRaw);
+                sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+                if (moneyParts.length > 0) {
+                    sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+                }
+            });
+            if (sponsorHtml) {
+                html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
+                html += sponsorHtml;
+                html += '</div>';
+            }
+        }
+
+        // 統計區
+        html += '<div style="text-align:center;font-size:14px;font-weight:700;color:#374151;padding:8px 0;">';
+        html += `共 ${appState.currentStats.totalPeople || 0} 人報名`;
+        html += '</div>';
+        html += '<div style="text-align:center;font-size:11px;color:#9ca3af;margin-top:8px;">大老二兄弟會 活動報名系統</div>';
+
+        card.innerHTML = html;
+        document.body.appendChild(card);
+
+        const canvas = await html2canvas(card, {
+            scale: 2, useCORS: true, backgroundColor: null,
+            width: card.scrollWidth, height: card.scrollHeight
+        });
+        document.body.removeChild(card);
+
+        // 產生圖片 URL
         const imgUrl = canvas.toDataURL('image/png');
 
         // 建立全螢幕彈窗顯示圖片
@@ -3115,34 +3112,22 @@ function saveHistoryImage() {
     showToast('圖片已下載！');
 }
 
-// ★ Bug 修正：Toast 計時器變數，防止多次呼叫時前一個計時器未清除導致提前消失
-let _toastTimer = null;
-function showToast(msg, duration = 2500) {
+function showToast(msg) {
     const toast = document.getElementById('toast');
-    if (!toast) return;
     document.getElementById('toast-msg').innerText = msg;
     toast.classList.remove('opacity-0', 'pointer-events-none', 'top-6');
     toast.classList.add('top-20', 'opacity-100');
 
-    // ★ 清除前一個計時器，確保每次都從頭計
-    if (_toastTimer) clearTimeout(_toastTimer);
-    _toastTimer = setTimeout(() => {
+    setTimeout(() => {
         toast.classList.remove('top-20', 'opacity-100');
         toast.classList.add('opacity-0', 'pointer-events-none', 'top-6');
-        _toastTimer = null;
-    }, duration);
+    }, 2500);
 }
 
 function showConfirm(msg) {
     return new Promise((resolve) => {
         const modal = document.getElementById('confirm-modal');
-        const safeMsg = msg.replace(/&/g, "&amp;")
-                           .replace(/</g, "&lt;")
-                           .replace(/>/g, "&gt;")
-                           .replace(/"/g, "&quot;")
-                           .replace(/'/g, "&#039;")
-                           .replace(/&lt;br\s*\/?[^>]*&gt;/gi, "<br>");
-        document.getElementById('confirm-msg').innerHTML = safeMsg;
+        document.getElementById('confirm-msg').innerHTML = msg;
         modal.classList.remove('hidden');
 
         const cleanup = () => {
@@ -3169,15 +3154,15 @@ function renderAddSponsorUI() {
     const area = document.getElementById('sponsor-input-area');
     if (type === 'alcohol') {
         area.innerHTML = `
-            <input id="sp-qty" type="number" class="w-20 border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-3 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none" placeholder="數量" min="1">
-            <select id="sp-unit" class="border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none">
+            <input id="sp-qty" type="number" class="w-20 border border-gray-300 rounded px-2 py-1 text-sm" placeholder="數量" min="1">
+            <select id="sp-unit" class="border border-gray-300 rounded px-2 py-1 text-sm bg-white">
                 <option value="瓶">瓶</option>
                 <option value="箱">箱</option>
             </select>`;
     } else if (type === 'money') {
-        area.innerHTML = `<input id="sp-money" type="number" class="w-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-3 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none" placeholder="金額 (100為單位)" min="100" step="100">`;
+        area.innerHTML = `<input id="sp-money" type="number" class="w-full border border-gray-300 rounded px-2 py-1 text-sm" placeholder="金額 (100為單位)" min="100" step="100">`;
     } else {
-        area.innerHTML = `<input id="sp-other" type="text" class="w-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded-lg px-3 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:ring-1 focus:ring-[#D4AF37] outline-none" placeholder="贊助內容">`;
+        area.innerHTML = `<input id="sp-other" type="text" class="w-full border border-gray-300 rounded px-2 py-1 text-sm" placeholder="贊助內容">`;
     }
 }
 
@@ -3348,7 +3333,7 @@ function renderItinerary(str, timeStr) {
 
     // 建立手風琴外框
     const wrapper = document.createElement('div');
-    wrapper.className = "border border-[#D4AF37]/30 rounded-2xl overflow-hidden bg-[#0D131A] shadow-[0_4px_15px_rgba(0,0,0,0.3)]";
+    wrapper.className = "border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm";
 
     // 2. 渲染 HTML
     const sortedDayNums = Array.from(groupedDays.keys()).sort((a, b) => a - b);
@@ -3371,7 +3356,7 @@ function renderItinerary(str, timeStr) {
         const accordionMainTitle = `第 ${dayNum} 天行程`;
 
         let allContentHtml = '<div class="space-y-4 relative pl-2 pt-2 pb-2">';
-        allContentHtml += '<div class="absolute left-[5px] top-4 bottom-2 w-0.5 bg-[#D4AF37]/20"></div>';
+        allContentHtml += '<div class="absolute left-[5px] top-4 bottom-2 w-0.5 bg-gray-100"></div>';
 
         group.rawTexts.forEach(text => {
             if (!text.trim()) return;
@@ -3428,33 +3413,33 @@ function renderItinerary(str, timeStr) {
 
             // --- HTML 生成區塊 ---
             const mapIconHtml = itemUrl ?
-                `<a href="${itemUrl}" target="_blank" class="inline-flex items-center justify-center w-6 h-6 bg-[#1E3052] text-[#D4AF37] rounded-full hover:bg-[#162544] border border-[#D4AF37]/30 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1)] transition ml-2 shrink-0 self-center" title="導航" onclick="event.stopPropagation()">
+                `<a href="${itemUrl}" target="_blank" class="inline-flex items-center justify-center w-6 h-6 bg-blue-50 text-blue-500 rounded-full hover:bg-blue-100 transition ml-2 shrink-0 self-center" title="導航" onclick="event.stopPropagation()">
                     <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
                  </a>` : '';
 
             if (timeDisplay) {
                 allContentHtml += `
                     <div class="relative flex gap-3 items-start pl-4 group/item">
-                        <div class="absolute left-0 top-1.5 w-3 h-3 bg-[#0D131A] border-[3px] border-[#D4AF37] rounded-full z-10 shadow-[0_0_8px_rgba(212,175,55,0.5)]"></div>
-                        <div class="font-mono font-bold text-[#EFC958] shrink-0 pt-0.5 w-[42px] text-right mr-1">${timeDisplay}</div>
+                        <div class="absolute left-0 top-1.5 w-3 h-3 bg-white border-[3px] border-green-500 rounded-full z-10 shadow-sm"></div>
+                        <div class="font-mono font-bold text-green-700 shrink-0 pt-0.5 w-[42px] text-right mr-1">${timeDisplay}</div>
                         <div class="flex-1 min-w-0 pt-0.5">
                             <div class="flex items-center flex-wrap">
-                                <span class="text-[#EFECE5] font-bold leading-tight">${itemTitle}</span>
+                                <span class="text-gray-800 font-bold leading-tight">${itemTitle}</span>
                                 ${mapIconHtml}
                             </div>
-                            ${itemDesc ? `<p class="text-xs text-[#D4AF37]/70 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
+                            ${itemDesc ? `<p class="text-xs text-gray-500 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
                         </div>
                     </div>`;
             } else {
                 allContentHtml += `
                     <div class="relative flex gap-3 items-start pl-4">
-                        <div class="absolute left-1 top-2.5 w-1.5 h-1.5 bg-[#D4AF37]/50 rounded-full z-10"></div>
+                        <div class="absolute left-1 top-2.5 w-1.5 h-1.5 bg-gray-300 rounded-full z-10"></div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center flex-wrap">
-                                <span class="text-[#EFECE5]/90 font-medium leading-tight">${itemTitle}</span>
+                                <span class="text-gray-700 font-medium leading-tight">${itemTitle}</span>
                                 ${mapIconHtml}
                             </div>
-                            ${itemDesc ? `<p class="text-xs text-[#D4AF37]/70 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
+                            ${itemDesc ? `<p class="text-xs text-gray-500 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
                         </div>
                     </div>`;
             }
@@ -3466,25 +3451,25 @@ function renderItinerary(str, timeStr) {
 
         const details = document.createElement('details');
         details.setAttribute('name', 'itinerary-group');
-        details.className = "group border-b border-[#D4AF37]/20 last:border-0 transition-all itinerary-group";
+        details.className = "group border-b border-gray-100 last:border-0 transition-all itinerary-group";
         if (isOpen) details.setAttribute('open', '');
 
         const summary = document.createElement('summary');
-        summary.className = "flex justify-between items-center p-4 cursor-pointer select-none bg-[#162544]/30 hover:bg-[#162544]/60 transition list-none relative";
+        summary.className = "flex justify-between items-center p-4 cursor-pointer select-none bg-white hover:bg-gray-50 transition list-none relative";
 
         summary.innerHTML = `
             <div class="flex items-center gap-3 overflow-hidden">
-                <span class="bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap shadow-sm">${dayLabel}</span>
-                <span class="font-bold text-[#EFECE5] text-base truncate">${accordionMainTitle}</span>
+                <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap">${dayLabel}</span>
+                <span class="font-bold text-gray-800 text-base truncate">${accordionMainTitle}</span>
             </div>
-            <div class="w-6 h-6 flex items-center justify-center rounded-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#D4AF37] font-bold shrink-0 ml-2 shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)]">
+            <div class="w-6 h-6 flex items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-gray-400 font-bold shrink-0 ml-2">
                 <span class="icon-plus">+</span>
                 <span class="icon-minus">−</span>
             </div>
         `;
 
         const contentDiv = document.createElement('div');
-        contentDiv.className = "px-4 pb-4 pt-0 bg-[#0D131A]/80 text-sm text-[#EFECE5]/80 leading-relaxed space-y-2 group-content";
+        contentDiv.className = "px-4 pb-4 pt-0 bg-white text-sm text-gray-600 leading-relaxed space-y-2 group-content";
         contentDiv.innerHTML = allContentHtml;
 
         details.appendChild(summary);
@@ -3668,39 +3653,51 @@ function isEventOpen(e) {
     // 2. 檢查活動日期 - 當天仍顯示在報名區（隔天才移到歷史）
     if (!e.time) return true;
 
+    let eventDate = null;
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0); // 歸零到當天開始
 
-    // ★ 改用 parseLocalDate，防止 LINE WebView 的 new Date("yyyy-MM-dd HH:mm") 解析偏移
-    const timeStr = e.time.includes('~') ? e.time.split('~')[0].trim() : e.time;
-    const eventDate = parseLocalDate(timeStr);
+    // 處理旅遊活動的日期範圍
+    if (e.time.includes('~')) {
+        eventDate = new Date(e.time.split('~')[0]);
+    } else {
+        eventDate = new Date(e.time);
+    }
 
-    // 如果事件日期無效，允許顯示
+    // 如果事件日期無效，允許報名
     if (isNaN(eventDate.getTime())) return true;
 
     eventDate.setHours(0, 0, 0, 0);
 
-    // 明天之後的活動才移到歷史區（當天仍留在報名區）
+    // 計算明天
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // 明天之後的活動才移到歷史區（當天仍留在報名區）
     return eventDate.getTime() >= tomorrow.getTime();
 }
 
 // 新增：檢查是否可以修改（當天仍可修改）
 function canModifyEvent(e) {
-    if (!e) return false;
     if (!e.time) return true;
 
+    let eventDate = null;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // ★ 改用 parseLocalDate，防止 LINE WebView 的 new Date("yyyy-MM-dd HH:mm") 解析偏移
-    const timeStr = e.time.includes('~') ? e.time.split('~')[0].trim() : e.time;
-    const eventDate = parseLocalDate(timeStr);
+    if (e.time.includes('~')) {
+        eventDate = new Date(e.time.split('~')[0]);
+    } else {
+        eventDate = new Date(e.time);
+    }
 
     if (isNaN(eventDate.getTime())) return true;
 
     eventDate.setHours(0, 0, 0, 0);
+
+    // 計算明天
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
     // 當天及未來活動都可修改（隔天才進歷史）
     return eventDate.getTime() >= today.getTime();
@@ -3726,13 +3723,13 @@ function getParticipantRoles(pName, event) {
     }
 
     if (special.vicePresident && cleanName === special.vicePresident) {
-        roles.push({ type: 'vicePresident', label: '<img src="images/icons/princess.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="👸"> 輔導會長', textLabel: '[<img src="images/icons/princess.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="👸">輔導會長]', color: '#9333ea' });
+        roles.push({ type: 'vicePresident', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#9333ea' });
     }
 
     if (event && event.organizer) {
         const organizers = event.organizer.split(/[、,，\s]+/).map(o => o.trim()).filter(Boolean);
         if (organizers.includes(cleanName)) {
-            roles.push({ type: 'host', label: '<img src="images/icons/beer.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🍻"> 爐主', textLabel: '[<img src="images/icons/beer.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🍻">爐主]', color: '#ea580c' });
+            roles.push({ type: 'host', label: '🍻 爐主', textLabel: '[🍻爐主]', color: '#ea580c' });
         }
     }
 
@@ -3747,7 +3744,7 @@ function getParticipantRoles(pName, event) {
 
         if (month && special.birthdays && special.birthdays[month]) {
             if (special.birthdays[month].includes(cleanName)) {
-                roles.push({ type: 'birthday', label: `<img src="images/icons/cake.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🎂"> ${month}月壽星`, textLabel: `[<img src="images/icons/cake.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🎂">${month}月壽星]`, color: '#db2777' });
+                roles.push({ type: 'birthday', label: `🎂 ${month}月壽星`, textLabel: `[🎂${month}月壽星]`, color: '#db2777' });
             }
         }
     }
@@ -3882,275 +3879,65 @@ function renderShareAllEventsList() {
 
     container.innerHTML = '';
     activeEvents.forEach(e => {
-        const item = document.createElement('div');
-        item.className = "flex items-center gap-3 p-2.5 bg-gray-50/10 rounded-xl border border-white/5";
+        const item = document.createElement('label');
+        item.className = "flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100";
         item.innerHTML = `
-            <div class="flex-1 min-w-0">
-                <div class="font-medium text-[#EFECE5] truncate">${escapeHtml(e.name)}</div>
-                <div class="text-xs text-[#D4AF37]/80 truncate">${formatTimeForShare(e.time) || '無時間'}</div>
+            <div class="relative flex items-center">
+                <input type="checkbox" name="share-all-active-checkbox" value="${e.id}" checked
+                    class="peer w-4.5 h-4.5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                <i data-lucide="check"
+                    class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
             </div>
-            <i data-lucide="check-circle-2" class="w-4 h-4 text-[#D4AF37]"></i>
+            <div class="flex-1 min-w-0">
+                <span class="text-xs font-bold text-gray-800 block truncate">${escapeHtml(e.name)}</span>
+                <span class="text-[10px] text-gray-400 block">${formatDateShort(e.time)}</span>
+            </div>
         `;
         container.appendChild(item);
     });
-    if (window.lucide) window.lucide.createIcons();
-}
-function canvasToFile(canvas, filename) {
-    return new Promise(resolve => {
-        canvas.toBlob(blob => {
-            resolve(new File([blob], filename, { type: 'image/png' }));
-        }, 'image/png');
-    });
 }
 
+function confirmShareCopy() {
+    // 取得使用者勾選狀態
+    const includeSponsor = document.getElementById('share-opt-sponsor').checked && !document.getElementById('opt-container-sponsor').classList.contains('hidden');
+    const includeTravel = document.getElementById('share-opt-travel').checked && !document.getElementById('opt-container-travel').classList.contains('hidden');
+    const includeMap = document.getElementById('share-opt-map').checked;
+    const includeNames = document.getElementById('share-opt-names').checked;
+    const includeLink = document.getElementById('share-opt-link').checked;
 
-function generateSingleShareText(e, data, stats, options) {
-    let text = `📅 【大老二兄弟會】近期舉辦中活動 👥\n`;
-    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    
-    text += `1️⃣ ${e.name}\n`;
-    if (e.organizer) {
-        text += `   👤 主辦人：${e.organizer}\n`;
-    }
-    text += `   🕒 時間：${formatTimeForShare(e.time) || '無時間'}\n`;
-    if (e.location) {
-        text += `   📍 地點：${e.location}\n`;
-    }
+    // 關閉視窗
+    document.getElementById('share-modal').classList.add('hidden');
 
-    let sponsorHtml = '';
-    if (data && data.length > 0) {
-        data.forEach(p => {
-            let moneyParts = [];
-            const tc = getIntField(p, 'tableCount');
-            if (tc > 0) moneyParts.push(`認桌 ${tc}桌`);
-            const sponsorRaw = getField(p, 'sponsor');
-            const sponsorList = parseSponsorData(sponsorRaw);
-            sponsorList.forEach(s => moneyParts.push(s));
-            
-            if (moneyParts.length > 0) {
-                sponsorHtml += `      🎁 ${p.name} ━ ${moneyParts.join('、')}\n`;
-            }
-        });
-    }
-    if (sponsorHtml) {
-        text += `   💰 贊助 / 認桌資訊\n${sponsorHtml}`;
-    }
-
-    const total = stats.totalPeople || stats.total || 0;
-    if (total > 0) {
-        text += `   📊 統計：共 ${total} 人報名\n`;
-    }
-    
-    if (options && options.includeMap && e.mapLink) {
-        text += `   🗺️ 地圖：${e.mapLink}\n`;
-    }
-    
-    text += `\n━━━━━━━━━━━━━━━━━━━━━\n`;
-    if (!options || options.includeLink !== false) {
-        text += `🔗 統一報名連結👇：\nhttps://liff.line.me/2008678090-aXTesgDK\n`;
-    }
-    return text;
+    // 執行複製，傳入參數
+    performCopy({ includeSponsor, includeTravel, includeMap, includeNames, includeLink });
 }
 
-async function generateAllShareText(eventDataList) {
-    let text = `📅 【大老二兄弟會】近期舉辦中活動 👥\n`;
-    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    
-    const numberEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+function confirmAllShareCopy() {
+    const checkedBoxes = document.querySelectorAll('input[name="share-all-active-checkbox"]:checked');
+    if (checkedBoxes.length === 0) {
+        showToast("⚠️ 請至少選擇一個活動");
+        return;
+    }
 
-    eventDataList.forEach(({ event: e, data, stats }, index) => {
-        const numEmoji = numberEmojis[index] || `${index+1}.`;
-        text += `${numEmoji} ${e.name}\n`;
-        
-        if (e.organizer) {
-            text += `   👤 主辦人：${e.organizer}\n`;
-        }
-        text += `   🕒 時間：${formatTimeForShare(e.time) || '無時間'}\n`;
-        if (e.location) {
-            text += `   📍 地點：${e.location}\n`;
-        }
+    const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+    const selectedEvents = appState.events.filter(e => selectedIds.includes(e.id));
 
-        let sponsorHtml = '';
-        if (data && data.length > 0) {
-            data.forEach(p => {
-                let moneyParts = [];
-                const tc = getIntField(p, 'tableCount');
-                if (tc > 0) moneyParts.push(`認桌 ${tc}桌`);
-                const sponsorRaw = getField(p, 'sponsor');
-                const sponsorList = parseSponsorData(sponsorRaw);
-                sponsorList.forEach(s => moneyParts.push(s));
-                
-                if (moneyParts.length > 0) {
-                    sponsorHtml += `      🎁 ${p.name} ━ ${moneyParts.join('、')}\n`;
-                }
-            });
-        }
-        if (sponsorHtml) {
-            text += `   💰 贊助 / 認桌資訊\n${sponsorHtml}`;
-        }
-
-        const total = stats.totalPeople || stats.total || 0;
-        if (total > 0) {
-            text += `   📊 統計：共 ${total} 人報名\n`;
-        }
+    let text = `📅 【大老二兄弟會】近期舉辦中活動 👥\n\n`;
+    selectedEvents.forEach((e, idx) => {
+        text += `${idx + 1}. 📅 ${e.name}\n`;
+        if (e.organizer) text += `   👤 主辦人：${e.organizer}\n`;
+        const timeDisplay = formatTimeForShare(e.time);
+        if (timeDisplay) text += `   🕒 時間：${timeDisplay}\n`;
+        if (e.location) text += `   📍 地點：${e.location}\n`;
         text += `\n`;
     });
-    
-    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    text += `🔗 統一報名連結👇：\nhttps://liff.line.me/2008678090-aXTesgDK\n`;
-    return text;
-}
 
-function fallbackShareSingle(file, text, eventName) {
-    showToast("瀏覽器不支援原生分享，請手動儲存圖片");
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(file);
-    a.download = `${eventName}_名單.png`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-    navigator.clipboard.writeText(text).then(() => {
-        setTimeout(() => showToast("已複製活動資訊文字"), 1000);
-    });
-}
+    text += `---------------------\n`;
+    text += `歡迎大家踴躍報名！🍻\n`;
+    text += `🔗 統一報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
 
-function fallbackShareAll(files, text) {
-    showToast(`不支援一次分享多張圖片，將分批下載圖片`);
-    files.forEach((file, idx) => {
-        setTimeout(() => {
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(file);
-            a.download = file.name;
-            a.click();
-            URL.revokeObjectURL(a.href);
-        }, idx * 500);
-    });
-    navigator.clipboard.writeText(text).then(() => {
-        setTimeout(() => showToast("已複製活動資訊文字"), files.length * 500 + 500);
-    });
-}
-
-async function executeShare(mode) {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (mode === 'single') {
-        const e = appState.currentEvent;
-        if (!e) return;
-        
-        const btn = document.getElementById('btn-share-single');
-        const origHtml = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
-        if (window.lucide) window.lucide.createIcons();
-        
-        try {
-            const data = appState.cachedDetails || [];
-            const stats = appState.currentStats || {};
-            
-            // 1. 生成 Canvas 與圖片檔案
-            const canvas = await generateEventCanvas(e, data, stats);
-            const file = await canvasToFile(canvas, `${e.name}_名單.png`);
-            
-            // 2. 生成排版文字
-            const includeMap = document.getElementById('share-opt-map')?.checked || false;
-            const includeLink = document.getElementById('share-opt-link')?.checked !== false;
-            const shareText = generateSingleShareText(e, data, stats, { includeMap, includeLink });
-            
-            // 3. 關閉彈窗
-            document.getElementById('share-modal').classList.add('hidden');
-            
-            // 4. 執行分享
-            if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        files: [file],
-                        text: shareText
-                    });
-                } catch (err) {
-                    if (err.name !== 'AbortError') {
-                        fallbackShareSingle(file, shareText, e.name);
-                    }
-                }
-            } else {
-                fallbackShareSingle(file, shareText, e.name);
-            }
-        } catch (err) {
-            console.error(err);
-            showToast("分享產生失敗，請重試");
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = origHtml;
-            if (window.lucide) window.lucide.createIcons();
-        }
-        
-    } else if (mode === 'all') {
-        const selectedEvents = appState.events.filter(e => isEventOpen(e));
-        if (selectedEvents.length === 0) {
-            showToast("⚠️ 目前沒有舉辦中的活動");
-            return;
-        }
-        
-        const btn = document.getElementById('btn-share-all');
-        const origHtml = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
-        if (window.lucide) window.lucide.createIcons();
-        
-        try {
-            
-            // 1. 並行拉取所有活動的資料
-            const eventDataPromises = selectedEvents.map(async (e) => {
-                let data = [];
-                let stats = {};
-                if (appState.currentEvent && e.id === appState.currentEvent.id) {
-                    data = appState.cachedDetails || [];
-                    stats = appState.currentStats || {};
-                } else {
-                    [data, stats] = await Promise.all([
-                        fetchDetailsForEvent(e.id),
-                        fetchStatsForEvent(e.id)
-                    ]);
-                }
-                return { event: e, data, stats };
-            });
-            const eventDataList = await Promise.all(eventDataPromises);
-
-            // 2. 並行產生所有圖片與 Canvas
-            const filePromises = eventDataList.map(async ({ event: e, data, stats }) => {
-                const canvas = await generateEventCanvas(e, data, stats);
-                return canvasToFile(canvas, `${e.name}_名單.png`);
-            });
-            const files = await Promise.all(filePromises);
-            
-            // 3. 生成多活動彙整排版文字 (傳入已獲取的資料)
-            const shareText = await generateAllShareText(eventDataList);
-            
-            // 3. 關閉彈窗
-            document.getElementById('share-modal').classList.add('hidden');
-            
-            // 4. 執行分享
-            if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: files })) {
-                try {
-                    await navigator.share({
-                        files: files,
-                        text: shareText
-                    });
-                } catch (err) {
-                    if (err.name !== 'AbortError') {
-                        fallbackShareAll(files, shareText);
-                    }
-                }
-            } else {
-                fallbackShareAll(files, shareText);
-            }
-        } catch (err) {
-            console.error(err);
-            showToast("分享產生失敗，請重試");
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = origHtml;
-            if (window.lucide) window.lucide.createIcons();
-        }
-    }
+    document.getElementById('share-modal').classList.add('hidden');
+    copyTextToClipboard(text);
 }
 
 // 舊按鈕 (名單視窗下方) 呼叫此函式：統一呼叫 openShareModal 以提供選項
@@ -4175,39 +3962,27 @@ async function fetchStatsForEvent(eventId) {
     } catch (e) { return {}; }
 }
 
-// 依據活動名稱自動判斷合適的 Emoji
-function getEventEmoji(eventName) {
-    if (!eventName) return '<img src="images/icons/calendar.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="📅">';
-    if (eventName.includes('家庭日')) return '<img src="images/icons/camera.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="📸">';
-    if (eventName.includes('小型餐會')) return '<img src="images/icons/dining.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🍽️">';
-    if (eventName.includes('餐會') || eventName.includes('聚餐')) return '🍾';
-    return '<img src="images/icons/calendar.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="📅">';
-}
-
-// 通用活動圖片 Canvas 生成邏輯 (高貴質感深色版)
+// 通用活動圖片 Canvas 生成邏輯 (完全保留原本內容樣式不更動)
 async function generateEventCanvas(e, data, stats) {
-    const includeSponsor = false; // 名單內不顯示贊助，改由下方獨立區塊顯示
+    const includeSponsor = false;
     const includeTravel = true;
-    const includeMap = false;     // 圖片不含地圖連結
-    const includeNames = true;    // 圖片固定包含詳細名單
-    const includeLink = false;    // 圖片不含報名連結
+    const includeMap = false;
+    const includeNames = true;
+    const includeLink = false;
 
-    // --- 1. 動態產生分享卡片 HTML ---
-    // --- 1. 動態產生分享卡片 HTML ---
     const card = document.createElement('div');
-    card.style.cssText = 'position:fixed;left:-9999px;top:0;width:440px;z-index:-1;';
+    card.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;z-index:-1;';
 
     const iconEmoji = e.icon || getEventEmoji(e.name);
     
     let html = `
     <style>
-      /* ==================== 基礎與排版設定 ==================== */
       .app-container {
-          padding: 1.5rem 1.25rem; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
-          /* 高質感木紋背景 */
+          font-size: 26px;
+          padding: 1.5em 1.25em; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
           background: url('images/wood-bg.jpg') repeat;
           background-size: 350px;
-        font-family: "PingFang TC", "Helvetica Neue", sans-serif; color: #EAD7BA;
+          font-family: "PingFang TC", "Helvetica Neue", sans-serif; color: #EAD7BA;
       }
       .main-frame {
           width: 100%;
@@ -4216,13 +3991,10 @@ async function generateEventCanvas(e, data, stats) {
           border-radius: 12px;
           border: 1px solid rgba(212, 175, 55, 0.3);
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 2px 10px rgba(255, 255, 255, 0.05);
-          padding: 1rem;
+          padding: 1em;
           position: relative;
           z-index: 1;
         }
-      
-      
-      /* 螺絲釘 (純 CSS 3D 繪製，無去背問題) */
       .rivet {
           position: absolute; width: 16px; height: 16px; background: radial-gradient(circle, #e2cfb3 0%, #7c5c3b 100%);
           border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
@@ -4233,58 +4005,44 @@ async function generateEventCanvas(e, data, stats) {
       .rivet.tr { top: 8px; right: 8px; }
       .rivet.bl { bottom: 8px; left: 8px; }
       .rivet.br { bottom: 8px; right: 8px; }
-      
-      /* ==================== 內部區塊通用 ==================== */
       .inner-box {
           background-color: rgba(26, 36, 54, 0.6);
           border: 1px solid rgba(212, 175, 55, 0.2);
           border-radius: 8px;
           box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.3);
-          margin-bottom: 1rem;
+          margin-bottom: 1em;
           position: relative;
           z-index: 1;
         }
-      /* 內部區塊漸層金屬框線 */
-      
-      
-      /* 圖片 Icon 共用樣式 */
       img.custom-icon { width: 1.5em; height: 1.5em; object-fit: contain; vertical-align: middle; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8)); }
-      img.header-icon-img { width: 3rem; height: 3rem; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.8)); margin-right: 0.5rem; }
-
-      /* ==================== 頂部標題區塊 ==================== */
+      img.header-icon-img { width: 3em; height: 3em; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.8)); margin-right: 0.5em; }
       .header-card {
-        padding: 1.25rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+        padding: 1.25em; display: flex; align-items: center; justify-content: center; gap: 0.75em;
         background: linear-gradient(180deg, rgba(42,56,82,1) 0%, rgba(26,36,54,1) 100%);
         border-radius: 8px;
       }
-      .header-icon { font-size: 2.5rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); padding-bottom: 4px; margin-right: 0.5rem; }
+      .header-icon { font-size: 2.5em; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); padding-bottom: 4px; margin-right: 0.5em; }
       .header-title {
-        font-size: 1.25rem; font-weight: bold; letter-spacing: 0.05em; margin: 0;
+        font-size: 1.25em; font-weight: bold; letter-spacing: 0.05em; margin: 0;
         color: #F3E5AB; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
         white-space: normal; word-break: keep-all; flex: 1; line-height: 1.4;
       }
-
-      /* ==================== 資訊區塊 ==================== */
       .info-card {
-        padding: 1.25rem;
+        padding: 1.25em;
         background: linear-gradient(180deg, rgba(34,46,68,1) 0%, rgba(20,28,42,1) 100%);
         border-radius: 8px;
       }
-      .info-list { list-style: none; padding: 0; margin: 0; font-size: 0.9rem; }
-      .info-list li { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.85rem; }
+      .info-list { list-style: none; padding: 0; margin: 0; font-size: 0.9em; }
+      .info-list li { display: flex; align-items: flex-start; gap: 0.75em; margin-bottom: 0.85em; }
       .info-list li:last-child { margin-bottom: 0; }
-      .info-list .icon { font-size: 1.25rem; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
-      .info-list .text { color: #EAD7BA; line-height: 1.5; padding-top: 0.125rem; font-weight: 500; letter-spacing: 0.05em; }
-      
-      .note-box { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(212,175,122,0.3); }
-      .note-box p { margin: 0; font-size: 0.85rem; color: #B0A08A; line-height: 1.5; }
+      .info-list .icon { font-size: 1.25em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
+      .info-list .text { color: #EAD7BA; line-height: 1.5; padding-top: 0.125em; font-weight: 500; letter-spacing: 0.05em; }
+      .note-box { margin-top: 1em; padding-top: 1em; border-top: 1px solid rgba(212,175,122,0.3); }
+      .note-box p { margin: 0; font-size: 0.85em; color: #B0A08A; line-height: 1.5; }
       .note-title { color: #D4AF7A; font-weight: bold; }
-
-      /* ==================== 名單區塊 ==================== */
       .list-card {
-        padding: 1.25rem;
+        padding: 1.25em;
         border-radius: 8px;
-        /* 棋盤格背景 */
         background-color: rgba(26,36,54,1);
         background-image: 
           linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03)),
@@ -4292,60 +4050,32 @@ async function generateEventCanvas(e, data, stats) {
         background-size: 40px 40px;
         background-position: 0 0, 20px 20px;
       }
-      .list-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(212,175,122,0.5); }
-      .list-header .icon { font-size: 1.35rem; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
-      .list-header h2 { font-size: 1.15rem; font-weight: bold; color: #D4AF7A; letter-spacing: 0.1em; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-      
-      .list-item { padding-bottom: 0.65rem; margin-bottom: 0.65rem; border-bottom: 1px dashed rgba(212,175,122,0.2); }
+      .list-header { display: flex; align-items: center; gap: 0.5em; margin-bottom: 1em; padding-bottom: 0.5em; border-bottom: 1px solid rgba(212,175,122,0.5); }
+      .list-header .icon { font-size: 1.35em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
+      .list-header h2 { font-size: 1.15em; font-weight: bold; color: #D4AF7A; letter-spacing: 0.1em; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+      .list-item { padding-bottom: 0.65em; margin-bottom: 0.65em; border-bottom: 1px dashed rgba(212,175,122,0.2); }
       .list-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
-      .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.15rem; flex-wrap: wrap; font-size: 1.1rem; }
-      .item-title .name { margin-right: 0.5rem; color: #F3E5AB; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
-      .item-title .count { 
-        color: #EAD7BA; font-size: 0.85rem; margin-left: 0.5rem; 
-        font-weight: bold; font-family: monospace;
-      }
-      .item-detail { font-size: 0.85rem; color: #A89580; margin-left: 2rem; padding-top: 0.2rem; line-height: 1.4; }
-      
-      /* ==================== 獨立標籤配色 ==================== */
-      .tag { 
-        font-size: 0.95rem; font-weight: bold; margin-left: 0.5rem; display: inline-flex; align-items: center; 
-        letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8); 
-      }
-      .tag-orange { color: #F97316; } 
-      .tag-pink { color: #EC4899; }   
-      .tag-purple { color: #D8B4FE; } 
-      .tag-gold { color: #EAB308; }   
-
-      /* ==================== 贊助區塊 ==================== */
-      .sponsor-card {
-        padding: 1.25rem;
-        background: linear-gradient(180deg, rgba(34,46,68,1) 0%, rgba(20,28,42,1) 100%);
-        border-radius: 8px; margin-bottom: 0;
-      }
-
-      /* ==================== 底部總計 ==================== */
-      .footer-wrapper { width: 100%; text-align: center; margin-top: 1rem; position: relative; z-index: 10; }
-      .total-count { 
-        color: #D4AF7A; font-weight: bold; font-size: 1.2rem; letter-spacing: 0.15em; 
-        margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.9); 
-      }
-      .copyright { color: #A89580; font-size: 0.8rem; letter-spacing: 0.1em; }
+      .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.15em; flex-wrap: wrap; font-size: 1.1em; }
+      .item-title .name { margin-right: 0.5em; color: #F3E5AB; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+      .item-title .count { color: #EAD7BA; font-size: 0.85em; margin-left: 0.5em; font-weight: bold; font-family: monospace; }
+      .item-detail { font-size: 0.85em; color: #A89580; margin-left: 2em; padding-top: 0.2em; line-height: 1.4; }
+      .tag { font-size: 0.95em; font-weight: bold; margin-left: 0.5em; display: inline-flex; align-items: center; letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+      .tag-orange { color: #F97316; } .tag-pink { color: #EC4899; } .tag-purple { color: #D8B4FE; } .tag-gold { color: #EAB308; }
+      .sponsor-card { padding: 1.25em; background: linear-gradient(180deg, rgba(34,46,68,1) 0%, rgba(20,28,42,1) 100%); border-radius: 8px; margin-bottom: 0; }
+      .footer-wrapper { width: 100%; text-align: center; margin-top: 1em; position: relative; z-index: 10; }
+      .total-count { color: #D4AF7A; font-weight: bold; font-size: 1.2em; letter-spacing: 0.15em; margin-bottom: 0.5em; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
+      .copyright { color: #A89580; font-size: 0.8em; letter-spacing: 0.1em; }
     </style>
     
     <div class="app-container">
       <div class="main-frame">
-        <div class="rivet tl"></div>
-        <div class="rivet tr"></div>
-        <div class="rivet bl"></div>
-        <div class="rivet br"></div>
-        
+        <div class="rivet tl"></div><div class="rivet tr"></div><div class="rivet bl"></div><div class="rivet br"></div>
         <div class="inner-box">
           <div class="header-card">
             <div class="header-icon">${iconEmoji}</div>
             <h1 class="header-title">${escapeHtml(e.name)}</h1>
           </div>
         </div>
-        
         <div class="inner-box">
           <div class="info-card">
             <ul class="info-list">`;
@@ -4357,26 +4087,20 @@ async function generateEventCanvas(e, data, stats) {
     if (e.address)   html += `<li><span class="icon"><img src="images/icons/car.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🚗"></span><div class="text">地址：${escapeHtml(e.address)}</div></li>`;
     
     html += `</ul>`;
-    
     if (e.note) {
-        html += `<div class="note-box"><p><span class="note-title">💡 備註：</span>${escapeHtml(e.note).replace(/\n/g, '<br>')}</p></div>`;
+        html += `<div class="note-box"><div class="note-title">💡 備註：</div><p>${escapeHtml(e.note).replace(/\n/g, '<br>')}</p></div>`;
     }
     html += `</div></div>`;
 
-    // 名單區
     if (includeNames && data.length > 0) {
-        html += `<div class="inner-box">
-                   <div class="list-card">
-                     <div class="list-header"><span class="icon" style="margin-right:0.5rem;">👥</span><h2>報名名單</h2></div>`;
+        html += `<div class="inner-box"><div class="list-card"><div class="list-header"><span class="icon">👥</span><h2>報名名單</h2></div>`;
         let count = 0;
         data.forEach(p => {
+            count++;
             const family = getIntField(p, 'family');
             const guestData = parseGuestData(p);
             const finalGuestCount = calculateFinalGuestCount(p, guestData);
             const total = family + finalGuestCount;
-            if (total === 0) return;
-
-            count++;
             const num = count.toString().padStart(2, '0');
             const status = p.status || p.note || '';
             let prefix = status ? status : '';
@@ -4384,50 +4108,33 @@ async function generateEventCanvas(e, data, stats) {
             const roles = getParticipantRoles(p.name, e);
             let tagHtml = '';
             if (roles.length > 0) {
-                tagHtml = roles.map(r => {
-                    let tagClass = 'tag-orange'; 
-                    let iconHtml = '';
-                    // 移除任何 img 標籤以及舊版的純文字 Emoji，以取得乾淨的文字
-                    let pureText = r.label.replace(/<img[^>]*>/g, '').replace(/[👑👸🍻🎂]/g, '').trim();
-                    
-                    if(r.label.includes('會長') && !r.label.includes('輔導')) { tagClass = 'tag-gold'; iconHtml = '<span style="margin-right:4px;">👑</span>'; }
-                    else if(r.label.includes('輔導會長')) { tagClass = 'tag-purple'; iconHtml = '<span style="margin-right:4px;"><img src="images/icons/princess.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="👸"></span>'; }
-                    else if(r.label.includes('壽星')) { tagClass = 'tag-pink'; iconHtml = '<span style="margin-right:4px;"><img src="images/icons/cake.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🎂"></span>'; }
-                    else if(r.label.includes('爐主')) { tagClass = 'tag-orange'; iconHtml = '<span style="margin-right:4px;"><img src="images/icons/beer.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🍻"></span>'; }
-                    
-                    return `<span class="tag ${tagClass}">${iconHtml}${pureText}</span>`;
-                }).join('');
+                tagHtml = roles.map(r => `<span class="tag" style="color:${r.color};">${r.label}</span>`).join('');
             }
 
-            let nameColor = '#F3E5AB';
+            let nameColor = 'inherit';
             let maryMedal = '';
             if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
                 const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
-                if (rankIndex === 0) { nameColor = '#EAB308'; maryMedal = '<span style="margin-right:4px;"><img src="images/icons/medal_1.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥇"></span>'; }
-                else if (rankIndex === 1) { nameColor = '#e2e8f0'; maryMedal = '<span style="margin-right:4px;"><img src="images/icons/medal_2.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥈"></span>'; } 
-                else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '<span style="margin-right:4px;"><img src="images/icons/medal_3.png" class="inline-block w-[1.2em] h-[1.2em] align-[-0.15em] drop-shadow-md" alt="🥉"></span>'; }
+                if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }
+                else if (rankIndex === 1) { nameColor = '#94a3b8'; maryMedal = '🥈'; }
+                else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; }
             }
 
-            html += `<div class="list-item">
-                       <div class="item-title">
-                         <span style="color:#A88B60;margin-right:0.5rem;font-family:monospace;font-size:1.1rem;">${num}.</span>
-                         <span class="name" style="color:${nameColor};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}</span>
-                         ${tagHtml}
-                         ${total > 1 ? `<span class="count">×${total}</span>` : ''}
-                       </div>`;
+            html += `<div class="list-item"><div class="item-title">`;
+            html += `<span style="color:#D4AF7A;margin-right:0.5em;">${num}.</span> <span class="name" style="color:${nameColor !== 'inherit' ? nameColor : '#F3E5AB'};"><span style="font-size:1.15em;margin-right:2px">${maryMedal}</span>${escapeHtml(prefix)}${escapeHtml(p.name)}</span>${tagHtml}`;
+            if (total > 1) html += `<span class="count">×${total}</span>`;
+            html += `</div>`;
 
-            // 來賓
             if (guestData.length > 0) {
                 const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
-                html += `<div class="item-detail">↳ 來賓：${guestParts.join('、')}</div>`;
+                html += `<div class="item-detail">來賓：${guestParts.join('、')}</div>`;
             } else {
                 const guestNameStr = getField(p, 'guestName');
                 if (guestNameStr && guestNameStr !== '無') {
-                    html += `<div class="item-detail">↳ 來賓：${guestNameStr}</div>`;
+                    html += `<div class="item-detail">來賓：${guestNameStr}</div>`;
                 }
             }
 
-            // 上車/房型
             if (includeTravel) {
                 let travelLines = [];
                 if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
@@ -4449,7 +4156,6 @@ async function generateEventCanvas(e, data, stats) {
         html += `</div></div>`;
     }
 
-    // 贊助/認桌彙總區
     if (data.length > 0) {
         let sponsorHtml = '';
         data.forEach(p => {
@@ -4457,7 +4163,6 @@ async function generateEventCanvas(e, data, stats) {
             const guestData = parseGuestData(p);
             const finalGuestCount = calculateFinalGuestCount(p, guestData);
             const total = family + finalGuestCount;
-
             let moneyParts = [];
             const tc = getIntField(p, 'tableCount');
             if (tc > 0) moneyParts.push(`認桌 ${tc}桌`);
@@ -4466,26 +4171,25 @@ async function generateEventCanvas(e, data, stats) {
             sponsorList.forEach(s => moneyParts.push(s));
             
             if (moneyParts.length > 0) {
-                const label = (total === 0) ? '<span style="font-size:0.8rem;color:#EAB308;margin-left:0.5rem;opacity:0.8;">(純贊助)</span>' : '';
-                sponsorHtml += `<div class="list-item" style="border-bottom:1px dashed rgba(212,175,122,0.2);display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0.5rem;">
-                                  <span class="icon" style="font-size:1.25rem;">🎁</span> 
+                const label = (total === 0) ? `<span style="font-size:0.8em;color:#EAB308;margin-left:0.5em;opacity:0.8;">(純贊助)</span>` : '';
+                sponsorHtml += `<div class="list-item" style="display:flex;align-items:center;gap:0.75em;padding:0.75em 0.5em;">
+                                  <span class="icon" style="font-size:1.25em;">🎁</span> 
                                   <span class="name" style="color:#F3E5AB;font-weight:bold;text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${p.name}</span>${label} 
                                   <span style="color:#A88B60;">—</span> 
-                                  <span style="color:#EAD7BA;font-size:0.95rem;">${moneyParts.join('、')}</span>
+                                  <span style="color:#EAD7BA;font-size:0.95em;">${moneyParts.join('、')}</span>
                                 </div>`;
             }
         });
         if (sponsorHtml) {
             html += `<div class="inner-box" style="margin-bottom:0;">
                        <div class="sponsor-card">
-                         <div class="list-header"><span class="icon" style="margin-right:0.5rem;">💰</span><h2>贊助 / 認桌資訊</h2></div>
+                         <div class="list-header"><span class="icon" style="margin-right:0.5em;">💰</span><h2>贊助 / 認桌資訊</h2></div>
                          ${sponsorHtml}
                        </div>
                      </div>`;
         }
     }
 
-    // 底部統計區
     html += `
       </div>
       <!-- 底部統計區 -->
@@ -4498,7 +4202,6 @@ async function generateEventCanvas(e, data, stats) {
     card.innerHTML = html;
     document.body.appendChild(card);
 
-    // 等待所有圖片載入完成，確保 html2canvas 能截取到畫面
     const imgs = card.querySelectorAll('img');
     const loadPromises = Array.from(imgs).map(img => {
         if (img.complete) return Promise.resolve();
@@ -4508,10 +4211,7 @@ async function generateEventCanvas(e, data, stats) {
         });
     });
     await Promise.all(loadPromises);
-    // 稍微延遲讓瀏覽器渲染背景圖
-    // await new Promise(r => setTimeout(r, 600)); // 移除多餘延遲
 
-    // --- 2. 使用 html2canvas 截取卡片 ---
     const canvas = await html2canvas(card, {
         scale: 2,
         useCORS: true,
@@ -4520,13 +4220,605 @@ async function generateEventCanvas(e, data, stats) {
         height: card.scrollHeight
     });
 
-    // 移除暫時卡片
     document.body.removeChild(card);
     return canvas;
 }
 
 
+// --- 單一活動圖片分享功能 ---
+async function shareAsImage() {
+    const e = appState.currentEvent;
+    if (!e) return;
+    const data = appState.cachedDetails || [];
+    const stats = appState.currentStats || {};
 
+    const btn = document.getElementById('btn-share-image');
+    const origHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
+    refreshIcons();
+
+    try {
+        const canvas = await generateEventCanvas(e, data, stats);
+
+        // --- 轉為 blob 並分享或下載 ---
+        canvas.toBlob(async (blob) => {
+            if (!blob) { showToast('圖片產生失敗'); return; }
+            const file = new File([blob], `${e.name}_名單.png`, { type: 'image/png' });
+
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    let shareText = `📅 ${e.name}\n`;
+                    if (e.organizer) shareText += `👤 主辦人：${e.organizer}\n`;
+                    // ★ 使用共用工具函式格式化時間
+                    const shareTD = formatTimeForShare(e.time);
+                    if (shareTD) shareText += `🕒 時間：${shareTD}\n`;
+                    if (e.location) shareText += `📍 地點：${e.location}\n`;
+                    if (e.address) shareText += `🚗 地址：${e.address}\n`;
+                    shareText += `---------------------\n`;
+                    shareText += `共 ${stats.totalPeople || 0} 人報名\n`;
+
+                    // ★ 使用共用工具函式判斷活動日
+                    if (isEventDay(e) && (e.address || e.location)) {
+                        const mapQuery = e.address || e.location;
+                        shareText += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+                    } else {
+                        shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
+                    }
+
+                    await navigator.share({
+                        files: [file],
+                        title: e.name,
+                        text: shareText
+                    });
+                    showToast('圖片分享成功！');
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        console.error('圖片分享失敗:', err);
+                        fallbackDownloadImage(canvas, e.name);
+                    }
+                }
+            } else {
+                fallbackDownloadImage(canvas, e.name);
+            }
+
+            document.getElementById('share-modal').classList.add('hidden');
+        }, 'image/png');
+
+    } catch (err) {
+        console.error('圖片產生失敗', err);
+        showToast('產生圖片失敗：' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        refreshIcons();
+    }
+}
+
+// --- 多活動同時圖片分享功能 ---
+async function shareAllAsImage() {
+    const checkedBoxes = document.querySelectorAll('input[name="share-all-active-checkbox"]:checked');
+    if (checkedBoxes.length === 0) {
+        showToast("⚠️ 請至少選擇一個活動");
+        return;
+    }
+
+    const btn = document.getElementById('btn-share-all-image');
+    const origHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-white"></i> 產生中...';
+    refreshIcons();
+
+    try {
+        const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+        const selectedEvents = appState.events.filter(e => selectedIds.includes(e.id));
+
+        showToast("正在背景加載多活動名單，請稍候...");
+
+        // 依序或平行抓取每個活動的數據並繪製
+        const promises = selectedEvents.map(async (e) => {
+            const [details, stats] = await Promise.all([
+                fetchDetailsForEvent(e.id),
+                fetchStatsForEvent(e.id)
+            ]);
+            const canvas = await generateEventCanvas(e, details, stats);
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => {
+                    resolve({ canvas, blob, eventName: e.name });
+                }, 'image/png');
+            });
+        });
+
+        const results = await Promise.all(promises);
+        const files = [];
+
+        results.forEach(res => {
+            if (res.blob) {
+                const file = new File([res.blob], `${res.eventName}_名單.png`, { type: 'image/png' });
+                files.push(file);
+            }
+        });
+
+        if (files.length === 0) {
+            showToast('圖片產生失敗');
+            return;
+        }
+
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files })) {
+            try {
+                let shareText = `📅 【大老二兄弟會】近期舉辦中活動名單 👥\n`;
+                shareText += `---------------------\n`;
+                shareText += `🔗 統一報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+
+                await navigator.share({
+                    files: files,
+                    title: '近期活動名單',
+                    text: shareText
+                });
+                showToast('圖片打包分享成功！');
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('多圖分享失敗，轉為逐一下載:', err);
+                    results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
+                }
+            }
+        } else {
+            // PC 端或不支援多檔案分享的瀏覽器直接依序下載
+            results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
+        }
+
+        document.getElementById('share-modal').classList.add('hidden');
+    } catch (err) {
+        console.error('多圖生成/分享發生錯誤:', err);
+        showToast('多圖產生失敗：' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        refreshIcons();
+    }
+}====================
+    const includeSponsor = false; // 名單內不顯示贊助，改由下方獨立區塊顯示
+    const includeTravel = true;
+    const includeMap = false;     // 圖片不含地圖連結
+    const includeNames = true;    // 圖片固定包含詳細名單
+    const includeLink = false;    // 圖片不含報名連結
+
+    try {
+        // --- 1. 動態產生分享卡片 HTML ---
+        const card = document.createElement('div');
+        card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#1f2937;z-index:-1;';
+
+        // 活動標題區
+        let html = '';
+        html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
+        html += `<div style="font-size:22px;font-weight:800;">📅 ${escapeHtml(e.name)}</div>`;
+        html += '</div>';
+
+        // 活動資訊區
+        html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+        if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
+        // ★ 使用共用工具函式格式化時間
+        const timeDisplay = formatTimeForShare(e.time);
+        if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${escapeHtml(timeDisplay)}</div>`;
+        if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${escapeHtml(e.location)}</div>`;
+        if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${escapeHtml(e.address)}</div>`;
+        if (includeMap) {
+            const mapQuery = e.address || e.location;
+            html += `<div style="font-size:13px;margin-bottom:4px;color:#2563eb;">🗺️ 地圖：https://www.google.com/maps/search/${encodeURIComponent(mapQuery)}</div>`;
+        }
+        if (includeLink) {
+            html += `<div style="font-size:13px;color:#2563eb;">🔗 報名：https://liff.line.me/${LIFF_ID}</div>`;
+        }
+        if (e.note) {
+            html += `<div style="font-size:13px;margin-top:12px;padding:10px;background:#fffbeb;color:#b45309;border:1px solid #fde68a;border-radius:8px;line-height:1.5;">💡 <b>備註：</b><br>${escapeHtml(e.note).replace(/\\n/g, '<br>')}</div>`;
+        }
+        html += '</div>';
+
+        // 名單區
+        if (includeNames && data.length > 0) {
+            html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+            html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
+            let count = 0;
+            data.forEach(p => {
+                count++;
+                const family = getIntField(p, 'family');
+                const guestData = parseGuestData(p);
+                // 冗餘處理：使用統一計算函數
+                const finalGuestCount = calculateFinalGuestCount(p, guestData);
+
+                // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
+                const total = family + finalGuestCount;
+                const num = count.toString().padStart(2, '0');
+                const status = p.status || p.note || '';
+                let prefix = status ? status : '';
+
+                // ★ 新增：取得角色標籤並轉換為 HTML
+                const roles = getParticipantRoles(p.name, e);
+                let tagHtml = '';
+                if (roles.length > 0) {
+                    // 改為純文字顏色變化，不使用背板色塊
+                    tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
+                }
+
+                // ★ 新增：檢查是否為小瑪莉前三名
+                let nameColor = 'inherit';
+                let maryMedal = '';
+                if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                    const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
+                    if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
+                    else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
+                    else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
+                }
+
+                html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+                html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
+                if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
+                html += '</div>';
+
+                // 來賓
+                if (guestData.length > 0) {
+                    const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
+                    html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+                } else {
+                    const guestNameStr = getField(p, 'guestName');
+                    if (guestNameStr && guestNameStr !== '無') {
+                        html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                    }
+                }
+
+                // 贊助
+                if (includeSponsor) {
+                    let moneyLines = [];
+                    const tc = getIntField(p, 'tableCount');
+                    if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
+                    const sponsorRaw = getField(p, 'sponsor');
+                    const sponsorList = parseSponsorData(sponsorRaw);
+                    sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
+                    if (moneyLines.length > 0) {
+                        html += `<div style="font-size:12px;color:#d97706;padding:2px 0 4px 20px;">${moneyLines.join('、')}</div>`;
+                    }
+                }
+
+                // 上車/房型
+                if (includeTravel) {
+                    let travelLines = [];
+                    if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
+                    if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
+                    if (guestData.length > 0) {
+                        guestData.forEach(g => {
+                            let extras = [];
+                            if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                            if (g.room && g.room !== '無') extras.push(g.room);
+                            if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                        });
+                    }
+                    if (travelLines.length > 0) {
+                        html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
+                    }
+                }
+            });
+            html += '</div>';
+        }
+
+        // 贊助/認桌彙總區（獨立區塊，不論是否勾選名單都會顯示）
+        if (data.length > 0) {
+            let sponsorHtml = '';
+            data.forEach(p => {
+                let moneyParts = [];
+                const tc = getIntField(p, 'tableCount');
+                if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+                const sponsorRaw = getField(p, 'sponsor');
+                const sponsorList = parseSponsorData(sponsorRaw);
+                sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+                if (moneyParts.length > 0) {
+                    sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+                }
+            });
+            if (sponsorHtml) {
+                html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
+                html += sponsorHtml;
+                html += '</div>';
+            }
+        }
+
+        // 統計區
+        html += '<div style="text-align:center;font-size:14px;font-weight:700;color:#374151;padding:8px 0;">';
+        html += `共 ${appState.currentStats.totalPeople || 0} 人報名`;
+        html += '</div>';
+
+        // 浮水印
+        html += '<div style="text-align:center;font-size:11px;color:#9ca3af;margin-top:8px;">大老二兄弟會 活動報名系統</div>';
+
+        card.innerHTML = html;
+        document.body.appendChild(card);
+
+        // --- 2. 使用 html2canvas 截取卡片 ---
+        const canvas = await html2canvas(card, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: null,
+            width: card.scrollWidth,
+            height: card.scrollHeight
+        });
+
+        // 移除暫時卡片
+        document.body.removeChild(card);
+
+        // --- 3. 轉為 blob 並分享或下載 ---
+        canvas.toBlob(async (blob) => {
+            if (!blob) { showToast('圖片產生失敗'); return; }
+            const file = new File([blob], `${e.name}_名單.png`, { type: 'image/png' });
+
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    let shareText = `📅 ${e.name}\n`;
+                    if (e.organizer) shareText += `👤 主辦人：${e.organizer}\n`;
+                    // ★ 使用共用工具函式格式化時間
+                    const shareTD = formatTimeForShare(e.time);
+                    if (shareTD) shareText += `🕒 時間：${shareTD}\n`;
+                    if (e.location) shareText += `📍 地點：${e.location}\n`;
+                    if (e.address) shareText += `🚗 地址：${e.address}\n`;
+                    shareText += `---------------------\n`;
+                    shareText += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
+
+                    // ★ 使用共用工具函式判斷活動日
+                    if (isEventDay(e) && (e.address || e.location)) {
+                        const mapQuery = e.address || e.location;
+                        shareText += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+                    } else {
+                        shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
+                    }
+
+                    await navigator.share({
+                        files: [file],
+                        title: e.name,
+                        text: shareText
+                    });
+                    showToast('圖片分享成功！');
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        console.error('圖片分享失敗:', err);
+                        fallbackDownloadImage(canvas, e.name);
+                    }
+                }
+            } else {
+                fallbackDownloadImage(canvas, e.name);
+            }
+
+            document.getElementById('share-modal').classList.add('hidden');
+        }, 'image/png');
+
+    } catch (err) {
+        console.error('圖片產生失敗', err);
+        showToast('產生圖片失敗：' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        refreshIcons();
+    }
+}
+
+function fallbackDownloadImage(canvas, evtName) {
+    const link = document.createElement('a');
+    link.download = `${evtName || '活動'}_名單.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('已下載名單圖片！');
+}
+
+// --- Telegram 發送功能 ---
+async function sendToTelegram() {
+    if (!appState.currentEvent) return;
+
+    showToast("正在發送至 Telegram...");
+
+    try {
+        const result = await apiSubmit({
+            action: 'sendListToTelegram',
+            eventId: appState.currentEvent.id
+        });
+
+        if (result.success) {
+            showToast("✅ 名單已發送至 Telegram");
+        } else {
+            showToast("❌ 發送失敗: " + (result.error || "未知錯誤"));
+        }
+    } catch (err) {
+        console.error(err);
+        showToast("❌ 發送失敗，請檢查網路");
+    }
+}
+
+// 核心複製邏輯：支援參數與格式化
+function performCopy(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true, includeLink: true }) {
+    // ★ 修改為同步讀取快取資料
+    const data = appState.cachedDetails || [];
+
+    if (!data || data.length === 0) {
+        // Try to fetch if cache is empty (though unlikely if modal is open)
+        // But fetching async here will break mobile copy. 
+        // So we just warn.
+        return showToast("資料讀取中或無資料，請稍後再試");
+    }
+
+    // Sync execution continues...
+    { // Block to keep variable scope clean equivalent to previous .then callback
+
+        const e = appState.currentEvent;
+
+        let text = `📅 ${e.name}\n`;
+        // 判斷並加入活動資訊
+        if (e.organizer) text += `👤 主辦人：${e.organizer}\n`;
+
+        // ★ 修正：使用共用工具函式格式化時間
+        const timeDisplay = formatTimeForShare(e.time);
+        if (timeDisplay) text += `🕒 時間：${timeDisplay}\n`;
+
+        if (e.location) text += `📍 地點：${e.location}\n`;
+        if (e.address) text += `🚗 地址：${e.address}\n`;
+        text += `---------------------\n`;
+
+
+
+        if (options.includeNames !== false) {
+            let count = 0;
+            data.forEach((p, i) => {
+                count++;
+                const family = getIntField(p, 'family');
+                const guestData = parseGuestData(p);
+                // 冗餘處理：使用統一計算函數
+                const finalGuestCount = calculateFinalGuestCount(p, guestData);
+
+                // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
+                const total = family + finalGuestCount;
+
+                const num = count.toString().padStart(2, '0');
+                const status = p.status || p.note || '';
+                const prefix = status ? status : '';
+
+                // ★ 新增：純文字複製時附加文字標籤
+                const roles = getParticipantRoles(p.name, e);
+                let textTags = '';
+                if (roles.length > 0) {
+                    textTags = ' ' + roles.map(r => r.textLabel).join('');
+                }
+
+                // ★ 小瑪莉前三名勳章（文字名單分享用）
+                let maryMedalCopy = '';
+                if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
+                    const rankIdx = appState.jackpotRankings.findIndex(r => r.name === p.name);
+                    if (rankIdx === 0) maryMedalCopy = '🥇';
+                    else if (rankIdx === 1) maryMedalCopy = '🥈';
+                    else if (rankIdx === 2) maryMedalCopy = '🥉';
+                }
+
+                text += `${num}. ${maryMedalCopy}${prefix}${p.name}${textTags}`;
+                if (total > 1) text += ` *${total}`;
+                text += `\n`;
+
+                // ★ 修改：來賓名單整合為單行，顯示在下方 ★
+                if (guestData.length > 0) {
+                    const guestParts = guestData.map(g => {
+                        return g.count > 1 ? `${g.name}*${g.count}` : g.name;
+                    });
+                    text += `      來賓：${guestParts.join('、')}\n`;
+                } else {
+                    const guestNameStr = getField(p, 'guestName');
+                    if (guestNameStr && guestNameStr !== '無') {
+                        text += `      來賓：${guestNameStr}\n`;
+                    }
+                }
+
+                // 贊助/認桌不在名單內顯示，改由下方獨立區塊統一列出
+
+                if (options.includeTravel) {
+                    let travelLines = [];
+                    if (p.pickup && p.pickup !== '無') travelLines.push(`[主]車: ${p.pickup}`);
+                    if (p.room && p.room !== '無') travelLines.push(`[主]房: ${p.room}`);
+
+                    if (guestData.length > 0) {
+                        guestData.forEach(g => {
+                            let extras = [];
+                            if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
+                            if (g.room && g.room !== '無') extras.push(g.room);
+                            if (extras.length > 0) {
+                                travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
+                            }
+                        });
+                    }
+                    if (travelLines.length > 0) {
+                        travelLines.forEach(l => text += `      ${l}\n`);
+                    }
+                }
+            });
+        }
+
+        // ★ 贊助/認桌獨立區塊（不論是否勾選名單，只要有資料就顯示）
+        if (options.includeSponsor) {
+            let hasSponsorData = false;
+            let sponsorText = '';
+            data.forEach(p => {
+                let moneyLines = [];
+                const tc = getIntField(p, 'tableCount');
+                if (tc > 0) moneyLines.push(`認桌: ${tc}桌`);
+
+                const sponsorRaw = getField(p, 'sponsor');
+                const sponsorList = parseSponsorData(sponsorRaw);
+                sponsorList.forEach(s => moneyLines.push(`贊助: ${s}`));
+
+                if (moneyLines.length > 0) {
+                    hasSponsorData = true;
+                    sponsorText += `${p.name}：${moneyLines.join('、')}\n`;
+                }
+            });
+            if (hasSponsorData) {
+                text += `【贊助/認桌】\n${sponsorText}`;
+            }
+        }
+
+        text += `---------------------\n`;
+        text += `共 ${appState.currentStats.totalPeople || 0} 人報名\n`;
+
+        if (options.includeMap && e.address) {
+            text += `🗺️ Google 地圖：\nhttps://www.google.com/maps/search/?api=1&query=${e.address}\n`;
+        }
+
+        // ★ 活動日當天自動替換：報名連結 → Google 地圖連結
+        if (options.includeLink !== false) {
+            // ★ 使用共用工具函式判斷活動日
+            if (isEventDay(e) && (e.address || e.location)) {
+                const mapQuery = e.address || e.location;
+                text += `🗺️ Google 地圖👇：\nhttps://www.google.com/maps/search/?api=1&query=${mapQuery}\n`;
+            } else {
+                text += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+            }
+        }
+
+        copyTextToClipboard(text);
+    }
+}
+
+// --- ★★★ 這裡就是修正的關鍵，原本遺失的函式 ★★★ ---
+function formatDateShort(isoStr) {
+    if (!isoStr) return '';
+
+    // 如果是旅遊活動的時間範圍 (例如: 2023-10-10~2023-10-12)
+    if (isoStr.includes('~')) {
+        const start = isoStr.split('~')[0];
+        const d = parseLocalDate(start); // ★ 改用 parseLocalDate
+        if (isNaN(d.getTime())) return start;
+        return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}...`;
+    }
+
+    const d = parseLocalDate(isoStr); // ★ 改用 parseLocalDate
+    if (isNaN(d.getTime())) return isoStr;
+
+    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} (${week})`;
+}
+
+function formatDate(isoStr) {
+    if (!isoStr) return '';
+    const d = parseLocalDate(isoStr); // ★ 核心修復：改用 parseLocalDate 避免 UTC 時差，18:29不再變0:00
+    if (isNaN(d.getTime())) return isoStr;
+    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+    return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week}) ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+}
+
+function formatDateOnly(isoStr) {
+    if (!isoStr) return '';
+    const d = parseLocalDate(isoStr); // ★ 改用 parseLocalDate
+    if (isNaN(d.getTime())) return isoStr;
+    const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+    return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} (${week})`;
+}
 
 
 
@@ -4547,12 +4839,8 @@ function validateForm() {
         return false;
     }
 
-    // ★ 純贊助者：跳過旅遊欄位驗證
-    const noAttendCb = document.getElementById('no-attendance-sponsor');
-    const isSponsorOnly = noAttendCb && noAttendCb.checked;
-
-    // ★ 旅遊活動：上車地點與房型需求為必選（純贊助者豁免）
-    if (!isSponsorOnly && appState.currentEvent && appState.currentEvent.type === 'travel') {
+    // ★ 旅遊活動：上車地點與房型需求為必選
+    if (appState.currentEvent && appState.currentEvent.type === 'travel') {
         const pickupEl = document.getElementById('pickup-loc');
         const roomEl = document.getElementById('room-type');
 
@@ -4568,74 +4856,7 @@ function validateForm() {
         }
     }
 
-    // ★ 純贊助者：至少需要有贊助項目或認桌
-    if (isSponsorOnly) {
-        const tc = parseInt(document.getElementById('table-count').value, 10) || 0;
-        if (appState.sponsorList.length === 0 && tc === 0) {
-            showToast('⚠️ 僅贊助模式下，請至少新增一筆贊助或認桌');
-            return false;
-        }
-    }
-
-    // ★ 防呆：檢查是否已有來賓資料缺少必填項目（針對舊資料）
-    if (!isSponsorOnly && appState.currentEvent && appState.currentEvent.type === 'travel') {
-        const invalidGuest = appState.guestList.find(g => !g.pickup || !g.room);
-        if (invalidGuest) {
-            showToast(`⚠️ 來賓「${invalidGuest.name}」缺少上車地點或房型，請先移除後重新加入`);
-            return false;
-        }
-    }
-
-    // ★ 防呆：檢查來賓欄位是否有填寫但未點擊加入
-    const addGuestNameEl = document.getElementById('add-guest-name');
-    const addGuestPickupEl = document.getElementById('add-guest-pickup');
-    const addGuestRoomEl = document.getElementById('add-guest-room');
-    const guestTravelVisible = document.getElementById('guest-travel-options') &&
-                               !document.getElementById('guest-travel-options').classList.contains('hidden');
-    
-    if (!isSponsorOnly) {
-        const hasUnaddedName = addGuestNameEl && addGuestNameEl.value.trim() !== '';
-        const hasUnaddedTravel = guestTravelVisible && (
-            (addGuestPickupEl && addGuestPickupEl.value !== '') ||
-            (addGuestRoomEl && addGuestRoomEl.value !== '')
-        );
-        if (hasUnaddedName || hasUnaddedTravel) {
-            showToast('⚠️ 您有填寫來賓資料但尚未點選「加入名單」，請先加入或清空欄位');
-            scrollToAndHighlight(addGuestNameEl || addGuestPickupEl);
-            return false;
-        }
-    }
-
     return true;
-}
-
-// ★ 不克出席，僅贊助 — 切換邏輯
-function toggleNoAttendance(checkbox) {
-    const isChecked = checkbox.checked;
-    const familySelect = document.getElementById('family-count');
-    const guestSection = document.getElementById('guest-section');
-    const travelField = document.getElementById('field-travel');
-
-    if (isChecked) {
-        // 禁用人數（鎖定為最小值）
-        if (familySelect) {
-            familySelect.value = familySelect.options[0]?.value || '1';
-            familySelect.disabled = true;
-        }
-        // 隱藏來賓區塊
-        if (guestSection) guestSection.classList.add('hidden');
-        // 隱藏旅遊欄位
-        if (travelField) travelField.classList.add('hidden');
-    } else {
-        // 恢復人數選擇
-        if (familySelect) familySelect.disabled = false;
-        // 恢復來賓區塊
-        if (guestSection) guestSection.classList.remove('hidden');
-        // 恢復旅遊欄位（若為旅遊活動）
-        if (travelField && appState.currentEvent && appState.currentEvent.type === 'travel') {
-            travelField.classList.remove('hidden');
-        }
-    }
 }
 
 // ★ 捲動至指定欄位並加上紅色高亮閃爍效果
@@ -4656,25 +4877,11 @@ function addGuest() {
     const pickup = document.getElementById('add-guest-pickup').value;
     const room = document.getElementById('add-guest-room').value;
 
-    // 旅遊活動時，上車地點與房型為必選
-    if (appState.currentEvent && appState.currentEvent.type === 'travel') {
-        if (!pickup) return showToast("請選擇來賓的上車地點");
-        if (!room) return showToast("請選擇來賓的房型");
-    }
-
     // 產生簡易暫時 ID
     const id = 'g_' + Date.now() + Math.random().toString(36).substring(2, 7);
 
     appState.guestList.push({ id, name, count, pickup, room });
-
-    // ★ 清空所有輸入欄，避免殘留資料
     document.getElementById('add-guest-name').value = '';
-    const pickupEl = document.getElementById('add-guest-pickup');
-    const roomEl = document.getElementById('add-guest-room');
-    if (pickupEl) pickupEl.value = '';
-    if (roomEl) roomEl.value = '';
-
-    showToast(`✅ 來賓「${name}」已加入名單`);
     renderGuestList();
 }
 function removeGuest(id) {
@@ -4717,7 +4924,7 @@ function ensureManualCopyModalExists() {
 </div>
 <div class="p-4 border-t border-gray-100 bg-gray-50 flex gap-3 shrink-0">
      <button onclick="document.getElementById('manual-copy-modal').classList.add('hidden')" class="flex-1 py-3 rounded-xl font-bold text-gray-500 bg-white border border-gray-200 hover:bg-gray-50 transition">關閉</button>
-     <button onclick="retryCopy()" class="flex-1 py-3 rounded-xl font-bold text-[#0D131A] bg-gradient-to-r from-[#D4AF37] to-[#A67C00] shadow-[0_4px_15px_rgba(212,175,55,0.4)] active:scale-95 transition flex justify-center items-center gap-2">
+     <button onclick="retryCopy()" class="flex-1 py-3 rounded-xl font-bold text-white bg-[#06c755] hover:bg-green-600 shadow-md active:scale-95 transition flex justify-center items-center gap-2">
         <i data-lucide="copy" class="w-4 h-4"></i> 點擊複製
      </button>
 </div>
