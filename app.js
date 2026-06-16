@@ -4232,7 +4232,7 @@ async function shareAsImage() {
     const data = appState.cachedDetails || [];
     const stats = appState.currentStats || {};
 
-    const btn = document.getElementById('btn-share-image');
+    const btn = document.getElementById('btn-share-single');
     const origHtml = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
@@ -4305,7 +4305,7 @@ async function shareAllAsImage() {
         return;
     }
 
-    const btn = document.getElementById('btn-share-all-image');
+    const btn = document.getElementById('btn-share-all');
     const origHtml = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-white"></i> 產生中...';
@@ -4886,5 +4886,33 @@ window.executeShare = async function(mode) {
         return shareAsImage();
     } else if (mode === "all") {
         return shareAllAsImage();
+    }
+};
+
+
+// --- 不克出席 (僅贊助) 開關邏輯 ---
+window.toggleNoAttendance = function(checkbox) {
+    const isNoAttendance = checkbox.checked;
+    const familySelect = document.getElementById("family-count");
+    const guestSection = document.getElementById("guest-section");
+    const travelField = document.getElementById("field-travel");
+    const eventType = appState && appState.currentEvent ? appState.currentEvent.type : "";
+
+    if (isNoAttendance) {
+        if (familySelect) {
+            familySelect.value = "0";
+            familySelect.disabled = true;
+            familySelect.classList.add("opacity-50", "cursor-not-allowed");
+        }
+        if (guestSection) guestSection.classList.add("hidden");
+        if (travelField) travelField.classList.add("hidden");
+    } else {
+        if (familySelect) {
+            familySelect.disabled = false;
+            familySelect.classList.remove("opacity-50", "cursor-not-allowed");
+            if (familySelect.value === "0") familySelect.value = "1";
+        }
+        if (guestSection) guestSection.classList.remove("hidden");
+        if (eventType === "travel" && travelField) travelField.classList.remove("hidden");
     }
 };
