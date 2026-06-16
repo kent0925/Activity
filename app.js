@@ -3679,7 +3679,7 @@ function isEventOpen(e) {
 
 // 新增：檢查是否可以修改（當天仍可修改）
 function canModifyEvent(e) {
-    if (!e.time) return true;
+    if (!e || !e.time) return true;
 
     let eventDate = null;
     const today = new Date();
