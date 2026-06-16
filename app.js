@@ -4879,3 +4879,12 @@ function closeTutorialModal() {
         modal.classList.add('hidden');
     }, 300);
 }
+
+// --- 分享功能轉接 (相容新版 index.html) ---
+window.executeShare = async function(mode) {
+    if (mode === "single") {
+        return shareAsImage();
+    } else if (mode === "all") {
+        return shareAllAsImage();
+    }
+};
