@@ -2332,7 +2332,7 @@ function renderEventGrid(type) {
         DOM.noEventsMsg.classList.add('hidden');
         filtered.forEach(e => {
             const card = document.createElement('div');
-            card.className = "bg-white p-4 rounded-2xl shadow-sm border border-gray-100 card-hover cursor-pointer flex items-center gap-4 relative overflow-hidden group";
+            card.className = "leather-card p-4 rounded-2xl cursor-pointer flex items-center gap-4 relative overflow-hidden group hover:shadow-[0_8px_25px_rgba(212,175,55,0.15)] transition-shadow";
             card.onclick = () => enterEventDetail(e.id);
 
             let icon, colorClass, bgClass;
@@ -2898,7 +2898,7 @@ function toggleHistoryView() {
             const fragment = document.createDocumentFragment();
             history.forEach(e => {
                 const div = document.createElement('div');
-                div.className = "bg-[#162544] p-4 rounded-xl border border-white/10 shadow-sm flex justify-between items-center cursor-pointer hover:bg-[#1E3052] transition";
+                div.className = "leather-card p-4 rounded-xl cursor-pointer flex justify-between items-center transition-all hover:scale-[1.02]";
                 div.onclick = () => openHistoryImage(e.id);
                 div.innerHTML = `
                     <div>
