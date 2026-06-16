@@ -635,3 +635,36 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     box-shadow: 0 6px 15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.7), inset 0 -3px 5px rgba(0,0,0,0.2);
     border: 1px solid #EFC958;
 }
+
+.btn-ruby-velvet {
+    background-color: #8B0000;
+    background-image: url('images/ruby-velvet.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #FFF2D6 !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.6), inset 0 2px 5px rgba(255,255,255,0.2), inset 0 -3px 5px rgba(0,0,0,0.4);
+    border: 1px solid #FF6B6B;
+}
+
+.btn-rose-gold {
+    background-color: #B76E79;
+    background-image: url('images/rose-gold.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #3d1c21 !important;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+    box-shadow: 0 4px 15px rgba(183, 110, 121, 0.4), inset 0 2px 5px rgba(255,255,255,0.4), inset 0 -3px 5px rgba(0,0,0,0.2);
+    border: 1px solid #D69FAB;
+}
+
+.btn-platinum {
+    background-color: #E5E4E2;
+    background-image: url('images/platinum.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #1a1a1a !important;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+    box-shadow: 0 4px 15px rgba(229, 228, 226, 0.4), inset 0 2px 5px rgba(255,255,255,0.6), inset 0 -3px 5px rgba(0,0,0,0.2);
+    border: 1px solid #FFFFFF;
+}

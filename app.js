@@ -2058,7 +2058,7 @@ function resetFormState() {
 
     DOM.formAction.value = 'register';
     DOM.submitBtn.innerHTML = '<span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>';
-    DOM.submitBtn.className = "flex-1 btn-gold-texture font-bold py-3.5 rounded-xl hover:brightness-110 transition-all active:scale-95 flex justify-center items-center gap-2";
+    DOM.submitBtn.className = "flex-1 btn-rose-gold font-bold py-3.5 rounded-xl hover:brightness-110 transition-all active:scale-95 flex justify-center items-center gap-2";
     DOM.submitBtn.disabled = false;
 
     DOM.cancelBtn.classList.add('hidden');
