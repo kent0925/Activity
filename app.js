@@ -2947,129 +2947,7 @@ async function openHistoryImage(eventId) {
     const data = appState.cachedDetails || [];
 
     try {
-        // 產生圖卡 HTML（與 shareAsImage 相同邏輯）
-        const card = document.createElement('div');
-        card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#1f2937;z-index:-1;';
-
-        let html = '';
-        html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
-        html += `<div style="font-size:22px;font-weight:800;">📅 ${escapeHtml(e.name)}</div>`;
-        html += '<div style="font-size:12px;margin-top:6px;opacity:0.8;">已結束</div>';
-        html += '</div>';
-
-        // 活動資訊區
-        html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
-        if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
-        // ★ 使用共用工具函式格式化時間
-        const timeDisplay = formatTimeForShare(e.time);
-        if (timeDisplay) html += `<div style="font-size:14px;margin-bottom:8px;">🕒 時間：${escapeHtml(timeDisplay)}</div>`;
-        if (e.location) html += `<div style="font-size:14px;margin-bottom:8px;">📍 地點：${escapeHtml(e.location)}</div>`;
-        if (e.address) html += `<div style="font-size:14px;margin-bottom:8px;">🚗 地址：${escapeHtml(e.address)}</div>`;
-        html += '</div>';
-
-        // 名單區
-        if (data.length > 0) {
-            html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
-            html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
-            let count = 0;
-            data.forEach(p => {
-                count++;
-                const family = getIntField(p, 'family');
-                const guestData = parseGuestData(p);
-                // 冗餘處理：使用統一計算函數
-                const finalGuestCount = calculateFinalGuestCount(p, guestData);
-
-                // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
-                const total = family + finalGuestCount;
-                const num = count.toString().padStart(2, '0');
-                const status = p.status || p.note || '';
-                let prefix = status ? status : '';
-                const roles = getParticipantRoles(p.name, e);
-                let tagHtml = '';
-                if (roles.length > 0) {
-                    tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
-                }
-                // ★ 新增：檢查是否為小瑪莉前三名
-                let nameColor = 'inherit';
-                let maryMedal = '';
-                if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
-                    const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
-                    if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }      // 金
-                    else if (rankIndex === 1) { nameColor = '#64748b'; maryMedal = '🥈'; } // 銀
-                    else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; } // 銅
-                }
-
-                html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
-                html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;color:${nameColor};font-weight:${nameColor !== 'inherit' ? '800' : 'normal'};">${maryMedal}${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
-                if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
-                html += '</div>';
-                if (guestData.length > 0) {
-                    const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
-                    html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
-                } else {
-                    const guestNameStr = getField(p, 'guestName');
-                    if (guestNameStr && guestNameStr !== '無') {
-                        html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
-                    }
-                }
-
-                // 上車/房型
-                {
-                    let travelLines = [];
-                    if (p.pickup && p.pickup !== '無') travelLines.push(`車: ${p.pickup}`);
-                    if (p.room && p.room !== '無') travelLines.push(`房: ${p.room}`);
-                    if (guestData.length > 0) {
-                        guestData.forEach(g => {
-                            let extras = [];
-                            if (g.pickup && g.pickup !== '無') extras.push(g.pickup);
-                            if (g.room && g.room !== '無') extras.push(g.room);
-                            if (extras.length > 0) travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
-                        });
-                    }
-                    if (travelLines.length > 0) {
-                        html += `<div style="font-size:12px;color:#7c3aed;padding:2px 0 4px 20px;">${travelLines.join('、')}</div>`;
-                    }
-                }
-            });
-            html += '</div>';
-        }
-
-        // 贊助/認桌彙總區（獨立區塊）
-        if (data.length > 0) {
-            let sponsorHtml = '';
-            data.forEach(p => {
-                let moneyParts = [];
-                const tc = getIntField(p, 'tableCount');
-                if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
-                const sponsorRaw = getField(p, 'sponsor');
-                const sponsorList = parseSponsorData(sponsorRaw);
-                sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
-                if (moneyParts.length > 0) {
-                    sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
-                }
-            });
-            if (sponsorHtml) {
-                html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
-                html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
-                html += sponsorHtml;
-                html += '</div>';
-            }
-        }
-
-        // 統計區
-        html += '<div style="text-align:center;font-size:14px;font-weight:700;color:#374151;padding:8px 0;">';
-        html += `共 ${appState.currentStats.totalPeople || 0} 人報名`;
-        html += '</div>';
-        html += '<div style="text-align:center;font-size:11px;color:#9ca3af;margin-top:8px;">大老二兄弟會 活動報名系統</div>';
-
-        card.innerHTML = html;
-        document.body.appendChild(card);
-
-        const canvas = await html2canvas(card, {
-            scale: 2, useCORS: true, backgroundColor: null,
-            width: card.scrollWidth, height: card.scrollHeight
-        });
-        document.body.removeChild(card);
+        const canvas = await generateEventCanvas(e, data, appState.currentStats);
 
         // 產生圖片 URL
         const imgUrl = canvas.toDataURL('image/png');
@@ -3973,7 +3851,7 @@ async function generateEventCanvas(e, data, stats) {
     const card = document.createElement('div');
     card.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;z-index:-1;';
 
-    const iconEmoji = e.icon || getEventEmoji(e.name);
+    const iconEmoji = e.icon || '📌';
     
     let html = `
     <style>
