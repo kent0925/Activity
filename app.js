@@ -2620,7 +2620,7 @@ function renderDetailLists(data) {
                 <div class="flex justify-between items-start">
                     <span class="font-medium text-[#EFECE5] text-sm">${safeName}</span>
                     <div class="text-right flex-1 pl-4">
-                        ${items.map(i => `<div class="text-xs font-bold text-[#FFD700] bg-[#0D131A] border border-[#D4AF37]/60 shadow-inner inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
+                        ${items.map(i => `<div class="text-xs font-medium tracking-wide text-[#FFD700] bg-[#0D131A] border border-[#D4AF37]/60 shadow-inner inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
                     </div>
                 </div>`;
             fragI.appendChild(liI);
