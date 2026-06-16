@@ -4214,7 +4214,7 @@ async function shareAllAsImage() {
             const canvas = await generateEventCanvas(e, details, stats);
             return new Promise((resolve) => {
                 canvas.toBlob((blob) => {
-                    resolve({ canvas, blob, eventName: e.name });
+                    resolve({ canvas, blob, eventName: e.name, event: e, details: details, stats: stats });
                 }, 'image/png');
             });
         });
@@ -4238,9 +4238,8 @@ async function shareAllAsImage() {
 
         if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files })) {
             try {
-                let shareText = `📅 【大老二兄弟會】近期舉辦中活動名單 👥\n`;
-                shareText += `---------------------\n`;
-                shareText += `🔗 統一報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
+                const eventsData = results.map(r => ({ event: r.event, details: r.details, stats: r.stats }));
+                const shareText = buildRichShareAllText(eventsData);
 
                 await navigator.share({
                     files: files,
