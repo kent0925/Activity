@@ -1550,7 +1550,7 @@
 
                 // 名單區
                 if (data.length > 0) {
-                    html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                    html += '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                     html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
                     let count = 0;
                     data.forEach(p => {
@@ -1619,7 +1619,7 @@
                         }
                     });
                     if (sponsorHtml) {
-                        html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                        html += '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                         html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
                         html += sponsorHtml;
                         html += '</div>';
@@ -2385,7 +2385,7 @@
                 html += '</div>';
 
                 // 活動資訊區
-                html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                html += '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                 if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
                 let timeDisplay = e.time;
                 if (timeDisplay) {
@@ -2415,7 +2415,7 @@
 
                 // 名單區
                 if (includeNames && data.length > 0) {
-                    html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                    html += '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                     html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
                     let count = 0;
                     data.forEach(p => {
@@ -2503,7 +2503,7 @@
                         }
                     });
                     if (sponsorHtml) {
-                        html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                        html += '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                         html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
                         html += sponsorHtml;
                         html += '</div>';
@@ -3078,3 +3078,48 @@
                 }, 100);
             }
         }
+window.switchShareTab = function(tab) {
+    const btnSingle = document.getElementById('share-tab-single');
+    const btnAll = document.getElementById('share-tab-all');
+    const contentSingle = document.getElementById('share-single-content');
+    const contentAll = document.getElementById('share-all-content');
+
+    if (!btnSingle || !btnAll || !contentSingle || !contentAll) return;
+
+    if (tab === 'single') {
+        contentSingle.classList.remove('hidden');
+        contentAll.classList.add('hidden');
+        
+        btnSingle.classList.add('bg-[#162544]', 'text-[#EFC958]', 'shadow-md');
+        btnSingle.classList.remove('bg-transparent', 'text-white/70');
+        
+        btnAll.classList.remove('bg-[#162544]', 'text-[#EFC958]', 'shadow-md');
+        btnAll.classList.add('bg-transparent', 'text-white/70');
+    } else {
+        contentSingle.classList.add('hidden');
+        contentAll.classList.remove('hidden');
+        
+        btnAll.classList.add('bg-[#162544]', 'text-[#EFC958]', 'shadow-md');
+        btnAll.classList.remove('bg-transparent', 'text-white/70');
+        
+        btnSingle.classList.remove('bg-[#162544]', 'text-[#EFC958]', 'shadow-md');
+        btnSingle.classList.add('bg-transparent', 'text-white/70');
+    }
+};
+
+window.executeShare = function(type) {
+    const modal = document.getElementById('share-modal');
+    if (modal) modal.classList.add('hidden');
+    
+    if (type === 'single') {
+        if (!appState.currentEvent || !window.cachedParticipants) {
+            alert('無法獲取當前活動資料');
+            return;
+        }
+        if (typeof generateShareImage === 'function') {
+            generateShareImage(appState.currentEvent, window.cachedParticipants);
+        }
+    } else {
+        alert('「所有活動」分享功能建置中，敬請期待！');
+    }
+};
