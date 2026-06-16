@@ -2216,7 +2216,7 @@ function renderGuestList() {
         div.innerHTML = `
             <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
-                <span class="font-medium text-gray-700">${escapeHtml(g.name)} ${subtext}</span>
+                <span class="font-medium text-[#EFECE5]">${escapeHtml(g.name)} ${subtext}</span>
             </div>
             <div class="flex gap-2 items-center">
                 <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editGuest(${i})"></i>
@@ -2237,7 +2237,7 @@ function renderSponsorList() {
         div.innerHTML = `
             <div class="flex items-center gap-2">
                 <i data-lucide="gift" class="w-3.5 h-3.5 text-purple-500"></i>
-                <span class="font-medium text-gray-700">${escapeHtml(s)}</span>
+                <span class="font-medium text-[#EFECE5]">${escapeHtml(s)}</span>
             </div>
             <div class="flex gap-2 items-center">
                 <i data-lucide="edit-2" class="w-4 h-4 tag-action tag-edit" onclick="editSponsor(${i})"></i>
@@ -2529,11 +2529,11 @@ function renderDetailLists(data) {
 
         let subHtml = '';
         if (guestData.length > 0) {
-            subHtml = guestData.map(g => `<div class="pl-8 text-gray-600 text-sm mt-0.5">來賓：${escapeHtml(g.name)}</div>`).join('');
+            subHtml = guestData.map(g => `<div class="pl-8 text-gray-400 text-sm mt-0.5">來賓：${escapeHtml(g.name)}</div>`).join('');
         } else {
             const guestNameStr = getField(row, 'guestName');
             if (guestNameStr && guestNameStr !== '無') {
-                subHtml = `<div class="pl-8 text-gray-600 text-sm mt-0.5">來賓：${escapeHtml(guestNameStr)}</div>`;
+                subHtml = `<div class="pl-8 text-gray-400 text-sm mt-0.5">來賓：${escapeHtml(guestNameStr)}</div>`;
             }
         }
 
@@ -2567,7 +2567,7 @@ function renderDetailLists(data) {
         liP.innerHTML = `
             <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
                 <span class="text-gray-400 font-mono text-sm">${num}.</span>
-                <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap" style="${maryNameColor}">${maryMedal}${safeName}${tagHtml}${nameSuffix}</span>
+                <span class="font-bold text-[#EFECE5] text-base inline-flex items-center flex-wrap" style="${maryNameColor}">${maryMedal}${safeName}${tagHtml}${nameSuffix}</span>
             </div>
             ${subHtml}`;
         fragP.appendChild(liP);
@@ -2577,9 +2577,9 @@ function renderDetailLists(data) {
             if ((pickup && pickup !== '無') || (room && room !== '無')) {
                 hasTravel = true;
                 const liT = document.createElement('li');
-                liT.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
+                liT.className = 'px-4 py-2 flex justify-between items-center hover:bg-white/5 text-sm';
                 liT.innerHTML = `
-                    <span class="font-medium text-gray-700">${safeName}</span>
+                    <span class="font-medium text-[#EFECE5]">${safeName}</span>
                     <div class="text-right text-xs text-gray-500">
                         ${pickup && pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(pickup)}</div>` : ''}
                         ${room && room !== '無' ? `<div class="text-orange-600">${escapeHtml(room)}</div>` : ''}
@@ -2594,7 +2594,7 @@ function renderDetailLists(data) {
                     const liTG = document.createElement('li');
                     liTG.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
                     liTG.innerHTML = `
-                        <span class="font-medium text-gray-700"><span class="text-xs text-gray-400 mr-1">賓</span>${escapeHtml(g.name)}</span>
+                        <span class="font-medium text-[#EFECE5]"><span class="text-xs text-gray-400 mr-1">賓</span>${escapeHtml(g.name)}</span>
                         <div class="text-right text-xs text-gray-500">
                             ${g.pickup && g.pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(g.pickup)}</div>` : ''}
                             ${g.room && g.room !== '無' ? `<div class="text-orange-600">${escapeHtml(g.room)}</div>` : ''}
@@ -2616,10 +2616,10 @@ function renderDetailLists(data) {
         if (items.length > 0) {
             hasItems = true;
             const liI = document.createElement('li');
-            liI.className = 'px-4 py-3 hover:bg-gray-50';
+            liI.className = 'px-4 py-3 hover:bg-white/5';
             liI.innerHTML = `
                 <div class="flex justify-between items-start">
-                    <span class="font-medium text-gray-800 text-sm">${safeName}</span>
+                    <span class="font-medium text-[#EFECE5] text-sm">${safeName}</span>
                     <div class="text-right flex-1 pl-4">
                         ${items.map(i => `<div class="text-xs text-purple-600 bg-purple-50 inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
                     </div>
@@ -3790,31 +3790,28 @@ function confirmShareCopy() {
     performCopy({ includeSponsor, includeTravel, includeMap, includeNames, includeLink });
 }
 
-function confirmAllShareCopy() {
+async function confirmAllShareCopy() {
     const checkedBoxes = document.querySelectorAll('input[name="share-all-active-checkbox"]:checked');
     if (checkedBoxes.length === 0) {
         showToast("⚠️ 請至少選擇一個活動");
         return;
     }
 
+    showToast("正在抓取活動統計資料...");
+    document.getElementById('share-modal').classList.add('hidden');
+
     const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
     const selectedEvents = appState.events.filter(e => selectedIds.includes(e.id));
+    
+    const eventsData = await Promise.all(selectedEvents.map(async e => {
+        const [details, stats] = await Promise.all([
+            fetchDetailsForEvent(e.id),
+            fetchStatsForEvent(e.id)
+        ]);
+        return { event: e, details, stats };
+    }));
 
-    let text = `📅 【大老二兄弟會】近期舉辦中活動 👥\n\n`;
-    selectedEvents.forEach((e, idx) => {
-        text += `${idx + 1}. 📅 ${e.name}\n`;
-        if (e.organizer) text += `   👤 主辦人：${e.organizer}\n`;
-        const timeDisplay = formatTimeForShare(e.time);
-        if (timeDisplay) text += `   🕒 時間：${timeDisplay}\n`;
-        if (e.location) text += `   📍 地點：${e.location}\n`;
-        text += `\n`;
-    });
-
-    text += `---------------------\n`;
-    text += `歡迎大家踴躍報名！🍻\n`;
-    text += `🔗 統一報名連結👇：\nhttps://liff.line.me/${LIFF_ID}\n`;
-
-    document.getElementById('share-modal').classList.add('hidden');
+    const text = buildRichShareAllText(eventsData);
     copyTextToClipboard(text);
 }
 
@@ -4793,4 +4790,47 @@ window.toggleNoAttendance = function(checkbox) {
         if (guestSection) guestSection.classList.remove("hidden");
         if (eventType === "travel" && travelField) travelField.classList.remove("hidden");
     }
+};
+
+
+window.buildRichShareAllText = function(eventsData) {
+    const numberEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+    let shareText = `📅 【大老二兄弟會】近期舉辦中活動 👥\n━━━━━━━━━━━━━━━━━━━━━\n`;
+    
+    eventsData.forEach((data, index) => {
+        const e = data.event;
+        const stats = data.stats || {};
+        const details = data.details || [];
+        const numEmoji = numberEmojis[index] || `${index + 1}.`;
+        
+        shareText += `${numEmoji} ${e.name}\n`;
+        if (e.organizer) shareText += `   👤 主辦人：${e.organizer}\n`;
+        const shareTD = typeof formatTimeForShare === 'function' ? formatTimeForShare(e.time) : e.time;
+        if (shareTD) shareText += `   🕒 時間：${shareTD}\n`;
+        if (e.location) shareText += `   📍 地點：${e.location}\n`;
+        
+        let sponsorHtmlLines = [];
+        if (details && details.length > 0) {
+            details.forEach(p => {
+                let moneyParts = [];
+                const tc = typeof getIntField === 'function' ? getIntField(p, 'tableCount') : parseInt(p.tableCount || 0, 10);
+                if (tc > 0) moneyParts.push(`認桌: ${tc}桌`);
+                const sponsorRaw = typeof getField === 'function' ? getField(p, 'sponsor') : (p.sponsor || '');
+                const sponsorList = typeof parseSponsorData === 'function' ? parseSponsorData(sponsorRaw) : (sponsorRaw ? sponsorRaw.split(/[,、]/).map(s=>s.trim()).filter(Boolean) : []);
+                sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
+                if (moneyParts.length > 0) {
+                    sponsorHtmlLines.push(`      🎁 ${p.name} ━ ${moneyParts.join('、')}`);
+                }
+            });
+        }
+        if (sponsorHtmlLines.length > 0) {
+            shareText += `   💰 贊助 / 認桌資訊\n${sponsorHtmlLines.join('\n')}\n`;
+        }
+        
+        shareText += `   📊 統計：共 ${stats.totalPeople || 0} 人報名\n\n`;
+    });
+    
+    shareText += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    shareText += `🔗 統一報名連結👇：\nhttps://liff.line.me/${typeof LIFF_ID !== 'undefined' ? LIFF_ID : ''}\n`;
+    return shareText;
 };
