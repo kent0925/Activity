@@ -3123,3 +3123,24 @@ window.executeShare = function(type) {
         alert('「所有活動」分享功能建置中，敬請期待！');
     }
 };
+
+// Placeholder functions for missing UI buttons
+window.openRankingsModal = function() { console.log('openRankingsModal called'); alert('此功能（openRankingsModal）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.openSmallMary = function() { console.log('openSmallMary called'); alert('此功能（openSmallMary）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.openTutorialModal = function() { console.log('openTutorialModal called'); alert('此功能（openTutorialModal）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.closeRankingsModal = function() { console.log('closeRankingsModal called'); alert('此功能（closeRankingsModal）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.switchRankTab = function() { console.log('switchRankTab called'); alert('此功能（switchRankTab）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.openMaryHelp = function() { console.log('openMaryHelp called'); alert('此功能（openMaryHelp）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.closeSmallMary = function() { console.log('closeSmallMary called'); alert('此功能（closeSmallMary）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryDoubleUp = function() { console.log('maryDoubleUp called'); alert('此功能（maryDoubleUp）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryCollect = function() { console.log('maryCollect called'); alert('此功能（maryCollect）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryClearBet = function() { console.log('maryClearBet called'); alert('此功能（maryClearBet）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryExchange = function() { console.log('maryExchange called'); alert('此功能（maryExchange）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryRandomBet = function() { console.log('maryRandomBet called'); alert('此功能（maryRandomBet）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryStartSpin = function() { console.log('maryStartSpin called'); alert('此功能（maryStartSpin）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryCloseKeypad = function() { console.log('maryCloseKeypad called'); alert('此功能（maryCloseKeypad）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryKeypadType = function() { console.log('maryKeypadType called'); alert('此功能（maryKeypadType）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryKeypadClear = function() { console.log('maryKeypadClear called'); alert('此功能（maryKeypadClear）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryKeypadMax = function() { console.log('maryKeypadMax called'); alert('此功能（maryKeypadMax）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.maryKeypadConfirm = function() { console.log('maryKeypadConfirm called'); alert('此功能（maryKeypadConfirm）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
+window.closeTutorialModal = function() { console.log('closeTutorialModal called'); alert('此功能（closeTutorialModal）尚未建置完成或對應的程式碼遺失，敬請期待！'); };
