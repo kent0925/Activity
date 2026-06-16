@@ -30,7 +30,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
     <!-- 新增：引入 Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-    <link rel="stylesheet" href="style.css?v=1781619964037">
+    <link rel="stylesheet" href="style.css?v=1781620669427">
 
 </head>
 
@@ -528,7 +528,7 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1.5">活動類型</label>
                         <select id="new-type" onchange="toggleCreateFields()"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black/10 outline-none transition">
+                            class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5 bg-[#0D131A] text-[#EFECE5] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition">
                             <option value="general">一般活動</option>
                             <option value="banquet">大型餐會</option>
                             <option value="travel">旅遊活動</option>
@@ -544,32 +544,32 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">活動名稱</label>
                         <input type="text" id="new-name" required
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-black/10 outline-none"
+                            class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-black/10 outline-none"
                             placeholder="例如：五月慶生會">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">主辦人</label>
                         <input type="text" id="new-organizer" readonly
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 bg-gray-100 text-gray-500 cursor-not-allowed">
+                            class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5 bg-gray-100 text-gray-500 cursor-not-allowed">
                     </div>
 
                     <div id="new-field-time-single">
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">活動時間</label>
                         <input type="datetime-local" id="new-time-single"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5">
+                            class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5">
                     </div>
 
                     <div id="new-field-time-range" class="hidden grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">出發日期</label>
                             <input type="date" id="new-date-start"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5">
+                                class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">回程日期</label>
                             <input type="date" id="new-date-end"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5">
+                                class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5">
                         </div>
                     </div>
 
@@ -577,27 +577,27 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">報名截止時間 <span
                                 class="text-gray-400 font-normal text-xs">(選填)</span></label>
                         <input type="datetime-local" id="new-deadline"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 bg-gray-50">
+                            class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5 bg-gray-50">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">地點名稱</label>
                         <input type="text" id="new-location"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-black/10 outline-none"
+                            class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-black/10 outline-none"
                             placeholder="請輸入地點">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">詳細地址</label>
                         <input type="text" id="new-address"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-black/10 outline-none"
+                            class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-black/10 outline-none"
                             placeholder="請輸入地址">
                     </div>
 
                     <div id="new-field-itinerary" class="hidden">
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">行程內容 (格式：D1: 標題|內容)</label>
                         <textarea id="new-itinerary" rows="4"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm font-mono"
+                            class="w-full border border-[#D4AF37]/30 rounded-lg px-3 py-2.5 text-sm font-mono"
                             placeholder="D1: 集合|08:00 車站集合;D2: 景點|10:00 抵達..."></textarea>
                     </div>
 
@@ -620,7 +620,11 @@
                 <div class="flex items-center gap-2">
                     <button onclick="copyDetailsToClipboard()"
                         class="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-800 transition flex items-center gap-1 shadow-sm active:scale-95">
-                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製名單
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製此活動
+                    </button>
+                    <button onclick="copyAllActiveEventsToClipboard()"
+                        class="bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] px-3 py-1.5 rounded-lg text-xs font-bold hover:brightness-110 transition flex items-center gap-1 shadow-sm active:scale-95">
+                        <i data-lucide="layers" class="w-3.5 h-3.5"></i> 複製所有活動
                     </button>
                     <button onclick="sendToTelegram()"
                         class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 transition flex items-center gap-1 shadow-sm active:scale-95">
@@ -1114,7 +1118,7 @@
             });
         };
     </script>
-    <script src="app.js?v=1781619964037"></script>
+    <script src="app.js?v=1781620669426"></script>
 </body>
 
 </html>

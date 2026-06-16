@@ -2208,10 +2208,10 @@ function renderGuestList() {
         if (g.count > 1) details.push(`${g.count}人`);
         if (g.pickup) details.push(escapeHtml(g.pickup));
         if (g.room) details.push(escapeHtml(g.room));
-        const subtext = details.length > 0 ? `<span class="text-xs text-gray-400 ml-1">(${details.join(', ')})</span>` : '';
+        const subtext = details.length > 0 ? `<span class="text-xs text-[#D4AF37]/80 ml-1">(${details.join(', ')})</span>` : '';
 
         const div = document.createElement('div');
-        div.className = 'flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
+        div.className = 'flex justify-between items-center bg-[#0D131A] border border-[#D4AF37]/30 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
         div.innerHTML = `
             <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
@@ -2232,7 +2232,7 @@ function renderSponsorList() {
     const fragment = document.createDocumentFragment();
     appState.sponsorList.forEach((s, i) => {
         const div = document.createElement('div');
-        div.className = 'flex justify-between items-center bg-white border border-gray-200 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
+        div.className = 'flex justify-between items-center bg-[#0D131A] border border-[#D4AF37]/30 pl-3 pr-2 py-2 rounded-lg text-sm shadow-sm animate-fade-in';
         div.innerHTML = `
             <div class="flex items-center gap-2">
                 <i data-lucide="gift" class="w-3.5 h-3.5 text-purple-500"></i>
@@ -3031,15 +3031,15 @@ function renderAddSponsorUI() {
     const area = document.getElementById('sponsor-input-area');
     if (type === 'alcohol') {
         area.innerHTML = `
-            <input id="sp-qty" type="number" class="w-20 border border-gray-300 rounded px-2 py-1 text-sm" placeholder="數量" min="1">
-            <select id="sp-unit" class="border border-gray-300 rounded px-2 py-1 text-sm bg-white">
+            <input id="sp-qty" type="number" class="w-20 border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded px-2 py-1 text-sm focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none placeholder-gray-500" placeholder="數量" min="1">
+            <select id="sp-unit" class="border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded px-2 py-1 text-sm focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none">
                 <option value="瓶">瓶</option>
                 <option value="箱">箱</option>
             </select>`;
     } else if (type === 'money') {
-        area.innerHTML = `<input id="sp-money" type="number" class="w-full border border-gray-300 rounded px-2 py-1 text-sm" placeholder="金額 (100為單位)" min="100" step="100">`;
+        area.innerHTML = `<input id="sp-money" type="number" class="w-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded px-2 py-1 text-sm focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none placeholder-gray-500" placeholder="金額 (100為單位)" min="100" step="100">`;
     } else {
-        area.innerHTML = `<input id="sp-other" type="text" class="w-full border border-gray-300 rounded px-2 py-1 text-sm" placeholder="贊助內容">`;
+        area.innerHTML = `<input id="sp-other" type="text" class="w-full border border-[#D4AF37]/30 bg-[#0D131A] text-[#EFECE5] rounded px-2 py-1 text-sm focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none placeholder-gray-500" placeholder="贊助內容">`;
     }
 }
 
@@ -3838,6 +3838,30 @@ function copyDetailsToClipboard() {
     performCopy();
 }
 
+async function copyAllActiveEventsToClipboard() {
+    showToast("正在抓取所有活動名單...");
+    const activeEvents = appState.events.filter(e => filterActiveEvents(e));
+    if (activeEvents.length === 0) {
+        showToast("⚠️ 目前沒有進行中的活動");
+        return;
+    }
+    try {
+        const eventsData = await Promise.all(activeEvents.map(async e => {
+            const [details, stats] = await Promise.all([
+                fetchDetailsForEvent(e.id),
+                fetchStatsForEvent(e.id)
+            ]);
+            return { event: e, details, stats };
+        }));
+        const text = buildRichShareAllText(eventsData);
+        copyTextToClipboard(text);
+        showToast("✅ 已複製所有活動名單！");
+    } catch (err) {
+        console.error(err);
+        showToast("❌ 複製失敗，請檢查網路");
+    }
+}
+
 // 輔助獲取非當前活動之名單及統計資料的 API
 async function fetchDetailsForEvent(eventId) {
     if (!GAS_URL || !eventId) return [];
@@ -4611,7 +4635,7 @@ function ensureManualCopyModalExists() {
         onclick="this.select(); this.setSelectionRange(0, 99999);"></textarea>
 </div>
 <div class="p-4 border-t border-gray-100 bg-gray-50 flex gap-3 shrink-0">
-     <button onclick="document.getElementById('manual-copy-modal').classList.add('hidden')" class="flex-1 py-3 rounded-xl font-bold text-gray-500 bg-white border border-gray-200 hover:bg-gray-50 transition">關閉</button>
+     <button onclick="document.getElementById('manual-copy-modal').classList.add('hidden')" class="flex-1 py-3 rounded-xl font-bold text-gray-500 bg-[#0D131A] border border-[#D4AF37]/30 hover:bg-gray-50 transition">關閉</button>
      <button onclick="retryCopy()" class="flex-1 py-3 rounded-xl font-bold text-white bg-[#06c755] hover:bg-green-600 shadow-md active:scale-95 transition flex justify-center items-center gap-2">
         <i data-lucide="copy" class="w-4 h-4"></i> 點擊複製
      </button>

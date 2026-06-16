@@ -489,7 +489,7 @@ details[open]>summary .arrow-icon {
 /* --- 統計區與金屬按鈕：改成真實香檳金材質與立體雕刻感 --- */
 .premium-gradient,
 button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
-    background: url('images/champagne-gold-border.jpg') center/cover !important;
+    background-image: url('images/brushed-gold.jpg');
     color: #3d2600 !important; /* 深古銅色文字 */
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important; /* 雕刻反光感 */
     box-shadow: 0 6px 15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.7), inset 0 -3px 5px rgba(0,0,0,0.2) !important;
@@ -623,4 +623,15 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     background: linear-gradient(rgba(26, 36, 54, 0.6), rgba(26, 36, 54, 0.6)), url('images/leather-bg.jpg') repeat;
     background-size: auto, 350px;
     box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.btn-gold-texture {
+    background-color: #D4AF37;
+    background-image: url('images/brushed-gold.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #3d2600 !important;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.6);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.7), inset 0 -3px 5px rgba(0,0,0,0.2);
+    border: 1px solid #EFC958;
 }
