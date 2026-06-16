@@ -1896,7 +1896,7 @@ function fillFormWithRecord(record) {
     } else if (isOpen) {
         // 未來活動：正常修改
         DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
-        DOM.submitBtn.className = "flex-1 bg-gradient-to-r from-[#E0EAF5] to-[#B8C6D9] text-[#0D131A] font-bold py-3.5 rounded-xl hover:shadow-[0_4px_15px_rgba(224,234,245,0.4)] transition-all shadow-[0_4px_10px_rgba(224,234,245,0.2)] active:scale-95 flex justify-center items-center gap-2";
+        DOM.submitBtn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] font-bold py-3.5 rounded-xl hover:shadow-[0_4px_15px_rgba(212,175,55,0.6)] transition-all shadow-[0_4px_10px_rgba(212,175,55,0.3)] active:scale-95 flex justify-center items-center gap-2";
         DOM.submitBtn.disabled = false;
         DOM.cancelBtn.classList.remove('hidden');
     } else {
@@ -3528,6 +3528,18 @@ function isEventOpen(e) {
     if (!statusOpen) return false;
 
     // 2. 檢查活動日期 - 當天仍顯示在報名區（隔天才移到歷史）
+    function copyDetailsToClipboard() {
+        performCopy();
+    }
+
+    // 輔助獲取非當前活動之名單及統計資料的 API
+    async function fetchDetailsForEvent(eventId) {
+        if (!GAS_URL || !eventId) return [];
+        try {
+            const res = await fetch(`${GAS_URL}?action=getDetails&eventId=${eventId}`);
+            return await res.json();
+        } catch (e) { return []; }
+    }
     if (!e.time) return true;
 
     let eventDate = null;
@@ -3814,14 +3826,6 @@ async function confirmAllShareCopy() {
     copyTextToClipboard(text);
 }
 
-// 舊按鈕 (名單視窗下方) 呼叫此函式：統一呼叫 openShareModal 以提供選項
-function copyDetailsToClipboard() {
-    openShareModal();
-}
-
-// 輔助獲取非當前活動之名單及統計資料的 API
-async function fetchDetailsForEvent(eventId) {
-    if (!GAS_URL || !eventId) return [];
     try {
         const res = await fetch(`${GAS_URL}?action=getDetails&eventId=${eventId}`);
         return await res.json();
