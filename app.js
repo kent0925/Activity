@@ -2592,9 +2592,9 @@ function renderDetailLists(data) {
                 if ((g.pickup && g.pickup !== '無') || (g.room && g.room !== '無')) {
                     hasTravel = true;
                     const liTG = document.createElement('li');
-                    liTG.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
+                    liTG.className = 'px-4 py-2 flex justify-between items-center hover:bg-white/5 text-sm border-t border-white/5';
                     liTG.innerHTML = `
-                        <span class="font-medium text-[#EFECE5]"><span class="text-xs text-gray-400 mr-1">賓</span>${escapeHtml(g.name)}</span>
+                        <span class="font-medium text-[#EFECE5]"><span class="text-xs text-white/50 mr-1">賓</span>${escapeHtml(g.name)}</span>
                         <div class="text-right text-xs text-gray-500">
                             ${g.pickup && g.pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(g.pickup)}</div>` : ''}
                             ${g.room && g.room !== '無' ? `<div class="text-orange-600">${escapeHtml(g.room)}</div>` : ''}
@@ -2898,15 +2898,15 @@ function toggleHistoryView() {
             const fragment = document.createDocumentFragment();
             history.forEach(e => {
                 const div = document.createElement('div');
-                div.className = "bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50";
+                div.className = "bg-[#162544] p-4 rounded-xl border border-white/10 shadow-sm flex justify-between items-center cursor-pointer hover:bg-[#1E3052] transition";
                 div.onclick = () => openHistoryImage(e.id);
                 div.innerHTML = `
                     <div>
-                        <h4 class="font-bold text-gray-700">${e.name}</h4>
-                        <div class="text-xs text-gray-500 mt-0.5">主辦：${e.organizer || '未指定'}</div>
-                        <div class="text-xs text-gray-400 mt-1">${formatDateShort(e.time)}</div>
+                        <h4 class="font-bold text-[#EFECE5]">${e.name}</h4>
+                        <div class="text-xs text-white/50 mt-0.5">主辦：${e.organizer || '未指定'}</div>
+                        <div class="text-xs text-white/40 mt-1">${formatDateShort(e.time)}</div>
                     </div>
-                    <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">已結束</span>`;
+                    <span class="text-xs bg-white/10 text-[#D4AF37] border border-[#D4AF37]/30 px-2 py-1 rounded-full">已結束</span>`;
                 fragment.appendChild(div);
             });
             list.appendChild(fragment);
@@ -3211,7 +3211,7 @@ function renderItinerary(str, timeStr) {
 
     // 建立手風琴外框
     const wrapper = document.createElement('div');
-    wrapper.className = "border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm";
+    wrapper.className = "border border-white/10 rounded-2xl overflow-hidden bg-[#162544] shadow-sm";
 
     // 2. 渲染 HTML
     const sortedDayNums = Array.from(groupedDays.keys()).sort((a, b) => a - b);
@@ -3333,7 +3333,7 @@ function renderItinerary(str, timeStr) {
         if (isOpen) details.setAttribute('open', '');
 
         const summary = document.createElement('summary');
-        summary.className = "flex justify-between items-center p-4 cursor-pointer select-none bg-white hover:bg-gray-50 transition list-none relative";
+        summary.className = "flex justify-between items-center p-4 cursor-pointer select-none bg-transparent hover:bg-white/5 transition list-none relative";
 
         summary.innerHTML = `
             <div class="flex items-center gap-3 overflow-hidden">
@@ -3347,7 +3347,7 @@ function renderItinerary(str, timeStr) {
         `;
 
         const contentDiv = document.createElement('div');
-        contentDiv.className = "px-4 pb-4 pt-0 bg-white text-sm text-gray-600 leading-relaxed space-y-2 group-content";
+        contentDiv.className = "px-4 pb-4 pt-0 bg-transparent text-sm text-[#EAD7BA]/90 leading-relaxed space-y-2 group-content";
         contentDiv.innerHTML = allContentHtml;
 
         details.appendChild(summary);
