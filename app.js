@@ -2430,11 +2430,11 @@ async function openDetailsModal(filterType = 'all') {
         const pMap = appState.currentStats.pickupCounts || {};
         const rMap = appState.currentStats.roomCounts || {};
         let html = '';
-        if (Object.keys(pMap).length) html += `<div class="bg-white rounded p-1.5"><div class="font-bold mb-1 text-gray-500">📍 上車地點</div>${Object.entries(pMap).map(([k, v]) => `<span class="inline-block bg-gray-100 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
-        if (Object.keys(rMap).length) html += `<div class="bg-white rounded p-1.5"><div class="font-bold mb-1 text-gray-500">🛏 房型統計</div>${Object.entries(rMap).map(([k, v]) => `<span class="inline-block bg-gray-100 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
+        if (Object.keys(pMap).length) html += `<div class="bg-[#0D131A] border border-white/10 rounded p-1.5"><div class="font-bold mb-1 text-[#D4AF37]">📍 上車地點</div>${Object.entries(pMap).map(([k, v]) => `<span class="inline-block bg-white/10 text-white px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
+        if (Object.keys(rMap).length) html += `<div class="bg-[#0D131A] border border-white/10 rounded p-1.5"><div class="font-bold mb-1 text-[#D4AF37]">🛏 房型統計</div>${Object.entries(rMap).map(([k, v]) => `<span class="inline-block bg-white/10 text-white px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
         sumDiv.innerHTML = html;
     } else if (appState.currentEvent.type === 'banquet') {
-        sumDiv.innerHTML = `<div class="col-span-2 bg-white rounded p-2 text-center font-bold text-red-500">總計預訂: ${appState.currentStats.tableCount} 桌</div>`;
+        sumDiv.innerHTML = `<div class="col-span-2 bg-red-500/10 border border-red-500/20 rounded p-2 text-center font-bold text-red-400">總計預訂: ${appState.currentStats.tableCount} 桌</div>`;
     }
 
     const listContainer = document.getElementById('details-lists-container');
@@ -3838,6 +3838,19 @@ async function fetchStatsForEvent(eventId) {
 }
 
 // 通用活動圖片 Canvas 生成邏輯 (完全保留原本內容樣式不更動)
+// 根據活動名稱自動判斷 Emoji
+function getEventEmoji(eventName) {
+    if (!eventName) return '📌';
+    if (eventName.includes('聚餐') || eventName.includes('飯') || eventName.includes('吃') || eventName.includes('宴')) return '🍽️';
+    if (eventName.includes('酒') || eventName.includes('春酒') || eventName.includes('尾牙')) return '🥂';
+    if (eventName.includes('旅遊') || eventName.includes('出遊') || eventName.includes('家庭日') || eventName.includes('遊')) return '📸';
+    if (eventName.includes('高爾夫') || eventName.includes('球')) return '⛳';
+    if (eventName.includes('唱歌') || eventName.includes('KTV')) return '🎤';
+    if (eventName.includes('生日') || eventName.includes('慶生')) return '🎂';
+    if (eventName.includes('會議') || eventName.includes('開會')) return '💼';
+    return '📌';
+}
+
 async function generateEventCanvas(e, data, stats) {
     const includeSponsor = false;
     const includeTravel = true;
@@ -3848,7 +3861,7 @@ async function generateEventCanvas(e, data, stats) {
     const card = document.createElement('div');
     card.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;z-index:-1;';
 
-    const iconEmoji = e.icon || '📌';
+    const iconEmoji = e.icon || getEventEmoji(e.name);
     
     let html = `
     <style>
