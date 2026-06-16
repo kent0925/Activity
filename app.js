@@ -2552,7 +2552,7 @@ function renderDetailLists(data) {
         }
 
         const liP = document.createElement('li');
-        liP.className = 'px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0';
+        liP.className = 'px-4 py-3 hover:bg-white/5 transition';
 
         // ★ 小瑪莉前三名勳章（網頁名單內顯示）
         let maryMedal = '';
