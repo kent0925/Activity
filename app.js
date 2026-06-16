@@ -1896,7 +1896,7 @@ function fillFormWithRecord(record) {
     } else if (isOpen) {
         // 未來活動：正常修改
         DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
-        DOM.submitBtn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] font-bold py-3.5 rounded-xl hover:shadow-[0_4px_15px_rgba(212,175,55,0.6)] transition-all shadow-[0_4px_10px_rgba(212,175,55,0.3)] active:scale-95 flex justify-center items-center gap-2";
+        DOM.submitBtn.className = "flex-1 btn-gold-texture font-bold py-3.5 rounded-xl hover:brightness-110 transition-all active:scale-95 flex justify-center items-center gap-2";
         DOM.submitBtn.disabled = false;
         DOM.cancelBtn.classList.remove('hidden');
     } else {
@@ -2058,7 +2058,7 @@ function resetFormState() {
 
     DOM.formAction.value = 'register';
     DOM.submitBtn.innerHTML = '<span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>';
-    DOM.submitBtn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] font-bold py-3.5 rounded-xl hover:shadow-[0_4px_15px_rgba(212,175,55,0.6)] transition-all shadow-[0_4px_10px_rgba(212,175,55,0.3)] active:scale-95 flex justify-center items-center gap-2";
+    DOM.submitBtn.className = "flex-1 btn-gold-texture font-bold py-3.5 rounded-xl hover:brightness-110 transition-all active:scale-95 flex justify-center items-center gap-2";
     DOM.submitBtn.disabled = false;
 
     DOM.cancelBtn.classList.add('hidden');
@@ -3528,19 +3528,27 @@ function isEventOpen(e) {
     if (!statusOpen) return false;
 
     // 2. 檢查活動日期 - 當天仍顯示在報名區（隔天才移到歷史）
-    function copyDetailsToClipboard() {
-        performCopy();
-    }
 
-    // 輔助獲取非當前活動之名單及統計資料的 API
-    async function fetchDetailsForEvent(eventId) {
-        if (!GAS_URL || !eventId) return [];
-        try {
-            const res = await fetch(`${GAS_URL}?action=getDetails&eventId=${eventId}`);
-            return await res.json();
-        } catch (e) { return []; }
+    let eventDate = null;
+    if (e.date) {
+        eventDate = new Date(e.date);
+    } else {
+        const timeStr = String(e.time);
+        if (timeStr.includes('/') || timeStr.includes('-')) {
+            eventDate = new Date(timeStr.replace(/\//g, '-'));
+        } else {
+            eventDate = new Date(timeStr);
+        }
     }
-    if (!e.time) return true;
+    if (isNaN(eventDate)) return true;
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    eventDate.setHours(0,0,0,0);
+    return eventDate >= today;
+}
+
+// --- 歷史活動過濾 ---
+function filterHistoryEvents(e) {
 
     let eventDate = null;
     const today = new Date();
@@ -3826,6 +3834,13 @@ async function confirmAllShareCopy() {
     copyTextToClipboard(text);
 }
 
+function copyDetailsToClipboard() {
+    performCopy();
+}
+
+// 輔助獲取非當前活動之名單及統計資料的 API
+async function fetchDetailsForEvent(eventId) {
+    if (!GAS_URL || !eventId) return [];
     try {
         const res = await fetch(`${GAS_URL}?action=getDetails&eventId=${eventId}`);
         return await res.json();
