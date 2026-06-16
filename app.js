@@ -1876,7 +1876,7 @@ function fillFormWithRecord(record) {
     if (isBlacklisted) {
         // 黑名單使用者：無法修改/報名
         DOM.submitBtn.innerText = "您目前無法報名活動";
-        DOM.submitBtn.className = "flex-1 bg-gray-400 text-white font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2";
+        DOM.submitBtn.className = "flex-1 bg-[#1A2436] border border-white/10 text-white/40 font-bold py-3.5 rounded-xl cursor-not-allowed flex justify-center items-center gap-2 shadow-inner";
         DOM.submitBtn.disabled = true;
         if (DOM.cancelBtn) DOM.cancelBtn.classList.add('hidden');
 
@@ -1896,8 +1896,7 @@ function fillFormWithRecord(record) {
     } else if (isOpen) {
         // 未來活動：正常修改
         DOM.submitBtn.innerHTML = '<span>更新資料</span><i data-lucide="refresh-cw" class="w-4 h-4"></i>';
-        DOM.submitBtn.classList.replace('bg-[#06c755]', 'bg-blue-600');
-        DOM.submitBtn.classList.replace('hover:bg-green-600', 'hover:bg-blue-700');
+        DOM.submitBtn.className = "flex-1 bg-gradient-to-r from-[#E0EAF5] to-[#B8C6D9] text-[#0D131A] font-bold py-3.5 rounded-xl hover:shadow-[0_4px_15px_rgba(224,234,245,0.4)] transition-all shadow-[0_4px_10px_rgba(224,234,245,0.2)] active:scale-95 flex justify-center items-center gap-2";
         DOM.submitBtn.disabled = false;
         DOM.cancelBtn.classList.remove('hidden');
     } else {
@@ -2059,7 +2058,7 @@ function resetFormState() {
 
     DOM.formAction.value = 'register';
     DOM.submitBtn.innerHTML = '<span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>';
-    DOM.submitBtn.className = "flex-1 bg-[#06c755] text-white font-bold py-3.5 rounded-xl hover:bg-green-600 transition shadow-md active:scale-95 flex justify-center items-center gap-2";
+    DOM.submitBtn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] font-bold py-3.5 rounded-xl hover:shadow-[0_4px_15px_rgba(212,175,55,0.6)] transition-all shadow-[0_4px_10px_rgba(212,175,55,0.3)] active:scale-95 flex justify-center items-center gap-2";
     DOM.submitBtn.disabled = false;
 
     DOM.cancelBtn.classList.add('hidden');
@@ -2337,18 +2336,18 @@ function renderEventGrid(type) {
 
             let icon, colorClass, bgClass;
             switch (normalizeType(e.type)) {
-                case 'banquet': icon = 'utensils'; colorClass = 'text-orange-600'; bgClass = 'bg-orange-50'; break;
-                case 'travel': icon = 'bus'; colorClass = 'text-blue-600'; bgClass = 'bg-blue-50'; break;
-                default: icon = 'calendar'; colorClass = 'text-green-600'; bgClass = 'bg-green-50';
+                case 'banquet': icon = 'utensils'; colorClass = 'text-[#D4AF37]'; bgClass = 'bg-[#D4AF37]/10'; break;
+                case 'travel': icon = 'bus'; colorClass = 'text-[#EFECE5]'; bgClass = 'bg-white/5'; break;
+                default: icon = 'calendar'; colorClass = 'text-[#A67C00]'; bgClass = 'bg-[#A67C00]/10';
             }
 
             // 截止警告 / 已報名標籤邏輯
             let badge = '';
             // 優先顯示已報名，即使已截止
             if (appState.myRegistrations.includes(e.id)) {
-                badge = '<span class="absolute top-0 right-0 bg-green-500 text-white text-[10px] px-2 py-0.5 rounded-bl-lg font-bold">已報名</span>';
+                badge = '<span class="absolute top-0 right-0 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] text-[10px] px-3 py-1 rounded-bl-lg font-extrabold shadow-[0_2px_8px_rgba(212,175,55,0.4)] border-b border-l border-[#F8E19B]/30">已報名</span>';
             } else if (e.deadline && new Date() > new Date(e.deadline)) {
-                badge = '<span class="absolute top-0 right-0 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-bl-lg font-bold">已截止</span>';
+                badge = '<span class="absolute top-0 right-0 bg-[#3A1C1C] border-b border-l border-red-500/30 text-red-400 text-[10px] px-3 py-1 rounded-bl-lg font-bold">已截止</span>';
             }
 
             // ★ 倒數標記：距離活動還有幾天
@@ -4156,6 +4155,8 @@ async function shareAsImage() {
                         shareText += `🔗 報名連結👇：\nhttps://liff.line.me/${LIFF_ID}`;
                     }
 
+                    copyTextToClipboard(shareText);
+
                     await navigator.share({
                         files: [file],
                         title: e.name,
@@ -4241,6 +4242,8 @@ async function shareAllAsImage() {
                 const eventsData = results.map(r => ({ event: r.event, details: r.details, stats: r.stats }));
                 const shareText = buildRichShareAllText(eventsData);
 
+                copyTextToClipboard(shareText);
+
                 await navigator.share({
                     files: files,
                     title: '近期活動名單',
@@ -4254,6 +4257,9 @@ async function shareAllAsImage() {
                 }
             }
         } else {
+            const eventsData = results.map(r => ({ event: r.event, details: r.details, stats: r.stats }));
+            const shareText = buildRichShareAllText(eventsData);
+            copyTextToClipboard(shareText);
             // PC 端或不支援多檔案分享的瀏覽器直接依序下載
             results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
         }
