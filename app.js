@@ -1052,14 +1052,14 @@
             // 動態修改標題
             const titleEl = document.querySelector('#details-modal h3');
             if (filterType === 'people') {
-                titleEl.innerHTML = '<i data-lucide="users" class="w-5 h-5 text-gray-600"></i> 人員名單';
+                titleEl.innerHTML = '<i data-lucide="users" class="w-5 h-5 text-white/70"></i> <span class="text-white/90">人員名單</span>';
             } else if (filterType === 'secondary') {
                 const type = appState.currentEvent.type;
                 const icon = type === 'travel' ? 'bus' : 'gift';
                 const text = type === 'travel' ? '住宿與交通' : '贊助與認桌';
-                titleEl.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 text-gray-600"></i> ${text}明細`;
+                titleEl.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 text-white/70"></i> <span class="text-white/90">${text}明細</span>`;
             } else {
-                titleEl.innerHTML = '<i data-lucide="list" class="w-5 h-5 text-gray-600"></i> 詳細名單';
+                titleEl.innerHTML = '<i data-lucide="list" class="w-5 h-5 text-white/70"></i> <span class="text-white/90">詳細名單</span>';
             }
             refreshIcons();
 
@@ -1070,11 +1070,11 @@
                 const pMap = appState.currentStats.pickupCounts || {};
                 const rMap = appState.currentStats.roomCounts || {};
                 let html = '';
-                if (Object.keys(pMap).length) html += `<div class="bg-white rounded p-1.5"><div class="font-bold mb-1 text-gray-500">📍 上車地點</div>${Object.entries(pMap).map(([k, v]) => `<span class="inline-block bg-gray-100 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
-                if (Object.keys(rMap).length) html += `<div class="bg-white rounded p-1.5"><div class="font-bold mb-1 text-gray-500">🛏 房型統計</div>${Object.entries(rMap).map(([k, v]) => `<span class="inline-block bg-gray-100 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
+                if (Object.keys(pMap).length) html += `<div class="bg-white/5 border border-white/10 rounded p-1.5"><div class="font-bold mb-1 text-white/70">📍 上車地點</div>${Object.entries(pMap).map(([k, v]) => `<span class="inline-block bg-[#EFC958]/20 text-[#EFC958] border border-[#EFC958]/30 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
+                if (Object.keys(rMap).length) html += `<div class="bg-white/5 border border-white/10 rounded p-1.5"><div class="font-bold mb-1 text-white/70">🛏 房型統計</div>${Object.entries(rMap).map(([k, v]) => `<span class="inline-block bg-[#EFC958]/20 text-[#EFC958] border border-[#EFC958]/30 px-1.5 rounded text-[10px] mr-1 mb-1">${k}:${v}</span>`).join('')}</div>`;
                 sumDiv.innerHTML = html;
             } else if (appState.currentEvent.type === 'banquet') {
-                sumDiv.innerHTML = `<div class="col-span-2 bg-white rounded p-2 text-center font-bold text-red-500">總計預訂: ${appState.currentStats.tableCount} 桌</div>`;
+                sumDiv.innerHTML = `<div class="col-span-2 bg-[#EFC958]/20 border border-[#EFC958]/30 rounded p-2 text-center font-bold text-[#EFC958]">總計預訂: ${appState.currentStats.tableCount} 桌</div>`;
             }
 
             const listContainer = document.getElementById('details-lists-container');
@@ -1210,11 +1210,11 @@
                 }
 
                 const liP = document.createElement('li');
-                liP.className = 'px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0';
+                liP.className = 'px-4 py-3 hover:bg-white/5 transition border-b border-white/10 last:border-0';
                 liP.innerHTML = `
                     <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                        <span class="text-gray-400 font-mono text-sm">${num}.</span>
-                        <span class="font-bold text-gray-800 text-base inline-flex items-center flex-wrap">${safeName}${tagHtml}${nameSuffix}</span>
+                        <span class="text-white/50 font-mono text-sm">${num}.</span>
+                        <span class="font-bold text-white/90 text-base inline-flex items-center flex-wrap">${safeName}${tagHtml}${nameSuffix}</span>
                     </div>
                     ${subHtml}`;
                 fragP.appendChild(liP);
@@ -1224,9 +1224,9 @@
                     if ((pickup && pickup !== '無') || (room && room !== '無')) {
                         hasTravel = true;
                         const liT = document.createElement('li');
-                        liT.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
+                        liT.className = 'px-4 py-2 flex justify-between items-center hover:bg-white/5 text-sm border-b border-white/10 last:border-0';
                         liT.innerHTML = `
-                            <span class="font-medium text-gray-700">${safeName}</span>
+                            <span class="font-medium text-white/90">${safeName}</span>
                             <div class="text-right text-xs text-gray-500">
                                 ${pickup && pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(pickup)}</div>` : ''}
                                 ${room && room !== '無' ? `<div class="text-orange-600">${escapeHtml(room)}</div>` : ''}
@@ -1241,7 +1241,7 @@
                             const liTG = document.createElement('li');
                             liTG.className = 'px-4 py-2 flex justify-between items-center hover:bg-gray-50 text-sm';
                             liTG.innerHTML = `
-                                <span class="font-medium text-gray-700"><span class="text-xs text-gray-400 mr-1">賓</span>${escapeHtml(g.name)}</span>
+                                <span class="font-medium text-white/90"><span class="text-xs text-white/50 mr-1">賓</span>${escapeHtml(g.name)}</span>
                                 <div class="text-right text-xs text-gray-500">
                                     ${g.pickup && g.pickup !== '無' ? `<div class="text-blue-600">${escapeHtml(g.pickup)}</div>` : ''}
                                     ${g.room && g.room !== '無' ? `<div class="text-orange-600">${escapeHtml(g.room)}</div>` : ''}
@@ -1263,10 +1263,10 @@
                 if (items.length > 0) {
                     hasItems = true;
                     const liI = document.createElement('li');
-                    liI.className = 'px-4 py-3 hover:bg-gray-50';
+                    liI.className = 'px-4 py-3 hover:bg-white/5 border-b border-white/10 last:border-0';
                     liI.innerHTML = `
                         <div class="flex justify-between items-start">
-                            <span class="font-medium text-gray-800 text-sm">${safeName}</span>
+                            <span class="font-medium text-white/90 text-sm">${safeName}</span>
                             <div class="text-right flex-1 pl-4">
                                 ${items.map(i => `<div class="text-xs text-purple-600 bg-purple-50 inline-block px-2 py-1 rounded mb-1 ml-1">${i}</div>`).join('')}
                             </div>
@@ -1468,7 +1468,7 @@
                     const fragment = document.createDocumentFragment();
                     history.forEach(e => {
                         const div = document.createElement('div');
-                        div.className = "bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50";
+                        div.className = "bg-white/5 p-4 rounded-xl border border-white/10 shadow-sm flex justify-between items-center cursor-pointer hover:bg-white/10 transition-all";
                         div.onclick = () => openHistoryImage(e.id);
                         div.innerHTML = `
                             <div>
@@ -1519,16 +1519,16 @@
             try {
                 // 產生圖卡 HTML（與 shareAsImage 相同邏輯）
                 const card = document.createElement('div');
-                card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#1f2937;z-index:-1;';
+                card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#162544 0%,#0f172a 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:rgba(255,255,255,0.9);z-index:-1;';
 
                 let html = '';
-                html += '<div style="background:linear-gradient(135deg,#06c755 0%,#059669 100%);color:white;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
+                html += '<div style="background:linear-gradient(135deg,rgba(239,201,88,0.2) 0%,rgba(239,201,88,0.1) 100%);border:1px solid rgba(239,201,88,0.3);color:#EFC958;padding:20px 24px;border-radius:16px;margin-bottom:20px;">';
                 html += `<div style="font-size:22px;font-weight:800;">📅 ${escapeHtml(e.name)}</div>`;
                 html += '<div style="font-size:12px;margin-top:6px;opacity:0.8;">已結束</div>';
                 html += '</div>';
 
                 // 活動資訊區
-                html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                html += '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                 if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
                 let timeDisplay = e.time;
                 if (timeDisplay) {
@@ -1550,7 +1550,7 @@
 
                 // 名單區
                 if (data.length > 0) {
-                    html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                    html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                     html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
                     let count = 0;
                     data.forEach(p => {
@@ -1569,17 +1569,17 @@
                         if (roles.length > 0) {
                             tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
                         }
-                        html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+                        html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;">`;
                         html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;">${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
                         if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
                         html += '</div>';
                         if (guestData.length > 0) {
                             const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
-                            html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+                            html += `<div style="font-size:12px;color:rgba(255,255,255,0.5);padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
                         } else {
                             const guestNameStr = getField(p, 'guestName');
                             if (guestNameStr && guestNameStr !== '無') {
-                                html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                                html += `<div style="font-size:12px;color:rgba(255,255,255,0.5);padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
                             }
                         }
 
@@ -1615,11 +1615,11 @@
                         const sponsorList = parseSponsorData(sponsorRaw);
                         sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
                         if (moneyParts.length > 0) {
-                            sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+                            sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.1);"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
                         }
                     });
                     if (sponsorHtml) {
-                        html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                        html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                         html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
                         html += sponsorHtml;
                         html += '</div>';
@@ -2008,7 +2008,7 @@
                                         <span class="text-white/80 font-medium leading-tight">${itemTitle}</span>
                                         ${mapIconHtml}
                                     </div>
-                                    ${itemDesc ? `<p class="text-xs text-gray-500 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
+                                    ${itemDesc ? `<p class="text-xs text-white/50 mt-1 leading-relaxed">${itemDesc}</p>` : ''}
                                 </div>
                             </div>`;
                     }
@@ -2020,7 +2020,7 @@
 
                 const details = document.createElement('details');
                 details.setAttribute('name', 'itinerary-group');
-                details.className = "group border-b border-gray-100 last:border-0 transition-all itinerary-group";
+                details.className = "group border-b border-white/10 last:border-0 transition-all itinerary-group";
                 if (isOpen) details.setAttribute('open', '');
 
                 const summary = document.createElement('summary');
@@ -2028,17 +2028,17 @@
 
                 summary.innerHTML = `
                     <div class="flex items-center gap-3 overflow-hidden">
-                        <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap">${dayLabel}</span>
-                        <span class="font-bold text-gray-800 text-base truncate">${accordionMainTitle}</span>
+                        <span class="bg-[#EFC958]/20 text-[#EFC958] text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap">${dayLabel}</span>
+                        <span class="font-bold text-white/90 text-base truncate">${accordionMainTitle}</span>
                     </div>
-                    <div class="w-6 h-6 flex items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-gray-400 font-bold shrink-0 ml-2">
+                    <div class="w-6 h-6 flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/50 font-bold shrink-0 ml-2">
                         <span class="icon-plus">+</span>
                         <span class="icon-minus">−</span>
                     </div>
                 `;
 
                 const contentDiv = document.createElement('div');
-                contentDiv.className = "px-4 pb-4 pt-0 bg-white text-sm text-gray-600 leading-relaxed space-y-2 group-content";
+                contentDiv.className = "px-4 pb-4 pt-0 bg-transparent text-sm text-white/80 leading-relaxed space-y-2 group-content";
                 contentDiv.innerHTML = allContentHtml;
 
                 details.appendChild(summary);
@@ -2376,7 +2376,7 @@
             try {
                 // --- 1. 動態產生分享卡片 HTML ---
                 const card = document.createElement('div');
-                card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:#1f2937;z-index:-1;';
+                card.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;padding:32px;background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);font-family:"Segoe UI","Noto Sans TC",sans-serif;color:rgba(255,255,255,0.9);z-index:-1;';
 
                 // 活動標題區
                 let html = '';
@@ -2385,7 +2385,7 @@
                 html += '</div>';
 
                 // 活動資訊區
-                html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                 if (e.organizer) html += `<div style="font-size:14px;margin-bottom:8px;">👤 主辦人：${escapeHtml(e.organizer)}</div>`;
                 let timeDisplay = e.time;
                 if (timeDisplay) {
@@ -2415,7 +2415,7 @@
 
                 // 名單區
                 if (includeNames && data.length > 0) {
-                    html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                    html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                     html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #06c755;">👥 報名名單</div>';
                     let count = 0;
                     data.forEach(p => {
@@ -2438,7 +2438,7 @@
                             tagHtml = roles.map(r => `<span style="color:${r.color};font-size:12px;font-weight:bold;margin-left:6px;display:inline-flex;align-items:center;">${r.label}</span>`).join('');
                         }
 
-                        html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;">`;
+                        html += `<div style="font-size:14px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;">`;
                         html += `<span style="color:#06c755;font-weight:700;margin-right:4px;">${num}.</span> <span style="display:inline-flex;align-items:center;">${escapeHtml(prefix)}${escapeHtml(p.name)}${tagHtml}</span>`;
                         if (total > 1) html += `<span style="color:#f59e0b;font-weight:600;margin-left:6px;">×${total}</span>`;
                         html += '</div>';
@@ -2446,11 +2446,11 @@
                         // 來賓
                         if (guestData.length > 0) {
                             const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
-                            html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
+                            html += `<div style="font-size:12px;color:rgba(255,255,255,0.5);padding:2px 0 4px 20px;">來賓：${guestParts.join('、')}</div>`;
                         } else {
                             const guestNameStr = getField(p, 'guestName');
                             if (guestNameStr && guestNameStr !== '無') {
-                                html += `<div style="font-size:12px;color:#6b7280;padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
+                                html += `<div style="font-size:12px;color:rgba(255,255,255,0.5);padding:2px 0 4px 20px;">來賓：${guestNameStr}</div>`;
                             }
                         }
 
@@ -2499,11 +2499,11 @@
                         const sponsorList = parseSponsorData(sponsorRaw);
                         sponsorList.forEach(s => moneyParts.push(`贊助: ${s}`));
                         if (moneyParts.length > 0) {
-                            sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
+                            sponsorHtml += `<div style="font-size:13px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.1);"><span style="font-weight:600;">${p.name}</span>：${moneyParts.join('、')}</div>`;
                         }
                     });
                     if (sponsorHtml) {
-                        html += '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
+                        html += '<div style="background:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;">';
                         html += '<div style="font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f59e0b;color:#d97706;">💰 贊助 / 認桌資訊</div>';
                         html += sponsorHtml;
                         html += '</div>';
