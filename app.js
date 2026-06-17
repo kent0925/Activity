@@ -4164,6 +4164,18 @@ async function shareAsImage() {
 
     const btn = document.getElementById('btn-share-single');
     const origHtml = btn.innerHTML;
+
+    // 提早同步複製文字，避免 await 導致使用者手勢遺失而彈出複製確認視窗
+    const options = {
+        includeNames: document.getElementById('share-opt-names')?.checked ?? true,
+        includeTravel: document.getElementById('share-opt-travel')?.checked ?? true,
+        includeSponsor: document.getElementById('share-opt-sponsor')?.checked ?? true,
+        includeMap: document.getElementById('share-opt-map')?.checked ?? true,
+        includeLink: document.getElementById('share-opt-link')?.checked ?? true
+    };
+    let shareText = buildFullShareText(options);
+    copyTextToClipboard(shareText, true, true);
+
     btn.disabled = true;
     btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
     refreshIcons();
@@ -4176,20 +4188,10 @@ async function shareAsImage() {
             if (!blob) { showToast('圖片產生失敗'); return; }
             const file = new File([blob], `${e.name}_名單.png`, { type: 'image/png' });
 
-            const options = {
-                includeNames: document.getElementById('share-opt-names')?.checked ?? true,
-                includeTravel: document.getElementById('share-opt-travel')?.checked ?? true,
-                includeSponsor: document.getElementById('share-opt-sponsor')?.checked ?? true,
-                includeMap: document.getElementById('share-opt-map')?.checked ?? true,
-                includeLink: document.getElementById('share-opt-link')?.checked ?? true
-            };
-            let shareText = buildFullShareText(options);
-
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
             if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
-                    copyTextToClipboard(shareText);
                     await navigator.share({
                         files: [file],
                         title: e.name,
@@ -4199,12 +4201,10 @@ async function shareAsImage() {
                 } catch (err) {
                     if (err.name !== 'AbortError') {
                         console.error('圖片分享失敗:', err);
-                        copyTextToClipboard(shareText);
                         fallbackDownloadImage(canvas, e.name);
                     }
                 }
             } else {
-                copyTextToClipboard(shareText);
                 fallbackDownloadImage(canvas, e.name);
             }
 
@@ -4271,14 +4271,14 @@ async function shareAllAsImage() {
         }
 
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const eventsData = results.map(r => ({ event: r.event, details: r.details, stats: r.stats }));
+        const shareText = buildRichShareAllText(eventsData);
+
+        // 靜默複製文字 (不開啟 native share, 若失敗也不開 modal)
+        copyTextToClipboard(shareText, true, true);
 
         if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files })) {
             try {
-                const eventsData = results.map(r => ({ event: r.event, details: r.details, stats: r.stats }));
-                const shareText = buildRichShareAllText(eventsData);
-
-                copyTextToClipboard(shareText);
-
                 await navigator.share({
                     files: files,
                     title: '近期活動名單',
@@ -4292,9 +4292,6 @@ async function shareAllAsImage() {
                 }
             }
         } else {
-            const eventsData = results.map(r => ({ event: r.event, details: r.details, stats: r.stats }));
-            const shareText = buildRichShareAllText(eventsData);
-            copyTextToClipboard(shareText);
             // PC 端或不支援多檔案分享的瀏覽器直接依序下載
             results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
         }
@@ -4684,8 +4681,10 @@ function fallbackCopyManual() {
     }
 }
 
-function copyTextToClipboard(text) {
-    const manualFallback = () => openManualCopyModal(text);
+function copyTextToClipboard(text, forceCopyOnly = false, silent = false) {
+    const manualFallback = () => {
+        if (!silent) openManualCopyModal(text);
+    };
 
     // 1. 第一備案：Textarea（部分手機瀏覽器支援同步執行）
     const fallbackCopy = (txt) => {
@@ -4741,7 +4740,7 @@ function copyTextToClipboard(text) {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     // 若為手機，優先嘗試使用系統原生分享 API (支援傳送至 LINE、MMS 等)
-    if (isMobile && navigator.share) {
+    if (isMobile && navigator.share && !forceCopyOnly) {
         const e = appState.currentEvent;
         navigator.share({
             title: e ? e.name : '活動分享',
