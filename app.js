@@ -356,7 +356,7 @@ function initMaryBetPanel() {
         btn.innerHTML = `
             <div class="text-[8px] font-black text-[#ffcc00] mb-0.5">x${conf.rate}</div>
             <div class="text-xl leading-none mb-1">${conf.label}</div>
-            <div id="mary-bet-val-${conf.id}" class="w-full bg-black text-[#ff4444] font-mono text-[10px] font-black text-center border border-[#333] rounded-sm py-0.5 shadow-[inset_0_0_5px_rgba(255,0,0,0.5)]">0</div>
+            <div id="mary-bet-val-${conf.id}" class="w-full bg-black text-[#ff6666] font-mono text-[10px] font-black text-center border border-[#333] rounded-sm py-0.5 shadow-[inset_0_0_5px_rgba(255,100,100,0.5)]">0</div>
         `;
 
         // 長按跳出數字鍵盤
@@ -4213,8 +4213,30 @@ async function shareAsImage() {
                         text: shareText
                     });
                     showToast('圖片分享成功！');
+                    document.getElementById('share-modal').classList.add('hidden');
                 } catch (err) {
-                    if (err.name !== 'AbortError') {
+                    if (err.name === 'NotAllowedError' || err.name === 'SecurityError') {
+                        // iOS Safari 安全限制：非同步產生圖片會遺失使用者手勢，必須要求再次點擊
+                        btn.innerHTML = '<i data-lucide="share" class="w-4 h-4"></i> 圖片已就緒，點此立即分享';
+                        btn.classList.add('!bg-green-600', '!border-green-500', 'animate-pulse');
+                        btn.disabled = false;
+                        btn.onclick = async () => {
+                            try {
+                                await navigator.share({ files: [file], title: e.name, text: shareText });
+                                showToast('圖片分享成功！');
+                                document.getElementById('share-modal').classList.add('hidden');
+                            } catch (e2) {
+                                if (e2.name !== 'AbortError') fallbackDownloadImage(canvas, e.name);
+                            } finally {
+                                btn.innerHTML = origHtml;
+                                btn.onclick = shareAsImage;
+                                btn.classList.remove('!bg-green-600', '!border-green-500', 'animate-pulse');
+                                refreshIcons();
+                            }
+                        };
+                        refreshIcons();
+                        return; // 中斷 finally，等待使用者點擊
+                    } else if (err.name !== 'AbortError') {
                         console.error('圖片分享失敗:', err);
                         fallbackDownloadImage(canvas, e.name);
                     }
@@ -4305,8 +4327,31 @@ async function shareAllAsImage() {
                     text: shareText
                 });
                 showToast('圖片打包分享成功！');
+                document.getElementById('share-modal').classList.add('hidden');
             } catch (err) {
-                if (err.name !== 'AbortError') {
+                if (err.name === 'NotAllowedError' || err.name === 'SecurityError') {
+                    btn.innerHTML = '<i data-lucide="share" class="w-4 h-4 text-white"></i> 圖片就緒，點此打包分享';
+                    btn.classList.add('!bg-green-600', '!border-green-500', 'animate-pulse');
+                    btn.disabled = false;
+                    btn.onclick = async () => {
+                        try {
+                            await navigator.share({ files: files, title: '近期活動名單', text: shareText });
+                            showToast('圖片打包分享成功！');
+                            document.getElementById('share-modal').classList.add('hidden');
+                        } catch (e2) {
+                            if (e2.name !== 'AbortError') {
+                                results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
+                            }
+                        } finally {
+                            btn.innerHTML = origHtml;
+                            btn.onclick = shareAllAsImage;
+                            btn.classList.remove('!bg-green-600', '!border-green-500', 'animate-pulse');
+                            refreshIcons();
+                        }
+                    };
+                    refreshIcons();
+                    return; // 中斷 finally
+                } else if (err.name !== 'AbortError') {
                     console.error('多圖分享失敗，轉為逐一下載:', err);
                     results.forEach(res => fallbackDownloadImage(res.canvas, res.eventName));
                 }
