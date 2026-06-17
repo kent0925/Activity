@@ -619,8 +619,8 @@
                 <h3 class="font-bold text-[#EFECE5] flex items-center gap-2"><i data-lucide="list" class="w-5 h-5 text-[#EFECE5]/80"></i> 詳細名單</h3>
                 <div class="flex items-center gap-2">
 
-                    <button onclick="sendToTelegram()"
-                        class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 transition flex items-center gap-1 shadow-sm active:scale-95">
+                    <button id="btn-telegram-share" onclick="sendToTelegram()"
+                        class="hidden bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 transition flex items-center gap-1 shadow-sm active:scale-95">
                         <i data-lucide="send" class="w-3.5 h-3.5"></i> 發送至 Telegram
                     </button>
                     <button onclick="closeDetailsModal()"

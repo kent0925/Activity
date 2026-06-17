@@ -2408,6 +2408,16 @@ async function openDetailsModal(filterType = 'all') {
         content.classList.add('translate-y-10', 'sm:translate-y-0', 'opacity-100');
     }, 10);
 
+    // 判斷是否為管理者來顯示/隱藏 Telegram 發送按鈕
+    const tgBtn = document.getElementById('btn-telegram-share');
+    if (tgBtn) {
+        if (appState.user && appState.user.userId && ADMIN_USER_IDS.includes(appState.user.userId)) {
+            tgBtn.classList.remove('hidden');
+        } else {
+            tgBtn.classList.add('hidden');
+        }
+    }
+
     // 動態修改標題
     const titleEl = document.querySelector('#details-modal h3');
     if (filterType === 'people') {
