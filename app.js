@@ -4146,15 +4146,17 @@ async function generateEventCanvas(e, data, stats) {
     const loadPromises = Array.from(imgs).map(img => {
         if (img.complete) return Promise.resolve();
         return new Promise(resolve => {
-            img.onload = resolve;
-            img.onerror = resolve;
+            const timer = setTimeout(resolve, 2000); // 2秒逾時，避免單一圖片載入過久卡死
+            img.onload = () => { clearTimeout(timer); resolve(); };
+            img.onerror = () => { clearTimeout(timer); resolve(); };
         });
     });
     await Promise.all(loadPromises);
 
     const canvas = await html2canvas(card, {
-        scale: 2,
+        scale: 1.5, // 降低縮放比例加快產生速度 (原為 2)
         useCORS: true,
+        logging: false, // 關閉日誌提升效能
         backgroundColor: '#3b2518',
         width: card.scrollWidth,
         height: card.scrollHeight
@@ -4189,6 +4191,9 @@ async function shareAsImage() {
     btn.disabled = true;
     btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 產生中...';
     refreshIcons();
+
+    // 讓出主執行緒，確保畫面能渲染出「產生中...」
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     try {
         const canvas = await generateEventCanvas(e, data, stats);
@@ -4251,21 +4256,26 @@ async function shareAllAsImage() {
 
         showToast("正在背景加載多活動名單，請稍候...");
 
-        // 依序或平行抓取每個活動的數據並繪製
-        const promises = selectedEvents.map(async (e) => {
+        // 讓出主執行緒，確保畫面能渲染出「產生中...」
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // 改為循序處理，避免多個 html2canvas 同時執行導致瀏覽器嚴重卡頓甚至崩潰
+        const results = [];
+        for (const e of selectedEvents) {
             const [details, stats] = await Promise.all([
                 fetchDetailsForEvent(e.id),
                 fetchStatsForEvent(e.id)
             ]);
             const canvas = await generateEventCanvas(e, details, stats);
-            return new Promise((resolve) => {
+            const res = await new Promise((resolve) => {
                 canvas.toBlob((blob) => {
                     resolve({ canvas, blob, eventName: e.name, event: e, details: details, stats: stats });
                 }, 'image/png');
             });
-        });
-
-        const results = await Promise.all(promises);
+            results.push(res);
+            // 每次畫完一張後稍微暫停，釋放一下資源
+            await new Promise(r => setTimeout(r, 50));
+        }
         const files = [];
 
         results.forEach(res => {
