@@ -1251,9 +1251,7 @@ async function maryConfirmExchange() {
 /** HTML 跳脫：防止使用者輸入的 XSS 攻擊 */
 function escapeHtml(str) {
     if (!str) return '';
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
+    return str.toString().replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'": '&#039;' }[m]));
 }
 
 /** 統一欄位鍵值映射表 */
@@ -1650,7 +1648,7 @@ function renderParticipationChart(data) {
             <div class="flex flex-col items-center ${sizeClass}">
                 <div class="flex flex-col items-center ${glowClass}">
                     <span class="text-xl leading-none mb-0.5">${medal}</span>
-                    <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${p.name}</span>
+                    <span class="text-[11px] font-black text-template-name truncate max-w-template-width">${escapeHtml(p.name)}</span>
                 </div>
                 <span class="text-template-count-color text-[9px] font-black mt-0.5">${p.count}次</span>
             </div>
@@ -2255,10 +2253,8 @@ function editGuest(i) {
     if (g.pickup) document.getElementById('add-guest-pickup').value = g.pickup;
     if (g.room) document.getElementById('add-guest-room').value = g.room;
 
-    // 移除當前項目以便重新加入
-    appState.guestList.splice(i, 1);
-    renderGuestList();
-    showToast("已載入資料至輸入框，修改後請點選「加入名單」");
+    appState._editGuestIndex = i;
+    showToast("已載入資料至輸入框，修改後請點選「加入名單」即可更新");
 }
 
 function editSponsor(i) {
@@ -2292,9 +2288,8 @@ function editSponsor(i) {
         document.getElementById('sp-other').value = content;
     }
 
-    appState.sponsorList.splice(i, 1);
-    renderSponsorList();
-    showToast("已載入資料至輸入框，修改後請點選「新增贊助」");
+    appState._editSponsorIndex = i;
+    showToast("已載入資料至輸入框，修改後請點選「新增贊助」即可更新");
 }
 
 function renderEventGrid(type) {
@@ -3073,7 +3068,12 @@ function addSponsor() {
         if (!val) return showToast("請輸入內容");
         res = `其他: ${val}`;
     }
-    appState.sponsorList.push(res);
+    if (typeof appState._editSponsorIndex === 'number' && appState._editSponsorIndex >= 0) {
+        appState.sponsorList[appState._editSponsorIndex] = res;
+        appState._editSponsorIndex = -1;
+    } else {
+        appState.sponsorList.push(res);
+    }
     renderSponsorList();
 }
 
@@ -3427,14 +3427,14 @@ async function handleCreateEvent(e) {
         const end = document.getElementById('new-date-end').value;
         if (!start || !end) {
             showToast("旅遊活動請填寫出發與回程日期");
-            btn.disabled = false; btn.innerHTML = originalBtnHTML; return;
+            btn.disabled = false; btn.innerHTML = originalBtnHTML; _isSubmitting = false; refreshIcons(); return;
         }
         timeVal = `${start}~${end}`;
     } else {
         timeVal = document.getElementById('new-time-single').value;
         if (!timeVal) {
             showToast("請填寫活動時間");
-            btn.disabled = false; btn.innerHTML = originalBtnHTML; return;
+            btn.disabled = false; btn.innerHTML = originalBtnHTML; _isSubmitting = false; refreshIcons(); return;
         }
     }
 
@@ -3850,7 +3850,7 @@ function copyDetailsToClipboard() {
 
 async function copyAllActiveEventsToClipboard() {
     showToast("正在抓取所有活動名單...");
-    const activeEvents = appState.events.filter(e => filterActiveEvents(e));
+    const activeEvents = appState.events.filter(e => isEventOpen(e));
     if (activeEvents.length === 0) {
         showToast("⚠️ 目前沒有進行中的活動");
         return;
@@ -4503,6 +4503,7 @@ const data = appState.cachedDetails || [];
         }
 
         return text;
+    } // End block
 }
 
 function performCopy(options = { includeSponsor: true, includeTravel: true, includeMap: true, includeNames: true, includeLink: true }) {
@@ -4512,8 +4513,6 @@ function performCopy(options = { includeSponsor: true, includeTravel: true, incl
     } else if (text) {
         showToast(text);
     }
-}
-
 }
 
 // --- ★★★ 這裡就是修正的關鍵，原本遺失的函式 ★★★ ---
@@ -4611,7 +4610,14 @@ function addGuest() {
     // 產生簡易暫時 ID
     const id = 'g_' + Date.now() + Math.random().toString(36).substring(2, 7);
 
-    appState.guestList.push({ id, name, count, pickup, room });
+    if (typeof appState._editGuestIndex === 'number' && appState._editGuestIndex >= 0) {
+        // 更新原有項目但保留原本的 ID
+        const oldId = appState.guestList[appState._editGuestIndex].id;
+        appState.guestList[appState._editGuestIndex] = { id: oldId, name, count, pickup, room };
+        appState._editGuestIndex = -1;
+    } else {
+        appState.guestList.push({ id, name, count, pickup, room });
+    }
     document.getElementById('add-guest-name').value = '';
     renderGuestList();
 }
