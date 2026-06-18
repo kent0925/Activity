@@ -2954,7 +2954,7 @@ async function openHistoryImage(eventId) {
         const canvas = await generateEventCanvas(e, data, appState.currentStats);
 
         // 產生圖片 URL
-        const imgUrl = canvas.toDataURL('image/png');
+        const imgUrl = canvas.toDataURL('image/jpeg', 0.8);
 
         // 建立全螢幕彈窗顯示圖片
         const overlay = document.createElement('div');
@@ -2988,7 +2988,7 @@ function saveHistoryImage() {
     const img = overlay.querySelector('img');
     if (!img) return;
     const link = document.createElement('a');
-    link.download = `${appState.currentEvent.name}_歷史紀錄.png`;
+    link.download = `${appState.currentEvent.name}_歷史紀錄.jpg`;
     link.href = img.src;
     link.click();
     showToast('圖片已下載！');
@@ -4201,7 +4201,7 @@ async function shareAsImage() {
         // --- 轉為 blob 並分享或下載 ---
         canvas.toBlob(async (blob) => {
             if (!blob) { showToast('圖片產生失敗'); return; }
-            const file = new File([blob], `${e.name}_名單.png`, { type: 'image/png' });
+            const file = new File([blob], `${e.name}_名單.jpg`, { type: 'image/jpeg' });
 
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -4246,7 +4246,7 @@ async function shareAsImage() {
             }
 
             document.getElementById('share-modal').classList.add('hidden');
-        }, 'image/png');
+        }, 'image/jpeg', 0.8);
 
     } catch (err) {
         console.error('圖片產生失敗', err);
@@ -4292,7 +4292,7 @@ async function shareAllAsImage() {
             const res = await new Promise((resolve) => {
                 canvas.toBlob((blob) => {
                     resolve({ canvas, blob, eventName: e.name, event: e, details: details, stats: stats });
-                }, 'image/png');
+                }, 'image/jpeg', 0.8);
             });
             results.push(res);
             // 每次畫完一張後稍微暫停，釋放一下資源
@@ -4302,7 +4302,7 @@ async function shareAllAsImage() {
 
         results.forEach(res => {
             if (res.blob) {
-                const file = new File([res.blob], `${res.eventName}_名單.png`, { type: 'image/png' });
+                const file = new File([res.blob], `${res.eventName}_名單.jpg`, { type: 'image/jpeg' });
                 files.push(file);
             }
         });
@@ -4373,8 +4373,8 @@ async function shareAllAsImage() {
 }
 function fallbackDownloadImage(canvas, evtName) {
     const link = document.createElement('a');
-    link.download = `${evtName || '活動'}_名單.png`;
-    link.href = canvas.toDataURL('image/png');
+    link.download = `${evtName || '活動'}_名單.jpg`;
+    link.href = canvas.toDataURL('image/jpeg', 0.8);
     link.click();
     showToast('已下載名單圖片！');
 }
