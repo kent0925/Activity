@@ -218,12 +218,7 @@ const CasinoApp = {
             numbersGrid.appendChild(colBet);
         });
         
-        board.appendChild(numbersGrid);
-        
-        // 外部押注區 (Outside Bets) - 放下面
-        const outsideContainer = document.createElement('div');
-        outsideContainer.className = 'col-span-2 grid grid-cols-3 gap-[1px] mt-[1px]';
-        
+        // 外部押注區 (Outside Bets) - 放下面，直接加在 numbersGrid 裡以完美對齊 12 欄
         const dozens = [
             { id: '1st12', label: '1st 12' },
             { id: '2nd12', label: '2nd 12' },
@@ -231,11 +226,15 @@ const CasinoApp = {
         ];
         dozens.forEach(d => {
             const el = document.createElement('div');
-            el.className = 'roulette-cell cell-trans';
+            el.className = 'roulette-cell cell-trans col-span-4 mt-[1px]'; // 跨 4 欄
             el.innerText = d.label;
             el.onclick = () => this.placeRouletteBet(d.id, el);
-            outsideContainer.appendChild(el);
+            numbersGrid.appendChild(el);
         });
+        // 補上最後一格空白 (2 to 1 的正下方)
+        const emptyDozen = document.createElement('div');
+        emptyDozen.className = 'mt-[1px]';
+        numbersGrid.appendChild(emptyDozen);
         
         const evenOdds = [
             { id: '1to18', label: '1 to 18' },
@@ -246,22 +245,23 @@ const CasinoApp = {
             { id: '19to36', label: '19 to 36' }
         ];
         
-        const evenContainer = document.createElement('div');
-        evenContainer.className = 'col-span-2 grid grid-cols-6 gap-[1px] mt-[1px]';
         evenOdds.forEach(e => {
             const el = document.createElement('div');
-            el.className = 'roulette-cell cell-trans';
+            el.className = 'roulette-cell cell-trans col-span-2 mt-[1px] text-[10px] sm:text-xs'; // 跨 2 欄
             if (e.cls) {
-                el.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-white ${e.cls}">${e.label}</div>`;
+                el.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-white/90 ${e.cls} rounded">${e.label}</div>`;
             } else {
                 el.innerText = e.label;
             }
             el.onclick = () => this.placeRouletteBet(e.id, el);
-            evenContainer.appendChild(el);
+            numbersGrid.appendChild(el);
         });
+        // 補上最後一格空白 (2 to 1 的正下方)
+        const emptyEven = document.createElement('div');
+        emptyEven.className = 'mt-[1px]';
+        numbersGrid.appendChild(emptyEven);
         
-        board.parentNode.appendChild(outsideContainer);
-        board.parentNode.appendChild(evenContainer);
+        board.appendChild(numbersGrid);
     },
 
     placeRouletteBet(betId, cellElement) {
@@ -288,6 +288,108 @@ const CasinoApp = {
         let displayVal = this.rouletteBets[betId];
         if (displayVal >= 1000) displayVal = (displayVal/1000).toFixed(1) + 'k';
         chipEl.innerText = displayVal;
+    },
+
+    clearBets() {
+        if (this.isSpinning) return;
+        // 返還積分
+        let totalBet = 0;
+        for (const key in this.rouletteBets) {
+            totalBet += this.rouletteBets[key];
+        }
+        if (totalBet > 0) {
+            this.points += totalBet;
+            document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+        }
+        
+        // 清除紀錄與畫面上的籌碼
+        this.rouletteBets = {};
+        document.querySelectorAll('.placed-chip').forEach(el => el.remove());
+    },
+
+    spinRoulette() {
+        if (this.isSpinning) return;
+        if (Object.keys(this.rouletteBets).length === 0) {
+            alert("請先下注！");
+            return;
+        }
+
+        this.isSpinning = true;
+        const sequence = ['0','28','9','26','30','11','7','20','32','17','5','22','34','15','3','24','36','13','1','00','27','10','25','29','12','8','19','31','18','6','21','33','16','4','23','35','14','2'];
+        const reds = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+        
+        // 隨機抽選結果
+        const winningIndex = Math.floor(Math.random() * 38);
+        const winningStr = sequence[winningIndex];
+        const winningNum = parseInt(winningStr);
+
+        // 計算旋轉角度
+        const sliceAngle = 360 / 38;
+        const targetOffset = 360 - (winningIndex * sliceAngle);
+        
+        // 累積旋轉，確保永遠順時針轉 (多轉 5 圈)
+        this.currentRotation = this.currentRotation || 0;
+        const currentMod = this.currentRotation % 360;
+        this.currentRotation += (360 * 5) + (targetOffset - currentMod);
+        
+        const wheel = document.getElementById('roulette-wheel');
+        wheel.style.transform = `rotate(${this.currentRotation}deg)`;
+
+        // 等待動畫結束 (5秒)
+        setTimeout(() => {
+            let totalWin = 0;
+            
+            // 結算派彩
+            for (const [betId, amount] of Object.entries(this.rouletteBets)) {
+                let winRatio = 0; // 包含本金的賠率
+                
+                if (betId === `num_${winningStr}` || betId === winningStr) {
+                    winRatio = 36; // 單一號碼 1賠35
+                } 
+                else if (betId.startsWith('split_')) {
+                    const nums = betId.split('_').slice(1);
+                    if (nums.includes(winningStr)) winRatio = 18;
+                }
+                else if (betId.startsWith('corner_')) {
+                    const nums = betId.split('_').slice(1);
+                    if (nums.includes(winningStr)) winRatio = 9;
+                }
+                else if (winningStr !== '0' && winningStr !== '00') {
+                    if (betId === 'col1' && winningNum % 3 === 1) winRatio = 3;
+                    if (betId === 'col2' && winningNum % 3 === 2) winRatio = 3;
+                    if (betId === 'col3' && winningNum % 3 === 0) winRatio = 3;
+                    
+                    if (betId === '1st12' && winningNum >= 1 && winningNum <= 12) winRatio = 3;
+                    if (betId === '2nd12' && winningNum >= 13 && winningNum <= 24) winRatio = 3;
+                    if (betId === '3rd12' && winningNum >= 25 && winningNum <= 36) winRatio = 3;
+                    
+                    if (betId === 'even' && winningNum % 2 === 0) winRatio = 2;
+                    if (betId === 'odd' && winningNum % 2 === 1) winRatio = 2;
+                    if (betId === 'red' && reds.includes(winningNum)) winRatio = 2;
+                    if (betId === 'black' && !reds.includes(winningNum)) winRatio = 2;
+                    if (betId === '1to18' && winningNum >= 1 && winningNum <= 18) winRatio = 2;
+                    if (betId === '19to36' && winningNum >= 19 && winningNum <= 36) winRatio = 2;
+                }
+                
+                totalWin += amount * winRatio;
+            }
+
+            // 更新結果
+            if (totalWin > 0) {
+                alert(`輪盤開出 ${winningStr}！\n恭喜您贏得了 ${totalWin} 積分！`);
+                this.points += totalWin;
+            } else {
+                alert(`輪盤開出 ${winningStr}！\n很可惜，您這次未中獎。`);
+            }
+
+            document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+            
+            // 清空畫面籌碼 (不退回積分)
+            this.rouletteBets = {};
+            document.querySelectorAll('.placed-chip').forEach(el => el.remove());
+            
+            this.isSpinning = false;
+        }, 5050);
     }
 };
 

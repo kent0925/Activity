@@ -104,7 +104,7 @@
             </div>
 
             <!-- 小瑪莉視圖 (Mary View) -->
-            <div id="view-mary" class="hidden space-y-4 max-w-md mx-auto h-full flex-col animate-fade-in pb-20">
+            <div id="view-mary" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
                 <div class="flex justify-between items-center bg-[#1E3052]/60 p-3 rounded-xl border border-white/10 backdrop-blur-md">
                     <button onclick="CasinoApp.backToLobby()" class="text-gray-400 hover:text-white flex items-center gap-1 text-sm font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i> 返回大廳</button>
                     <div class="text-xs text-gray-400">小瑪莉 (移植版)</div>
@@ -119,7 +119,7 @@
             </div>
 
             <!-- 輪盤視圖 (Roulette View) -->
-            <div id="view-roulette" class="hidden space-y-4 max-w-md mx-auto h-full flex-col animate-fade-in pb-20">
+            <div id="view-roulette" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
                 <div class="flex justify-between items-center bg-emerald-900/60 p-3 rounded-xl border border-emerald-500/20 backdrop-blur-md">
                     <button onclick="CasinoApp.backToLobby()" class="text-gray-400 hover:text-white flex items-center gap-1 text-sm font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i> 返回大廳</button>
                     <div class="text-xs text-emerald-400 font-bold">Roulette</div>
@@ -147,7 +147,7 @@
             </div>
 
             <!-- 骰寶視圖 (Sic Bo View) -->
-            <div id="view-sicbo" class="hidden space-y-4 max-w-md mx-auto h-full flex-col animate-fade-in pb-20">
+            <div id="view-sicbo" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
                 <div class="flex justify-between items-center bg-red-950/60 p-3 rounded-xl border border-red-500/20 backdrop-blur-md">
                     <button onclick="CasinoApp.backToLobby()" class="text-gray-400 hover:text-white flex items-center gap-1 text-sm font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i> 返回大廳</button>
                     <div class="text-xs text-red-400 font-bold">Sic Bo</div>
@@ -167,8 +167,8 @@
                 <div class="flex justify-between items-end mb-2 px-1">
                     <div class="text-xs text-gray-400 font-bold">選擇籌碼</div>
                     <div class="flex gap-2">
-                        <button class="text-xs px-3 py-1.5 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 active:scale-95 transition border border-gray-600">清除</button>
-                        <button class="text-xs px-4 py-1.5 rounded bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-black font-bold hover:brightness-110 active:scale-95 transition shadow-lg">SPIN</button>
+                        <button onclick="CasinoApp.clearBets()" class="text-xs px-3 py-1.5 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 active:scale-95 transition border border-gray-600">清除</button>
+                        <button onclick="CasinoApp.spinRoulette()" class="text-xs px-4 py-1.5 rounded bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-black font-bold hover:brightness-110 active:scale-95 transition shadow-lg">SPIN</button>
                     </div>
                 </div>
                 <div class="flex justify-between gap-1 overflow-x-auto hide-scrollbar py-1">
