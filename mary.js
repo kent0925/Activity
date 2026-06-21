@@ -40,6 +40,30 @@ const MARY_GRID = [
     'apple', 'star', 'seven', 'orange', 'bell'
 ];
 
+// API Submit helper function for Mary logic
+async function apiSubmit(data) {
+    if (typeof GAS_URL === 'undefined' || !GAS_URL) {
+        console.error("No GAS URL defined");
+        return { error: "No GAS URL" };
+    }
+    try {
+        const res = await fetch(GAS_URL, {
+            method: 'POST',
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(data)
+        });
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return { error: text || 'JSON parsing error' };
+        }
+    } catch (e) {
+        console.error("API Error", e);
+        return { error: e.message };
+    }
+}
+
 async function openSmallMary() {
     if (!CasinoApp.user || !CasinoApp.user.userId) return showToast("請先登入 LINE");
     // 在 Casino 大廳中，直接由 CasinoApp.openGame('mary') 處理
