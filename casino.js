@@ -113,9 +113,48 @@ const CasinoApp = {
 
     selectChip(val) {
         this.currentChip = val;
-        document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('selected'));
-        const targetBtn = document.querySelector(`.chip-btn[data-value="${val}"]`);
-        if (targetBtn) targetBtn.classList.add('selected');
+        document.querySelectorAll('.chip-selector').forEach(el => el.classList.remove('chip-selected'));
+        const el = document.querySelector(`.chip-selector[data-val="${val}"]`);
+        if (el) el.classList.add('chip-selected');
+    },
+
+    showAlert(title, message, isWin = false) {
+        const modal = document.getElementById('custom-modal');
+        const backdrop = document.getElementById('custom-modal-backdrop');
+        const content = document.getElementById('custom-modal-content');
+        const titleEl = document.getElementById('custom-modal-title');
+        const msgEl = document.getElementById('custom-modal-message');
+        const glowEl = document.getElementById('custom-modal-glow');
+
+        titleEl.innerHTML = title;
+        msgEl.innerHTML = message.replace(/\n/g, '<br>');
+
+        if (isWin) {
+            titleEl.className = 'text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFF0A0] mb-2 relative z-10 drop-shadow-md';
+            glowEl.className = 'absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-yellow-500/40 blur-3xl rounded-full';
+        } else {
+            titleEl.className = 'text-xl font-bold text-gray-300 mb-2 relative z-10';
+            glowEl.className = 'absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-gray-500/10 blur-3xl rounded-full';
+        }
+
+        modal.classList.remove('hidden');
+        // Trigger reflow
+        void modal.offsetWidth;
+        
+        backdrop.classList.remove('opacity-0');
+        content.classList.remove('scale-90', 'opacity-0');
+    },
+
+    closeModal() {
+        const backdrop = document.getElementById('custom-modal-backdrop');
+        const content = document.getElementById('custom-modal-content');
+        
+        backdrop.classList.add('opacity-0');
+        content.classList.add('scale-90', 'opacity-0');
+        
+        setTimeout(() => {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }, 300);
     },
 
     // ==========================================
@@ -293,9 +332,13 @@ const CasinoApp = {
 
     placeRouletteBet(betId, cellElement) {
         if (this.points < this.currentChip) {
-            alert("積分不足！");
+            this.showAlert("積分不足", "您的餘額不足以進行下注！");
             return;
         }
+        
+        // 點擊回饋特效
+        cellElement.classList.add('scale-95', 'opacity-80', 'transition-all');
+        setTimeout(() => cellElement.classList.remove('scale-95', 'opacity-80'), 150);
         
         // 扣款
         this.points -= this.currentChip;
@@ -382,9 +425,13 @@ const CasinoApp = {
 
     placeSicboBet(betId, cellElement) {
         if (this.points < this.currentChip) {
-            alert("積分不足！");
+            this.showAlert("積分不足", "您的餘額不足以進行下注！");
             return;
         }
+        
+        // 點擊回饋特效
+        cellElement.classList.add('scale-95', 'opacity-80', 'transition-all');
+        setTimeout(() => cellElement.classList.remove('scale-95', 'opacity-80'), 150);
         
         // 扣款
         this.points -= this.currentChip;
@@ -426,7 +473,7 @@ const CasinoApp = {
     spinSicbo() {
         if (this.isSpinning) return;
         if (Object.keys(this.sicboBets).length === 0) {
-            alert("請先下注！");
+            this.showAlert("請先下注", "您還沒有放置任何籌碼喔！");
             return;
         }
 
@@ -520,10 +567,10 @@ const CasinoApp = {
 
             setTimeout(() => {
                 if (totalWin > 0) {
-                    alert(`骰子開出 ${results.join(', ')}，總和 ${sum}！\n恭喜您贏得了 ${totalWin} 積分！`);
+                    this.showAlert(`總和 ${sum} (${results.join(', ')})`, `恭喜您贏得了 ${totalWin.toLocaleString()} 積分！`, true);
                     this.points += totalWin;
                 } else {
-                    alert(`骰子開出 ${results.join(', ')}，總和 ${sum}！\n很可惜，您這次未中獎。`);
+                    this.showAlert(`總和 ${sum} (${results.join(', ')})`, `很可惜，您這次未中獎。`, false);
                 }
 
                 document.getElementById('player-wallet').innerText = this.points.toLocaleString();
@@ -561,7 +608,7 @@ const CasinoApp = {
     spinRoulette() {
         if (this.isSpinning) return;
         if (Object.keys(this.rouletteBets).length === 0) {
-            alert("請先下注！");
+            this.showAlert("請先下注", "您還沒有放置任何籌碼喔！");
             return;
         }
 
@@ -636,10 +683,10 @@ const CasinoApp = {
             setTimeout(() => {
                 // 更新結果
                 if (totalWin > 0) {
-                    alert(`輪盤開出 ${winningStr}！\n恭喜您贏得了 ${totalWin} 積分！`);
+                    this.showAlert(`輪盤開出 ${winningStr}！`, `恭喜您贏得了 ${totalWin.toLocaleString()} 積分！`, true);
                     this.points += totalWin;
                 } else {
-                    alert(`輪盤開出 ${winningStr}！\n很可惜，您這次未中獎。`);
+                    this.showAlert(`輪盤開出 ${winningStr}！`, `很可惜，您這次未中獎。`, false);
                 }
 
                 document.getElementById('player-wallet').innerText = this.points.toLocaleString();
