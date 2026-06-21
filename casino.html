@@ -22,8 +22,8 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
     <!-- 主程式 -->
-    <script src="casino.js" defer></script>
-    <script src="mary.js" defer></script>
+    <script src="casino.js?v=2" defer></script>
+    <script src="mary.js?v=2" defer></script>
 </head>
 <body class="bg-[#0D131A] min-h-screen text-white font-['Outfit'] pb-safe overflow-x-hidden">
 
@@ -35,9 +35,14 @@
         
         <!-- Header -->
         <header class="bg-[#0A0F16] border-b border-white/10 p-3 sticky top-0 z-50 flex justify-between items-center shadow-md">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-500 to-yellow-200 flex items-center justify-center text-black font-bold">C</div>
-            <div class="font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 tracking-widest text-lg">CASINO LOBBY</div>
+        <div class="flex items-center gap-3">
+            <button onclick="window.location.href='index.html'" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors" title="返回報名頁面">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-500 to-yellow-200 flex items-center justify-center text-black font-bold shadow-[0_0_10px_rgba(234,179,8,0.3)]">C</div>
+                <div class="font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 tracking-widest text-lg">CASINO</div>
+            </div>
         </div>
         <div class="flex flex-col items-end">
             <div class="text-[10px] text-gray-400 font-bold mb-0.5">目前積分</div>
