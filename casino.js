@@ -32,6 +32,7 @@ const CasinoApp = {
 
             await this.fetchPoints();
             this.initRouletteBoard();
+            this.drawRouletteWheel();
             
             // 預設選取籌碼 10
             this.selectChip(10);
@@ -96,44 +97,125 @@ const CasinoApp = {
     // ==========================================
     // ROULETTE LOGIC
     // ==========================================
+    drawRouletteWheel() {
+        const wheel = document.getElementById('roulette-wheel');
+        wheel.innerHTML = '';
+        
+        // 美式輪盤順序 (0, 00 與 1-36)
+        const sequence = ['0','28','9','26','30','11','7','20','32','17','5','22','34','15','3','24','36','13','1','00','27','10','25','29','12','8','19','31','18','6','21','33','16','4','23','35','14','2'];
+        const reds = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+        const anglePerSlice = 360 / 38;
+        
+        // 繪製背景 (Conic Gradient)
+        let gradientParts = [];
+        for (let i = 0; i < 38; i++) {
+            const numStr = sequence[i];
+            const num = parseInt(numStr);
+            let color = '#111827'; // Black
+            if (numStr === '0' || numStr === '00') color = '#16a34a'; // Green
+            else if (reds.includes(num)) color = '#dc2626'; // Red
+            
+            // 使用小數點以防出現接縫
+            gradientParts.push(`${color} ${(i * anglePerSlice).toFixed(2)}deg ${((i + 1) * anglePerSlice).toFixed(2)}deg`);
+        }
+        
+        // 將起始角度微調半個 slice，讓數字落在扇形正中央
+        wheel.style.background = `conic-gradient(from ${-(anglePerSlice / 2)}deg, ${gradientParts.join(', ')})`;
+        
+        // 放置數字
+        for (let i = 0; i < 38; i++) {
+            const numStr = sequence[i];
+            const angle = i * anglePerSlice;
+            const numEl = document.createElement('div');
+            // 設定為絕對定位，並將變形原點設在中心，文字放在最上方邊緣
+            numEl.className = 'absolute top-0 left-0 w-full h-full pointer-events-none flex justify-center text-white font-black text-sm drop-shadow-md';
+            numEl.style.transform = `rotate(${angle}deg)`;
+            numEl.innerHTML = `<span style="padding-top: 6px;">${numStr}</span>`;
+            wheel.appendChild(numEl);
+        }
+    },
+
     initRouletteBoard() {
         const board = document.getElementById('roulette-board');
         board.innerHTML = '';
         
-        // 經典輪盤配置 (3欄 12列，左邊放0)
-        // 使用 CSS Grid 比較好排版
-        // 這裡建立一個簡單版網格
+        // 美式輪盤配置 (3欄 12列，左邊放 0 和 00)
         
-        // 0 (跨 3 rows)
+        // 0 與 00 的容器 (跨 3 rows)
+        const zeroContainer = document.createElement('div');
+        zeroContainer.className = 'grid grid-rows-2 gap-[1px] row-span-3 h-full';
+        
         const zeroCell = document.createElement('div');
-        zeroCell.className = 'roulette-cell cell-green row-span-3 rounded-l-md';
-        zeroCell.innerText = '0';
+        zeroCell.className = 'roulette-cell cell-green rounded-tl-md flex flex-col justify-center';
+        zeroCell.innerHTML = '<span>0</span>';
         zeroCell.onclick = () => this.placeRouletteBet('0', zeroCell);
-        board.appendChild(zeroCell);
         
-        // 數字 1-36 的容器 (Grid 12 col x 3 row)
+        const doubleZeroCell = document.createElement('div');
+        doubleZeroCell.className = 'roulette-cell cell-green rounded-bl-md flex flex-col justify-center';
+        doubleZeroCell.innerHTML = '<span>00</span>';
+        doubleZeroCell.onclick = () => this.placeRouletteBet('00', doubleZeroCell);
+        
+        zeroContainer.appendChild(zeroCell);
+        zeroContainer.appendChild(doubleZeroCell);
+        board.appendChild(zeroContainer);
+        
+        // 數字 1-36 與橫列(Columns) 的容器 (Grid 13 col x 3 row)
+        // 多出 1 col 給 "2 to 1" (Column bets)
         const numbersGrid = document.createElement('div');
-        numbersGrid.className = 'grid grid-cols-12 grid-rows-3 gap-[1px]';
+        numbersGrid.className = 'grid grid-cols-[repeat(12,minmax(0,1fr))_auto] grid-rows-3 gap-[1px] relative';
         
-        // 輪盤數字排版順序（從左至右，由下至上：1,4,7... 在最下面）
-        // Row 1 (Top): 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36
-        // Row 2 (Mid): 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35
-        // Row 3 (Bot): 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34
         const reds = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
-        
         const topRow = [3,6,9,12,15,18,21,24,27,30,33,36];
         const midRow = [2,5,8,11,14,17,20,23,26,29,32,35];
         const botRow = [1,4,7,10,13,16,19,22,25,28,31,34];
         
-        [topRow, midRow, botRow].forEach(row => {
-            row.forEach(num => {
+        [topRow, midRow, botRow].forEach((row, rowIndex) => {
+            row.forEach((num, colIndex) => {
                 const cell = document.createElement('div');
                 const isRed = reds.includes(num);
-                cell.className = `roulette-cell ${isRed ? 'cell-red' : 'cell-black'}`;
-                cell.innerText = num;
-                cell.onclick = () => this.placeRouletteBet(`num_${num}`, cell);
+                cell.className = `roulette-cell ${isRed ? 'cell-red' : 'cell-black'} relative`;
+                cell.innerHTML = `<span>${num}</span>`;
+                // 直接點擊本體為單一數字
+                cell.onclick = (e) => {
+                    // 避免點擊到邊界 target 時觸發單一數字
+                    if(e.target === cell || e.target.tagName === 'SPAN') {
+                        this.placeRouletteBet(`num_${num}`, cell);
+                    }
+                };
+
+                // 加入 Split 與 Corner 感應區 (除最後一行/列外)
+                if (colIndex < 11) {
+                    // Vertical Split (左右號碼)
+                    const vSplit = document.createElement('div');
+                    vSplit.className = 'touch-target-v';
+                    vSplit.onclick = (e) => { e.stopPropagation(); this.placeRouletteBet(`split_${num}_${num+3}`, vSplit); };
+                    cell.appendChild(vSplit);
+                }
+                if (rowIndex < 2) {
+                    // Horizontal Split (上下號碼)
+                    const hSplit = document.createElement('div');
+                    hSplit.className = 'touch-target-h';
+                    hSplit.onclick = (e) => { e.stopPropagation(); this.placeRouletteBet(`split_${num}_${num-1}`, hSplit); };
+                    cell.appendChild(hSplit);
+                }
+                if (colIndex < 11 && rowIndex < 2) {
+                    // Corner (四角號碼)
+                    const corner = document.createElement('div');
+                    corner.className = 'touch-target-c';
+                    corner.onclick = (e) => { e.stopPropagation(); this.placeRouletteBet(`corner_${num}_${num-1}_${num+3}_${num+2}`, corner); };
+                    cell.appendChild(corner);
+                }
+
                 numbersGrid.appendChild(cell);
             });
+            
+            // 該 row 最後加上 2 to 1 (Column bet)
+            const colBet = document.createElement('div');
+            colBet.className = 'roulette-cell cell-trans text-[10px] px-1';
+            colBet.innerText = '2 to 1';
+            const colId = rowIndex === 0 ? 'col3' : (rowIndex === 1 ? 'col2' : 'col1');
+            colBet.onclick = () => this.placeRouletteBet(colId, colBet);
+            numbersGrid.appendChild(colBet);
         });
         
         board.appendChild(numbersGrid);
