@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    Casino Module Styles
    ========================================================================== */
 
@@ -123,8 +123,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, #eab308, #854d0e);
     border: 1px dashed #fef08a;
@@ -132,7 +132,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 900;
-    font-size: 8px;
+    font-size: 10px; transform-origin: center;
     color: white;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
     box-shadow: 0 2px 4px rgba(0,0,0,0.6);

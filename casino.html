@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Casino 測試大廳</title>
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    <link rel="preload" href="images/mary_banner.jpg" as="image">
+    <link rel="preload" href="images/roulette_banner.jpg" as="image">
+    <link rel="preload" href="images/sicbo_banner.jpg" as="image">
     
     <!-- 效能優化與外部資源 -->
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
@@ -14,7 +18,7 @@
 
     <!-- CSS / Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="casino.css">
+    <link rel="stylesheet" href="casino.css?v=3">
     
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@0.575.0/dist/umd/lucide.js" defer></script>
@@ -22,8 +26,8 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
     <!-- 主程式 -->
-    <script src="casino.js?v=2" defer></script>
-    <script src="mary.js?v=2" defer></script>
+    <script src="casino.js?v=3" defer></script>
+    <script src="mary.js?v=3" defer></script>
 </head>
 <body class="bg-[#0D131A] min-h-screen text-white font-['Outfit'] pb-safe overflow-x-hidden">
 
@@ -83,7 +87,7 @@
                 
                 <!-- 遊戲入口：小瑪莉 -->
                 <button onclick="CasinoApp.openGame('mary')" class="w-full relative overflow-hidden rounded-2xl group border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#1E3052] to-[#0D131A] h-32">
-                    <div class="absolute inset-0 bg-[url('images/mary_banner.png')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
+                    <div class="absolute inset-0 bg-[url('images/mary_banner.jpg')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
                     <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
                     <div class="p-6 flex items-center justify-between relative z-10 h-full">
                         <div class="text-left">
@@ -98,7 +102,7 @@
 
                 <!-- 遊戲入口：經典輪盤 -->
                 <button onclick="CasinoApp.openGame('roulette')" class="w-full relative overflow-hidden rounded-2xl group border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#1E3052] to-[#0D131A] h-32">
-                    <div class="absolute inset-0 bg-[url('images/roulette_banner.png')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
+                    <div class="absolute inset-0 bg-[url('images/roulette_banner.jpg')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
                     <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
                     <div class="p-6 flex items-center justify-between relative z-10 h-full">
                         <div class="text-left">
@@ -116,7 +120,7 @@
 
                 <!-- 遊戲入口：骰寶 -->
                 <button onclick="CasinoApp.openGame('sicbo')" class="w-full relative overflow-hidden rounded-2xl group border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#1E3052] to-[#0D131A] h-32">
-                    <div class="absolute inset-0 bg-[url('images/sicbo_banner.png')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
+                    <div class="absolute inset-0 bg-[url('images/sicbo_banner.jpg')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
                     <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
                     <div class="p-6 flex items-center justify-between relative z-10 h-full">
                         <div class="text-left">
@@ -199,7 +203,7 @@
                         <div id="mary-action-area" class="flex-1 flex justify-center gap-2">
                             <button onclick="maryRandomBet()" class="mary-phys-btn bg-[#aa44ff] border-b-4 border-[#7700cc] rounded-md px-4 py-2 text-[11px] font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_10px_rgba(170,68,255,0.5)]">隨機押注</button>
                         </div>
-                        <button id="mary-btn-start" onclick="maryStartSpin()" class="mary-phys-btn bg-[#00ff88] border-b-4 border-[#00aa55] rounded-xl px-6 py-3 text-lg font-black text-[#004d00] shadow-[0_4px_0_#00aa55,_0_8px_15px_rgba(0,0,0,0.4)] hover:brightness-110 active:translate-y-1 active:shadow-none transition-all">START</button>
+                        <button id="mary-btn-start" onclick="maryStartSpin()" class="mary-phys-btn bg-[#00ff88] border-b-4 border-[#00aa55] rounded-xl px-6 py-3 text-lg font-black text-[#004d00] shadow-[0_4px_0_#00aa55,_0_8px_15px_rgba(0,0,0,0.4)] hover:brightness-110 active:translate-y-1 active:shadow-none transition-all">開始</button>
                     </div>
                     <div id="mary-double-result" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-black/95 border-4 border-[#ffcc00] rounded-2xl p-6 text-center shadow-[0_0_50px_rgba(255,200,0,0.5)]">
                         <div id="mary-double-num" class="text-6xl font-black text-[#ffcc00] mb-2" style="font-family: 'Courier New', monospace;">7</div>
@@ -315,7 +319,7 @@
                     <div class="text-xs text-gray-400 font-bold">選擇籌碼</div>
                     <div class="flex gap-2">
                         <button onclick="CasinoApp.handleClear()" class="text-xs px-3 py-1.5 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 active:scale-95 transition border border-gray-600">清除</button>
-                        <button onclick="CasinoApp.handleSpin()" class="text-xs px-4 py-1.5 rounded bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-black font-bold hover:brightness-110 active:scale-95 transition shadow-lg">SPIN</button>
+                        <button onclick="CasinoApp.handleSpin()" class="text-xs px-4 py-1.5 rounded bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-black font-bold hover:brightness-110 active:scale-95 transition shadow-lg">開始</button>
                     </div>
                 </div>
                 <div class="flex justify-between gap-1 overflow-x-auto hide-scrollbar py-1">

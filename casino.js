@@ -1,4 +1,4 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbzTiALv2VOAvtuUgFx623KQgkvlmkkEc-bSgFQXiLqcxWpi9FvSrSxkSibjdRwO7tVn/exec";
+﻿const GAS_URL = "https://script.google.com/macros/s/AKfycbzTiALv2VOAvtuUgFx623KQgkvlmkkEc-bSgFQXiLqcxWpi9FvSrSxkSibjdRwO7tVn/exec";
 const LIFF_ID = "2008678090-aXTesgDK";
 const ADMIN_USER_IDS = ["U612df670c4d7d3cde0d599ab5008451f"];
 
@@ -27,8 +27,8 @@ const CasinoApp = {
                 userId: profile.userId,
                 displayName: profile.displayName
             };
-            // 正式開放：不再限制管理員才能進入
-            await this.fetchPoints();
+            // 非同步獲取點數，避免卡住 Loading 畫面
+            this.fetchPoints();
             this.initRouletteBoard();
             this.drawRouletteWheel();
             this.initSicboBoard();
@@ -101,6 +101,7 @@ const CasinoApp = {
     },
 
     handleSpin() {
+        document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
         if (this.currentView === 'roulette') {
             this.spinRoulette();
         } else if (this.currentView === 'sicbo') {
