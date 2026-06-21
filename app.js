@@ -2528,16 +2528,16 @@ function renderDetailLists(data) {
 
         let nameSuffix = '';
         if (total > 1) {
-            nameSuffix = ` <span class="text-gray-600 font-bold">*${total}</span>`;
+            nameSuffix = ` <span class="text-[#9CA3AF] font-bold">*${total}</span>`;
         }
 
         let subHtml = '';
         if (guestData.length > 0) {
-            subHtml = guestData.map(g => `<div class="pl-8 text-gray-400 text-sm mt-0.5">來賓：${escapeHtml(g.name)}</div>`).join('');
+            subHtml = guestData.map(g => `<div class="pl-8 text-[#94A3B8] text-sm mt-0.5">來賓：${escapeHtml(g.name)}</div>`).join('');
         } else {
             const guestNameStr = getField(row, 'guestName');
             if (guestNameStr && guestNameStr !== '無') {
-                subHtml = `<div class="pl-8 text-gray-400 text-sm mt-0.5">來賓：${escapeHtml(guestNameStr)}</div>`;
+                subHtml = `<div class="pl-8 text-[#94A3B8] text-sm mt-0.5">來賓：${escapeHtml(guestNameStr)}</div>`;
             }
         }
 
@@ -2559,9 +2559,9 @@ function renderDetailLists(data) {
         let maryNameColor = '';
         if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
             const rankIndex = appState.jackpotRankings.findIndex(r => r.name === name);
-            if (rankIndex === 0) { maryMedal = '🥇'; maryNameColor = 'color:#d97706;font-weight:800;'; }
-            else if (rankIndex === 1) { maryMedal = '🥈'; maryNameColor = 'color:#64748b;font-weight:800;'; }
-            else if (rankIndex === 2) { maryMedal = '🥉'; maryNameColor = 'color:#b45309;font-weight:800;'; }
+            if (rankIndex === 0) { maryMedal = '🥇'; maryNameColor = 'color:#FDE047;font-weight:800;'; }
+            else if (rankIndex === 1) { maryMedal = '🥈'; maryNameColor = 'color:#E2E8F0;font-weight:800;'; }
+            else if (rankIndex === 2) { maryMedal = '🥉'; maryNameColor = 'color:#F87171;font-weight:800;'; }
         }
 
         let nameDisplayHtml = '';
@@ -2571,7 +2571,7 @@ function renderDetailLists(data) {
             const roleNames = roles.map(r => r.roleName).join('、');
             nameDisplayHtml = `<span class="font-bold text-base inline-flex items-center flex-wrap" style="color:${r.color};"><span class="mr-1">${icons}</span>${safeName}<span class="text-[12px] ml-1.5 flex items-center">${roleNames}</span></span>`;
         } else {
-            const finalStyle = maryNameColor ? maryNameColor : 'color:#EFECE5;';
+            const finalStyle = maryNameColor ? maryNameColor : 'color:#F8FAFC;';
             nameDisplayHtml = `<span class="font-bold text-base inline-flex items-center flex-wrap" style="${finalStyle}">${safeName}</span>`;
         }
 
@@ -3635,17 +3635,17 @@ function getParticipantRoles(pName, event) {
     const special = (appState.settings && appState.settings.specialRoles) ? appState.settings.specialRoles : {};
 
     if (special.president && cleanName === special.president) {
-        roles.push({ type: 'president', icon: '👑', roleName: '會長', label: '👑 會長', textLabel: '[👑會長]', color: '#d97706' });
+        roles.push({ type: 'president', icon: '👑', roleName: '會長', label: '👑 會長', textLabel: '[👑會長]', color: '#F59E0B' });
     }
 
     if (special.vicePresident && cleanName === special.vicePresident) {
-        roles.push({ type: 'vicePresident', icon: '👸', roleName: '輔導會長', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#9333ea' });
+        roles.push({ type: 'vicePresident', icon: '👸', roleName: '輔導會長', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#C084FC' });
     }
 
     if (event && event.organizer) {
         const organizers = event.organizer.split(/[、,，\s]+/).map(o => o.trim()).filter(Boolean);
         if (organizers.includes(cleanName)) {
-            roles.push({ type: 'host', icon: '🍻', roleName: '爐主', label: '🍻 爐主', textLabel: '[🍻爐主]', color: '#ea580c' });
+            roles.push({ type: 'host', icon: '🍻', roleName: '爐主', label: '🍻 爐主', textLabel: '[🍻爐主]', color: '#FB923C' });
         }
     }
 
@@ -3660,7 +3660,7 @@ function getParticipantRoles(pName, event) {
 
         if (month && special.birthdays && special.birthdays[month]) {
             if (special.birthdays[month].includes(cleanName)) {
-                roles.push({ type: 'birthday', icon: '🎂', roleName: `${month}月壽星`, label: `🎂 ${month}月壽星`, textLabel: `[🎂${month}月壽星]`, color: '#db2777' });
+                roles.push({ type: 'birthday', icon: '🎂', roleName: `${month}月壽星`, label: `🎂 ${month}月壽星`, textLabel: `[🎂${month}月壽星]`, color: '#FB7185' });
             }
         }
     }
@@ -4005,9 +4005,9 @@ async function generateEventCanvas(e, data, stats) {
       .list-item { padding-bottom: 0.65em; margin-bottom: 0.65em; border-bottom: 1px dashed rgba(212,175,122,0.2); }
       .list-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
       .item-title { display: flex; align-items: center; font-weight: bold; margin-bottom: 0.15em; flex-wrap: wrap; font-size: 1.1em; }
-      .item-title .name { margin-right: 0.5em; color: #F3E5AB; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
-      .item-title .count { color: #EAD7BA; font-size: 0.85em; margin-left: 0.5em; font-weight: bold; font-family: monospace; }
-      .item-detail { font-size: 0.85em; color: #A89580; margin-left: 2em; padding-top: 0.2em; line-height: 1.4; }
+      .item-title .name { margin-right: 0.5em; color: #F8FAFC; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+      .item-title .count { color: #9CA3AF; font-size: 0.85em; margin-left: 0.5em; font-weight: bold; font-family: monospace; }
+      .item-detail { font-size: 0.85em; color: #94A3B8; margin-left: 2em; padding-top: 0.2em; line-height: 1.4; }
       .tag { font-size: 0.95em; font-weight: bold; margin-left: 0.5em; display: inline-flex; align-items: center; letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
       .tag-orange { color: #F97316; } .tag-pink { color: #EC4899; } .tag-purple { color: #D8B4FE; } .tag-gold { color: #EAB308; }
       .sponsor-card { padding: 1.25em; background: linear-gradient(180deg, rgba(34,46,68,1) 0%, rgba(20,28,42,1) 100%); border-radius: 8px; margin-bottom: 0; }
@@ -4060,9 +4060,9 @@ async function generateEventCanvas(e, data, stats) {
             let maryMedal = '';
             if (appState.jackpotRankings && appState.jackpotRankings.length > 0) {
                 const rankIndex = appState.jackpotRankings.findIndex(r => r.name === p.name);
-                if (rankIndex === 0) { nameColor = '#f59e0b'; maryMedal = '🥇'; }
-                else if (rankIndex === 1) { nameColor = '#94a3b8'; maryMedal = '🥈'; }
-                else if (rankIndex === 2) { nameColor = '#b45309'; maryMedal = '🥉'; }
+                if (rankIndex === 0) { nameColor = '#FDE047'; maryMedal = '🥇'; }
+                else if (rankIndex === 1) { nameColor = '#E2E8F0'; maryMedal = '🥈'; }
+                else if (rankIndex === 2) { nameColor = '#F87171'; maryMedal = '🥉'; }
             }
 
             html += `<div class="list-item"><div class="item-title">`;
@@ -4074,7 +4074,7 @@ async function generateEventCanvas(e, data, stats) {
                 const roleNames = roles.map(r => r.roleName).join('、');
                 html += `<span class="name" style="color:${r.color};"><span style="font-size:1.15em;margin-right:2px">${icons}</span>${escapeHtml(prefix)}${escapeHtml(p.name)}<span class="tag" style="color:${r.color};margin-left:0.3em;">${roleNames}</span></span>`;
             } else {
-                const finalNameColor = nameColor !== 'inherit' ? nameColor : '#F3E5AB';
+                const finalNameColor = nameColor !== 'inherit' ? nameColor : '#F8FAFC';
                 html += `<span class="name" style="color:${finalNameColor};">${escapeHtml(prefix)}${escapeHtml(p.name)}</span>`;
             }
 
