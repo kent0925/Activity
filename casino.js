@@ -10,6 +10,11 @@ const CasinoApp = {
     // Roulette
     rouletteBets: {}, // { "num_8": 20, "red": 50, ... }
     
+    // Sic Bo
+    sicboBets: {},
+    
+    currentView: 'lobby',
+    
     async init() {
         try {
             await liff.init({ liffId: LIFF_ID });
@@ -33,6 +38,7 @@ const CasinoApp = {
             await this.fetchPoints();
             this.initRouletteBoard();
             this.drawRouletteWheel();
+            this.initSicboBoard();
             
             // 預設選取籌碼 10
             this.selectChip(10);
@@ -72,6 +78,7 @@ const CasinoApp = {
         document.getElementById('view-sicbo').classList.add('hidden');
         
         document.getElementById(`view-${gameType}`).classList.remove('hidden');
+        this.currentView = gameType;
         
         // 顯示底部籌碼列
         document.getElementById('casino-footer').classList.remove('translate-y-full');
@@ -85,6 +92,23 @@ const CasinoApp = {
         
         // 隱藏底部籌碼列
         document.getElementById('casino-footer').classList.add('translate-y-full');
+        this.currentView = 'lobby';
+    },
+
+    handleSpin() {
+        if (this.currentView === 'roulette') {
+            this.spinRoulette();
+        } else if (this.currentView === 'sicbo') {
+            this.spinSicbo();
+        }
+    },
+
+    handleClear() {
+        if (this.currentView === 'roulette') {
+            this.clearBets();
+        } else if (this.currentView === 'sicbo') {
+            this.clearSicboBets();
+        }
     },
 
     selectChip(val) {
@@ -147,11 +171,13 @@ const CasinoApp = {
         
         const zeroCell = document.createElement('div');
         zeroCell.className = 'roulette-cell cell-green rounded-tl-md flex flex-col justify-center';
+        zeroCell.id = 'roulette-cell-0';
         zeroCell.innerHTML = '<span>0</span>';
         zeroCell.onclick = () => this.placeRouletteBet('0', zeroCell);
         
         const doubleZeroCell = document.createElement('div');
         doubleZeroCell.className = 'roulette-cell cell-green rounded-bl-md flex flex-col justify-center';
+        doubleZeroCell.id = 'roulette-cell-00';
         doubleZeroCell.innerHTML = '<span>00</span>';
         doubleZeroCell.onclick = () => this.placeRouletteBet('00', doubleZeroCell);
         
@@ -174,6 +200,7 @@ const CasinoApp = {
                 const cell = document.createElement('div');
                 const isRed = reds.includes(num);
                 cell.className = `roulette-cell ${isRed ? 'cell-red' : 'cell-black'} relative`;
+                cell.id = 'roulette-cell-' + num;
                 cell.innerHTML = `<span>${num}</span>`;
                 // 直接點擊本體為單一數字
                 cell.onclick = (e) => {
@@ -277,21 +304,245 @@ const CasinoApp = {
         // 記錄注碼
         this.rouletteBets[betId] = (this.rouletteBets[betId] || 0) + this.currentChip;
         
-        // 顯示在畫面上 (尋找是否已經有籌碼元素，沒有則建立)
+        // 顯示在畫面上
         let chipEl = cellElement.querySelector('.placed-chip');
         if (!chipEl) {
             chipEl = document.createElement('div');
             chipEl.className = 'placed-chip';
             cellElement.appendChild(chipEl);
         }
-        // 更新顯示金額 (如果超過 1k 用 1k 顯示)
         let displayVal = this.rouletteBets[betId];
         if (displayVal >= 1000) displayVal = (displayVal/1000).toFixed(1) + 'k';
         chipEl.innerText = displayVal;
     },
 
+    // ==========================================
+    // SIC BO LOGIC
+    // ==========================================
+    initSicboBoard() {
+        const board = document.getElementById('sicbo-board');
+        board.innerHTML = '';
+
+        const createRow = (colsClass) => {
+            const row = document.createElement('div');
+            row.className = `grid ${colsClass} gap-[1px]`;
+            return row;
+        };
+
+        const createCell = (id, label, subLabel, row) => {
+            const cell = document.createElement('div');
+            cell.className = 'roulette-cell cell-trans flex flex-col justify-center items-center py-2 relative';
+            cell.id = `sicbo-cell-${id}`;
+            cell.innerHTML = `<div class="font-bold text-sm sm:text-base">${label}</div>
+                              <div class="text-[8px] sm:text-[10px] text-red-300 opacity-80 mt-1">${subLabel}</div>`;
+            cell.onclick = () => this.placeSicboBet(id, cell);
+            row.appendChild(cell);
+        };
+
+        // Row 1: 小 / 全圍 / 大
+        const row1 = createRow('grid-cols-[1fr_auto_1fr]');
+        createCell('small', '小 SMALL', '4-10 (1賠1)', row1);
+        createCell('any_triple', '全圍 ANY TRIPLE', '1賠24', row1);
+        createCell('big', '大 BIG', '11-17 (1賠1)', row1);
+        board.appendChild(row1);
+
+        // Row 2: 特定圍骰 (Specific Triples)
+        const row2 = createRow('grid-cols-6');
+        [1,2,3,4,5,6].forEach(n => createCell(`triple_${n}`, `${n}${n}${n}`, '1賠150', row2));
+        board.appendChild(row2);
+
+        // Row 3: 對子 (Specific Doubles)
+        const row3 = createRow('grid-cols-6');
+        [1,2,3,4,5,6].forEach(n => createCell(`double_${n}`, `${n}${n}`, '1賠8', row3));
+        board.appendChild(row3);
+
+        // Row 4: 總和 (Total Sums)
+        const row4 = createRow('grid-cols-7');
+        const sumsRow1 = [4, 5, 6, 7, 8, 9, 10];
+        const sumsRow2 = [11, 12, 13, 14, 15, 16, 17];
+        const getSumOdds = (sum) => {
+            if (sum === 4 || sum === 17) return '1賠50';
+            if (sum === 5 || sum === 16) return '1賠18';
+            if (sum === 6 || sum === 15) return '1賠14';
+            if (sum === 7 || sum === 14) return '1賠12';
+            if (sum === 8 || sum === 13) return '1賠8';
+            return '1賠6';
+        };
+        sumsRow1.forEach(sum => createCell(`sum_${sum}`, sum, getSumOdds(sum), row4));
+        const row5 = createRow('grid-cols-7');
+        sumsRow2.forEach(sum => createCell(`sum_${sum}`, sum, getSumOdds(sum), row5));
+        board.appendChild(row4);
+        board.appendChild(row5);
+
+        // Row 5: 單骰 (Single Dice)
+        const row6 = createRow('grid-cols-6');
+        [1,2,3,4,5,6].forEach(n => createCell(`single_${n}`, `骰 ${n}`, '1賠1', row6));
+        board.appendChild(row6);
+    },
+
+    placeSicboBet(betId, cellElement) {
+        if (this.points < this.currentChip) {
+            alert("積分不足！");
+            return;
+        }
+        
+        // 扣款
+        this.points -= this.currentChip;
+        document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+        
+        // 記錄注碼
+        this.sicboBets[betId] = (this.sicboBets[betId] || 0) + this.currentChip;
+        
+        // 顯示在畫面上
+        let chipEl = cellElement.querySelector('.placed-chip');
+        if (!chipEl) {
+            chipEl = document.createElement('div');
+            chipEl.className = 'placed-chip';
+            cellElement.appendChild(chipEl);
+        }
+        let displayVal = this.sicboBets[betId];
+        if (displayVal >= 1000) displayVal = (displayVal/1000).toFixed(1) + 'k';
+        chipEl.innerText = displayVal;
+    },
+
+    clearSicboBets() {
+        if (this.isSpinning) return;
+        
+        document.querySelectorAll('.winning-cell').forEach(el => el.classList.remove('winning-cell'));
+        
+        let totalBet = 0;
+        for (const key in this.sicboBets) {
+            totalBet += this.sicboBets[key];
+        }
+        if (totalBet > 0) {
+            this.points += totalBet;
+            document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+        }
+        
+        this.sicboBets = {};
+        document.getElementById('sicbo-board').querySelectorAll('.placed-chip').forEach(el => el.remove());
+    },
+
+    spinSicbo() {
+        if (this.isSpinning) return;
+        if (Object.keys(this.sicboBets).length === 0) {
+            alert("請先下注！");
+            return;
+        }
+
+        document.querySelectorAll('.winning-cell').forEach(el => el.classList.remove('winning-cell'));
+        this.isSpinning = true;
+
+        // 開始骰子動畫
+        const diceEls = [1, 2, 3].map(i => document.getElementById(`dice-${i}`));
+        let animationInterval = setInterval(() => {
+            diceEls.forEach(el => {
+                el.innerText = Math.floor(Math.random() * 6) + 1;
+                el.style.transform = `scale(${0.8 + Math.random() * 0.4}) rotate(${Math.random() * 40 - 20}deg)`;
+            });
+        }, 100);
+
+        // 3 秒後停止並結算
+        setTimeout(() => {
+            clearInterval(animationInterval);
+            
+            // 決定最終點數
+            const results = [
+                Math.floor(Math.random() * 6) + 1,
+                Math.floor(Math.random() * 6) + 1,
+                Math.floor(Math.random() * 6) + 1
+            ];
+            
+            diceEls.forEach((el, index) => {
+                el.innerText = results[index];
+                el.style.transform = 'scale(1) rotate(0deg)';
+                el.classList.add('shadow-[0_0_15px_rgba(220,38,38,0.8)]');
+            });
+
+            setTimeout(() => diceEls.forEach(el => el.classList.remove('shadow-[0_0_15px_rgba(220,38,38,0.8)]')), 1000);
+
+            const sum = results.reduce((a, b) => a + b, 0);
+            const counts = {};
+            results.forEach(r => counts[r] = (counts[r] || 0) + 1);
+            
+            const isTriple = Object.values(counts).includes(3);
+            const isSmall = sum >= 4 && sum <= 10 && !isTriple;
+            const isBig = sum >= 11 && sum <= 17 && !isTriple;
+
+            let totalWin = 0;
+            const winningIds = [];
+
+            if (isSmall) winningIds.push('small');
+            if (isBig) winningIds.push('big');
+            if (isTriple) winningIds.push('any_triple');
+            
+            winningIds.push(`sum_${sum}`);
+
+            for (const [numStr, count] of Object.entries(counts)) {
+                const num = parseInt(numStr);
+                winningIds.push(`single_${num}`);
+                if (count >= 2) winningIds.push(`double_${num}`);
+                if (count === 3) winningIds.push(`triple_${num}`);
+            }
+
+            // Highlight winning cells
+            winningIds.forEach(id => {
+                const el = document.getElementById(`sicbo-cell-${id}`);
+                if (el) el.classList.add('winning-cell');
+            });
+
+            // 計算派彩
+            for (const [betId, amount] of Object.entries(this.sicboBets)) {
+                let winRatio = 0;
+                if (!winningIds.includes(betId)) continue;
+
+                if (betId === 'small' || betId === 'big') winRatio = 2; // 1賠1 -> 本金x2
+                else if (betId === 'any_triple') winRatio = 25; // 1賠24 -> 本金x25
+                else if (betId.startsWith('triple_')) winRatio = 151; // 1賠150 -> 本金x151
+                else if (betId.startsWith('double_')) winRatio = 9; // 1賠8 -> 本金x9
+                else if (betId.startsWith('single_')) {
+                    const singleNum = parseInt(betId.split('_')[1]);
+                    const occurrences = counts[singleNum] || 0;
+                    winRatio = occurrences + 1; // 1顆賠1, 2顆賠2, 3顆賠3 (+1本金)
+                }
+                else if (betId.startsWith('sum_')) {
+                    const sumBet = parseInt(betId.split('_')[1]);
+                    if (sumBet === 4 || sumBet === 17) winRatio = 51;
+                    else if (sumBet === 5 || sumBet === 16) winRatio = 19;
+                    else if (sumBet === 6 || sumBet === 15) winRatio = 15;
+                    else if (sumBet === 7 || sumBet === 14) winRatio = 13;
+                    else if (sumBet === 8 || sumBet === 13) winRatio = 9;
+                    else winRatio = 7;
+                }
+
+                totalWin += amount * winRatio;
+            }
+
+            setTimeout(() => {
+                if (totalWin > 0) {
+                    alert(`骰子開出 ${results.join(', ')}，總和 ${sum}！\n恭喜您贏得了 ${totalWin} 積分！`);
+                    this.points += totalWin;
+                } else {
+                    alert(`骰子開出 ${results.join(', ')}，總和 ${sum}！\n很可惜，您這次未中獎。`);
+                }
+
+                document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+                
+                this.sicboBets = {};
+                document.getElementById('sicbo-board').querySelectorAll('.placed-chip').forEach(el => el.remove());
+                
+                this.isSpinning = false;
+            }, 500);
+
+        }, 3000);
+    },
+
     clearBets() {
         if (this.isSpinning) return;
+        
+        // 移除所有中獎特效
+        document.querySelectorAll('.winning-cell').forEach(el => el.classList.remove('winning-cell'));
+        
         // 返還積分
         let totalBet = 0;
         for (const key in this.rouletteBets) {
@@ -313,6 +564,9 @@ const CasinoApp = {
             alert("請先下注！");
             return;
         }
+
+        // 移除先前的中獎特效
+        document.querySelectorAll('.winning-cell').forEach(el => el.classList.remove('winning-cell'));
 
         this.isSpinning = true;
         const sequence = ['0','28','9','26','30','11','7','20','32','17','5','22','34','15','3','24','36','13','1','00','27','10','25','29','12','8','19','31','18','6','21','33','16','4','23','35','14','2'];
@@ -374,21 +628,28 @@ const CasinoApp = {
                 totalWin += amount * winRatio;
             }
 
-            // 更新結果
-            if (totalWin > 0) {
-                alert(`輪盤開出 ${winningStr}！\n恭喜您贏得了 ${totalWin} 積分！`);
-                this.points += totalWin;
-            } else {
-                alert(`輪盤開出 ${winningStr}！\n很可惜，您這次未中獎。`);
-            }
+            // 讓中獎位置發光
+            const winningCell = document.getElementById('roulette-cell-' + winningStr);
+            if (winningCell) winningCell.classList.add('winning-cell');
 
-            document.getElementById('player-wallet').innerText = this.points.toLocaleString();
-            
-            // 清空畫面籌碼 (不退回積分)
-            this.rouletteBets = {};
-            document.querySelectorAll('.placed-chip').forEach(el => el.remove());
-            
-            this.isSpinning = false;
+            // 延遲 500ms 讓玩家能看到發光特效，再跳出 alert
+            setTimeout(() => {
+                // 更新結果
+                if (totalWin > 0) {
+                    alert(`輪盤開出 ${winningStr}！\n恭喜您贏得了 ${totalWin} 積分！`);
+                    this.points += totalWin;
+                } else {
+                    alert(`輪盤開出 ${winningStr}！\n很可惜，您這次未中獎。`);
+                }
+
+                document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+                
+                // 清空畫面籌碼 (不退回積分)
+                this.rouletteBets = {};
+                document.querySelectorAll('.placed-chip').forEach(el => el.remove());
+                
+                this.isSpinning = false;
+            }, 500);
         }, 5050);
     }
 };
