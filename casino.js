@@ -357,6 +357,10 @@ const CasinoApp = {
     },
 
     placeRouletteBet(betId, cellElement) {
+        if (this.isSpinning) {
+            this.showTicker("遊戲進行中", "開獎期間無法下注喔！");
+            return;
+        }
         if (this.points < this.currentChip) {
             this.showAlert("積分不足", "您的餘額不足以進行下注！");
             return;
@@ -450,6 +454,10 @@ const CasinoApp = {
     },
 
     placeSicboBet(betId, cellElement) {
+        if (this.isSpinning) {
+            this.showTicker("遊戲進行中", "開獎期間無法下注喔！");
+            return;
+        }
         if (this.points < this.currentChip) {
             this.showAlert("積分不足", "您的餘額不足以進行下注！");
             return;
@@ -481,7 +489,9 @@ const CasinoApp = {
     clearSicboBets() {
         if (this.isSpinning) return;
         
-        document.querySelectorAll('.winning-cell').forEach(el => el.classList.remove('winning-cell'));
+        document.querySelectorAll('.winning-cell').forEach(el => {
+            el.classList.remove('winning-cell', 'winning-bet');
+        });
         
         let totalBet = 0;
         for (const key in this.sicboBets) {
@@ -499,11 +509,13 @@ const CasinoApp = {
     spinSicbo() {
         if (this.isSpinning) return;
         if (Object.keys(this.sicboBets).length === 0) {
-            this.showAlert("請先下注", "您還沒有放置任何籌碼喔！");
+            this.showTicker("請先下注", "您還沒有放置任何籌碼喔！");
             return;
         }
 
-        document.querySelectorAll('.winning-cell').forEach(el => el.classList.remove('winning-cell'));
+        document.querySelectorAll('.winning-cell').forEach(el => {
+            el.classList.remove('winning-cell', 'winning-bet');
+        });
         this.isSpinning = true;
 
         // 開始骰子動畫
@@ -561,7 +573,13 @@ const CasinoApp = {
             // Highlight winning cells
             winningIds.forEach(id => {
                 const el = document.getElementById(`sicbo-cell-${id}`);
-                if (el) el.classList.add('winning-cell');
+                if (el) {
+                    if (this.sicboBets[id] > 0) {
+                        el.classList.add('winning-cell', 'winning-bet');
+                    } else {
+                        el.classList.add('winning-cell');
+                    }
+                }
             });
 
             // 計算派彩
@@ -613,8 +631,9 @@ const CasinoApp = {
     clearBets() {
         if (this.isSpinning) return;
         
-        // 移除所有中獎特效
-        document.querySelectorAll('.winning-cell').forEach(el => el.classList.remove('winning-cell'));
+        document.querySelectorAll('.winning-cell').forEach(el => {
+            el.classList.remove('winning-cell', 'winning-bet');
+        });
         
         // 返還積分
         let totalBet = 0;
@@ -702,8 +721,38 @@ const CasinoApp = {
             }
 
             // 讓中獎位置發光
-            const winningCell = document.getElementById('roulette-cell-' + winningStr);
-            if (winningCell) winningCell.classList.add('winning-cell');
+            const winningIds = [winningStr];
+            if (winningStr !== '0' && winningStr !== '00') {
+                if (winningNum % 3 === 1) winningIds.push('col1');
+                if (winningNum % 3 === 2) winningIds.push('col2');
+                if (winningNum % 3 === 0) winningIds.push('col3');
+                if (winningNum >= 1 && winningNum <= 12) winningIds.push('1st12');
+                if (winningNum >= 13 && winningNum <= 24) winningIds.push('2nd12');
+                if (winningNum >= 25 && winningNum <= 36) winningIds.push('3rd12');
+                if (winningNum % 2 === 0) winningIds.push('even');
+                if (winningNum % 2 === 1) winningIds.push('odd');
+                if (reds.includes(winningNum)) winningIds.push('red');
+                if (!reds.includes(winningNum)) winningIds.push('black');
+                if (winningNum >= 1 && winningNum <= 18) winningIds.push('1to18');
+                if (winningNum >= 19 && winningNum <= 36) winningIds.push('19to36');
+            }
+            for (const betId of Object.keys(this.rouletteBets)) {
+                if (betId.startsWith('split_') || betId.startsWith('corner_')) {
+                    const nums = betId.split('_').slice(1);
+                    if (nums.includes(winningStr)) winningIds.push(betId);
+                }
+            }
+
+            winningIds.forEach(id => {
+                const el = document.getElementById(`roulette-cell-${id}`) || document.getElementById(`roulette-cell-num_${id}`);
+                if (el) {
+                    if (this.rouletteBets[id] || this.rouletteBets[`num_${id}`]) {
+                        el.classList.add('winning-cell', 'winning-bet');
+                    } else {
+                        el.classList.add('winning-cell');
+                    }
+                }
+            });
 
             // 延遲 500ms 讓玩家能看到發光特效，再跳出 alert
             setTimeout(() => {

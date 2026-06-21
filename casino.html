@@ -23,6 +23,7 @@
 
     <!-- 主程式 -->
     <script src="casino.js" defer></script>
+    <script src="mary.js" defer></script>
 </head>
 <body class="bg-[#0D131A] min-h-screen text-white font-['Outfit'] pb-safe overflow-x-hidden">
 
@@ -76,43 +77,46 @@
                 </div>
                 
                 <!-- 遊戲入口：小瑪莉 -->
-                <button onclick="CasinoApp.openGame('mary')" class="w-full relative overflow-hidden rounded-2xl group border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#1E3052] to-[#0D131A]">
-                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1596838132731-3301c3fd4317?q=80&w=600&auto=format&fit=crop')] opacity-20 mix-blend-overlay group-hover:opacity-40 transition-opacity bg-cover bg-center"></div>
-                    <div class="p-6 flex items-center justify-between relative z-10">
+                <button onclick="CasinoApp.openGame('mary')" class="w-full relative overflow-hidden rounded-2xl group border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#1E3052] to-[#0D131A] h-32">
+                    <div class="absolute inset-0 bg-[url('images/mary_banner.png')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
+                    <div class="p-6 flex items-center justify-between relative z-10 h-full">
                         <div class="text-left">
-                            <h3 class="text-2xl font-black text-[#F3E5AB] drop-shadow-md mb-1">小瑪莉</h3>
-                            <p class="text-xs text-gray-300">正宗台式懷舊水果盤</p>
+                            <h3 class="text-2xl font-black text-[#F3E5AB] drop-shadow-md mb-1 text-shadow-lg shadow-black">小瑪莉</h3>
+                            <p class="text-xs text-gray-300 font-bold">正宗台式懷舊水果盤</p>
                         </div>
-                        <div class="w-12 h-12 rounded-full bg-[#D4AF37]/20 flex items-center justify-center backdrop-blur-md">
+                        <div class="w-12 h-12 rounded-full bg-black/50 border border-[#D4AF37]/30 flex items-center justify-center backdrop-blur-md shadow-[0_0_15px_rgba(212,175,55,0.4)]">
                             <i data-lucide="gamepad-2" class="w-6 h-6 text-[#D4AF37]"></i>
                         </div>
                     </div>
                 </button>
 
                 <!-- 遊戲入口：經典輪盤 -->
-                <button onclick="CasinoApp.openGame('roulette')" class="w-full relative overflow-hidden rounded-2xl group border border-emerald-500/30 hover:border-emerald-400 transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-emerald-900 to-[#0D131A]">
-                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1606167668511-88c227eb0dc6?q=80&w=600&auto=format&fit=crop')] opacity-20 mix-blend-overlay group-hover:opacity-40 transition-opacity bg-cover bg-center"></div>
-                    <div class="p-6 flex items-center justify-between relative z-10">
+                <button onclick="CasinoApp.openGame('roulette')" class="w-full relative overflow-hidden rounded-2xl group border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#1E3052] to-[#0D131A] h-32">
+                    <div class="absolute inset-0 bg-[url('images/roulette_banner.png')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
+                    <div class="p-6 flex items-center justify-between relative z-10 h-full">
                         <div class="text-left">
-                            <h3 class="text-2xl font-black text-emerald-400 drop-shadow-md mb-1">經典輪盤</h3>
-                            <p class="text-xs text-gray-300">Roulette 歐式單零盤</p>
+                            <h3 class="text-2xl font-black text-[#D4AF37] drop-shadow-md mb-1 text-shadow-lg shadow-black">經典輪盤</h3>
+                            <p class="text-xs text-gray-300 font-bold">American Roulette</p>
                         </div>
-                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center backdrop-blur-md">
-                            <i data-lucide="circle-dashed" class="w-6 h-6 text-emerald-400"></i>
+                        <div class="w-12 h-12 rounded-full bg-black/50 border border-[#D4AF37]/30 flex items-center justify-center backdrop-blur-md shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+                            <i data-lucide="circle-dashed" class="w-6 h-6 text-[#D4AF37]"></i>
                         </div>
                     </div>
                 </button>
 
                 <!-- 遊戲入口：骰寶 -->
-                <button onclick="CasinoApp.openGame('sicbo')" class="w-full relative overflow-hidden rounded-2xl group border border-red-500/30 hover:border-red-500 transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-red-950 to-[#0D131A]">
-                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1570303345338-e1f0eddf4946?q=80&w=600&auto=format&fit=crop')] opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity bg-cover bg-center"></div>
-                    <div class="p-6 flex items-center justify-between relative z-10">
+                <button onclick="CasinoApp.openGame('sicbo')" class="w-full relative overflow-hidden rounded-2xl group border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#1E3052] to-[#0D131A] h-32">
+                    <div class="absolute inset-0 bg-[url('images/sicbo_banner.png')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
+                    <div class="p-6 flex items-center justify-between relative z-10 h-full">
                         <div class="text-left">
-                            <h3 class="text-2xl font-black text-red-400 drop-shadow-md mb-1">骰寶</h3>
-                            <p class="text-xs text-gray-300">Sic Bo 賭大小</p>
+                            <h3 class="text-2xl font-black text-[#D4AF37] drop-shadow-md mb-1 text-shadow-lg shadow-black">經典骰寶</h3>
+                            <p class="text-xs text-gray-300 font-bold">Sic Bo / 大細</p>
                         </div>
-                        <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center backdrop-blur-md">
-                            <i data-lucide="dice-5" class="w-6 h-6 text-red-400"></i>
+                        <div class="w-12 h-12 rounded-full bg-black/50 border border-[#D4AF37]/30 flex items-center justify-center backdrop-blur-md shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+                            <i data-lucide="cuboid" class="w-6 h-6 text-[#D4AF37]"></i>
                         </div>
                     </div>
                 </button>
@@ -124,14 +128,227 @@
                     <button onclick="CasinoApp.backToLobby()" class="text-gray-400 hover:text-white flex items-center gap-1 text-sm font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i> 返回大廳</button>
                     <div class="text-xs text-gray-400">小瑪莉 (移植版)</div>
                 </div>
-                <!-- 預留給 app.js 原本小瑪莉 HTML 的重製版放置處 -->
-                <div class="flex-1 flex items-center justify-center border-2 border-dashed border-gray-600 rounded-xl text-gray-500 font-bold p-8 text-center bg-black/20">
-                    <div>
-                        <i data-lucide="hammer" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
-                        開發中... 將從主程式移植
-                    </div>
+        <div id="mary-machine"
+            class="relative bg-[#3d2b1f] border-[6px] border-[#8b6914] rounded-[30px] shadow-[0_0_50px_rgba(0,0,0,0.8),_inset_0_0_30px_rgba(255,150,0,0.2)] flex flex-col overflow-hidden shrink-0"
+            style="width: 100%; max-width: 420px; font-family: 'Segoe UI', sans-serif;">
+
+            <!-- 頂部裝飾與控制按鈕 -->
+            <div
+                class="flex justify-between items-center px-6 py-3 bg-gradient-to-b from-[#5d3b24] to-[#3d2b1f] border-b-4 border-[#251810]">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-600 shadow-[0_0_8px_red] animate-pulse"></div>
+                    <span class="text-xs font-black text-[#ffcc00] tracking-widest uppercase">小瑪莉</span>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="openMaryHelp()"
+                        class="w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-amber-500 font-bold hover:bg-black/60 transition-colors">?</button>
+                    <button onclick="closeSmallMary()"
+                        class="w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white/60 hover:text-white transition-colors">✕</button>
                 </div>
             </div>
+
+            <!-- 數位計分板 (Scoreboard) -->
+            <div class="px-6 pt-4 pb-1 bg-[#1a110a]">
+                <div class="grid grid-cols-2 gap-4">
+                    <div
+                        class="bg-black border-2 border-[#5a3a00] rounded-lg p-2 shadow-[inset_0_0_15px_rgba(255,0,0,0.3)]">
+                        <div class="text-[10px] text-red-400 font-black mb-1 text-center">WIN</div>
+                        <div id="mary-win-score"
+                            class="text-3xl font-black text-red-500 text-center leading-none tabular-nums"
+                            style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,0,0,0.5);">0000
+                        </div>
+                    </div>
+                    <div
+                        class="bg-black border-2 border-[#5a3a00] rounded-lg p-2 shadow-[inset_0_0_15px_rgba(255,150,0,0.3)]">
+                        <div class="text-[10px] text-amber-400 font-black mb-1 text-center">CREDIT</div>
+                        <div id="mary-my-points"
+                            class="text-3xl font-black text-amber-400 text-center leading-none tabular-nums"
+                            style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,150,0,0.5);">
+                            0000
+                        </div>
+                        <div id="mary-gift-points" class="text-[10px] text-amber-300 font-bold text-center mt-1">贈分: 0
+                        </div>
+                    </div>
+                </div>
+                <!-- 彩金池 — 獨立置中於兩個計分板下方 -->
+                <div class="flex justify-center mt-3 mb-2">
+                    <div id="mary-jackpot-pool"
+                        class="bg-black border-4 border-rose-700 rounded-xl px-8 py-3 text-[18px] sm:text-xl text-rose-400 font-extrabold text-center animate-pulse shadow-[0_0_20px_rgba(255,30,30,0.6)]"
+                        style="letter-spacing:4px;">🎰 彩金池: 0</div>
+                </div>
+            </div>
+
+            <!-- 主遊戲區 (Track & Center Piece) -->
+            <div class="flex-1 relative p-2 bg-[#251810] flex flex-col">
+                <!-- 24格跑道 -->
+                <div id="mary-track-grid"
+                    class="flex-1 grid grid-cols-7 grid-rows-7 gap-1 p-1 bg-white/5 border-2 border-[#5a3a00] rounded-lg relative overflow-hidden">
+                    <!-- 中央插圖區 -->
+                    <div id="mary-center"
+                        class="col-start-2 col-end-7 row-start-2 row-end-7 bg-[#2da6ff] rounded-md border-2 border-[#1e4d1e] relative overflow-hidden flex flex-col items-center justify-center p-2 shadow-[inset_0_0_20px_rgba(0,0,0,0.3)]">
+                        <!-- 類馬力歐插圖 (暫用 Emoji 示意，可換為圖片) -->
+                        <div
+                            class="text-[80px] font-black opacity-20 filter grayscale-0 select-none absolute text-[#44aaff] tracking-widest break-all">
+                            BAR</div>
+                        <div
+                            class="text-[100px] font-black text-[#55ccff]/10 select-none -mb-8 z-0 tracking-widest leading-none">
+                            BAR</div>
+
+                        <!-- 中央大獎數字 -->
+                        <div id="mary-center-num"
+                            class="bg-black/80 border-4 border-[#ff4444] rounded-xl px-4 py-2 text-5xl font-black text-[#ff4444] shadow-[0_0_20px_rgba(255,68,68,0.5)] tabular-nums z-10"
+                            style="font-family: 'Courier New', monospace;">0</div>
+
+                        <!-- 覆蓋於上方的大/小按鈕區 -->
+                        <div id="mary-double-btns"
+                            class="hidden absolute inset-0 z-20 flex flex-col justify-between py-2 bg-black/40 backdrop-blur-sm">
+                            <div class="flex justify-between items-center w-full px-2 mt-4">
+                                <button onclick="maryDoubleUp('small')"
+                                    class="mary-phys-btn bg-[#ff4444] border-b-4 border-[#cc0000] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(255,0,0,0.5)] active:translate-y-1 active:border-b-0 leading-tight">押小<br><span
+                                        class="text-[10px] opacity-80">1-6</span></button>
+
+                                <!-- ★ 新增：中間顯示開出的數字 -->
+                                <div id="mary-double-num-display"
+                                    class="hidden flex items-center justify-center bg-black border-2 border-[#ffcc00] rounded-full w-12 h-12 shadow-[0_0_15px_rgba(255,200,0,0.5)] mx-1">
+                                    <span id="mary-double-number"
+                                        class="text-2xl font-black text-[#ffcc00] tabular-nums"
+                                        style="font-family: 'Courier New', monospace;">7</span>
+                                </div>
+
+                                <button onclick="maryDoubleUp('big')"
+                                    class="mary-phys-btn bg-[#4444ff] border-b-4 border-[#0000cc] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(0,0,255,0.5)] active:translate-y-1 active:border-b-0 leading-tight">押大<br><span
+                                        class="text-[10px] opacity-80">8-13</span></button>
+                            </div>
+                            <div class="flex justify-center w-full mb-1">
+                                <button onclick="maryCollect()"
+                                    class="mary-phys-btn bg-[#00aa33] border-b-4 border-[#006622] rounded-md px-6 py-2 text-sm font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_15px_rgba(0,255,0,0.6)]">領獎</button>
+                            </div>
+                        </div>
+
+                        <!-- ONCE MORE 裝飾 -->
+                        <div
+                            class="absolute left-1 top-1/2 -translate-y-1/2 text-[8px] font-black text-white/40 uppercase whitespace-nowrap [writing-mode:vertical-rl] tracking-widest z-0">
+                            Once More</div>
+                        <div
+                            class="absolute right-1 top-1/2 -translate-y-1/2 text-[8px] font-black text-white/40 uppercase whitespace-nowrap [writing-mode:vertical-rl] tracking-widest rotate-180 z-0">
+                            Once More</div>
+                    </div>
+                </div>
+
+                <!-- 跑道格由 JS 生成 -->
+            </div>
+
+            <!-- 下方賠率壓注區 (Betting Panel) -->
+            <div class="bg-[#1a110a] border-t-4 border-b-4 border-[#3d2b1f] p-3 flex-none mt-auto">
+                <div id="mary-bet-panel" class="grid grid-cols-8 gap-1.5 h-full items-end">
+                    <!-- 由 JS 生成 8 個壓注按鈕 -->
+                </div>
+            </div>
+
+            <!-- 實體按鈕區 (Action Buttons) -->
+            <div class="bg-gradient-to-t from-[#251810] to-[#5d3b24] px-4 pt-4 pb-6 flex justify-between items-center gap-2 flex-none"
+                style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;">
+                <!-- 左側：功能鈕 -->
+                <div class="flex gap-2">
+                    <button onclick="maryClearBet()"
+                        class="mary-phys-btn bg-[#cccccc] border-b-4 border-[#888] rounded-md px-3 py-2 text-[10px] font-black text-[#333] active:translate-y-1 active:border-b-0">清除</button>
+                    <button onclick="maryExchange()"
+                        class="mary-phys-btn bg-[#4aaeff] border-b-4 border-[#2277cc] rounded-md px-3 py-2 text-[10px] font-black text-white active:translate-y-1 active:border-b-0">兌換</button>
+                </div>
+
+                <!-- 中央：裝飾或者功能區，已將大/小按鍵移至中央 -->
+                <div id="mary-action-area" class="flex-1 flex justify-center gap-2">
+                    <button onclick="maryRandomBet()"
+                        class="mary-phys-btn bg-[#aa44ff] border-b-4 border-[#7700cc] rounded-md px-4 py-2 text-[11px] font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_10px_rgba(170,68,255,0.5)]">隨機押注</button>
+                </div>
+
+                <!-- 右側：開始鈕 -->
+                <button id="mary-btn-start" onclick="maryStartSpin()"
+                    class="mary-phys-btn bg-[#00ff88] border-b-4 border-[#00aa55] rounded-xl px-6 py-3 text-lg font-black text-[#004d00] shadow-[0_4px_0_#00aa55,_0_8px_15px_rgba(0,0,0,0.4)] hover:brightness-110 active:translate-y-1 active:shadow-none transition-all">START</button>
+            </div>
+
+            <!-- 比大小結果遮罩 -->
+            <div id="mary-double-result"
+                class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-black/95 border-4 border-[#ffcc00] rounded-2xl p-6 text-center shadow-[0_0_50px_rgba(255,200,0,0.5)]">
+                <div id="mary-double-num" class="text-6xl font-black text-[#ffcc00] mb-2"
+                    style="font-family: 'Courier New', monospace;">7</div>
+                <div id="mary-double-msg" class="text-sm font-bold text-white">結果</div>
+            </div>
+
+            <!-- 說明層 (Help Overlay) -->
+            <div id="mary-help-overlay"
+                class="hidden absolute inset-0 z-[100] bg-[#1a110a]/95 backdrop-blur-md p-6 overflow-y-auto text-white flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b-2 border-amber-500 pb-2">
+                    <h3 class="text-lg font-black text-amber-500">🎰 小瑪莉 遊戲說明</h3>
+                    <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')"
+                        class="text-2xl text-white/60 hover:text-white">✕</button>
+                </div>
+                <div class="space-y-4 text-sm leading-relaxed text-gray-100">
+                    <p>• <b class="text-amber-400">點數：</b> 每月發放 200 贈分。可使用拉霸積分 10:1 兌換。</p>
+                    <p>• <b class="text-amber-400">壓注：</b> 點擊符號按鈕加注。長按可快速加注。</p>
+                    <p>• <b class="text-amber-400">比大小：</b> 中獎後可挑戰翻倍，開出 7 點莊家通殺。</p>
+                    <div class="grid grid-cols-2 gap-2 bg-black/40 p-4 rounded-xl border border-white/10 font-mono">
+                        <div class="flex justify-between"><span>🍎</span><span>x2</span></div>
+                        <div class="flex justify-between"><span>🍊</span><span>x5</span></div>
+                        <div class="flex justify-between"><span>🥭</span><span>x10</span></div>
+                        <div class="flex justify-between"><span>🔔</span><span>x20</span></div>
+                        <div class="flex justify-between"><span>🍉</span><span>x30</span></div>
+                        <div class="flex justify-between"><span>🌟</span><span>x40</span></div>
+                        <div class="flex justify-between"><span>7️⃣</span><span>x50</span></div>
+                        <div class="flex justify-between text-[#44aaff]"><span>💎 BAR</span><span>x100</span></div>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')"
+                    class="mt-8 w-full py-3 bg-amber-500 rounded-xl text-black font-black">我明白了</button>
+            </div>
+        </div>
+
+        <!-- 自訂數字鍵盤 (Keypad Overlay) -->
+        <div id="mary-keypad-overlay"
+            class="hidden absolute inset-0 z-[110] bg-black/80 backdrop-blur-sm flex items-center justify-center pointer-events-auto">
+            <div
+                class="bg-[#1a110a] border-2 border-[#ffcc00] rounded-xl w-72 p-4 shadow-[0_0_30px_rgba(255,204,0,0.3)] relative">
+                <button onclick="maryCloseKeypad()"
+                    class="absolute -top-4 -right-4 bg-[#ff4444] text-white w-10 h-10 rounded-full font-bold border-2 border-[#1a110a] text-xl shadow-lg active:scale-95">✕</button>
+                <div id="mary-keypad-title" class="text-[#ffcc00] font-black text-center mb-3 text-lg">押注: 🍎</div>
+                <div class="bg-black/80 border border-[#444] rounded-lg p-3 mb-4 shadow-inner">
+                    <input type="number" id="mary-keypad-input"
+                        class="w-full bg-transparent text-[#00ff88] text-right text-4xl font-mono outline-none"
+                        placeholder="0" value="" min="0" oninput="maryKeypadValidate()">
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <!-- 數字鍵 -->
+                    <button onclick="maryKeypadType(1)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">1</button>
+                    <button onclick="maryKeypadType(2)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">2</button>
+                    <button onclick="maryKeypadType(3)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">3</button>
+                    <button onclick="maryKeypadType(4)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">4</button>
+                    <button onclick="maryKeypadType(5)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">5</button>
+                    <button onclick="maryKeypadType(6)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">6</button>
+                    <button onclick="maryKeypadType(7)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">7</button>
+                    <button onclick="maryKeypadType(8)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">8</button>
+                    <button onclick="maryKeypadType(9)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">9</button>
+                    <!-- 功能鍵 -->
+                    <button onclick="maryKeypadClear()"
+                        class="mary-phys-btn bg-[#ff4444] text-white rounded-lg py-3 text-lg font-black border-b-4 border-[#cc0000] active:translate-y-1 active:border-b-0">清除</button>
+                    <button onclick="maryKeypadType(0)"
+                        class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">0</button>
+                    <button onclick="maryKeypadMax()"
+                        class="mary-phys-btn bg-[#4aaeff] text-white rounded-lg py-3 text-lg font-black border-b-4 border-[#2277cc] active:translate-y-1 active:border-b-0">最大</button>
+
+                    <button onclick="maryKeypadConfirm()"
+                        class="col-span-3 mary-phys-btn bg-[#00ff88] text-[#004d00] rounded-lg py-3 mt-2 text-xl font-black border-b-4 border-[#00aa55] shadow-[0_0_10px_rgba(0,255,136,0.3)] hover:brightness-110 active:translate-y-1 active:border-b-0">確定押注</button>
+                </div>
+            </div>
+        </div>
 
             <!-- 輪盤視圖 (Roulette View) -->
             <div id="view-roulette" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
