@@ -1529,6 +1529,14 @@ function updateUserProfileUI() {
     if (appState.user.pictureUrl && DOM.userPicture) {
         DOM.userPicture.src = appState.user.pictureUrl;
     }
+    
+    // ★ 管理員專屬：顯示 Casino 測試大廳入口
+    const adminCasinoBtn = document.getElementById('admin-casino-container');
+    if (adminCasinoBtn) {
+        if (appState.user && appState.user.userId && ADMIN_USER_IDS.includes(appState.user.userId)) {
+            adminCasinoBtn.classList.remove('hidden');
+        }
+    }
 }
 
 // ==========================================
