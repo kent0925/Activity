@@ -12,7 +12,7 @@ const CasinoApp = {
     
     // Sic Bo
     sicboBets: {},
-    
+    isSpinning: false,
     currentView: 'lobby',
     
     async init() {
@@ -80,8 +80,18 @@ const CasinoApp = {
         document.getElementById(`view-${gameType}`).classList.remove('hidden');
         this.currentView = gameType;
         
-        // 顯示底部籌碼列
-        document.getElementById('casino-footer').classList.remove('translate-y-full');
+        // 小瑪莉有自己的押注面板，不需要底部籌碼列
+        if (gameType === 'mary') {
+            document.getElementById('casino-footer').classList.add('translate-y-full');
+            // 初始化小瑪莉
+            if (typeof initMaryBoard === 'function') {
+                initMaryBoard();
+                initMaryBetPanel();
+                refreshMaryData();
+            }
+        } else {
+            document.getElementById('casino-footer').classList.remove('translate-y-full');
+        }
     },
 
     backToLobby() {
@@ -113,9 +123,9 @@ const CasinoApp = {
 
     selectChip(val) {
         this.currentChip = val;
-        document.querySelectorAll('.chip-selector').forEach(el => el.classList.remove('chip-selected'));
-        const el = document.querySelector(`.chip-selector[data-val="${val}"]`);
-        if (el) el.classList.add('chip-selected');
+        document.querySelectorAll('.chip-btn').forEach(el => el.classList.remove('selected'));
+        const el = document.querySelector(`.chip-btn[data-value="${val}"]`);
+        if (el) el.classList.add('selected');
     },
 
     showAlert(title, message, isWin = false) {
@@ -658,7 +668,9 @@ const CasinoApp = {
         }
 
         // 移除先前的中獎特效
-        document.querySelectorAll('.winning-cell').forEach(el => el.classList.remove('winning-cell'));
+        document.querySelectorAll('.winning-cell').forEach(el => {
+            el.classList.remove('winning-cell', 'winning-bet');
+        });
 
         this.isSpinning = true;
         const sequence = ['0','28','9','26','30','11','7','20','32','17','5','22','34','15','3','24','36','13','1','00','27','10','25','29','12','8','19','31','18','6','21','33','16','4','23','35','14','2'];

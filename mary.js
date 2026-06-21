@@ -41,18 +41,18 @@ const MARY_GRID = [
 ];
 
 async function openSmallMary() {
-    if (!CasinoApp.user.userId) return showToast("請先登入 LINE");
-    document.getElementById('small-mary-modal').classList.remove('hidden');
+    if (!CasinoApp.user || !CasinoApp.user.userId) return showToast("請先登入 LINE");
+    // 在 Casino 大廳中，直接由 CasinoApp.openGame('mary') 處理
+    // 此函式保留相容性，但主要邏輯已整合進 openGame
     initMaryBoard();
     initMaryBetPanel();
     await refreshMaryData();
-    adjustMaryScale();
 }
 
 function adjustMaryScale() {
     const machine = document.getElementById('mary-machine');
-    const modal = document.getElementById('small-mary-modal');
-    if (!machine || !modal || modal.classList.contains('hidden')) return;
+    const maryView = document.getElementById('view-mary');
+    if (!machine || !maryView || maryView.classList.contains('hidden')) return;
 
     // 確保先還原變形再測量真實大小
     machine.style.transform = 'none';
@@ -82,7 +82,7 @@ window.addEventListener('resize', adjustMaryScale);
 
 function closeSmallMary() {
     if (maryState.isSpinning) return;
-    document.getElementById('small-mary-modal').classList.add('hidden');
+    CasinoApp.backToLobby();
 }
 
 // openMaryHelp 定義於下方（第 2713 行），此處不重複定義
