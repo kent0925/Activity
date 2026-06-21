@@ -2550,10 +2550,6 @@ function renderDetailLists(data) {
 
         // 取得角色標籤
         const roles = getParticipantRoles(name, appState.currentEvent);
-        let tagHtml = '';
-        if (roles.length > 0) {
-            tagHtml = roles.map(r => `<span class="text-[12px] font-bold ml-1.5 flex items-center" style="color:${r.color};">${r.label}</span>`).join('');
-        }
 
         const liP = document.createElement('li');
         liP.className = 'px-4 py-3 hover:bg-white/5 transition';
@@ -2568,10 +2564,23 @@ function renderDetailLists(data) {
             else if (rankIndex === 2) { maryMedal = '🥉'; maryNameColor = 'color:#b45309;font-weight:800;'; }
         }
 
+        let nameDisplayHtml = '';
+        if (roles.length > 0) {
+            const r = roles[0];
+            const icons = roles.map(r => r.icon).join('');
+            const roleNames = roles.map(r => r.roleName).join('、');
+            nameDisplayHtml = `<span class="font-bold text-base inline-flex items-center flex-wrap" style="color:${r.color};"><span class="mr-1">${icons}</span>${safeName}<span class="text-[12px] ml-1.5 flex items-center">${roleNames}</span></span>`;
+        } else {
+            const finalStyle = maryNameColor ? maryNameColor : 'color:#EFECE5;';
+            nameDisplayHtml = `<span class="font-bold text-base inline-flex items-center flex-wrap" style="${finalStyle}">${safeName}</span>`;
+        }
+
+        const medalHtml = maryMedal ? `<span class="ml-1.5 text-base">${maryMedal}</span>` : '';
+
         liP.innerHTML = `
             <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
                 <span class="text-gray-400 font-mono text-sm">${num}.</span>
-                <span class="font-bold text-[#EFECE5] text-base inline-flex items-center flex-wrap" style="${maryNameColor}">${maryMedal}${safeName}${tagHtml}${nameSuffix}</span>
+                ${nameDisplayHtml}${nameSuffix}${medalHtml}
             </div>
             ${subHtml}`;
         fragP.appendChild(liP);
@@ -3626,17 +3635,17 @@ function getParticipantRoles(pName, event) {
     const special = (appState.settings && appState.settings.specialRoles) ? appState.settings.specialRoles : {};
 
     if (special.president && cleanName === special.president) {
-        roles.push({ type: 'president', label: '👑 會長', textLabel: '[👑會長]', color: '#d97706' });
+        roles.push({ type: 'president', icon: '👑', roleName: '會長', label: '👑 會長', textLabel: '[👑會長]', color: '#d97706' });
     }
 
     if (special.vicePresident && cleanName === special.vicePresident) {
-        roles.push({ type: 'vicePresident', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#9333ea' });
+        roles.push({ type: 'vicePresident', icon: '👸', roleName: '輔導會長', label: '👸 輔導會長', textLabel: '[👸輔導會長]', color: '#9333ea' });
     }
 
     if (event && event.organizer) {
         const organizers = event.organizer.split(/[、,，\s]+/).map(o => o.trim()).filter(Boolean);
         if (organizers.includes(cleanName)) {
-            roles.push({ type: 'host', label: '🍻 爐主', textLabel: '[🍻爐主]', color: '#ea580c' });
+            roles.push({ type: 'host', icon: '🍻', roleName: '爐主', label: '🍻 爐主', textLabel: '[🍻爐主]', color: '#ea580c' });
         }
     }
 
@@ -3651,7 +3660,7 @@ function getParticipantRoles(pName, event) {
 
         if (month && special.birthdays && special.birthdays[month]) {
             if (special.birthdays[month].includes(cleanName)) {
-                roles.push({ type: 'birthday', label: `🎂 ${month}月壽星`, textLabel: `[🎂${month}月壽星]`, color: '#db2777' });
+                roles.push({ type: 'birthday', icon: '🎂', roleName: `${month}月壽星`, label: `🎂 ${month}月壽星`, textLabel: `[🎂${month}月壽星]`, color: '#db2777' });
             }
         }
     }
@@ -4046,10 +4055,6 @@ async function generateEventCanvas(e, data, stats) {
             let prefix = status ? status : '';
 
             const roles = getParticipantRoles(p.name, e);
-            let tagHtml = '';
-            if (roles.length > 0) {
-                tagHtml = roles.map(r => `<span class="tag" style="color:${r.color};">${r.label}</span>`).join('');
-            }
 
             let nameColor = 'inherit';
             let maryMedal = '';
@@ -4061,7 +4066,22 @@ async function generateEventCanvas(e, data, stats) {
             }
 
             html += `<div class="list-item"><div class="item-title">`;
-            html += `<span style="color:#D4AF7A;margin-right:0.5em;">${num}.</span> <span class="name" style="color:${nameColor !== 'inherit' ? nameColor : '#F3E5AB'};"><span style="font-size:1.15em;margin-right:2px">${maryMedal}</span>${escapeHtml(prefix)}${escapeHtml(p.name)}</span>${tagHtml}`;
+            html += `<span style="color:#D4AF7A;margin-right:0.5em;">${num}.</span> `;
+            
+            if (roles.length > 0) {
+                const r = roles[0]; // 取第一個職稱
+                const icons = roles.map(r => r.icon).join('');
+                const roleNames = roles.map(r => r.roleName).join('、');
+                html += `<span class="name" style="color:${r.color};"><span style="font-size:1.15em;margin-right:2px">${icons}</span>${escapeHtml(prefix)}${escapeHtml(p.name)}<span class="tag" style="color:${r.color};margin-left:0.3em;">${roleNames}</span></span>`;
+            } else {
+                const finalNameColor = nameColor !== 'inherit' ? nameColor : '#F3E5AB';
+                html += `<span class="name" style="color:${finalNameColor};">${escapeHtml(prefix)}${escapeHtml(p.name)}</span>`;
+            }
+
+            if (maryMedal) {
+                html += `<span style="font-size:1.15em;margin-left:4px">${maryMedal}</span>`;
+            }
+
             if (total > 1) html += `<span class="count">×${total}</span>`;
             html += `</div>`;
 
@@ -4451,10 +4471,6 @@ const data = appState.cachedDetails || [];
 
                 // ★ 新增：純文字複製時附加文字標籤
                 const roles = getParticipantRoles(p.name, e);
-                let textTags = '';
-                if (roles.length > 0) {
-                    textTags = ' ' + roles.map(r => r.textLabel).join('');
-                }
 
                 // ★ 小瑪莉前三名勳章（文字名單分享用）
                 let maryMedalCopy = '';
@@ -4465,7 +4481,13 @@ const data = appState.cachedDetails || [];
                     else if (rankIdx === 2) maryMedalCopy = '🥉';
                 }
 
-                text += `${num}. ${maryMedalCopy}${prefix}${p.name}${textTags}`;
+                if (roles.length > 0) {
+                    const icons = roles.map(r => r.icon).join('');
+                    const roleNames = roles.map(r => r.roleName).join('、');
+                    text += `${num}. ${icons}${prefix}${p.name} ${roleNames}${maryMedalCopy ? ' ' + maryMedalCopy : ''}`;
+                } else {
+                    text += `${num}. ${prefix}${p.name}${maryMedalCopy ? ' ' + maryMedalCopy : ''}`;
+                }
                 if (total > 1) text += ` *${total}`;
                 text += `\n`;
 
