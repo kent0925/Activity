@@ -27,14 +27,7 @@ const CasinoApp = {
                 userId: profile.userId,
                 displayName: profile.displayName
             };
-            
-            // 安全性檢查
-            if (!ADMIN_USER_IDS.includes(this.user.userId)) {
-                alert("您沒有權限進入測試大廳");
-                window.location.href = 'index.html';
-                return;
-            }
-
+            // 正式開放：不再限制管理員才能進入
             await this.fetchPoints();
             this.initRouletteBoard();
             this.drawRouletteWheel();
@@ -61,8 +54,10 @@ const CasinoApp = {
             
             this.points = data.points + data.monthlyGift;
             
-            // 管理員給予無限測試點數
-            this.points = 999999; 
+            // 管理員無限點數保護
+            if (ADMIN_USER_IDS.includes(this.user.userId)) {
+                this.points = 999999;
+            }
             
             document.getElementById('player-wallet').innerText = this.points.toLocaleString();
         } catch (e) {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
@@ -148,22 +148,14 @@
                     <i data-lucide="history" class="w-4 h-4"></i>
                     <span id="history-btn-text">回顧過往</span>
                 </button>
-                <button onclick="openSmallMary()" id="btn-small-mary-open"
+                <button onclick="window.location.href='casino.html'" id="btn-casino-open"
                     class="flex-1 max-w-[180px] premium-gradient text-white px-4 py-2.5 rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 transition-all font-bold text-xs shadow-md">
                     <i data-lucide="gamepad-2" class="w-4 h-4"></i>
-                    <span>小瑪莉遊戲</span>
+                    <span>遊樂場 Casino</span>
                 </button>
             </div>
 
-            <!-- 管理員專屬：Casino 測試大廳入口 -->
-            <div id="admin-casino-container" class="hidden flex justify-center px-1 mt-3">
-                <button type="button" onclick="window.location.href='casino.html'"
-                    class="w-full bg-[#1E3052]/80 hover:bg-[#2A3F63] text-[#F3E5AB] py-3 rounded-2xl flex items-center justify-center gap-2 transition-all font-black text-xs border border-[#D4AF37]/50 shadow-[0_0_15px_rgba(212,175,55,0.3)] active:scale-95 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent translate-x-[-100%] animate-[shimmer_2s_infinite]"></div>
-                    <i data-lucide="crown" class="w-4 h-4 text-[#D4AF37]"></i>
-                    <span class="relative z-10">👑 進入 Casino 測試大廳 (僅管理員可見)</span>
-                </button>
-            </div>
+            
 
             <!-- 報名操作指南按鈕 -->
             <div class="flex justify-center px-1 mt-3">

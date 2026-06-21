@@ -46,6 +46,20 @@ async function apiSubmit(data) {
         console.error("No GAS URL defined");
         return { error: "No GAS URL" };
     }
+
+    // 管理員無限點數防護：阻擋管理員寫入後端，保護彩池與真實數據
+    if (typeof CasinoApp !== 'undefined' && CasinoApp.user && typeof ADMIN_USER_IDS !== 'undefined' && ADMIN_USER_IDS.includes(CasinoApp.user.userId)) {
+        console.log("Admin Mode: Intercepting apiSubmit", data);
+        const winPts = data.winPoints || 0;
+        return {
+            success: true,
+            points: 999999,
+            monthlyGift: 999999,
+            totalMaryScore: (maryState.totalMaryScore || 0) + winPts,
+            jackpotPool: maryState.jackpotPool || 0 // 保持原狀，不動彩池
+        };
+    }
+
     try {
         const res = await fetch(GAS_URL, {
             method: 'POST',
@@ -122,8 +136,8 @@ async function refreshMaryData() {
         maryState.totalMaryScore = data.totalMaryScore;
         maryState.jackpotPool = data.jackpotPool;
 
-        // ★ 管理員模式：給予無限點數
-        if (ADMIN_USER_IDS.includes(CasinoApp.user.userId)) {
+        // 管理員無限點數保護
+        if (typeof CasinoApp !== 'undefined' && CasinoApp.user && typeof ADMIN_USER_IDS !== 'undefined' && ADMIN_USER_IDS.includes(CasinoApp.user.userId)) {
             maryState.points = 999999;
             maryState.monthlyGift = 999999;
         }
