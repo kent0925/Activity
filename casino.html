@@ -33,16 +33,31 @@
     <div class="relative z-10 flex flex-col h-screen">
         
         <!-- Header -->
-        <header class="flex justify-between items-center p-4 border-b border-[#D4AF37]/30 bg-[#0D131A]/80 backdrop-blur-md">
-            <button onclick="window.location.href='index.html'" class="p-2 rounded-full hover:bg-white/10 transition active:scale-90">
-                <i data-lucide="chevron-left" class="w-6 h-6 text-[#D4AF37]"></i>
-            </button>
-            <h1 class="text-xl font-black tracking-widest text-[#D4AF37] drop-shadow-md">CASINO LOBBY</h1>
-            <div class="flex items-center gap-2 bg-[#1E3052]/50 border border-[#D4AF37]/50 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(212,175,55,0.2)]">
-                <i data-lucide="coins" class="w-4 h-4 text-[#F3E5AB]"></i>
-                <span id="player-wallet" class="font-mono font-bold text-[#F3E5AB]">---</span>
+        <header class="bg-[#0A0F16] border-b border-white/10 p-3 sticky top-0 z-50 flex justify-between items-center shadow-md">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-500 to-yellow-200 flex items-center justify-center text-black font-bold">C</div>
+            <div class="font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 tracking-widest text-lg">CASINO LOBBY</div>
+        </div>
+        <div class="flex flex-col items-end">
+            <div class="text-[10px] text-gray-400 font-bold mb-0.5">目前積分</div>
+            <div class="bg-blue-900/30 px-3 py-1 rounded-full border border-blue-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                <i data-lucide="coins" class="w-3 h-3 text-yellow-400"></i>
+                <span id="player-wallet" class="font-mono font-bold text-blue-200 tracking-wider">--</span>
             </div>
-        </header>
+        </div>
+    </header>
+
+    <!-- Result Ticker -->
+    <div id="casino-ticker" class="fixed top-14 left-0 w-full z-40 transition-all duration-500 -translate-y-[150%] opacity-0 pointer-events-none px-4">
+        <div class="max-w-md mx-auto mt-2">
+            <div id="casino-ticker-inner" class="bg-gradient-to-r from-gray-900 to-gray-800 border-l-4 border-yellow-500 rounded-lg shadow-xl p-3 flex items-center justify-between backdrop-blur-md relative overflow-hidden">
+                <div id="casino-ticker-glow" class="absolute top-0 left-0 w-full h-full bg-yellow-500/10 opacity-0 transition-opacity duration-300"></div>
+                <div id="casino-ticker-text" class="text-sm font-bold text-white tracking-wider relative z-10 w-full text-center">
+                    準備開始
+                </div>
+            </div>
+        </div>
+    </div>
 
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0D131A]/90 backdrop-blur-sm transition-opacity duration-300">
@@ -194,6 +209,17 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden pointer-events-none">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 opacity-0 pointer-events-auto" id="custom-modal-backdrop" onclick="CasinoApp.closeModal()"></div>
+        <div id="custom-modal-content" class="bg-gradient-to-b from-[#1E293B] to-[#0F172A] border border-white/10 rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl transform scale-90 opacity-0 transition-all duration-300 pointer-events-auto relative overflow-hidden">
+            <div id="custom-modal-glow" class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-yellow-500/20 blur-3xl rounded-full"></div>
+            <h3 id="custom-modal-title" class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 mb-2 relative z-10">標題</h3>
+            <p id="custom-modal-message" class="text-gray-300 text-sm mb-6 relative z-10">訊息內容</p>
+            <button onclick="CasinoApp.closeModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-gray-700 to-gray-800 text-white font-bold hover:brightness-110 active:scale-95 transition relative z-10 shadow-lg border border-gray-600">確定</button>
+        </div>
     </div>
 </body>
 </html>

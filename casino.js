@@ -157,6 +157,32 @@ const CasinoApp = {
         }, 300);
     },
 
+    showTicker(message, type = 'win') {
+        const ticker = document.getElementById('casino-ticker');
+        const textEl = document.getElementById('casino-ticker-text');
+        const innerEl = document.getElementById('casino-ticker-inner');
+        const glowEl = document.getElementById('casino-ticker-glow');
+
+        textEl.innerHTML = message;
+        
+        if (type === 'win') {
+            innerEl.className = 'bg-gradient-to-r from-yellow-900/90 to-gray-900 border-l-4 border-yellow-400 rounded-lg shadow-xl p-3 flex items-center justify-between backdrop-blur-md relative overflow-hidden';
+            textEl.className = 'text-sm font-bold text-yellow-300 tracking-wider relative z-10 w-full text-center drop-shadow-md';
+            glowEl.className = 'absolute top-0 left-0 w-full h-full bg-yellow-400/20 opacity-100 transition-opacity duration-300 animate-pulse';
+        } else {
+            innerEl.className = 'bg-gradient-to-r from-gray-800/90 to-gray-900 border-l-4 border-gray-500 rounded-lg shadow-xl p-3 flex items-center justify-between backdrop-blur-md relative overflow-hidden';
+            textEl.className = 'text-sm font-bold text-gray-300 tracking-wider relative z-10 w-full text-center';
+            glowEl.className = 'absolute top-0 left-0 w-full h-full bg-transparent opacity-0 transition-opacity duration-300';
+        }
+
+        ticker.classList.remove('-translate-y-[150%]', 'opacity-0');
+        
+        if (this.tickerTimeout) clearTimeout(this.tickerTimeout);
+        this.tickerTimeout = setTimeout(() => {
+            ticker.classList.add('-translate-y-[150%]', 'opacity-0');
+        }, 4000);
+    },
+
     // ==========================================
     // ROULETTE LOGIC
     // ==========================================
@@ -567,10 +593,10 @@ const CasinoApp = {
 
             setTimeout(() => {
                 if (totalWin > 0) {
-                    this.showAlert(`總和 ${sum} (${results.join(', ')})`, `恭喜您贏得了 ${totalWin.toLocaleString()} 積分！`, true);
+                    this.showTicker(`⭐ 骰子 ${results.join(', ')} (總和${sum})！贏得 ${totalWin.toLocaleString()} 積分 ⭐`, 'win');
                     this.points += totalWin;
                 } else {
-                    this.showAlert(`總和 ${sum} (${results.join(', ')})`, `很可惜，您這次未中獎。`, false);
+                    this.showTicker(`骰子 ${results.join(', ')} (總和${sum})！很可惜未中獎。`, 'lose');
                 }
 
                 document.getElementById('player-wallet').innerText = this.points.toLocaleString();
@@ -683,10 +709,10 @@ const CasinoApp = {
             setTimeout(() => {
                 // 更新結果
                 if (totalWin > 0) {
-                    this.showAlert(`輪盤開出 ${winningStr}！`, `恭喜您贏得了 ${totalWin.toLocaleString()} 積分！`, true);
+                    this.showTicker(`⭐ 輪盤開出 ${winningStr}！贏得 ${totalWin.toLocaleString()} 積分 ⭐`, 'win');
                     this.points += totalWin;
                 } else {
-                    this.showAlert(`輪盤開出 ${winningStr}！`, `很可惜，您這次未中獎。`, false);
+                    this.showTicker(`輪盤開出 ${winningStr}！很可惜未中獎。`, 'lose');
                 }
 
                 document.getElementById('player-wallet').innerText = this.points.toLocaleString();
