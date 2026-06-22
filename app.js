@@ -1220,6 +1220,62 @@ function maryExchange() {
                 style="flex:1;padding:12px;background:linear-gradient(135deg,#663300,#995500);
                 border:none;border-radius:10px;color:#ccc;font-weight:900;font-size:14px;cursor:not-allowed;
                 box-shadow:none;transition:all 0.3s;">確認兌換</button>
+// 兌換（加速開窗版）
+function maryExchange() {
+    if (maryState.isSpinning || maryState.doubleUpActive) return;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'mary-exchange-overlay';
+    overlay.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.95);border-radius:24px;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;';
+    overlay.innerHTML = `
+        <div style="font-size:16px;font-weight:900;color:#ffcc00;">💱 拉霸積分 10:1 兌換籌碼</div>
+        <div style="background:#111;border:1px solid #ff6600;border-radius:10px;padding:10px 16px;width:100%;text-align:center;">
+            <div style="font-size:10px;color:#ff6600;margin-bottom:4px;letter-spacing:2px;">YOU HAVE</div>
+            <div id="mary-exchange-slot-score" style="font-size:28px;font-weight:900;color:#fa0;font-family:monospace;" class="animate-pulse">讀取中...</div>
+            <div style="font-size:10px;color:#888;">拉霸積分</div>
+        </div>
+        <div style="color:#ccc;font-size:11px;text-align:center;">
+            最多可換 <b id="mary-exchange-max-convert" style="color:#0f0;">---</b> 個籌碼<br>
+            <span style="color:#666;font-size:10px;">（10 積分 → 1 籌碼）</span>
+        </div>
+        <input id="mary-exchange-input" type="text" readonly placeholder="等候讀取..."
+            style="width:100%;background:rgba(255,255,255,0.08);border:1px solid #fa0;border-radius:10px;
+            padding:10px;color:#fa0;text-align:center;font-size:18px;font-weight:900;font-family:monospace;
+            outline:none;" disabled>
+        <div style="font-size:10px;color:#555;">請輸入要扣除的「拉霸積分」 (需為 10 的倍數)</div>
+        
+        <!-- 內建計算機鍵盤 -->
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;width:100%;">
+            <button onclick="maryExchangeAddNum(1)" class="mary-key">1</button>
+            <button onclick="maryExchangeAddNum(2)" class="mary-key">2</button>
+            <button onclick="maryExchangeAddNum(3)" class="mary-key">3</button>
+            <button onclick="maryExchangeAddNum(4)" class="mary-key">4</button>
+            <button onclick="maryExchangeAddNum(5)" class="mary-key">5</button>
+            <button onclick="maryExchangeAddNum(6)" class="mary-key">6</button>
+            <button onclick="maryExchangeAddNum(7)" class="mary-key">7</button>
+            <button onclick="maryExchangeAddNum(8)" class="mary-key">8</button>
+            <button onclick="maryExchangeAddNum(9)" class="mary-key">9</button>
+            <button onclick="maryExchangeAddNum('C')" class="mary-key" style="background:rgba(255,50,50,0.15);color:#ff6666;border-color:rgba(255,50,50,0.3);">清除</button>
+            <button onclick="maryExchangeAddNum(0)" class="mary-key">0</button>
+            <button onclick="maryExchangeAddNum('MAX')" class="mary-key" style="background:rgba(50,255,50,0.15);color:#66ff66;font-size:12px;border-color:rgba(50,255,50,0.3);">MAX</button>
+        </div>
+        <style>
+            .mary-key {
+                background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+                color: #fff; font-size: 16px; font-weight: bold; border-radius: 8px; padding: 10px 0;
+                cursor: pointer; transition: 0.1s; user-select: none;
+            }
+            .mary-key:active { background: rgba(255,255,255,0.2); transform: scale(0.95); }
+        </style>
+
+        <div style="display:flex;gap:10px;width:100%;margin-top:4px;">
+            <button onclick="document.getElementById('mary-exchange-overlay').remove()"
+                style="flex:1;padding:12px;background:rgba(255,255,255,0.1);border:none;border-radius:10px;
+                color:#ccc;font-weight:700;font-size:14px;cursor:pointer;">取消</button>
+            <button id="mary-exchange-btn-confirm" onclick="maryConfirmExchange()" disabled
+                style="flex:1;padding:12px;background:linear-gradient(135deg,#663300,#995500);
+                border:none;border-radius:10px;color:#ccc;font-weight:900;font-size:14px;cursor:not-allowed;
+                box-shadow:none;transition:all 0.3s;">確認兌換</button>
         </div>
     `;
     document.getElementById('mary-machine').appendChild(overlay);
@@ -1229,12 +1285,6 @@ function maryExchange() {
         .then(r => r.json())
         .then(d => {
             const actualData = d.data || d;
-            const slotScore = actualData.Points !== undefined ? actualData.Points : (actualData.points !== undefined ? actualData.points : (actualData['分數'] !== undefined ? actualData['分數'] : (actualData.slotScore || 0)));
-            const maxConvert = Math.floor(slotScore / 10) * 10;
-            const maryPoints = Math.floor(maxConvert / 10);
-
-            const scoreEl = document.getElementById('mary-exchange-slot-score');
-            const maxEl = document.getElementById('mary-exchange-max-convert');
             const inputEl = document.getElementById('mary-exchange-input');
             const btnEl = document.getElementById('mary-exchange-btn-confirm');
 

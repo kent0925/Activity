@@ -1389,10 +1389,11 @@ async function maryConfirmExchange() {
         });
         if (overlay) overlay.remove();
         if (res && res.success) {
-            showToast(`✅ 成功兌換 ${res.addedPoints} 小瑪莉點數`);
-            maryState.points += res.addedPoints;
+            const addedChips = res.addedPoints !== undefined ? res.addedPoints : (roundedVal / 10);
+            showToast(\✅ 成功兌換  個籌碼\);
+            maryState.points += addedChips;
             if (typeof CasinoApp !== 'undefined') {
-                CasinoApp.points += res.addedPoints;
+                CasinoApp.points += addedChips;
                 document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = CasinoApp.points.toLocaleString());
             }
             updateMaryUI();
