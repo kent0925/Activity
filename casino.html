@@ -51,11 +51,18 @@
                 <div class="font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 tracking-widest text-lg">CASINO</div>
             </div>
         </div>
-        <div class="flex flex-col items-end">
-            <div class="text-[10px] text-gray-400 font-bold mb-0.5">目前積分</div>
-            <div class="bg-blue-900/30 px-3 py-1 rounded-full border border-blue-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
-                <i data-lucide="coins" class="w-3 h-3 text-yellow-400"></i>
-                <span id="player-wallet" class="font-mono font-bold text-blue-200 tracking-wider">--</span>
+        <div class="flex flex-col items-end gap-1">
+            <div class="flex items-center gap-2">
+                <button onclick="if(typeof openMaryConvertDialog === 'function') openMaryConvertDialog(); else alert('載入中請稍候');" class="bg-amber-500/20 text-amber-400 border border-amber-500/50 hover:bg-amber-500/40 px-2 py-0.5 rounded text-[10px] font-bold transition-colors active:scale-95 shadow-[0_0_8px_rgba(251,191,36,0.2)]">
+                    <i data-lucide="arrow-right-left" class="w-3 h-3 inline-block align-text-bottom"></i> 兌換
+                </button>
+                <div class="text-[10px] text-gray-400 font-bold">遊戲籌碼</div>
+            </div>
+            <div class="bg-[#1a202c]/80 px-3 py-1 rounded-full border border-amber-500/30 flex items-center gap-1 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]">
+                <div class="w-4 h-4 rounded-full border-[1.5px] border-dashed border-gray-400 bg-gray-800 flex items-center justify-center shadow-sm">
+                    <div class="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
+                </div>
+                <span id="player-wallet" class="font-mono font-bold text-amber-400 tracking-wider">--</span>
             </div>
         </div>
     </header>
@@ -88,19 +95,27 @@
                     <p class="text-sm text-gray-400">所有遊戲共用積分錢包</p>
                 </div>
                 
-                <!-- 遊戲入口：老虎機 (賺取每日積分) -->
-                <button onclick="CasinoApp.openGame('slot')" class="w-full relative overflow-hidden rounded-2xl group border border-amber-500/50 hover:border-amber-400 transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#2a1a00] to-[#1a0a00] h-32">
-                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
-                    <div class="p-6 flex items-center justify-between relative z-10 h-full">
-                        <div class="text-left">
-                            <h3 class="text-2xl font-black text-amber-400 drop-shadow-md mb-1 text-shadow-lg shadow-black">老虎機</h3>
-                            <p class="text-xs text-gray-300 font-bold">每日首次遊玩可賺取基礎積分</p>
+                <!-- 老虎機獨立區塊 (每日免費積分) -->
+                <div class="flex flex-col items-center justify-center p-6 premium-dark-card border border-amber-500/30 rounded-3xl mb-6 shadow-2xl">
+
+                    <div class="text-amber-400 text-2xl font-bold mb-6 drop-shadow-md">🍺 每日免費積分</div>
+                    <div class="slot-machine-container w-full max-w-[300px]">
+                        <div class="text-gray-300 text-xs font-bold tracking-widest mb-3 text-center">🎰 今晚運勢</div>
+                        <div class="slot-machine bg-black/50 border-2 border-amber-500/50 rounded-xl p-2 shadow-[0_0_20px_rgba(251,191,36,0.2)]">
+                            <div class="slot-reel" id="slot-1"><span class="slot-symbol">🎲</span></div>
+                            <div class="slot-reel" id="slot-2"><span class="slot-symbol">🎲</span></div>
+                            <div class="slot-reel" id="slot-3"><span class="slot-symbol">🎲</span></div>
                         </div>
-                        <div class="w-12 h-12 rounded-full bg-black/50 border border-amber-500/30 flex items-center justify-center backdrop-blur-md shadow-[0_0_15px_rgba(251,191,36,0.4)]">
-                            <i data-lucide="coins" class="w-6 h-6 text-amber-400"></i>
-                        </div>
+                        <div id="slot-result"
+                            class="slot-result text-white text-sm font-bold text-center mt-6 px-6 mx-auto min-h-[24px]">
+                            點擊下方按鈕開始拉霸</div>
                     </div>
-                </button>
+                    <div id="slot-actions" class="flex flex-col items-center mt-8 w-full">
+                        <button onclick="playSlotAgain()" id="btn-play-slot"
+                            class="w-full bg-gradient-to-b from-amber-400 to-amber-600 hover:to-amber-500 text-black font-black py-3 px-10 rounded-xl shadow-[0_4px_15px_rgba(251,191,36,0.5)] transition-all active:scale-95 border-2 border-amber-300">開始拉霸！</button>
+                    </div>
+                
+</div>
 
                 <!-- 遊戲入口：小瑪莉 -->
                 <button onclick="CasinoApp.openGame('mary')" class="w-full relative overflow-hidden rounded-2xl group border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#1E3052] to-[#0D131A] h-32">
@@ -168,36 +183,15 @@
                 </button>
             </div>
 
-            <!-- 老虎機視圖 (Slot View) -->
-            <div id="view-slot" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-10">
-                <div class="flex justify-between items-center bg-[#1E3052]/60 p-3 rounded-xl border border-white/10 backdrop-blur-md mb-4">
-                    <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i> <span class="tracking-widest drop-shadow-md">返回大廳</span></button>
-                    <div class="text-xs text-gray-400">老虎機</div>
-                </div>
-                
-                <div class="flex flex-col items-center justify-center p-6 premium-dark-card border border-amber-500/30 rounded-3xl mt-10">
-                    <div class="text-amber-400 text-2xl font-bold mb-6 drop-shadow-md">🍺 每日免費積分</div>
-                    <div class="slot-machine-container w-full max-w-[300px]">
-                        <div class="text-gray-300 text-xs font-bold tracking-widest mb-3 text-center">🎰 今晚運勢</div>
-                        <div class="slot-machine bg-black/50 border-2 border-amber-500/50 rounded-xl p-2 shadow-[0_0_20px_rgba(251,191,36,0.2)]">
-                            <div class="slot-reel" id="slot-1"><span class="slot-symbol">🎲</span></div>
-                            <div class="slot-reel" id="slot-2"><span class="slot-symbol">🎲</span></div>
-                            <div class="slot-reel" id="slot-3"><span class="slot-symbol">🎲</span></div>
-                        </div>
-                        <div id="slot-result"
-                            class="slot-result text-white text-sm font-bold text-center mt-6 px-6 mx-auto min-h-[24px]">
-                            點擊下方按鈕開始拉霸</div>
-                    </div>
-                    <div id="slot-actions" class="flex flex-col items-center mt-8 w-full">
-                        <button onclick="playSlotAgain()" id="btn-play-slot"
-                            class="w-full bg-gradient-to-b from-amber-400 to-amber-600 hover:to-amber-500 text-black font-black py-3 px-10 rounded-xl shadow-[0_4px_15px_rgba(251,191,36,0.5)] transition-all active:scale-95 border-2 border-amber-300">開始拉霸！</button>
-                    </div>
-                </div>
-            </div>
             <!-- 小瑪莉視圖 (Mary View) -->
             <div id="view-mary" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-10">
                 <div class="flex justify-between items-center bg-[#1E3052]/60 p-3 rounded-xl border border-white/10 backdrop-blur-md">
-                    <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i> <span class="tracking-widest drop-shadow-md">返回大廳</span></button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i></button>
+                        <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden');" class="bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white flex items-center gap-2 px-4 py-2 h-10 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(212,175,55,0.4)] border border-[#EFC958]/50 active:scale-95">
+                            <i data-lucide="gamepad-2" class="w-4 h-4"></i> <span class="tracking-widest drop-shadow-md">切換遊戲</span>
+                        </button>
+                    </div>
                     <div class="text-xs text-gray-400">小瑪莉</div>
                 </div>
                 <div id="mary-machine" class="relative bg-[#3d2b1f] border-[6px] border-[#8b6914] rounded-[30px] shadow-[0_0_50px_rgba(0,0,0,0.8),_inset_0_0_30px_rgba(255,150,0,0.2)] flex flex-col overflow-hidden shrink-0 mx-auto" style="width: 100%; max-width: 420px; font-family: 'Segoe UI', sans-serif;">
@@ -206,8 +200,9 @@
                             <div class="w-3 h-3 rounded-full bg-red-600 shadow-[0_0_8px_red] animate-pulse"></div>
                             <span class="text-xs font-black text-[#ffcc00] tracking-widest uppercase">小瑪莉</span>
                         </div>
-                        <div class="flex gap-3">
+                        <div class="flex gap-2">
                             <button onclick="openMaryHelp()" class="w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-amber-500 font-bold hover:bg-black/60 transition-colors">?</button>
+                            <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full bg-amber-500/20 border border-amber-500/50 text-amber-500 hover:bg-amber-500/40 transition-colors"><i data-lucide="gamepad-2" class="w-4 h-4"></i></button>
                             <button onclick="CasinoApp.backToLobby()" class="w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white/60 hover:text-white transition-colors">✕</button>
                         </div>
                     </div>
@@ -319,7 +314,12 @@
             <!-- 輪盤視圖 (Roulette View) -->
             <div id="view-roulette" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
                 <div class="flex justify-between items-center bg-emerald-900/60 p-3 rounded-xl border border-emerald-500/20 backdrop-blur-md">
-                    <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i> <span class="tracking-widest drop-shadow-md">返回大廳</span></button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i></button>
+                        <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden');" class="bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white flex items-center gap-2 px-4 py-2 h-10 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(212,175,55,0.4)] border border-[#EFC958]/50 active:scale-95">
+                            <i data-lucide="gamepad-2" class="w-4 h-4"></i> <span class="tracking-widest drop-shadow-md">切換遊戲</span>
+                        </button>
+                    </div>
                     <div class="text-xs text-emerald-400 font-bold">Roulette</div>
                 </div>
                 <div id="roulette-container" class="flex-1 flex flex-col justify-between">
@@ -347,7 +347,12 @@
             <!-- 骰寶視圖 (Sic Bo View) -->
             <div id="view-sicbo" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
                 <div class="flex justify-between items-center bg-red-950/60 p-3 rounded-xl border border-red-500/20 backdrop-blur-md">
-                    <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i> <span class="tracking-widest drop-shadow-md">返回大廳</span></button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i></button>
+                        <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden');" class="bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white flex items-center gap-2 px-4 py-2 h-10 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(212,175,55,0.4)] border border-[#EFC958]/50 active:scale-95">
+                            <i data-lucide="gamepad-2" class="w-4 h-4"></i> <span class="tracking-widest drop-shadow-md">切換遊戲</span>
+                        </button>
+                    </div>
                     <div class="text-xs text-red-400 font-bold">Sic Bo</div>
                 </div>
                 <!-- 骰寶視窗內容 -->
@@ -372,7 +377,12 @@
             <!-- 百家樂視圖 (Baccarat View) -->
             <div id="view-baccarat" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
                 <div class="flex justify-between items-center bg-[#0F2A1D] p-3 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md">
-                    <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i> <span class="tracking-widest drop-shadow-md">返回大廳</span></button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i></button>
+                        <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden');" class="bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white flex items-center gap-2 px-4 py-2 h-10 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(212,175,55,0.4)] border border-[#EFC958]/50 active:scale-95">
+                            <i data-lucide="gamepad-2" class="w-4 h-4"></i> <span class="tracking-widest drop-shadow-md">切換遊戲</span>
+                        </button>
+                    </div>
                     <div class="text-xs text-[#D4AF37] font-bold">Baccarat</div>
                 </div>
                 

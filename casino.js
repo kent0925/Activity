@@ -59,7 +59,7 @@ const CasinoApp = {
             const data = await res.json();
             if (data.error) throw new Error(data.error);
             
-            this.points = data.points + data.monthlyGift;
+            this.points = data.totalMaryScore || 0; // 改為使用小瑪莉籌碼 (Casino Chips)
             
             // 管理員無限點數保護
             if (ADMIN_USER_IDS.includes(this.user.userId)) {
@@ -73,18 +73,50 @@ const CasinoApp = {
         }
     },
 
+    // ★ 改版：賭場全面改用「專用籌碼制」(同小瑪莉積分)，因此使用 playSmallMary 進行同步
+    async syncCasinoPoints(totalBet, totalWin, gameName) {
+        if (totalBet === 0 && totalWin === 0) return;
+        try {
+            const res = await fetch(GAS_URL, {
+                method: 'POST',
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    action: 'playSmallMary',
+                    userId: this.user.userId,
+                    betPoints: totalBet,
+                    winPoints: totalWin,
+                    symbol: `${gameName} 結算`
+                })
+            });
+            const text = await res.text();
+            try {
+                const data = JSON.parse(text);
+                if (data.success) {
+                    this.points = data.totalMaryScore || 0;
+                    if (typeof ADMIN_USER_IDS !== 'undefined' && ADMIN_USER_IDS.includes(this.user.userId)) {
+                        this.points = 999999;
+                    }
+                    document.getElementById('player-wallet').innerText = Math.floor(this.points).toLocaleString();
+                }
+            } catch(e) {}
+        } catch (e) {
+            console.error("Failed to sync casino points", e);
+        }
+    },
+
     openGame(gameType) {
         document.getElementById('view-lobby').classList.add('hidden');
         document.getElementById('view-mary').classList.add('hidden');
         document.getElementById('view-roulette').classList.add('hidden');
         document.getElementById('view-sicbo').classList.add('hidden');
         document.getElementById('view-baccarat').classList.add('hidden');
+        if(document.getElementById('view-slot')) document.getElementById('view-slot').classList.add('hidden');
         
         document.getElementById(`view-${gameType}`).classList.remove('hidden');
         this.currentView = gameType;
         
-        // 小瑪莉有自己的押注面板，不需要底部籌碼列
-        if (gameType === 'mary') {
+        // 小瑪莉與老虎機都不需要底部籌碼列
+        if (gameType === 'mary' || gameType === 'slot') {
             document.getElementById('casino-footer').classList.add('translate-y-full');
             // 初始化小瑪莉
             if (typeof initMaryBoard === 'function') {
@@ -103,6 +135,7 @@ const CasinoApp = {
         document.getElementById('view-roulette').classList.add('hidden');
         document.getElementById('view-sicbo').classList.add('hidden');
         document.getElementById('view-baccarat').classList.add('hidden');
+        if (document.getElementById('view-slot')) document.getElementById('view-slot').classList.add('hidden');
         
         // 隱藏底部籌碼列
         document.getElementById('casino-footer').classList.add('translate-y-full');
@@ -783,6 +816,10 @@ const CasinoApp = {
 
                 document.getElementById('player-wallet').innerText = this.points.toLocaleString();
                 
+                // Sync with backend
+                const totalBetAmt = Object.values(this.sicboBets).reduce((a, b) => a + b, 0);
+                this.syncCasinoPoints(totalBetAmt, totalWin, "SicBo");
+
                 this.sicboBets = {};
                 document.getElementById('sicbo-board').querySelectorAll('.placed-chip').forEach(el => el.remove());
                 
@@ -932,6 +969,10 @@ const CasinoApp = {
 
                 document.getElementById('player-wallet').innerText = this.points.toLocaleString();
                 
+                // Sync with backend
+                const totalBetAmt = Object.values(this.rouletteBets).reduce((a, b) => a + b, 0);
+                this.syncCasinoPoints(totalBetAmt, totalWin, "Roulette");
+
                 // 清空畫面籌碼 (不退回積分)
                 this.rouletteBets = {};
                 document.querySelectorAll('.placed-chip').forEach(el => el.remove());
@@ -1221,6 +1262,25 @@ const CasinoApp = {
         if (isPlayerPair && this.baccaratBets.player_pair) totalWin += this.baccaratBets.player_pair * 12; // 1:11
         if (isBankerPair && this.baccaratBets.banker_pair) totalWin += this.baccaratBets.banker_pair * 12; // 1:11
 
+        // Highlight winning cells
+        const baccaratWinners = [];
+        if (pScore > bScore) baccaratWinners.push('player');
+        else if (bScore > pScore) baccaratWinners.push('banker');
+        else baccaratWinners.push('tie');
+        if (isPlayerPair) baccaratWinners.push('player_pair');
+        if (isBankerPair) baccaratWinners.push('banker_pair');
+
+        baccaratWinners.forEach(winner => {
+            const el = document.getElementById(`baccarat-cell-${winner}`);
+            if (el) {
+                if (this.baccaratBets[winner] > 0) {
+                    el.classList.add('winning-cell', 'winning-bet');
+                } else {
+                    el.classList.add('winning-cell');
+                }
+            }
+        });
+
         const msgEl = document.getElementById('baccarat-result-msg');
         msgEl.innerText = winMsg;
         msgEl.style.opacity = '1';
@@ -1235,6 +1295,10 @@ const CasinoApp = {
                 this.showTicker("未中獎，再接再厲！", "lose");
             }
             
+            // Sync with backend
+            const totalBetAmt = Object.values(this.baccaratBets).reduce((a, b) => a + b, 0);
+            this.syncCasinoPoints(totalBetAmt, totalWin, "Baccarat");
+
             this.baccaratBets = {};
             document.querySelectorAll('.baccarat-cell .placed-chip').forEach(e => e.remove());
             document.querySelectorAll('.baccarat-cell .bet-total').forEach(e => e.remove());
