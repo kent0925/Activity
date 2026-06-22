@@ -918,7 +918,6 @@ async function maryDoubleUp(choice) {
         }
     }, 800); // 800ms
 }
-}
 
 async function maryDoubleUp(choice) {
     if (!maryState.doubleUpActive || maryState.isSpinning) return;
