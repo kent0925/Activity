@@ -918,6 +918,201 @@ async function maryDoubleUp(choice) {
         }
     }, 800); // 800ms
 }
+}
+
+async function maryDoubleUp(choice) {
+    if (!maryState.doubleUpActive || maryState.isSpinning) return;
+    // 玩家有操作，清除自動領獎計時器
+    if (maryState._autoCollectTimer) { clearTimeout(maryState._autoCollectTimer); maryState._autoCollectTimer = null; }
+
+    // 鎖定按鈕防止重複按
+    const dbContainer = document.getElementById('mary-double-btns');
+    if (dbContainer) dbContainer.style.pointerEvents = 'none';
+
+    // ★ 新需求：自訂各階段勝率控制
+    let winProb = 0.50; // 第 1 把 (streak = 0)
+    if (maryState.doubleUpStreak === 1) winProb = 0.40;      // 第 2 把
+    else if (maryState.doubleUpStreak === 2) winProb = 0.30; // 第 3 把
+    else if (maryState.doubleUpStreak === 3) winProb = 0.05; // 第 4 把
+    else if (maryState.doubleUpStreak >= 4) winProb = 0.001; // 第 5 把 (過五關)
+
+    let isForceWin = Math.random() < winProb;
+    let num;
+
+    if (isForceWin) {
+        // 讓玩家贏：開出符合玩家猜測的數字
+        if (choice === 'small') {
+            num = Math.floor(Math.random() * 6) + 1; // 1-6
+        } else {
+            num = Math.floor(Math.random() * 6) + 8; // 8-13
+        }
+    } else {
+        // 讓玩家輸：隨機開出莊家通殺(7)或是相反的數字
+        if (Math.random() < 0.3) {
+            num = 7; // 通殺
+        } else {
+            if (choice === 'small') {
+                num = Math.floor(Math.random() * 6) + 8; // 猜小開大
+            } else {
+                num = Math.floor(Math.random() * 6) + 1;  // 猜大開小
+            }
+        }
+    }
+
+    const numEl = document.getElementById('mary-double-number');
+    const numDisplay = document.getElementById('mary-double-num-display');
+    if (numEl) numEl.innerText = num;
+    if (numDisplay) numDisplay.classList.remove('hidden');
+
+    const btnSmall = document.getElementById('btn-mary-small');
+    const btnBig = document.getElementById('btn-mary-big');
+
+    // ★ 修正 F5：在修改 winScore 前先保存本局金額，讓後端能正確收到輸掉/贏得的金額
+    const winBeforeChange = maryState.winScore;
+
+    let win = false;
+    if (num === 7) {
+        win = false; // 莊家通殺
+    } else if (choice === 'small' && num <= 6) {
+        win = true;
+    } else if (choice === 'big' && num >= 8) {
+        win = true;
+    }
+
+    if (win) {
+        maryState.winScore *= 2;
+        maryState.doubleUpStreak = (maryState.doubleUpStreak || 0) + 1; // 記錄連勝
+        if (choice === 'big') {
+            if (btnBig) btnBig.classList.add('brightness-150', 'scale-110', 'ring-4', 'ring-white');
+            if (btnSmall) btnSmall.classList.add('opacity-30', 'grayscale');
+        } else {
+            if (btnSmall) btnSmall.classList.add('brightness-150', 'scale-110', 'ring-4', 'ring-white');
+            if (btnBig) btnBig.classList.add('opacity-30', 'grayscale');
+        }
+    } else {
+        maryState.winScore = 0;
+        maryState.doubleUpStreak = 0; // 失敗歸零
+        maryState.doubleUpActive = false;
+        if (btnBig) btnBig.classList.add('opacity-30', 'grayscale');
+        if (btnSmall) btnSmall.classList.add('opacity-30', 'grayscale');
+        maryClearBet();
+    }
+
+    // 即時更新領獎按鈕的數字，避免等待動畫的 800ms 期間顯示舊數字
+    const immediateDb = document.getElementById('mary-double-btns');
+    if (immediateDb) {
+        const immediateBtns = immediateDb.querySelectorAll('button');
+        if (immediateBtns[2]) {
+            if (maryState.winScore > 0) {
+                immediateBtns[2].textContent = `✅ 領獎 (${maryState.winScore})`;
+            } else {
+                immediateBtns[2].textContent = '領獎';
+            }
+        }
+    }
+
+    updateMaryUI();
+
+    // 同步至後端
+    // ★ BUG 7 修正：過五關（streak >= 5）時，後續會呼叫 claimSmallMaryJackpot，
+    // 其後端內部也呼叫 playSmallMary，為避免雙重計分，此處跳過 playSmallMary。
+    // ★ F5 說明：使用 winBeforeChange（修改前的金額）傳後端
+    //   - 贏：doubleWin = maryState.winScore（翻倍後），後端累加 MaryScore
+    //   - 輸：doubleWin = -winBeforeChange（負數），後端可正確計算輸掉的金額並補彩金池
+    const willTriggerJackpot = win && (maryState.doubleUpStreak >= 5);
+    if (!willTriggerJackpot) {
+        try {
+            const res = await apiSubmit({
+                action: 'playSmallMary',
+                userId: CasinoApp.user.userId,
+                betPoints: 0,
+                isDoubleUp: true,
+                doubleWin: win ? maryState.winScore : -winBeforeChange,
+                symbol: win ? `大小翻倍×2` : `大小輸(開${num})`
+            });
+            if (res && res.success) {
+                maryState.points = res.points;
+                maryState.monthlyGift = res.monthlyGift;
+                if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    setTimeout(async () => {
+        if (numDisplay) numDisplay.classList.add('hidden');
+        const classesToRemove = ['brightness-150', 'scale-110', 'ring-4', 'ring-white', 'opacity-30', 'grayscale'];
+        if (btnBig) btnBig.classList.remove(...classesToRemove);
+        if (btnSmall) btnSmall.classList.remove(...classesToRemove);
+
+        if (dbContainer) dbContainer.style.pointerEvents = 'auto'; // 恢復點擊
+
+        // ★ 過五關斬將彩池觸發
+        if (win && maryState.doubleUpStreak >= 5) {
+            maryState.doubleUpStreak = 0; // 重置
+            const dbBtnsJP = document.getElementById('mary-double-btns');
+            if (dbBtnsJP) { dbBtnsJP.classList.add('hidden'); dbBtnsJP.style.pointerEvents = 'auto'; }
+            if (dbContainer) dbContainer.style.pointerEvents = 'auto'; // ★ 恢復 pointerEvents
+            showToast("🎉 恭喜！過五關斬將，觸發彩池大獎！正在結算中...", 4000);
+
+            try {
+                const res = await apiSubmit({
+                    action: 'claimSmallMaryJackpot',
+                    userId: CasinoApp.user.userId,
+                    name: CasinoApp.user.displayName // ★ BUG 3 修正：應為 displayName，非 name
+                });
+                if (res.success) {
+                    // ★ 修正 F3：claimSmallMaryJackpot 後端已記帳完畢（內部呼叫 playSmallMary）
+                    // 直接更新前端狀態，不再呼叫 maryCollect()（避免再次送 playSmallMary 導致彩金雙重記入）
+                    maryState.winScore += res.jackpotWon; // 加上彩金用於前端動畫
+                    showToast(`🎰 狂賀！獨得彩池 ${res.jackpotWon} 分！總合 ${maryState.winScore} 分！`, 5000);
+
+                    // 直接更新後端回傳的正確點數
+                    if (res.points !== undefined) maryState.points = res.points;
+                    if (res.monthlyGift !== undefined) maryState.monthlyGift = res.monthlyGift;
+                    if (res.totalMaryScore !== undefined) maryState.totalMaryScore = res.totalMaryScore;
+                } else {
+                    showToast(`⚠️ 彩池提示：${res.error || '未知的錯誤'}`, 3000);
+                }
+            } catch (e) {
+                console.error("領取彩池失敗", e);
+            }
+
+            // 清除比大小 UI
+            maryState.doubleUpActive = false;
+            maryState.isSpinning = false;
+            maryState.winScore = 0;
+            maryClearBet();
+            updateMaryUI();
+            document.getElementById('mary-btn-start').disabled = false;
+            return;
+        }
+
+        if (!maryState.doubleUpActive) {
+            maryState.isSpinning = false;
+            maryState.winScore = 0;
+
+            // 隱藏整個雙倍區按鈕
+            const dbBtnsLose = document.getElementById('mary-double-btns');
+            if (dbBtnsLose) {
+                dbBtnsLose.classList.add('hidden');
+                dbBtnsLose.style.pointerEvents = 'auto'; // ★ 修復：恢復 pointerEvents，防止下局殘留
+            }
+            if (dbContainer) dbContainer.style.pointerEvents = 'auto'; // ★ 同步恢復原始參照
+
+            updateMaryUI();
+            document.getElementById('mary-btn-start').disabled = false;
+        } else {
+            const db = document.getElementById('mary-double-btns');
+            if (db) {
+                const btns = db.querySelectorAll('button');
+                if (btns[2]) {
+                    btns[2].textContent = `✅ 領獎 (${maryState.winScore})`;
+                    btns[2].style.pointerEvents = 'auto'; // 強制領獎按鈕可點
+                }
+            }
+        }
+    }, 800); // 800ms
+}
 
 // 領獎
 async function maryCollect() {
@@ -1017,9 +1212,10 @@ function maryExchange() {
     const overlay = document.createElement('div');
     overlay.id = 'mary-exchange-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;';
-      // Wrap in a card
-      overlay.innerHTML = '<div style="background:linear-gradient(to bottom, #1a110a, #0d0905);border:2px solid #ffcc00;border-radius:16px;width:100%;max-width:320px;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;box-shadow:0 0 30px rgba(255,204,0,0.3);">' + overlay.innerHTML + '</div>';
+    
+    // Wrap in a card and add calculator style
     overlay.innerHTML = `
+    <div style="background:linear-gradient(to bottom, #1a110a, #0d0905);border:2px solid #ffcc00;border-radius:16px;width:100%;max-width:320px;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;box-shadow:0 0 30px rgba(255,204,0,0.3);">
         <div style="font-size:16px;font-weight:900;color:#ffcc00;">💱 拉霸分 10:1 兌換</div>
         <div style="background:#111;border:1px solid #ff6600;border-radius:10px;padding:10px 16px;width:100%;text-align:center;">
             <div style="font-size:10px;color:#ff6600;margin-bottom:4px;letter-spacing:2px;">YOU HAVE</div>
@@ -1030,26 +1226,52 @@ function maryExchange() {
             最多可換 <b id="mary-exchange-max-convert" style="color:#0f0;">---</b> 點小瑪莉點數<br>
             <span style="color:#666;font-size:10px;">（10 拉霸分 → 1 小瑪莉點）</span>
         </div>
-        <input id="mary-exchange-input" type="number" inputmode="numeric" pattern="[0-9]*" min="10" step="10" placeholder="等候讀取..."
+        <input id="mary-exchange-input" type="text" readonly placeholder="等候讀取..."
             style="width:100%;background:rgba(255,255,255,0.08);border:1px solid #fa0;border-radius:10px;
             padding:10px;color:#fa0;text-align:center;font-size:18px;font-weight:900;font-family:monospace;
             outline:none;" disabled>
-        <div style="font-size:10px;color:#555;">最小 10 分，請輸入 10 的倍數</div>
-        <div style="display:flex;gap:10px;width:100%;">
+        <div style="font-size:10px;color:#555;">請點擊下方數字 (需為 10 的倍數)</div>
+        
+        <!-- 內建計算機鍵盤 -->
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;width:100%;">
+            <button onclick="maryExchangeAddNum(1)" class="mary-key">1</button>
+            <button onclick="maryExchangeAddNum(2)" class="mary-key">2</button>
+            <button onclick="maryExchangeAddNum(3)" class="mary-key">3</button>
+            <button onclick="maryExchangeAddNum(4)" class="mary-key">4</button>
+            <button onclick="maryExchangeAddNum(5)" class="mary-key">5</button>
+            <button onclick="maryExchangeAddNum(6)" class="mary-key">6</button>
+            <button onclick="maryExchangeAddNum(7)" class="mary-key">7</button>
+            <button onclick="maryExchangeAddNum(8)" class="mary-key">8</button>
+            <button onclick="maryExchangeAddNum(9)" class="mary-key">9</button>
+            <button onclick="maryExchangeAddNum('C')" class="mary-key" style="background:rgba(255,50,50,0.15);color:#ff6666;border-color:rgba(255,50,50,0.3);">清除</button>
+            <button onclick="maryExchangeAddNum(0)" class="mary-key">0</button>
+            <button onclick="maryExchangeAddNum('MAX')" class="mary-key" style="background:rgba(50,255,50,0.15);color:#66ff66;font-size:12px;border-color:rgba(50,255,50,0.3);">MAX</button>
+        </div>
+        <style>
+            .mary-key {
+                background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+                color: #fff; font-size: 16px; font-weight: bold; border-radius: 8px; padding: 10px 0;
+                cursor: pointer; transition: 0.1s; user-select: none;
+            }
+            .mary-key:active { background: rgba(255,255,255,0.2); transform: scale(0.95); }
+        </style>
+
+        <div style="display:flex;gap:10px;width:100%;margin-top:4px;">
             <button onclick="document.getElementById('mary-exchange-overlay').remove()"
                 style="flex:1;padding:12px;background:rgba(255,255,255,0.1);border:none;border-radius:10px;
-                color:#ccc;font-weight:700;font-size:13px;cursor:pointer;">取消</button>
+                color:#ccc;font-weight:700;font-size:14px;cursor:pointer;">取消</button>
             <button id="mary-exchange-btn-confirm" onclick="maryConfirmExchange()" disabled
-                style="flex:2;padding:12px;background:linear-gradient(135deg,#663300,#995500);
-                border:none;border-radius:10px;color:#ccc;font-weight:900;font-size:13px;cursor:not-allowed;
+                style="flex:1;padding:12px;background:linear-gradient(135deg,#663300,#995500);
+                border:none;border-radius:10px;color:#ccc;font-weight:900;font-size:14px;cursor:not-allowed;
                 box-shadow:none;transition:all 0.3s;">確認兌換</button>
         </div>
+    </div>
     `;
     document.body.appendChild(overlay);
 
     // 背景讀取分數
     if(!CasinoApp || !CasinoApp.user) { alert('請稍後，系統尚未初始化'); return; }
-      fetch(`${GAS_URL}?action=getUserSlotScore&userId=${CasinoApp.user.userId}&_=${Date.now()}`)
+    fetch(`${GAS_URL}?action=getUserSlotScore&userId=${CasinoApp.user.userId}&_=${Date.now()}`)
         .then(r => r.json())
         .then(d => {
             const slotScore = d.slotScore || 0;
@@ -1067,10 +1289,10 @@ function maryExchange() {
             }
             if (maxEl) maxEl.innerText = maryPoints.toLocaleString();
             if (inputEl) {
-                inputEl.placeholder = "請輸入";
+                inputEl.placeholder = "請點擊下方數字";
                 inputEl.max = maxConvert; // ★ 修正 F1：上限改為可兌換的整數最大值
                 if (maxConvert > 0) {
-                    inputEl.value = maxConvert;
+                    inputEl.value = ""; // 預設留空讓玩家按
                     inputEl.disabled = false;
                 }
             }
@@ -1100,6 +1322,47 @@ function openMaryHelp() {
     const el = document.getElementById('mary-help-overlay');
     if (el) el.classList.remove('hidden');
 }
+
+// 支援計算機的按鍵函式
+window.maryExchangeAddNum = function(val) {
+    const input = document.getElementById('mary-exchange-input');
+    if (!input) return;
+    const maxValStr = document.getElementById('mary-exchange-max-convert')?.innerText;
+    const maxVal = parseInt(maxValStr?.replace(/,/g, '')) * 10 || 0; // 上限是拉霸積分
+
+    if (val === 'C') {
+        input.value = "";
+    } else if (val === 'MAX') {
+        input.value = maxVal;
+    } else {
+        let currentVal = input.value || "";
+        let newValStr = currentVal + val;
+        let newVal = parseInt(newValStr);
+        if (newVal > maxVal) newVal = maxVal;
+        input.value = newVal;
+    }
+    
+    // Check if confirm button should be enabled
+    const btnConfirm = document.getElementById('mary-exchange-btn-confirm');
+    if (btnConfirm) {
+        let checkVal = parseInt(input.value) || 0;
+        if (checkVal >= 10 && checkVal <= maxVal) {
+            btnConfirm.disabled = false;
+            btnConfirm.style.background = 'linear-gradient(135deg,#cc6600,#ffaa00)';
+            btnConfirm.style.color = '#000';
+            btnConfirm.style.cursor = 'pointer';
+            btnConfirm.style.boxShadow = '0 0 15px rgba(255,150,0,0.4)';
+            btnConfirm.innerText = "確認兌換";
+        } else {
+            btnConfirm.disabled = true;
+            btnConfirm.style.background = 'linear-gradient(135deg,#663300,#995500)';
+            btnConfirm.style.color = '#ccc';
+            btnConfirm.style.cursor = 'not-allowed';
+            btnConfirm.style.boxShadow = 'none';
+            btnConfirm.innerText = "分數不足";
+        }
+    }
+};
 
 async function maryConfirmExchange() {
     const input = document.getElementById('mary-exchange-input');

@@ -353,13 +353,13 @@ const CasinoApp = {
         zeroContainer.className = 'grid grid-rows-2 gap-[1px] row-span-3 h-full';
         
         const zeroCell = document.createElement('div');
-        zeroCell.className = 'roulette-cell cell-green rounded-tl-md flex flex-col justify-center';
+        zeroCell.className = 'roulette-cell cell-green rounded-tl-md flex flex-col justify-center relative';
         zeroCell.id = 'roulette-cell-0';
         zeroCell.innerHTML = '<span>0</span>';
         zeroCell.onclick = (e) => { e.stopPropagation(); this.openRouletteBetPopup('0', zeroCell, e); };
         
         const doubleZeroCell = document.createElement('div');
-        doubleZeroCell.className = 'roulette-cell cell-green rounded-bl-md flex flex-col justify-center';
+        doubleZeroCell.className = 'roulette-cell cell-green rounded-bl-md flex flex-col justify-center relative';
         doubleZeroCell.id = 'roulette-cell-00';
         doubleZeroCell.innerHTML = '<span>00</span>';
         doubleZeroCell.onclick = (e) => { e.stopPropagation(); this.openRouletteBetPopup('00', doubleZeroCell, e); };
@@ -420,7 +420,7 @@ const CasinoApp = {
             
             // 該 row 最後加上 2 to 1 (Column bet)
             const colBet = document.createElement('div');
-            colBet.className = 'roulette-cell cell-trans text-[10px] px-1';
+            colBet.className = 'roulette-cell cell-trans text-[10px] px-1 relative';
             colBet.innerText = '2 to 1';
             const colId = rowIndex === 0 ? 'col3' : (rowIndex === 1 ? 'col2' : 'col1');
             colBet.onclick = () => this.placeRouletteBet(colId, colBet);
@@ -435,7 +435,7 @@ const CasinoApp = {
         ];
         dozens.forEach(d => {
             const el = document.createElement('div');
-            el.className = 'roulette-cell cell-trans col-span-4 mt-[1px]'; // 跨 4 欄
+            el.className = 'roulette-cell cell-trans col-span-4 mt-[1px] relative'; // 跨 4 欄
             el.innerText = d.label;
             el.onclick = () => this.placeRouletteBet(d.id, el);
             numbersGrid.appendChild(el);
@@ -456,7 +456,7 @@ const CasinoApp = {
         
         evenOdds.forEach(e => {
             const el = document.createElement('div');
-            el.className = 'roulette-cell cell-trans col-span-2 mt-[1px] text-[10px] sm:text-xs'; // 跨 2 欄
+            el.className = 'roulette-cell cell-trans col-span-2 mt-[1px] text-[10px] sm:text-xs relative'; // 跨 2 欄
             if (e.cls) {
                 el.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-white/90 ${e.cls} rounded">${e.label}</div>`;
             } else {
