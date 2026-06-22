@@ -19,7 +19,7 @@
     <!-- CSS / Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
-    <link rel="stylesheet" href="casino.css">
+    <link rel="stylesheet" href="casino.css?v=1782105879887">
     
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@0.575.0/dist/umd/lucide.js" defer></script>
@@ -198,13 +198,13 @@
 
             <div class="text-[#EAD7BA] text-xs font-bold tracking-widest mb-3 text-center drop-shadow-md">🎰 今晚運勢</div>
             <div class="slot-machine" style="box-shadow: 0 10px 25px rgba(0,0,0,0.8); border: 2px solid rgba(212, 175, 55, 0.4);">
-                <div class="slot-reel spinning" id="slot-1"><span class="slot-symbol">🎲</span></div>
-                <div class="slot-reel spinning" id="slot-2"><span class="slot-symbol">🎲</span></div>
-                <div class="slot-reel spinning" id="slot-3"><span class="slot-symbol">🎲</span></div>
+                <div class="slot-reel" id="slot-1"><span class="slot-symbol">🎲</span></div>
+                <div class="slot-reel" id="slot-2"><span class="slot-symbol">🎲</span></div>
+                <div class="slot-reel" id="slot-3"><span class="slot-symbol">🎲</span></div>
             </div>
             <div id="slot-result"
                 class="slot-result text-[#F3E5AB] text-sm font-bold text-center mt-4 px-6 max-w-xs mx-auto min-h-[24px] drop-shadow-md">
-                拉霸中...</div>
+                點擊下方按鈕開始拉霸</div>
         </div>
         <div id="slot-actions" class="hidden flex-col items-center mt-6 animate-fade-in relative z-50">
             <button onclick="playSlotAgain()"
@@ -491,7 +491,7 @@
                     <div class="text-xs text-gray-400 font-bold">選擇籌碼</div>
                     <div class="flex gap-2">
                         <button onclick="CasinoApp.handleClear()" class="text-xs px-3 py-1.5 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 active:scale-95 transition border border-gray-600 shadow-md">清除</button>
-                        <button onclick="openExchangeModal()" class="text-xs px-4 py-1.5 rounded bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold hover:brightness-110 active:scale-95 transition shadow-[0_0_10px_rgba(37,99,235,0.5)] border border-blue-400">兌換</button>
+                        <button onclick="maryExchange()" class="text-xs px-4 py-1.5 rounded bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold hover:brightness-110 active:scale-95 transition shadow-[0_0_10px_rgba(37,99,235,0.5)] border border-blue-400">兌換</button>
                         <button onclick="CasinoApp.handleSpin()" id="btn-spin-start" class="text-xs px-5 py-1.5 rounded bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-black font-black tracking-widest hover:brightness-110 active:scale-95 transition shadow-[0_0_15px_rgba(212,175,55,0.6)] border border-[#F3E5AB]">開始</button>
                     </div>
                 </div>
