@@ -1016,7 +1016,9 @@ function maryExchange() {
 
     const overlay = document.createElement('div');
     overlay.id = 'mary-exchange-overlay';
-    overlay.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.95);border-radius:24px;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;';
+      // Wrap in a card
+      overlay.innerHTML = '<div style="background:linear-gradient(to bottom, #1a110a, #0d0905);border:2px solid #ffcc00;border-radius:16px;width:100%;max-width:320px;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;box-shadow:0 0 30px rgba(255,204,0,0.3);">' + overlay.innerHTML + '</div>';
     overlay.innerHTML = `
         <div style="font-size:16px;font-weight:900;color:#ffcc00;">💱 拉霸分 10:1 兌換</div>
         <div style="background:#111;border:1px solid #ff6600;border-radius:10px;padding:10px 16px;width:100%;text-align:center;">
@@ -1043,10 +1045,11 @@ function maryExchange() {
                 box-shadow:none;transition:all 0.3s;">確認兌換</button>
         </div>
     `;
-    document.getElementById('mary-machine').appendChild(overlay);
+    document.body.appendChild(overlay);
 
     // 背景讀取分數
-    fetch(`${GAS_URL}?action=getUserSlotScore&userId=${CasinoApp.user.userId}&_=${Date.now()}`)
+    if(!CasinoApp || !CasinoApp.user) { alert('請稍後，系統尚未初始化'); return; }
+      fetch(`${GAS_URL}?action=getUserSlotScore&userId=${CasinoApp.user.userId}&_=${Date.now()}`)
         .then(r => r.json())
         .then(d => {
             const slotScore = d.slotScore || 0;
@@ -1125,6 +1128,10 @@ async function maryConfirmExchange() {
         if (res && res.success) {
             showToast(`✅ 成功兌換 ${res.addedPoints} 小瑪莉點數`);
             maryState.points += res.addedPoints;
+            if (typeof CasinoApp !== 'undefined') {
+                CasinoApp.points += res.addedPoints;
+                document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = CasinoApp.points.toLocaleString());
+            }
             updateMaryUI();
         } else {
             showToast(res ? (res.error || '兌換失敗，請確認拉霸分數是否尚充足') : '伺服器無回應');

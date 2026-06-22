@@ -4,6 +4,62 @@ const ADMIN_USER_IDS = ["U612df670c4d7d3cde0d599ab5008451f"];
 
 const CasinoApp = {
 
+    // Global Win Modal logic
+    winModalTimer: null,
+    showWinModal(title, subtitle, detailsHtml, totalWin) {
+        const modal = document.getElementById('casino-win-modal');
+        const content = document.getElementById('casino-win-modal-content');
+        if (!modal || !content) return;
+
+        document.getElementById('win-modal-title').innerText = title;
+        document.getElementById('win-modal-subtitle').innerText = subtitle;
+        document.getElementById('win-modal-details').innerHTML = detailsHtml || '<div class="text-center text-gray-400 text-xs py-2">無明細</div>';
+        document.getElementById('win-modal-total').innerText = Math.floor(totalWin).toLocaleString();
+
+        modal.classList.remove('hidden');
+        lucide.createIcons();
+        
+        // Animate in
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+
+        // Auto close timer
+        let timeLeft = 4;
+        const timerEl = document.getElementById('win-modal-timer');
+        timerEl.innerText = `(${timeLeft}s)`;
+        
+        if (this.winModalTimer) clearInterval(this.winModalTimer);
+        this.winModalTimer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                this.hideWinModal();
+            } else {
+                timerEl.innerText = `(${timeLeft}s)`;
+            }
+        }, 1000);
+    },
+
+    hideWinModal() {
+        const modal = document.getElementById('casino-win-modal');
+        const content = document.getElementById('casino-win-modal-content');
+        if (!modal || !content) return;
+
+        if (this.winModalTimer) {
+            clearInterval(this.winModalTimer);
+            this.winModalTimer = null;
+        }
+
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300); // match transition duration
+    },
+
+
     getChipColor(val) {
         if(val == 1) return { bg: '#9ca3af', border: '#4b5563' }; // gray
         if(val == 5) return { bg: '#f87171', border: '#b91c1c' }; // red
