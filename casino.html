@@ -178,11 +178,45 @@
 
             </div>
 
+            
+            <!-- 老虎機視圖 (Slot View) -->
+            <div id="view-slot" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-10">
+                <div class="flex justify-between items-center bg-[#1E3052]/60 p-3 rounded-xl border border-white/10 backdrop-blur-md mb-4 relative z-[60]">
+                    <div class="flex items-center gap-2">
+                        <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden');" class="bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white flex items-center gap-2 px-4 py-2 h-10 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(212,175,55,0.4)] border border-[#EFC958]/50 active:scale-95">
+                            <i data-lucide="gamepad-2" class="w-4 h-4"></i> <span class="tracking-widest drop-shadow-md">切換遊戲</span>
+                        </button>
+                    </div>
+                    <div class="text-xs text-gray-400">老虎機</div>
+                </div>
+
+                <div class="flex flex-col items-center justify-center p-6 premium-dark-card border border-amber-500/30 rounded-3xl mt-10 shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
+                    <div class="text-amber-400 text-2xl font-black mb-6 drop-shadow-md tracking-widest text-shadow-lg shadow-black">🍺 每日免費積分</div>
+                    <!-- 迷你老虎機 -->
+        <div class="slot-machine-container w-full max-w-[300px]" onclick="event.stopPropagation();">
+            <!-- 移除排行榜，保持載入畫面簡單 -->
+
+            <div class="text-[#EAD7BA] text-xs font-bold tracking-widest mb-3 text-center drop-shadow-md">🎰 今晚運勢</div>
+            <div class="slot-machine" style="box-shadow: 0 10px 25px rgba(0,0,0,0.8); border: 2px solid rgba(212, 175, 55, 0.4);">
+                <div class="slot-reel spinning" id="slot-1"><span class="slot-symbol">🎲</span></div>
+                <div class="slot-reel spinning" id="slot-2"><span class="slot-symbol">🎲</span></div>
+                <div class="slot-reel spinning" id="slot-3"><span class="slot-symbol">🎲</span></div>
+            </div>
+            <div id="slot-result"
+                class="slot-result text-[#F3E5AB] text-sm font-bold text-center mt-4 px-6 max-w-xs mx-auto min-h-[24px] drop-shadow-md">
+                拉霸中...</div>
+        </div>
+        <div id="slot-actions" class="hidden flex-col items-center mt-6 animate-fade-in relative z-50">
+            <button onclick="playSlotAgain()"
+                class="bg-[#B8922A] hover:bg-[#9A7820] text-white font-black py-2.5 px-10 rounded-full shadow-[0_4px_15px_rgba(184,146,42,0.6)] transition-all active:scale-95 mb-2 border-2 border-[#EFC958]/50">再玩一次</button>
+            
+        </div>
+                </div>
+            </div>
             <!-- 小瑪莉視圖 (Mary View) -->
             <div id="view-mary" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-10">
                 <div class="flex justify-between items-center bg-[#1E3052]/60 p-3 rounded-xl border border-white/10 backdrop-blur-md mb-4 relative z-[60]">
                     <div class="flex items-center gap-2">
-                        <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i></button>
                         <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden');" class="bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white flex items-center gap-2 px-4 py-2 h-10 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(212,175,55,0.4)] border border-[#EFC958]/50 active:scale-95">
                             <i data-lucide="gamepad-2" class="w-4 h-4"></i> <span class="tracking-widest drop-shadow-md">切換遊戲</span>
                         </button>
@@ -198,7 +232,7 @@
                         <div class="flex gap-2">
                             <button onclick="openMaryHelp()" class="w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-amber-500 font-bold hover:bg-black/60 transition-colors">?</button>
                             <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full bg-amber-500/20 border border-amber-500/50 text-amber-500 hover:bg-amber-500/40 transition-colors"><i data-lucide="gamepad-2" class="w-4 h-4"></i></button>
-                            <button onclick="CasinoApp.backToLobby()" class="w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white/60 hover:text-white transition-colors">✕</button>
+                            
                         </div>
                     </div>
                     <div class="px-6 pt-4 pb-1 bg-[#1a110a]">
@@ -310,12 +344,11 @@
             <div id="view-roulette" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
                 <div class="flex justify-between items-center bg-emerald-900/60 p-3 rounded-xl border border-emerald-500/20 backdrop-blur-md">
                     <div class="flex items-center gap-2">
-                        <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i></button>
                         <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden');" class="bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white flex items-center gap-2 px-4 py-2 h-10 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(212,175,55,0.4)] border border-[#EFC958]/50 active:scale-95">
                             <i data-lucide="gamepad-2" class="w-4 h-4"></i> <span class="tracking-widest drop-shadow-md">切換遊戲</span>
                         </button>
                     </div>
-                    <div class="text-xs text-emerald-400 font-bold">Roulette</div>
+                    <div class="text-xs text-emerald-400 font-bold">經典輪盤</div>
                 </div>
                 <div id="roulette-container" class="flex-1 flex flex-col justify-between">
                      <!-- 輪盤動畫區 -->
@@ -343,12 +376,11 @@
             <div id="view-sicbo" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
                 <div class="flex justify-between items-center bg-red-950/60 p-3 rounded-xl border border-red-500/20 backdrop-blur-md">
                     <div class="flex items-center gap-2">
-                        <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i></button>
                         <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden');" class="bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white flex items-center gap-2 px-4 py-2 h-10 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(212,175,55,0.4)] border border-[#EFC958]/50 active:scale-95">
                             <i data-lucide="gamepad-2" class="w-4 h-4"></i> <span class="tracking-widest drop-shadow-md">切換遊戲</span>
                         </button>
                     </div>
-                    <div class="text-xs text-red-400 font-bold">Sic Bo</div>
+                    <div class="text-xs text-red-400 font-bold">經典骰寶</div>
                 </div>
                 <!-- 骰寶視窗內容 -->
                 <div class="flex-1 flex flex-col">
@@ -373,12 +405,11 @@
             <div id="view-baccarat" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-40">
                 <div class="flex justify-between items-center bg-[#0F2A1D] p-3 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md">
                     <div class="flex items-center gap-2">
-                        <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i></button>
                         <button onclick="document.getElementById('casino-quick-nav-modal').classList.remove('hidden');" class="bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white flex items-center gap-2 px-4 py-2 h-10 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(212,175,55,0.4)] border border-[#EFC958]/50 active:scale-95">
                             <i data-lucide="gamepad-2" class="w-4 h-4"></i> <span class="tracking-widest drop-shadow-md">切換遊戲</span>
                         </button>
                     </div>
-                    <div class="text-xs text-[#D4AF37] font-bold">Baccarat</div>
+                    <div class="text-xs text-[#D4AF37] font-bold">百家樂</div>
                 </div>
                 
                 <!-- 開牌區 (Tableau) -->
@@ -459,8 +490,9 @@
                 <div class="flex justify-between items-end mb-2 px-1">
                     <div class="text-xs text-gray-400 font-bold">選擇籌碼</div>
                     <div class="flex gap-2">
-                        <button onclick="CasinoApp.handleClear()" class="text-xs px-3 py-1.5 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 active:scale-95 transition border border-gray-600">清除</button>
-                        <button onclick="CasinoApp.handleSpin()" id="btn-spin-start" class="text-xs px-4 py-1.5 rounded bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-black font-bold hover:brightness-110 active:scale-95 transition shadow-lg">開始</button>
+                        <button onclick="CasinoApp.handleClear()" class="text-xs px-3 py-1.5 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 active:scale-95 transition border border-gray-600 shadow-md">清除</button>
+                        <button onclick="openExchangeModal()" class="text-xs px-4 py-1.5 rounded bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold hover:brightness-110 active:scale-95 transition shadow-[0_0_10px_rgba(37,99,235,0.5)] border border-blue-400">兌換</button>
+                        <button onclick="CasinoApp.handleSpin()" id="btn-spin-start" class="text-xs px-5 py-1.5 rounded bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-black font-black tracking-widest hover:brightness-110 active:scale-95 transition shadow-[0_0_15px_rgba(212,175,55,0.6)] border border-[#F3E5AB]">開始</button>
                     </div>
                 </div>
                 <div class="flex justify-between gap-1 overflow-x-auto hide-scrollbar py-1">
@@ -491,7 +523,15 @@
     <!-- 快速切換遊戲 Modal -->
     <div id="casino-quick-nav-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onclick="this.classList.add('hidden')">
         <div class="bg-[#1A2533] border border-[#D4AF37]/40 rounded-2xl p-4 w-full max-w-[280px] shadow-[0_0_30px_rgba(212,175,55,0.15)] flex flex-col gap-2" onclick="event.stopPropagation()">
-            <div class="text-center text-amber-500 font-bold text-sm mb-2 drop-shadow-md">快速切換遊戲</div>
+            <div class="text-center text-amber-500 font-bold text-sm mb-2 drop-shadow-md">快速選單</div>
+
+            <button onclick="document.getElementById('casino-quick-nav-modal').classList.add('hidden'); CasinoApp.backToLobby()" class="w-full bg-gradient-to-b from-[#B8922A] to-[#9A7820] text-white p-3 rounded-xl border border-[#D4AF37]/50 transition-all flex items-center justify-between group shadow-[0_0_15px_rgba(212,175,55,0.3)] mb-2 active:scale-95">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-black/50 border border-white/30 flex items-center justify-center text-white"><i data-lucide="door-open" class="w-4 h-4 text-white"></i></div>
+                    <span class="font-bold tracking-widest text-sm text-shadow-md">返回大廳</span>
+                </div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-white/50 group-hover:translate-x-1 transition-transform"></i>
+            </button>
             
             <button onclick="document.getElementById('casino-quick-nav-modal').classList.add('hidden'); CasinoApp.openGame('slot')" class="w-full bg-[#0D131A] hover:bg-[#2A406D] text-white p-3 rounded-xl border border-white/10 transition-all flex items-center justify-between group">
                 <div class="flex items-center gap-3">
