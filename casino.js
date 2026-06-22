@@ -1,4 +1,4 @@
-﻿const GAS_URL = "https://script.google.com/macros/s/AKfycbzTiALv2VOAvtuUgFx623KQgkvlmkkEc-bSgFQXiLqcxWpi9FvSrSxkSibjdRwO7tVn/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzTiALv2VOAvtuUgFx623KQgkvlmkkEc-bSgFQXiLqcxWpi9FvSrSxkSibjdRwO7tVn/exec";
 const LIFF_ID = "2008678090-aXTesgDK";
 const ADMIN_USER_IDS = ["U612df670c4d7d3cde0d599ab5008451f"];
 
@@ -244,13 +244,13 @@ const CasinoApp = {
         zeroCell.className = 'roulette-cell cell-green rounded-tl-md flex flex-col justify-center';
         zeroCell.id = 'roulette-cell-0';
         zeroCell.innerHTML = '<span>0</span>';
-        zeroCell.onclick = () => this.placeRouletteBet('0', zeroCell);
+        zeroCell.onclick = (e) => { e.stopPropagation(); this.openRouletteBetPopup('0', zeroCell, e); };
         
         const doubleZeroCell = document.createElement('div');
         doubleZeroCell.className = 'roulette-cell cell-green rounded-bl-md flex flex-col justify-center';
         doubleZeroCell.id = 'roulette-cell-00';
         doubleZeroCell.innerHTML = '<span>00</span>';
-        doubleZeroCell.onclick = () => this.placeRouletteBet('00', doubleZeroCell);
+        doubleZeroCell.onclick = (e) => { e.stopPropagation(); this.openRouletteBetPopup('00', doubleZeroCell, e); };
         
         zeroContainer.appendChild(zeroCell);
         zeroContainer.appendChild(doubleZeroCell);
@@ -273,35 +273,34 @@ const CasinoApp = {
                 cell.className = `roulette-cell ${isRed ? 'cell-red' : 'cell-black'} relative`;
                 cell.id = 'roulette-cell-' + num;
                 cell.innerHTML = `<span>${num}</span>`;
-                // 直接點擊本體為單一數字
+                // 點擊格子時觸發九宮格視窗
                 cell.onclick = (e) => {
-                    // 避免點擊到邊界 target 時觸發單一數字
-                    if(e.target === cell || e.target.tagName === 'SPAN') {
-                        this.placeRouletteBet(`num_${num}`, cell);
-                    }
+                    e.stopPropagation();
+                    this.openRouletteBetPopup(num, cell, e);
                 };
 
-                // 加入 Split 與 Corner 感應區 (除最後一行/列外)
+                // 產生下注籌碼的定位錨點 (Anchor Points)
+                // 這些錨點不具備點擊功能，僅用於讓籌碼準確定位在格線交界處
                 if (colIndex < 11) {
-                    // Vertical Split (左右號碼)
-                    const vSplit = document.createElement('div');
-                    vSplit.className = 'touch-target-v';
-                    vSplit.onclick = (e) => { e.stopPropagation(); this.placeRouletteBet(`split_${num}_${num+3}`, vSplit); };
-                    cell.appendChild(vSplit);
+                    // Vertical Split Anchor (右邊界中點)
+                    const vAnchor = document.createElement('div');
+                    vAnchor.id = `anchor-split_${num}_${num+3}`;
+                    vAnchor.className = 'absolute right-0 top-1/2 w-0 h-0 z-0 pointer-events-none';
+                    cell.appendChild(vAnchor);
                 }
                 if (rowIndex < 2) {
-                    // Horizontal Split (上下號碼)
-                    const hSplit = document.createElement('div');
-                    hSplit.className = 'touch-target-h';
-                    hSplit.onclick = (e) => { e.stopPropagation(); this.placeRouletteBet(`split_${num}_${num-1}`, hSplit); };
-                    cell.appendChild(hSplit);
+                    // Horizontal Split Anchor (下邊界中點)
+                    const hAnchor = document.createElement('div');
+                    hAnchor.id = `anchor-split_${num}_${num-1}`;
+                    hAnchor.className = 'absolute bottom-0 left-1/2 w-0 h-0 z-0 pointer-events-none';
+                    cell.appendChild(hAnchor);
                 }
                 if (colIndex < 11 && rowIndex < 2) {
-                    // Corner (四角號碼)
-                    const corner = document.createElement('div');
-                    corner.className = 'touch-target-c';
-                    corner.onclick = (e) => { e.stopPropagation(); this.placeRouletteBet(`corner_${num}_${num-1}_${num+3}_${num+2}`, corner); };
-                    cell.appendChild(corner);
+                    // Corner Anchor (右下角交界點)
+                    const cAnchor = document.createElement('div');
+                    cAnchor.id = `anchor-corner_${num}_${num-1}_${num+3}_${num+2}`;
+                    cAnchor.className = 'absolute bottom-0 right-0 w-0 h-0 z-0 pointer-events-none';
+                    cell.appendChild(cAnchor);
                 }
 
                 numbersGrid.appendChild(cell);
@@ -360,6 +359,152 @@ const CasinoApp = {
         numbersGrid.appendChild(emptyEven);
         
         board.appendChild(numbersGrid);
+    },
+
+    openRouletteBetPopup(num, cellElement, event) {
+        if (this.isSpinning) {
+            this.showTicker("遊戲進行中", "開獎期間無法下注喔！");
+            return;
+        }
+
+        // 移除現有的彈跳視窗
+        const existingPopup = document.getElementById('roulette-bet-popup');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
+
+        // 如果點擊的是原本已開啟的格子，就當作是關閉
+        if (this.currentPopupCell === cellElement) {
+            this.currentPopupCell = null;
+            return;
+        }
+        this.currentPopupCell = cellElement;
+
+        const popup = document.createElement('div');
+        popup.id = 'roulette-bet-popup';
+        popup.className = 'absolute z-[100] bg-gray-900 border-2 border-emerald-500 rounded-lg shadow-[0_0_20px_rgba(16,185,129,0.5)] p-2 animate-fade-in flex flex-col gap-1';
+        
+        // 防止點擊彈窗內部時關閉彈窗
+        popup.onclick = (e) => e.stopPropagation();
+
+        const grid = document.createElement('div');
+        grid.className = 'grid grid-cols-3 gap-1';
+
+        // 產生按鈕的 Helper
+        const createBtn = (label, betId, colorClass = 'bg-gray-800 text-gray-400') => {
+            const btn = document.createElement('button');
+            const isValid = betId !== null && typeof betId !== 'undefined';
+            btn.className = `w-12 h-12 sm:w-14 sm:h-14 rounded flex items-center justify-center text-sm font-bold transition-all ${isValid ? 'hover:brightness-125 active:scale-95 cursor-pointer ' + colorClass : 'opacity-10 cursor-default ' + colorClass}`;
+            if (isValid) {
+                btn.onclick = () => {
+                    // 如果有 anchor (角注或分注)，就用 anchor 作為定位點，否則用 cellElement (單注)
+                    const anchorEl = document.getElementById('anchor-' + betId) || document.getElementById('roulette-cell-' + (typeof num === 'string' ? num.replace('num_', '') : num)) || cellElement;
+                    this.placeRouletteBet(betId, anchorEl);
+                    popup.remove();
+                    this.currentPopupCell = null;
+                };
+                if (label) {
+                    btn.innerHTML = label;
+                } else {
+                    // 分注或角注以圓點表示
+                    btn.innerHTML = '<div class="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-white/40 border border-white/60"></div>';
+                }
+            }
+            return btn;
+        };
+
+        if (num === '0' || num === '00') {
+            // 特例：0 和 00
+            const btn = createBtn(num, num, 'bg-green-600 text-white shadow-[0_0_10px_rgba(22,163,74,0.5)]');
+            btn.className = btn.className.replace('w-12 h-12 sm:w-14 sm:h-14', 'w-24 h-12 sm:w-28 sm:h-14 text-lg');
+            popup.appendChild(btn);
+        } else {
+            const n = parseInt(num);
+            const isTop = (n % 3 === 0);
+            const isBot = (n % 3 === 1);
+            const isLeft = (n <= 3);
+            const isRight = (n >= 34);
+
+            const options = {
+                center: `num_${n}`,
+                up: isTop ? null : `split_${n+1}_${n}`,
+                down: isBot ? null : `split_${n}_${n-1}`,
+                left: isLeft ? null : `split_${n-3}_${n}`,
+                right: isRight ? null : `split_${n}_${n+3}`,
+                tl: (isTop || isLeft) ? null : `corner_${n-2}_${n-3}_${n+1}_${n}`,
+                tr: (isTop || isRight) ? null : `corner_${n+1}_${n}_${n+4}_${n+3}`,
+                bl: (isBot || isLeft) ? null : `corner_${n-3}_${n-4}_${n}_${n-1}`,
+                br: (isBot || isRight) ? null : `corner_${n}_${n-1}_${n+3}_${n+2}`
+            };
+
+            const cellColorClass = document.getElementById('roulette-cell-' + n).classList.contains('cell-red') ? 'bg-red-600 text-white shadow-[0_0_10px_rgba(220,38,38,0.5)]' : 'bg-gray-900 text-white border border-gray-600 shadow-[0_0_10px_rgba(0,0,0,0.5)]';
+
+            // 排列 3x3 陣列
+            grid.appendChild(createBtn('', options.tl, 'bg-emerald-900/50 hover:bg-emerald-600'));
+            grid.appendChild(createBtn('', options.up, 'bg-emerald-800/60 hover:bg-emerald-500'));
+            grid.appendChild(createBtn('', options.tr, 'bg-emerald-900/50 hover:bg-emerald-600'));
+            
+            grid.appendChild(createBtn('', options.left, 'bg-emerald-800/60 hover:bg-emerald-500'));
+            grid.appendChild(createBtn(n, options.center, cellColorClass));
+            grid.appendChild(createBtn('', options.right, 'bg-emerald-800/60 hover:bg-emerald-500'));
+            
+            grid.appendChild(createBtn('', options.bl, 'bg-emerald-900/50 hover:bg-emerald-600'));
+            grid.appendChild(createBtn('', options.down, 'bg-emerald-800/60 hover:bg-emerald-500'));
+            grid.appendChild(createBtn('', options.br, 'bg-emerald-900/50 hover:bg-emerald-600'));
+
+            popup.appendChild(grid);
+            
+            const title = document.createElement('div');
+            title.className = 'text-center text-[10px] text-emerald-300 font-bold mb-1 tracking-widest';
+            title.innerText = 'SELECT BET';
+            popup.insertBefore(title, grid);
+        }
+
+        const container = document.getElementById('view-roulette');
+        container.appendChild(popup);
+        
+        const cellRect = cellElement.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        
+        let topPos = cellRect.top - containerRect.top - popup.offsetHeight - 10; 
+        let leftPos = cellRect.left - containerRect.left + (cellRect.width / 2) - (popup.offsetWidth / 2);
+        
+        // 渲染後再調整位置避免超出邊界
+        requestAnimationFrame(() => {
+            const finalWidth = popup.offsetWidth;
+            const finalHeight = popup.offsetHeight;
+            let finalTop = cellRect.top - containerRect.top - finalHeight - 10;
+            let finalLeft = cellRect.left - containerRect.left + (cellRect.width / 2) - (finalWidth / 2);
+            
+            if (finalTop < 0) {
+                // 如果上方空間不足，放到下方
+                finalTop = cellRect.bottom - containerRect.top + 10;
+            }
+            if (finalLeft < 10) finalLeft = 10;
+            if (finalLeft + finalWidth > containerRect.width - 10) {
+                finalLeft = containerRect.width - finalWidth - 10;
+            }
+            popup.style.top = finalTop + 'px';
+            popup.style.left = finalLeft + 'px';
+        });
+        
+        // 全域點擊關閉視窗
+        if (this._closePopupHandler) {
+            document.removeEventListener('click', this._closePopupHandler);
+        }
+        this._closePopupHandler = () => {
+            if (document.getElementById('roulette-bet-popup')) {
+                document.getElementById('roulette-bet-popup').remove();
+                this.currentPopupCell = null;
+            }
+            if (this._closePopupHandler) {
+                document.removeEventListener('click', this._closePopupHandler);
+                this._closePopupHandler = null;
+            }
+        };
+        setTimeout(() => {
+            document.addEventListener('click', this._closePopupHandler);
+        }, 0);
     },
 
     placeRouletteBet(betId, cellElement) {

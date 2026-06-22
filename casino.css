@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    Casino Module Styles
    ========================================================================== */
 
@@ -146,31 +146,7 @@
     to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* Split & Corner Hidden Touch Targets (Fat Finger Friendly) */
-.touch-target-v { /* Vertical split (between numbers left-right) */
-    position: absolute;
-    right: -10px;
-    top: 0;
-    width: 20px;
-    height: 100%;
-    z-index: 5;
-}
-.touch-target-h { /* Horizontal split (between numbers top-bottom) */
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 100%;
-    height: 20px;
-    z-index: 5;
-}
-.touch-target-c { /* Corner */
-    position: absolute;
-    bottom: -10px;
-    right: -10px;
-    width: 20px;
-    height: 20px;
-    z-index: 6;
-}
+/* Split & Corner Hidden Touch Targets Removed for Popup UI */
 
 /* ==========================================================================
    Winning Highlight
