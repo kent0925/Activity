@@ -66,10 +66,10 @@ const CasinoApp = {
                 this.points = 999999;
             }
             
-            document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+            document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = this.points.toLocaleString());
         } catch (e) {
             console.error(e);
-            document.getElementById('player-wallet').innerText = "ERROR";
+            document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = "ERROR");
         }
     },
 
@@ -96,7 +96,7 @@ const CasinoApp = {
                     if (typeof ADMIN_USER_IDS !== 'undefined' && ADMIN_USER_IDS.includes(this.user.userId)) {
                         this.points = 999999;
                     }
-                    document.getElementById('player-wallet').innerText = Math.floor(this.points).toLocaleString();
+                    document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = Math.floor(this.points).toLocaleString());
                 }
             } catch(e) {}
         } catch (e) {
@@ -569,7 +569,7 @@ const CasinoApp = {
         
         // 扣款
         this.points -= this.currentChip;
-        document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+        document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = this.points.toLocaleString());
         
         // 記錄注碼
         this.rouletteBets[betId] = (this.rouletteBets[betId] || 0) + this.currentChip;
@@ -666,7 +666,7 @@ const CasinoApp = {
         
         // 扣款
         this.points -= this.currentChip;
-        document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+        document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = this.points.toLocaleString());
         
         // 記錄注碼
         this.sicboBets[betId] = (this.sicboBets[betId] || 0) + this.currentChip;
@@ -696,7 +696,7 @@ const CasinoApp = {
         }
         if (totalBet > 0) {
             this.points += totalBet;
-            document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+            document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = this.points.toLocaleString());
         }
         
         this.sicboBets = {};
@@ -814,7 +814,7 @@ const CasinoApp = {
                     this.showTicker(`骰子 ${results.join(', ')} (總和${sum})！很可惜未中獎。`, 'lose');
                 }
 
-                document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+                document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = this.points.toLocaleString());
                 
                 // Sync with backend
                 const totalBetAmt = Object.values(this.sicboBets).reduce((a, b) => a + b, 0);
@@ -843,7 +843,7 @@ const CasinoApp = {
         }
         if (totalBet > 0) {
             this.points += totalBet;
-            document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+            document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = this.points.toLocaleString());
         }
         
         // 清除紀錄與畫面上的籌碼
@@ -967,7 +967,7 @@ const CasinoApp = {
                     this.showTicker(`輪盤開出 ${winningStr}！很可惜未中獎。`, 'lose');
                 }
 
-                document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+                document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = this.points.toLocaleString());
                 
                 // Sync with backend
                 const totalBetAmt = Object.values(this.rouletteBets).reduce((a, b) => a + b, 0);
@@ -993,7 +993,7 @@ const CasinoApp = {
         }
 
         this.points -= this.currentChip;
-        document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+        document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = this.points.toLocaleString());
 
         this.baccaratBets[type] = (this.baccaratBets[type] || 0) + this.currentChip;
 
@@ -1032,7 +1032,7 @@ const CasinoApp = {
 
         if (totalRefund > 0) {
             this.points += totalRefund;
-            document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+            document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = this.points.toLocaleString());
             this.baccaratBets = {};
             
             // Clear visual chips
@@ -1288,7 +1288,7 @@ const CasinoApp = {
         setTimeout(() => {
             if (totalWin > 0) {
                 this.points += totalWin;
-                document.getElementById('player-wallet').innerText = Math.floor(this.points).toLocaleString();
+                document.querySelectorAll('.player-wallet-text').forEach(el => el.innerText = Math.floor(this.points).toLocaleString());
                 this.showTicker(`恭喜贏得 ${Math.floor(totalWin)} 積分！`, "win");
                 this.showAlert(winMsg, `恭喜贏得 ${Math.floor(totalWin)} 積分！`, true);
             } else {
