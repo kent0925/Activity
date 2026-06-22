@@ -243,7 +243,7 @@ async function refreshMaryData() {
         const data = await res.json();
         if (data.error) return showToast(data.error);
 
-        maryState.points = data.points;
+        maryState.points = data.MaryScore !== undefined ? data.MaryScore : (data.points || 0);
         maryState.monthlyGift = data.monthlyGift;
         maryState.totalMaryScore = data.totalMaryScore;
         maryState.jackpotPool = data.jackpotPool;
@@ -796,7 +796,7 @@ async function maryStartSpin() {
             symbol: displayMsg
         });
         if (res.success) {
-            maryState.points = res.points;
+            maryState.points = res.MaryScore !== undefined ? res.MaryScore : res.points;
             maryState.monthlyGift = res.monthlyGift;
             maryState.totalMaryScore = res.totalMaryScore;
             if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
@@ -948,7 +948,7 @@ async function maryDoubleUp(choice) {
                 symbol: win ? `大小翻倍×2` : `大小輸(開${num})`
             });
             if (res && res.success) {
-                maryState.points = res.points;
+                maryState.points = res.MaryScore !== undefined ? res.MaryScore : res.points;
                 maryState.monthlyGift = res.monthlyGift;
                 if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
             }
@@ -984,7 +984,8 @@ async function maryDoubleUp(choice) {
                     showToast(`🎰 狂賀！獨得彩池 ${res.jackpotWon} 分！總合 ${maryState.winScore} 分！`, 5000);
 
                     // 直接更新後端回傳的正確點數
-                    if (res.points !== undefined) maryState.points = res.points;
+                    if (res.MaryScore !== undefined) maryState.points = res.MaryScore;
+                    else if (res.points !== undefined) maryState.points = res.points;
                     if (res.monthlyGift !== undefined) maryState.monthlyGift = res.monthlyGift;
                     if (res.totalMaryScore !== undefined) maryState.totalMaryScore = res.totalMaryScore;
                 } else {
@@ -1062,7 +1063,7 @@ async function maryCollect() {
         });
 
         if (res && res.success) {
-            targetPoints = res.points;
+            targetPoints = res.MaryScore !== undefined ? res.MaryScore : res.points;
             maryState.monthlyGift = res.monthlyGift;
             backendOk = true;
         } else {
@@ -1130,28 +1131,53 @@ function maryExchange() {
     overlay.id = 'mary-exchange-overlay';
     overlay.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.95);border-radius:24px;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;';
     overlay.innerHTML = `
-        <div style="font-size:16px;font-weight:900;color:#ffcc00;">💱 拉霸分 10:1 兌換</div>
+        <div style="font-size:16px;font-weight:900;color:#ffcc00;">💱 拉霸積分 10:1 兌換籌碼</div>
         <div style="background:#111;border:1px solid #ff6600;border-radius:10px;padding:10px 16px;width:100%;text-align:center;">
             <div style="font-size:10px;color:#ff6600;margin-bottom:4px;letter-spacing:2px;">YOU HAVE</div>
             <div id="mary-exchange-slot-score" style="font-size:28px;font-weight:900;color:#fa0;font-family:monospace;" class="animate-pulse">讀取中...</div>
             <div style="font-size:10px;color:#888;">拉霸積分</div>
         </div>
         <div style="color:#ccc;font-size:11px;text-align:center;">
-            最多可換 <b id="mary-exchange-max-convert" style="color:#0f0;">---</b> 點小瑪莉點數<br>
-            <span style="color:#666;font-size:10px;">（10 拉霸分 → 1 小瑪莉點）</span>
+            最多可換 <b id="mary-exchange-max-convert" style="color:#0f0;">---</b> 個籌碼<br>
+            <span style="color:#666;font-size:10px;">（10 積分 → 1 籌碼）</span>
         </div>
-        <input id="mary-exchange-input" type="number" inputmode="numeric" pattern="[0-9]*" min="10" step="10" placeholder="等候讀取..."
+        <input id="mary-exchange-input" type="text" readonly placeholder="等候讀取..."
             style="width:100%;background:rgba(255,255,255,0.08);border:1px solid #fa0;border-radius:10px;
             padding:10px;color:#fa0;text-align:center;font-size:18px;font-weight:900;font-family:monospace;
             outline:none;" disabled>
-        <div style="font-size:10px;color:#555;">最小 10 分，請輸入 10 的倍數</div>
-        <div style="display:flex;gap:10px;width:100%;">
+        <div style="font-size:10px;color:#555;">請輸入要扣除的「拉霸積分」 (需為 10 的倍數)</div>
+        
+        <!-- 內建計算機鍵盤 -->
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;width:100%;">
+            <button onclick="maryExchangeAddNum(1)" class="mary-key">1</button>
+            <button onclick="maryExchangeAddNum(2)" class="mary-key">2</button>
+            <button onclick="maryExchangeAddNum(3)" class="mary-key">3</button>
+            <button onclick="maryExchangeAddNum(4)" class="mary-key">4</button>
+            <button onclick="maryExchangeAddNum(5)" class="mary-key">5</button>
+            <button onclick="maryExchangeAddNum(6)" class="mary-key">6</button>
+            <button onclick="maryExchangeAddNum(7)" class="mary-key">7</button>
+            <button onclick="maryExchangeAddNum(8)" class="mary-key">8</button>
+            <button onclick="maryExchangeAddNum(9)" class="mary-key">9</button>
+            <button onclick="maryExchangeAddNum('C')" class="mary-key" style="background:rgba(255,50,50,0.15);color:#ff6666;border-color:rgba(255,50,50,0.3);">清除</button>
+            <button onclick="maryExchangeAddNum(0)" class="mary-key">0</button>
+            <button onclick="maryExchangeAddNum('MAX')" class="mary-key" style="background:rgba(50,255,50,0.15);color:#66ff66;font-size:12px;border-color:rgba(50,255,50,0.3);">MAX</button>
+        </div>
+        <style>
+            .mary-key {
+                background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+                color: #fff; font-size: 16px; font-weight: bold; border-radius: 8px; padding: 10px 0;
+                cursor: pointer; transition: 0.1s; user-select: none;
+            }
+            .mary-key:active { background: rgba(255,255,255,0.2); transform: scale(0.95); }
+        </style>
+
+        <div style="display:flex;gap:10px;width:100%;margin-top:4px;">
             <button onclick="document.getElementById('mary-exchange-overlay').remove()"
                 style="flex:1;padding:12px;background:rgba(255,255,255,0.1);border:none;border-radius:10px;
-                color:#ccc;font-weight:700;font-size:13px;cursor:pointer;">取消</button>
+                color:#ccc;font-weight:700;font-size:14px;cursor:pointer;">取消</button>
             <button id="mary-exchange-btn-confirm" onclick="maryConfirmExchange()" disabled
-                style="flex:2;padding:12px;background:linear-gradient(135deg,#663300,#995500);
-                border:none;border-radius:10px;color:#ccc;font-weight:900;font-size:13px;cursor:not-allowed;
+                style="flex:1;padding:12px;background:linear-gradient(135deg,#663300,#995500);
+                border:none;border-radius:10px;color:#ccc;font-weight:900;font-size:14px;cursor:not-allowed;
                 box-shadow:none;transition:all 0.3s;">確認兌換</button>
         </div>
     `;
@@ -1161,7 +1187,7 @@ function maryExchange() {
     fetch(`${GAS_URL}?action=getUserSlotScore&userId=${appState.user.userId}&_=${Date.now()}`)
         .then(r => r.json())
         .then(d => {
-            const slotScore = d.slotScore || 0;
+            const slotScore = d.Points !== undefined ? d.Points : (d.slotScore || 0);
             const maxConvert = Math.floor(slotScore / 10) * 10;
             const maryPoints = Math.floor(maxConvert / 10);
 
@@ -1176,10 +1202,10 @@ function maryExchange() {
             }
             if (maxEl) maxEl.innerText = maryPoints.toLocaleString();
             if (inputEl) {
-                inputEl.placeholder = "請輸入";
+                inputEl.placeholder = "請點擊下方數字";
                 inputEl.max = maxConvert; // ★ 修正 F1：上限改為可兌換的整數最大值
                 if (maxConvert > 0) {
-                    inputEl.value = maxConvert;
+                    inputEl.value = ""; // 預設留空讓玩家按
                     inputEl.disabled = false;
                 }
             }
@@ -1235,7 +1261,7 @@ async function maryConfirmExchange() {
         });
         if (overlay) overlay.remove();
         if (res && res.success) {
-            showToast(`✅ 成功兌換 ${res.addedPoints} 小瑪莉點數`);
+            showToast(`✅ 成功兌換 ${res.addedPoints} 個籌碼`);
             maryState.points += res.addedPoints;
             updateMaryUI();
         } else {
