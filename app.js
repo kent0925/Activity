@@ -1225,10 +1225,11 @@ function maryExchange() {
     document.getElementById('mary-machine').appendChild(overlay);
 
     // 背景讀取分數
-    fetch(`${GAS_URL}?action=getUserSlotScore&userId=${appState.user.userId}&_=${Date.now()}`)
+    fetch(`${GAS_URL}?action=getSmallMaryData&userId=${appState.user.userId}&_=${Date.now()}`)
         .then(r => r.json())
         .then(d => {
-            const slotScore = d.Points !== undefined ? d.Points : (d.points !== undefined ? d.points : (d['分數'] !== undefined ? d['分數'] : (d.slotScore || 0)));
+            const actualData = d.data || d;
+            const slotScore = actualData.Points !== undefined ? actualData.Points : (actualData.points !== undefined ? actualData.points : (actualData['分數'] !== undefined ? actualData['分數'] : (actualData.slotScore || 0)));
             const maxConvert = Math.floor(slotScore / 10) * 10;
             const maryPoints = Math.floor(maxConvert / 10);
 
