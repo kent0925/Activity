@@ -12,6 +12,13 @@ const CasinoApp = {
     
     // Sic Bo
     sicboBets: {},
+    
+    // Baccarat
+    baccaratBets: {}, // { player: 10, banker: 20, tie: 0, player_pair: 0, banker_pair: 0 }
+    baccaratCards: { player: [], banker: [] },
+    baccaratScores: { player: 0, banker: 0 },
+    baccaratScratchCards: [], // 追蹤 Canvas 實體
+
     isSpinning: false,
     currentView: 'lobby',
     
@@ -71,6 +78,7 @@ const CasinoApp = {
         document.getElementById('view-mary').classList.add('hidden');
         document.getElementById('view-roulette').classList.add('hidden');
         document.getElementById('view-sicbo').classList.add('hidden');
+        document.getElementById('view-baccarat').classList.add('hidden');
         
         document.getElementById(`view-${gameType}`).classList.remove('hidden');
         this.currentView = gameType;
@@ -94,6 +102,7 @@ const CasinoApp = {
         document.getElementById('view-mary').classList.add('hidden');
         document.getElementById('view-roulette').classList.add('hidden');
         document.getElementById('view-sicbo').classList.add('hidden');
+        document.getElementById('view-baccarat').classList.add('hidden');
         
         // 隱藏底部籌碼列
         document.getElementById('casino-footer').classList.add('translate-y-full');
@@ -106,6 +115,8 @@ const CasinoApp = {
             this.spinRoulette();
         } else if (this.currentView === 'sicbo') {
             this.spinSicbo();
+        } else if (this.currentView === 'baccarat') {
+            this.handleBaccaratDeal();
         }
     },
 
@@ -114,6 +125,8 @@ const CasinoApp = {
             this.clearBets();
         } else if (this.currentView === 'sicbo') {
             this.clearSicboBets();
+        } else if (this.currentView === 'baccarat') {
+            this.handleBaccaratClear();
         }
     },
 
@@ -285,21 +298,21 @@ const CasinoApp = {
                     // Vertical Split Anchor (右邊界中點)
                     const vAnchor = document.createElement('div');
                     vAnchor.id = `anchor-split_${num}_${num+3}`;
-                    vAnchor.className = 'absolute right-0 top-1/2 w-0 h-0 z-0 pointer-events-none';
+                    vAnchor.className = 'absolute right-0 top-1/2 w-0 h-0 z-20 pointer-events-none';
                     cell.appendChild(vAnchor);
                 }
                 if (rowIndex < 2) {
                     // Horizontal Split Anchor (下邊界中點)
                     const hAnchor = document.createElement('div');
                     hAnchor.id = `anchor-split_${num}_${num-1}`;
-                    hAnchor.className = 'absolute bottom-0 left-1/2 w-0 h-0 z-0 pointer-events-none';
+                    hAnchor.className = 'absolute bottom-0 left-1/2 w-0 h-0 z-20 pointer-events-none';
                     cell.appendChild(hAnchor);
                 }
                 if (colIndex < 11 && rowIndex < 2) {
                     // Corner Anchor (右下角交界點)
                     const cAnchor = document.createElement('div');
                     cAnchor.id = `anchor-corner_${num}_${num-1}_${num+3}_${num+2}`;
-                    cAnchor.className = 'absolute bottom-0 right-0 w-0 h-0 z-0 pointer-events-none';
+                    cAnchor.className = 'absolute bottom-0 right-0 w-0 h-0 z-20 pointer-events-none';
                     cell.appendChild(cAnchor);
                 }
 
@@ -927,7 +940,449 @@ const CasinoApp = {
             }, 500);
         }, 5050);
     }
+    // ==========================================
+    // BACCARAT LOGIC
+    // ==========================================
+    placeBaccaratBet(type) {
+        if (this.isSpinning) return;
+        
+        if (this.points < this.currentChip) {
+            this.showAlert("積分不足", "您沒有足夠的積分可下注");
+            return;
+        }
+
+        this.points -= this.currentChip;
+        document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+
+        this.baccaratBets[type] = (this.baccaratBets[type] || 0) + this.currentChip;
+
+        const cell = document.getElementById(`baccarat-cell-${type}`);
+        
+        // Add chip visually
+        const chipEl = document.createElement('div');
+        chipEl.className = 'placed-chip';
+        chipEl.innerHTML = this.currentChip;
+        
+        // Offset chip slightly so multiple chips don't perfectly stack
+        const offsetX = (Math.random() - 0.5) * 20;
+        const offsetY = (Math.random() - 0.5) * 20;
+        chipEl.style.marginLeft = `${offsetX}px`;
+        chipEl.style.marginTop = `${offsetY}px`;
+        
+        cell.appendChild(chipEl);
+
+        // Add total bet amount display
+        let totalEl = cell.querySelector('.bet-total');
+        if (!totalEl) {
+            totalEl = document.createElement('div');
+            totalEl.className = 'bet-total absolute bottom-1 right-1 text-yellow-300 font-bold text-xs bg-black/60 px-1 rounded';
+            cell.appendChild(totalEl);
+        }
+        totalEl.innerText = this.baccaratBets[type];
+    },
+
+    handleBaccaratClear() {
+        if (this.isSpinning) return;
+        
+        let totalRefund = 0;
+        for (const type in this.baccaratBets) {
+            totalRefund += this.baccaratBets[type];
+        }
+
+        if (totalRefund > 0) {
+            this.points += totalRefund;
+            document.getElementById('player-wallet').innerText = this.points.toLocaleString();
+            this.baccaratBets = {};
+            
+            // Clear visual chips
+            const cells = document.querySelectorAll('.baccarat-cell');
+            cells.forEach(cell => {
+                const chips = cell.querySelectorAll('.placed-chip');
+                chips.forEach(c => c.remove());
+                const total = cell.querySelector('.bet-total');
+                if (total) total.remove();
+            });
+            this.showTicker("已清除下注", "info");
+        }
+    },
+
+    getRandomCard() {
+        const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
+        const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const suit = suits[Math.floor(Math.random() * suits.length)];
+        const value = values[Math.floor(Math.random() * values.length)];
+        
+        let point = 0;
+        if (value === 'A') point = 1;
+        else if (['10', 'J', 'Q', 'K'].includes(value)) point = 0;
+        else point = parseInt(value);
+        
+        let suitSymbol = '';
+        if (suit === 'hearts') suitSymbol = '♥';
+        if (suit === 'diamonds') suitSymbol = '♦';
+        if (suit === 'clubs') suitSymbol = '♣';
+        if (suit === 'spades') suitSymbol = '♠';
+
+        return { suit, value, point, suitSymbol };
+    },
+
+    calculateBaccaratScore(cards) {
+        let total = 0;
+        for (let c of cards) total += c.point;
+        return total % 10;
+    },
+
+    async handleBaccaratDeal() {
+        if (this.isSpinning) return;
+        
+        const totalBet = Object.values(this.baccaratBets).reduce((a, b) => a + b, 0);
+        if (totalBet === 0) {
+            this.showAlert("提示", "請先下注！");
+            return;
+        }
+
+        this.isSpinning = true;
+        document.getElementById('baccarat-controls').classList.remove('hidden');
+        document.getElementById('baccarat-instructions').classList.add('hidden');
+        document.getElementById('btn-spin-start').disabled = true;
+        document.getElementById('btn-spin-start').classList.add('opacity-50');
+        
+        document.getElementById('baccarat-result-msg').style.opacity = '0';
+        document.getElementById('baccarat-player-score').style.opacity = '0';
+        document.getElementById('baccarat-banker-score').style.opacity = '0';
+        document.getElementById('baccarat-player-cards').innerHTML = '';
+        document.getElementById('baccarat-banker-cards').innerHTML = '';
+
+        this.baccaratCards = { player: [], banker: [] };
+        this.baccaratScores = { player: 0, banker: 0 };
+        this.baccaratScratchCards = [];
+
+        // Draw initial 4 cards
+        this.baccaratCards.player.push(this.getRandomCard());
+        this.baccaratCards.banker.push(this.getRandomCard());
+        this.baccaratCards.player.push(this.getRandomCard());
+        this.baccaratCards.banker.push(this.getRandomCard());
+
+        // Render cards as scratchable
+        await this.dealCardDOM('player', this.baccaratCards.player[0], 0);
+        await this.dealCardDOM('banker', this.baccaratCards.banker[0], 1);
+        await this.dealCardDOM('player', this.baccaratCards.player[1], 2);
+        await this.dealCardDOM('banker', this.baccaratCards.banker[1], 3);
+    },
+
+    async dealCardDOM(side, cardData, delayIndex) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                const container = document.getElementById(`baccarat-${side}-cards`);
+                const cardWrap = document.createElement('div');
+                cardWrap.className = 'baccarat-card-container animate-deal';
+                
+                // Actual card content (hidden initially by canvas)
+                const cardEl = document.createElement('div');
+                cardEl.className = `baccarat-card suit-${cardData.suit}`;
+                cardEl.innerHTML = `
+                    <div class="top-left">${cardData.value}<br>${cardData.suitSymbol}</div>
+                    <div class="center-suit">${cardData.suitSymbol}</div>
+                    <div class="bottom-right">${cardData.value}<br>${cardData.suitSymbol}</div>
+                `;
+                
+                // Scratch Canvas
+                const canvas = document.createElement('canvas');
+                canvas.className = 'scratch-canvas';
+                canvas.width = 60;
+                canvas.height = 84;
+                
+                cardWrap.appendChild(cardEl);
+                cardWrap.appendChild(canvas);
+                container.appendChild(cardWrap);
+
+                const scratch = new ScratchCard(canvas, () => {
+                    this.onCardScratched(side);
+                });
+                this.baccaratScratchCards.push(scratch);
+                resolve();
+            }, delayIndex * 300);
+        });
+    },
+
+    onCardScratched(side) {
+        // Recalculate and update score if all current cards for this side are scratched
+        const container = document.getElementById(`baccarat-${side}-cards`);
+        const canvases = container.querySelectorAll('canvas');
+        let allScratched = true;
+        canvases.forEach(c => {
+            if (c.style.opacity !== '0' && c.style.display !== 'none') allScratched = false;
+        });
+
+        if (allScratched) {
+            this.baccaratScores[side] = this.calculateBaccaratScore(this.baccaratCards[side]);
+            const scoreEl = document.getElementById(`baccarat-${side}-score`);
+            scoreEl.innerText = this.baccaratScores[side];
+            scoreEl.style.opacity = '1';
+        }
+
+        this.checkBaccaratProgress();
+    },
+
+    baccaratOpenAll() {
+        this.baccaratScratchCards.forEach(s => s.reveal());
+    },
+
+    async checkBaccaratProgress() {
+        // Check if all current canvases are revealed
+        const allRevealed = this.baccaratScratchCards.every(s => s.isRevealed);
+        if (!allRevealed) return;
+
+        // If initial 4 cards are revealed, check third card rules
+        if (this.baccaratCards.player.length === 2 && this.baccaratCards.banker.length === 2) {
+            const pScore = this.baccaratScores.player;
+            const bScore = this.baccaratScores.banker;
+
+            // Natural 8 or 9
+            if (pScore >= 8 || bScore >= 8) {
+                this.baccaratSettle();
+                return;
+            }
+
+            let playerDraws = false;
+            let playerThirdCardPoint = -1;
+
+            // Player rule
+            if (pScore <= 5) {
+                playerDraws = true;
+                const card = this.getRandomCard();
+                this.baccaratCards.player.push(card);
+                playerThirdCardPoint = card.point;
+                await this.dealCardDOM('player', card, 0);
+            }
+
+            // Banker rule
+            let bankerDraws = false;
+            if (!playerDraws) {
+                if (bScore <= 5) bankerDraws = true;
+            } else {
+                if (bScore <= 2) bankerDraws = true;
+                else if (bScore === 3 && playerThirdCardPoint !== 8) bankerDraws = true;
+                else if (bScore === 4 && [2,3,4,5,6,7].includes(playerThirdCardPoint)) bankerDraws = true;
+                else if (bScore === 5 && [4,5,6,7].includes(playerThirdCardPoint)) bankerDraws = true;
+                else if (bScore === 6 && [6,7].includes(playerThirdCardPoint)) bankerDraws = true;
+                // bScore >= 7 stands
+            }
+
+            if (bankerDraws) {
+                const card = this.getRandomCard();
+                this.baccaratCards.banker.push(card);
+                await this.dealCardDOM('banker', card, playerDraws ? 1 : 0);
+            }
+
+            if (!playerDraws && !bankerDraws) {
+                this.baccaratSettle();
+            }
+        } 
+        // If third cards are revealed, settle
+        else if ((this.baccaratCards.player.length > 2 || this.baccaratCards.banker.length > 2) && allRevealed) {
+            this.baccaratSettle();
+        }
+    },
+
+    baccaratSettle() {
+        document.getElementById('baccarat-controls').classList.add('hidden');
+        
+        const pScore = this.calculateBaccaratScore(this.baccaratCards.player);
+        const bScore = this.calculateBaccaratScore(this.baccaratCards.banker);
+        
+        // Update final scores visually
+        document.getElementById('baccarat-player-score').innerText = pScore;
+        document.getElementById('baccarat-player-score').style.opacity = '1';
+        document.getElementById('baccarat-banker-score').innerText = bScore;
+        document.getElementById('baccarat-banker-score').style.opacity = '1';
+
+        let winMsg = "";
+        let totalWin = 0;
+
+        const isPlayerPair = this.baccaratCards.player[0].value === this.baccaratCards.player[1].value;
+        const isBankerPair = this.baccaratCards.banker[0].value === this.baccaratCards.banker[1].value;
+
+        // Payouts
+        if (pScore > bScore) {
+            winMsg = "閒贏 PLAYER WINS";
+            if (this.baccaratBets.player) totalWin += this.baccaratBets.player * 2; // 1:1
+        } else if (bScore > pScore) {
+            winMsg = "莊贏 BANKER WINS";
+            if (this.baccaratBets.banker) totalWin += this.baccaratBets.banker * 1.95; // 1:0.95
+        } else {
+            winMsg = "和局 TIE";
+            if (this.baccaratBets.tie) totalWin += this.baccaratBets.tie * 9; // 1:8
+            // Tie refunds player and banker bets
+            if (this.baccaratBets.player) totalWin += this.baccaratBets.player;
+            if (this.baccaratBets.banker) totalWin += this.baccaratBets.banker;
+        }
+
+        if (isPlayerPair && this.baccaratBets.player_pair) totalWin += this.baccaratBets.player_pair * 12; // 1:11
+        if (isBankerPair && this.baccaratBets.banker_pair) totalWin += this.baccaratBets.banker_pair * 12; // 1:11
+
+        const msgEl = document.getElementById('baccarat-result-msg');
+        msgEl.innerText = winMsg;
+        msgEl.style.opacity = '1';
+
+        setTimeout(() => {
+            if (totalWin > 0) {
+                this.points += totalWin;
+                document.getElementById('player-wallet').innerText = Math.floor(this.points).toLocaleString();
+                this.showTicker(`恭喜贏得 ${Math.floor(totalWin)} 積分！`, "win");
+                this.showAlert(winMsg, `恭喜贏得 ${Math.floor(totalWin)} 積分！`, true);
+            } else {
+                this.showTicker("未中獎，再接再厲！", "lose");
+            }
+            
+            this.baccaratBets = {};
+            document.querySelectorAll('.baccarat-cell .placed-chip').forEach(e => e.remove());
+            document.querySelectorAll('.baccarat-cell .bet-total').forEach(e => e.remove());
+            
+            document.getElementById('btn-spin-start').disabled = false;
+            document.getElementById('btn-spin-start').classList.remove('opacity-50');
+            document.getElementById('baccarat-instructions').classList.remove('hidden');
+            this.isSpinning = false;
+        }, 1500);
+    }
 };
+
+// ==========================================
+// SCRATCH CARD CLASS
+// ==========================================
+class ScratchCard {
+    constructor(canvas, onReveal) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d', { willReadFrequently: true });
+        this.onReveal = onReveal;
+        this.isRevealed = false;
+        this.isDrawing = false;
+        
+        // Wait for image to load to draw the card back
+        this.img = new Image();
+        this.img.src = 'images/card_back.jpg';
+        this.img.onload = () => {
+            this.initCanvas();
+        };
+        // Fallback if image fails
+        this.img.onerror = () => {
+            this.ctx.fillStyle = '#1e3a8a';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = '#eab308';
+            this.ctx.font = 'bold 12px sans-serif';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('CASINO', this.canvas.width/2, this.canvas.height/2);
+            this.ctx.globalCompositeOperation = 'destination-out';
+        };
+
+        this.handleStart = this.handleStart.bind(this);
+        this.handleMove = this.handleMove.bind(this);
+        this.handleEnd = this.handleEnd.bind(this);
+
+        this.canvas.addEventListener('mousedown', this.handleStart);
+        this.canvas.addEventListener('mousemove', this.handleMove);
+        this.canvas.addEventListener('mouseup', this.handleEnd);
+        this.canvas.addEventListener('mouseleave', this.handleEnd);
+        
+        this.canvas.addEventListener('touchstart', this.handleStart, {passive: false});
+        this.canvas.addEventListener('touchmove', this.handleMove, {passive: false});
+        this.canvas.addEventListener('touchend', this.handleEnd);
+        this.canvas.addEventListener('touchcancel', this.handleEnd);
+    }
+
+    initCanvas() {
+        if (this.isRevealed) return;
+        this.ctx.drawImage(this.img, 0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.globalCompositeOperation = 'destination-out';
+    }
+
+    getPos(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        let clientX, clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        return {
+            x: (clientX - rect.left) * (this.canvas.width / rect.width),
+            y: (clientY - rect.top) * (this.canvas.height / rect.height)
+        };
+    }
+
+    handleStart(e) {
+        if (this.isRevealed) return;
+        e.preventDefault();
+        this.isDrawing = true;
+        const pos = this.getPos(e);
+        this.ctx.beginPath();
+        this.ctx.moveTo(pos.x, pos.y);
+    }
+
+    handleMove(e) {
+        if (!this.isDrawing || this.isRevealed) return;
+        e.preventDefault();
+        const pos = this.getPos(e);
+        this.ctx.lineTo(pos.x, pos.y);
+        this.ctx.lineWidth = 15;
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        this.ctx.stroke();
+        
+        // Throttled check for performance
+        if (!this.checkTimer) {
+            this.checkTimer = setTimeout(() => {
+                this.checkProgress();
+                this.checkTimer = null;
+            }, 100);
+        }
+    }
+
+    handleEnd(e) {
+        if (e && e.cancelable) e.preventDefault();
+        this.isDrawing = false;
+        if (!this.isRevealed) {
+            this.checkProgress();
+        }
+    }
+
+    checkProgress() {
+        if (this.isRevealed) return;
+        
+        try {
+            const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+            const pixels = imageData.data;
+            let transparentPixels = 0;
+            
+            // Check alpha channel (every 4th value)
+            for (let i = 3; i < pixels.length; i += 4) {
+                if (pixels[i] < 10) transparentPixels++;
+            }
+            
+            const percent = transparentPixels / (pixels.length / 4);
+            if (percent > 0.4) {
+                this.reveal();
+            }
+        } catch(e) {
+            console.error("Canvas read error", e);
+            this.reveal(); // Fallback to reveal if tainted canvas
+        }
+    }
+
+    reveal() {
+        if (this.isRevealed) return;
+        this.isRevealed = true;
+        this.isDrawing = false;
+        this.canvas.style.transition = 'opacity 0.4s ease-out';
+        this.canvas.style.opacity = '0';
+        setTimeout(() => {
+            this.canvas.style.display = 'none';
+        }, 400);
+        if (this.onReveal) this.onReveal();
+    }
+}
 
 // 啟動
 document.addEventListener('DOMContentLoaded', () => {

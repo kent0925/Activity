@@ -175,3 +175,88 @@
     0% { background-color: rgba(0, 255, 136, 0.4); transform: scale(1); }
     100% { background-color: rgba(0, 255, 136, 0.9); transform: scale(1.05); }
 }
+
+/* ==========================================================================
+   Baccarat Styles
+   ========================================================================== */
+.baccarat-card-container {
+    width: 60px;
+    height: 84px;
+    position: relative;
+    perspective: 1000px;
+    margin: 0 2px;
+    transition: transform 0.3s;
+}
+
+.baccarat-card {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px;
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 1;
+    position: relative;
+    user-select: none;
+    border: 1px solid #ccc;
+}
+
+.baccarat-card.suit-hearts, .baccarat-card.suit-diamonds {
+    color: #e11d48; /* rose-600 */
+}
+
+.baccarat-card.suit-spades, .baccarat-card.suit-clubs {
+    color: #0f172a; /* slate-900 */
+}
+
+.baccarat-card .top-left {
+    align-self: flex-start;
+}
+
+.baccarat-card .bottom-right {
+    align-self: flex-end;
+    transform: rotate(180deg);
+}
+
+.baccarat-card .center-suit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    opacity: 0.2;
+}
+
+/* Scratch Canvas */
+.scratch-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    z-index: 10;
+    touch-action: none; /* Prevent scrolling when scratching */
+    cursor: crosshair;
+}
+
+/* Card Deal Animation */
+@keyframes dealCardAnim {
+    from {
+        transform: translate(0, -200px) scale(0) rotateY(180deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0) scale(1) rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+.animate-deal {
+    animation: dealCardAnim 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
