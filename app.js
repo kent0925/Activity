@@ -5071,8 +5071,8 @@ window.adminTestMary = async function() {
             if (typeof CasinoApp.updatePointsUI === 'function') CasinoApp.updatePointsUI();
         }
         
-        if (typeof showToast === 'function') showToast(已成功為您增加  測試積分！, 3000);
-        else alert(已成功為您增加  測試積分！);
+        if (typeof showToast === 'function') showToast(`已成功為您增加 ${addPoints} 測試積分！`, 3000);
+        else alert(`已成功為您增加 ${addPoints} 測試積分！`);
         
         try {
             const userId = (typeof appState !== 'undefined' && appState.user) ? appState.user.userId : 
@@ -5083,7 +5083,7 @@ window.adminTestMary = async function() {
                 betPoints: 0,
                 isDoubleUp: true,
                 doubleWin: addPoints,
-                symbol: 管理員測試充值(+)
+                symbol: `管理員測試充值(+${addPoints})`
             });
         } catch (e) {
             console.error('Test Add Points API Error:', e);
