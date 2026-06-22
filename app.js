@@ -1475,7 +1475,8 @@ window.onload = async function () {
         appState.isDataLoaded = true;
         appState.currentCategory = 'all';
         renderEventGrid('all');
-        // 注意：這裡不主動關閉載入畫面，交給老虎機播完再關
+        // 快取載入完畢，直接關閉載入畫面
+        if (window.hideInitialOverlay) window.hideInitialOverlay();
     }
 
     // 背景非同步抓取最新資料 (不 await 阻塞 UI)
@@ -1489,13 +1490,16 @@ window.onload = async function () {
         appState.currentCategory = 'all';
         renderEventGrid('all');
 
-        // 若沒有快取，等資料回來才算準備好。但仍然交給老虎機控制最終移除畫面的時機。
-        // 如果老虎機已經跑完，這裡可以保護性關閉。
-        if (!hasCache && !_slotSpinning) {
+        // 若沒有快取，等資料回來才算準備好，直接關閉載入畫面。
+        if (!hasCache) {
             if (window.hideInitialOverlay) window.hideInitialOverlay();
         }
 
-    }).catch(e => console.error("背景抓取資料失敗", e));
+    }).catch(e => {
+        console.error("背景抓取資料失敗", e);
+        if (!hasCache && window.hideInitialOverlay) window.hideInitialOverlay();
+        showToast('無法連接伺服器，請稍後重試', 'error');
+    });
 
     // ★ 優化：移除重複的 fetchParticipationStats() 呼叫（fetchAttendanceTop3 已在 DOMContentLoaded 中呼叫同一 API）
     // fetchParticipationStats(); // 已移除，避免重複請求
@@ -4181,6 +4185,7 @@ async function generateEventCanvas(e, data, stats) {
     });
     await Promise.all(loadPromises);
 
+    await loadHtml2Canvas();
     const canvas = await html2canvas(card, {
         scale: 1.5, // 降低縮放比例加快產生速度 (原為 2)
         useCORS: true,
@@ -4193,6 +4198,20 @@ async function generateEventCanvas(e, data, stats) {
     document.body.removeChild(card);
     return canvas;
 }
+
+
+// === 統計與分享相關功能 ===
+async function loadHtml2Canvas() {
+    if (typeof html2canvas !== 'undefined') return Promise.resolve();
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
+
 
 
 // --- 單一活動圖片分享功能 ---
@@ -4310,6 +4329,7 @@ async function shareAllAsImage() {
         await new Promise(resolve => setTimeout(resolve, 100));
 
         // 改為循序處理，避免多個 html2canvas 同時執行導致瀏覽器嚴重卡頓甚至崩潰
+        await loadHtml2Canvas();
         const results = [];
         for (const e of selectedEvents) {
             const [details, stats] = await Promise.all([

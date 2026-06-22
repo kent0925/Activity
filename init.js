@@ -92,6 +92,18 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchAttendanceTop3();
 
     // ★ 啟動迷你老虎機已經移除，改由 app.js 或 init.js 主動觸發隱藏
+    // 為了防止使用者的 index.html 或 app.js 被快取導致卡在載入畫面，這裡強制 1.5 秒後關閉載入畫面
+    setTimeout(() => {
+        if (window.hideInitialOverlay) {
+            window.hideInitialOverlay();
+        } else {
+            const overlay = document.getElementById('initial-load-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.remove(), 500);
+            }
+        }
+    }, 1500);
 });
 
 // 新增：抓取拉霸 Top 3 數據 (優化版：先顯後更，每日快取)
