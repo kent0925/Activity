@@ -1,262 +1,276 @@
-/* ==========================================================================
-   Casino Module Styles
-   ========================================================================== */
+/* ==========================================
+   å¤§è€ä??„å??ƒæ´»?•å ±?ç³»çµ?- ä¸»æ¨£å¼è¡¨
+   ?è‰²ä¸»é?ï¼šæ·±æµ·è???#162544 + ?¤é???#B8922A
+   ========================================== */
 
-/* Utility & Animations */
-.animate-fade-in {
-    animation: fadeIn 0.4s ease-out forwards;
+:root {
+  /* ?Œæ™¯?‡å¡??*/
+  --bg-main: #0D131A;                 /* ç¶²é?ä¸»è??¯ï?æ¥µæ·±?é? */
+  --card-dark-bg: rgba(24, 34, 46, 0.75); /* æ·±è‰²?¡ç??Œæ™¯ï¼šå¸¶å¾®é€æ??„å?å¤œè? */
+  --card-light-bg: #FAF8F5;            /* åº•éƒ¨çµ±è??¡ç?ï¼šæ?ç±³ç™½ */
+  
+  /* æ·±è‰²?Œæ™¯ä¸Šç??‡å?ï¼ˆç¢ºä¿ä?æ¶ˆå¤±?ä??ºçœ¼ï¼?*/
+  --text-on-dark-primary: #EFECE5;    /* ä¸»æ?é¡?å§“å?ï¼šæ??ç???*/
+  --text-on-dark-secondary: #B8B2A7;  /* æ¬¡è?è³‡è?/?‚é??°å?ï¼šæ·º?°è???*/
+  
+  /* æ·ºè‰²?Œæ™¯ä¸Šç??‡å? */
+  --text-on-light-primary: #2B2622;   /* çµ±è??¸å?/æ¨™é?ï¼šæ·±?­æ???*/
+  
+  /* ?ˆé?å¼·èª¿?²è?é»ç¶´ */
+  --accent-brass: #D4AF37;            /* ?‰é?/?é?/?‹é?ï¼šå¤?¸é??…é? */
+  --accent-brass-hover: #B58728;      /* ?‰é??¸å??²ï?æ·±ç«?°é? */
+  --text-warning: #A47E5C;            /* è­¦å??ç¤º?‡å?ï¼ˆå?ä»??ç´…ï?ï¼šæ??…è‰² */
+  
+  /* ?Šæ?ç·šæ? */
+  --border-color: rgba(212, 175, 55, 0.25); /* è¼•å¾®?„é?æª³é?ç´°æ???*/
+
+  /* ç³»çµ±?¸å®¹è®Šæ•¸ (å°æ??°è??‰è¨­å®? */
+  --primary: var(--accent-brass);
+  --primary-dark: var(--accent-brass-hover);  /* ?»ç??ˆæ?å°ˆç”¨é¡è‰² */
+  --primary-light: rgba(212, 175, 55, 0.15);
+  --accent: var(--accent-brass);
+  --danger: var(--text-warning);
+  --bg-gray: var(--bg-main);
+  --card-bg: var(--card-dark-bg);
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--bg-main, #0D131A);
+    color: var(--text-on-dark-primary, #EFECE5);
 }
 
-@keyframes shimmer {
-    100% { transform: translateX(100%); }
+/* Accessibility Focus */
+*:focus-visible {
+    outline: 2px solid var(--accent, #D4AF37);
+    outline-offset: 2px;
 }
 
-/* Hide Scrollbar but keep functionality */
-.hidden-scrollbar::-webkit-scrollbar {
+.hide-scrollbar::-webkit-scrollbar {
     display: none;
 }
-.hidden-scrollbar {
+
+.hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
 
-/* ==========================================================================
-   Chips (ç±Œç¢¼)
-   ========================================================================== */
-.chip-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    padding: 3px;
-    background: repeating-conic-gradient(
-        from 0deg,
-        #f8f9fa 0deg 15deg,
-        #343a40 15deg 30deg
-    );
-    box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.3);
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* ?»ç??¬æ? (Glassmorphism) */
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+}
+
+.premium-gradient {
+    background: linear-gradient(135deg, #9A7820 0%, #B8922A 50%, #EFC958 100%);
+}
+
+.premium-card {
     position: relative;
+    border: 2px solid transparent;
+    border-radius: 1.25rem;
+    background: 
+        linear-gradient(rgba(26,36,54,0.3), rgba(26,36,54,0.3)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/wood-bg.jpg') border-box;
+    background-size: auto, 350px, 100% 100%;
+    background-repeat: no-repeat, repeat, no-repeat;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 15px 35px rgba(0,0,0,0.6);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #EAD7BA;
+}
+
+.premium-card:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* ?ªå?ç¾©å???*/
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes pulse-subtle {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animate-pulse-subtle {
+    animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+/* è©³ç´°æ¨?? */
+details>summary {
+    list-style: none;
     cursor: pointer;
 }
 
-.chip-btn:active {
-    transform: scale(0.9);
+details>summary::-webkit-details-marker {
+    display: none;
 }
 
-.chip-btn.selected {
-    transform: translateY(-8px) scale(1.1);
-    box-shadow: 0 10px 15px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.3), 0 0 15px rgba(212,175,55,0.8);
+.arrow-icon {
+    transition: transform 0.3s ease;
 }
 
-.chip-btn.selected::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: #D4AF37;
-    box-shadow: 0 0 8px #D4AF37;
-}
-
-.chip-inner {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #4b5563, #1f2937);
-    border: 3px dashed; /* color comes from inline utility classes */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 16px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-}
-
-/* Chip Colors based on value */
-.chip-btn[data-value="1"] .chip-inner { background: radial-gradient(circle at 30% 30%, #9ca3af, #4b5563); }
-.chip-btn[data-value="5"] .chip-inner { background: radial-gradient(circle at 30% 30%, #ef4444, #991b1b); }
-.chip-btn[data-value="10"] .chip-inner { background: radial-gradient(circle at 30% 30%, #3b82f6, #1e3a8a); }
-.chip-btn[data-value="20"] .chip-inner { background: radial-gradient(circle at 30% 30%, #22c55e, #14532d); }
-.chip-btn[data-value="25"] .chip-inner { background: radial-gradient(circle at 30% 30%, #a855f7, #581c87); }
-.chip-btn[data-value="50"] .chip-inner { background: radial-gradient(circle at 30% 30%, #eab308, #854d0e); text-color: black;}
-
-
-/* ==========================================================================
-   Roulette Board
-   ========================================================================== */
-.roulette-cell {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 14px;
-    border: 1px solid rgba(255,255,255,0.3);
-    cursor: pointer;
-    transition: background-color 0.1s;
-    min-height: 40px;
-    user-select: none;
-}
-
-.roulette-cell:active {
-    background-color: rgba(255,255,255,0.3) !important;
-}
-
-.cell-red { background-color: #dc2626; color: white; }
-.cell-black { background-color: #111827; color: white; }
-.cell-green { background-color: #16a34a; color: white; }
-.cell-trans { background-color: transparent; color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.1); }
-
-/* Placement Chip on Board */
-.placed-chip {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #eab308, #854d0e);
-    border: 1px dashed #fef08a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 10px; transform-origin: center;
-    color: white;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.6);
-    z-index: 10;
-    pointer-events: none; /* Let clicks pass through to the cell */
-    animation: dropChip 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes dropChip {
-    from { transform: translate(-50%, -50%) scale(2); opacity: 0; }
-    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
-
-/* Split & Corner Hidden Touch Targets Removed for Popup UI */
-
-/* ==========================================================================
-   Winning Highlight
-   ========================================================================== */
-.winning-cell {
-    animation: winFlash 1s infinite alternate;
-    box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.8) !important;
-    border-color: #fef08a !important;
-    border-width: 2px !important;
-    z-index: 5;
-}
-
-.winning-cell.winning-bet {
-    animation: winBetFlash 0.5s infinite alternate;
-    box-shadow: inset 0 0 25px rgba(0, 255, 136, 1), 0 0 15px rgba(0, 255, 136, 0.8) !important;
-    border: 2px solid #00ff88 !important;
-    z-index: 10;
-}
-
-@keyframes winFlash {
-    0% { background-color: rgba(212, 175, 55, 0.2); }
-    100% { background-color: rgba(212, 175, 55, 0.6); }
-}
-
-@keyframes winBetFlash {
-    0% { background-color: rgba(0, 255, 136, 0.4); transform: scale(1); }
-    100% { background-color: rgba(0, 255, 136, 0.9); transform: scale(1.05); }
-}
-
-/* ==========================================================================
-   Baccarat Styles
-   ========================================================================== */
-.baccarat-card-container {
-    width: 60px;
-    height: 84px;
-    position: relative;
-    perspective: 1000px;
-    margin: 0 2px;
-    transition: transform 0.3s;
-}
-
-.baccarat-card {
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 4px;
-    font-weight: 900;
-    font-size: 16px;
-    line-height: 1;
-    position: relative;
-    user-select: none;
-    border: 1px solid #ccc;
-}
-
-.baccarat-card.suit-hearts, .baccarat-card.suit-diamonds {
-    color: #e11d48; /* rose-600 */
-}
-
-.baccarat-card.suit-spades, .baccarat-card.suit-clubs {
-    color: #0f172a; /* slate-900 */
-}
-
-.baccarat-card .top-left {
-    align-self: flex-start;
-}
-
-.baccarat-card .bottom-right {
-    align-self: flex-end;
+details[open]>summary .arrow-icon {
     transform: rotate(180deg);
 }
 
-.baccarat-card .center-suit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px;
-    opacity: 0.2;
+/* ?†é?æ¨™ç±¤ (Tabs) */
+.filter-tab {
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-/* Scratch Canvas */
-.scratch-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 6px;
-    z-index: 10;
-    touch-action: none; /* Prevent scrolling when scratching */
-    cursor: crosshair;
+.filter-tab.active {
+    background-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(184, 146, 42, 0.4);
 }
 
-/* Card Deal Animation */
-@keyframes dealCardAnim {
+/* éª¨æ¶å±è??¥æ???(Skeleton Loading) */
+.skeleton {
+    background: linear-gradient(90deg, #1E3052 25%, #2a4070 50%, #1E3052 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite linear;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* è¡Œå?è£ç½®?æµ·å®‰å…¨?€??*/
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+    padding-top: env(safe-area-inset-top);
+}
+
+/* --- è¡Œç?è¡¨æ?é¢¨ç´?¹æ? (?°å?) --- */
+
+/* 1. ?±è??è¦½?¨é?è¨­ç? details ä¸‰è?å½?*/
+.itinerary-group summary::-webkit-details-marker {
+    display: none;
+}
+
+.itinerary-group summary {
+    list-style: none;
+}
+
+/* 2. ?§åˆ¶ + ??- ?–ç¤º?„å??›é?è¼?*/
+/* ?è¨­?€??(?œé?)ï¼šé¡¯ç¤?Plus (+), ?±è? Minus (-) */
+.itinerary-group summary .icon-plus {
+    display: block;
+}
+
+.itinerary-group summary .icon-minus {
+    display: none;
+}
+
+/* ??details è¢«æ???(open) ?‚ï??±è? Plus, é¡¯ç¤º Minus */
+.itinerary-group[open] summary .icon-plus {
+    display: none;
+}
+
+.itinerary-group[open] summary .icon-minus {
+    display: block;
+}
+
+/* 3. ?§å®¹å±•é??‚ç?æ»‘å??•ç•« */
+.itinerary-group[open] .group-content {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
     from {
-        transform: translate(0, -200px) scale(0) rotateY(180deg);
         opacity: 0;
+        transform: translateY(-5px);
     }
+
     to {
-        transform: translate(0, 0) scale(1) rotateY(0deg);
         opacity: 1;
+        transform: translateY(0);
     }
 }
 
-.animate-deal {
-    animation: dealCardAnim 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+/* è¿·ä??è?æ©?*/
+.slot-machine-container {
+    text-align: center;
 }
+
+.slot-machine {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.slot-reel {
+    width: 72px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    border: 2px solid rgba(184, 146, 42, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.slot-reel.spinning {
+    animation: reelShake 0.1s linear infinite;
+}
+
+.slot-reel.stopped {
+    animation: reelStop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-color: rgba(184, 146, 42, 0.8);
+    background: rgba(184, 146, 42, 0.15);
+}
+
+@keyframes reelShake {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
