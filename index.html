@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大老爺活動報名系統</title>
-    <meta property="og:title" content="大老爺活動報名系統" />
+    <title>大老二兄弟會報名系統</title>
+    <meta property="og:title" content="大老二兄弟會報名系統" />
     <meta property="og:description" id="og-description" content="酒杯舉起來，煩惱滾一邊。" />
     <meta property="og:image" content="https://kent0925.github.io/test/logo.jpg" />
     <meta property="og:type" content="website" />
@@ -43,7 +43,7 @@
                 class="hidden p-1.5 hover:bg-white/20 rounded-full transition active:scale-90">
                 <i data-lucide="arrow-left" class="w-6 h-6"></i>
             </button>
-            <h1 class="text-lg font-bold tracking-wide" id="header-title">活動與報名</h1>
+            <h1 class="text-lg font-bold tracking-wide" id="header-title">大老二兄弟會報名系統</h1>
         </div>
         <!-- 右上角快速分享按鈕 -->
         <button id="btn-header-share" onclick="openShareModal()"
@@ -252,15 +252,15 @@
                 <input type="hidden" id="formAction" value="register">
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">報名者</label>
-                        <div class="flex gap-4 items-center bg-gray-50/80 p-4 rounded-2xl border border-gray-100">
+                        <label class="block text-sm font-semibold text-[#D4AF37] mb-2">報名者</label>
+                        <div class="flex gap-4 items-center bg-black/20 p-4 rounded-2xl border border-amber-900/50 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
                             <img id="user-picture" src="https://ui-avatars.com/api/?name=Guest"
-                                class="w-12 h-12 rounded-full bg-gray-200 object-cover border-2 border-white shadow-sm">
+                                class="w-12 h-12 rounded-full bg-[#0D131A] object-cover border-2 border-[#D4AF37] shadow-sm">
                             <div class="flex-1 min-w-0">
                                 <input type="text" id="user-name"
-                                    class="w-full bg-transparent border-none p-0 text-gray-800 font-bold text-base focus:ring-0"
+                                    class="w-full bg-transparent border-none p-0 text-[#EFECE5] font-bold text-base focus:ring-0"
                                     readonly value="讀取中...">
-                                <div class="text-xs text-gray-400 mt-0.5">將以此身分進行報名</div>
+                                <div class="text-xs text-amber-500 mt-0.5">將以此身分進行報名</div>
                             </div>
                         </div>
                         <input type="hidden" id="user-id">
@@ -268,19 +268,19 @@
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">人數(含眷屬)</label>
+                            <label class="block text-sm font-medium text-[#D4AF37] mb-1.5">人數(含眷屬)</label>
                             <div class="relative">
-                                <i data-lucide="users" class="absolute left-3 top-2.5 w-4 h-4 text-gray-400"></i>
+                                <i data-lucide="users" class="absolute left-3 top-2.5 w-4 h-4 text-[#D4AF37]"></i>
                                 <select id="family-count"
-                                    class="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2 bg-white text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none appearance-none">
+                                    class="w-full border border-amber-900/50 rounded-lg pl-9 pr-3 py-2 bg-[#0D131A] text-[#EFECE5] text-sm focus:ring-1 focus:ring-[#D4AF37] focus:border-[#D4AF37] outline-none appearance-none">
                                 </select>
                                 <i data-lucide="chevron-down"
-                                    class="absolute right-3 top-3 w-3 h-3 text-gray-400 pointer-events-none"></i>
+                                    class="absolute right-3 top-3 w-3 h-3 text-[#D4AF37] pointer-events-none"></i>
                             </div>
                         </div>
                         
                         <div class="flex flex-col items-end justify-center pt-2">
-                            <label class="block text-xs font-bold text-gray-700 mb-1.5">不克出席，僅贊助/認桌</label>
+                            <label class="block text-xs font-bold text-[#D4AF37] mb-1.5">不克出席，僅贊助/認桌</label>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
                                 <div class="w-11 h-6 bg-[#3d2b1f] border border-[#8b6914] peer-focus:outline-none rounded-full peer peer-checked:bg-gradient-to-r peer-checked:from-[#D4AF37] peer-checked:to-[#A67C00] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#f3e5ab] after:border-[#8b6914] after:border after:shadow-[0_2px_4px_rgba(0,0,0,0.5)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
@@ -349,28 +349,28 @@
                         <span class="text-xs text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">選填</span>
                     </div>
                     <div id="guest-list-container" class="space-y-2 mb-3 empty:hidden"></div>
-                    <div class="bg-white/95 backdrop-blur-sm p-3 rounded-lg border border-amber-900/30 shadow-[inset_0_2px_8px_rgba(0,0,0,0.1)] space-y-2">
+                    <div class="bg-black/20 p-3 rounded-lg border border-amber-900/30 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] space-y-2">
                         <div class="flex gap-2">
                             <input type="text" id="add-guest-name" placeholder="來賓姓名"
-                                class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none">
+                                class="flex-1 border border-amber-900/50 bg-[#0D131A] text-[#EFECE5] rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-[#D4AF37] outline-none placeholder-gray-500">
                             <select id="add-guest-count"
-                                class="w-24 border border-gray-300 rounded-lg px-2 py-2 text-sm bg-gray-50 text-center"></select>
+                                class="w-24 border border-amber-900/50 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm text-center focus:ring-1 focus:ring-[#D4AF37] outline-none"></select>
                         </div>
                         <div id="guest-travel-options" class="hidden grid grid-cols-2 gap-2">
                             <select id="add-guest-pickup"
-                                class="w-full border border-gray-300 rounded-lg px-2 py-2 text-sm bg-gray-50 text-gray-700">
+                                class="w-full border border-amber-900/50 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm focus:ring-1 focus:ring-[#D4AF37] outline-none">
                                 <option value="">上車地點 (*必選)</option>
                             </select>
                             <select id="add-guest-room"
-                                class="w-full border border-gray-300 rounded-lg px-2 py-2 text-sm bg-gray-50 text-gray-700">
+                                class="w-full border border-amber-900/50 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm focus:ring-1 focus:ring-[#D4AF37] outline-none">
                                 <option value="">房型 (*必選)</option>
                             </select>
                         </div>
                         <button type="button" onclick="addGuest()"
-                            class="w-full bg-orange-500 text-white py-2 rounded-lg text-sm font-medium hover:bg-orange-600 transition flex justify-center items-center gap-1 active:scale-95">
+                            class="w-full premium-gradient text-[#3d2600] font-bold shadow-md py-2 rounded-lg text-sm hover:brightness-110 transition flex justify-center items-center gap-1 active:scale-95">
                             <i data-lucide="plus" class="w-4 h-4"></i> 加入名單
                         </button>
-                        <p class="text-[10px] text-red-500 mt-1 font-medium text-center">※ 請務必點擊「加入名單」按鈕，資料才會增加。</p>
+                        <p class="text-[10px] text-amber-500 mt-1 font-medium text-center">※ 請務必點擊「加入名單」按鈕，資料才會增加。</p>
                     </div>
                 </div>
 
@@ -381,8 +381,8 @@
                         <span class="text-xs text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full">選填</span>
                     </div>
                     <div id="sponsor-list-container" class="space-y-2 mb-3 empty:hidden"></div>
-                    <div class="space-y-3 bg-white/95 backdrop-blur-sm p-3 rounded-lg border border-amber-900/30 shadow-[inset_0_2px_8px_rgba(0,0,0,0.1)]">
-                        <div class="flex gap-4 text-xs font-medium text-gray-800 pb-2 border-b border-gray-200">
+                    <div class="space-y-3 bg-black/20 p-3 rounded-lg border border-amber-900/30 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
+                        <div class="flex gap-4 text-xs font-medium text-amber-100 pb-2 border-b border-amber-900/30">
                             <label
                                 class="cursor-pointer flex items-center gap-1.5 hover:text-green-600 transition"><input
                                     type="radio" name="addSponsorType" value="alcohol" checked
@@ -397,10 +397,10 @@
                         </div>
                         <div id="sponsor-input-area" class="flex flex-wrap gap-2 items-center min-h-[36px]"></div>
                         <button type="button" onclick="addSponsor()"
-                            class="w-full bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition flex justify-center items-center gap-1.5 active:scale-95">
+                            class="w-full bg-[#0D131A] border border-[#D4AF37]/50 text-[#D4AF37] px-3 py-2 rounded-lg text-sm font-bold hover:bg-white/5 transition flex justify-center items-center gap-1.5 active:scale-95 shadow-sm">
                             <i data-lucide="plus" class="w-3.5 h-3.5"></i> 新增贊助
                         </button>
-                        <p class="text-[10px] text-red-500 mt-1 font-medium text-center">※ 請務必點擊「新增贊助」按鈕，資料才會增加。</p>
+                        <p class="text-[10px] text-amber-500 mt-1 font-medium text-center">※ 請務必點擊「新增贊助」按鈕，資料才會增加。</p>
                     </div>
                 </div>
 
@@ -619,18 +619,18 @@
     </div>
 
     <div id="share-modal"
-        class="hidden fixed inset-0 z-[90] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6 animate-fade-in">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xs p-5 transform transition-all scale-100 flex flex-col">
-            <h3 class="text-lg font-bold text-gray-900 mb-3 border-b border-gray-100 pb-2 flex items-center gap-2">
-                <i data-lucide="share-2" class="w-5 h-5 text-gray-700"></i> 分享選項
+        class="hidden fixed inset-0 z-[90] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">
+        <div class="premium-card rounded-2xl shadow-2xl w-full max-w-xs p-5 transform transition-all scale-100 flex flex-col">
+            <h3 class="text-lg font-bold text-[#D4AF37] mb-3 border-b border-amber-900/50 pb-2 flex items-center gap-2">
+                <i data-lucide="share-2" class="w-5 h-5 text-[#D4AF37]"></i> 分享選項
             </h3>
 
             <!-- 頁籤切換 -->
-            <div class="flex border-b border-gray-100 mb-4 text-xs font-bold bg-gray-50 rounded-lg p-0.5" id="share-tabs-container">
+            <div class="flex border border-amber-900/50 mb-4 text-xs font-bold bg-[#0D131A] rounded-lg p-0.5" id="share-tabs-container">
                 <button id="share-tab-single" onclick="switchShareTab('single')"
-                    class="flex-1 py-2 text-center rounded-md transition-all text-green-600 bg-white shadow-sm">此活動名單</button>
+                    class="flex-1 py-2 text-center rounded-md transition-all text-[#3d2600] premium-gradient shadow-sm">此活動名單</button>
                 <button id="share-tab-all" onclick="switchShareTab('all')"
-                    class="flex-1 py-2 text-center rounded-md transition-all text-gray-400">所有活動</button>
+                    class="flex-1 py-2 text-center rounded-md transition-all text-gray-400 hover:text-gray-300">所有活動</button>
             </div>
 
             <!-- 容器 1：此活動名單 -->
@@ -639,63 +639,63 @@
 
                 <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
                     <label
-                        class="hidden flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                        class="hidden flex items-center gap-3 p-2.5 bg-black/20 rounded-xl cursor-pointer hover:bg-black/40 transition border border-amber-900/30"
                         id="opt-container-names">
                         <div class="relative flex items-center">
                             <input type="checkbox" id="share-opt-names" checked
-                                class="peer w-4.5 h-4.5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                                class="peer w-4.5 h-4.5 rounded text-amber-500 focus:ring-amber-500 border-gray-500 bg-black/50">
                             <i data-lucide="check"
-                                class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                                class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-gray-700">👥 詳細名單 (姓名/人數)</span>
+                        <span class="text-xs font-medium text-amber-100">👥 詳細名單 (姓名/人數)</span>
                     </label>
 
                     <label
-                        class="hidden flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                        class="hidden flex items-center gap-3 p-2.5 bg-black/20 rounded-xl cursor-pointer hover:bg-black/40 transition border border-amber-900/30"
                         id="opt-container-travel">
                         <div class="relative flex items-center">
                             <input type="checkbox" id="share-opt-travel" checked
-                                class="peer w-4.5 h-4.5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                                class="peer w-4.5 h-4.5 rounded text-amber-500 focus:ring-amber-500 border-gray-500 bg-black/50">
                             <i data-lucide="check"
-                                class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                                class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-gray-700">上車地點 / 房型</span>
+                        <span class="text-xs font-medium text-amber-100">上車地點 / 房型</span>
                     </label>
 
                     <label
-                        class="hidden flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                        class="hidden flex items-center gap-3 p-2.5 bg-black/20 rounded-xl cursor-pointer hover:bg-black/40 transition border border-amber-900/30"
                         id="opt-container-sponsor">
                         <div class="relative flex items-center">
                             <input type="checkbox" id="share-opt-sponsor" checked
-                                class="peer w-4.5 h-4.5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                                class="peer w-4.5 h-4.5 rounded text-amber-500 focus:ring-amber-500 border-gray-500 bg-black/50">
                             <i data-lucide="check"
-                                class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                                class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-gray-700">贊助 / 認桌資訊</span>
+                        <span class="text-xs font-medium text-amber-100">贊助 / 認桌資訊</span>
                     </label>
 
                     <label
-                        class="flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                        class="flex items-center gap-3 p-2.5 bg-black/20 rounded-xl cursor-pointer hover:bg-black/40 transition border border-amber-900/30"
                         id="opt-container-map">
                         <div class="relative flex items-center">
                             <input type="checkbox" id="share-opt-map" checked
-                                class="peer w-4.5 h-4.5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                                class="peer w-4.5 h-4.5 rounded text-amber-500 focus:ring-amber-500 border-gray-500 bg-black/50">
                             <i data-lucide="check"
-                                class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                                class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-gray-700">🗺️ Google 地圖連結</span>
+                        <span class="text-xs font-medium text-amber-100">🗺️ Google 地圖連結</span>
                     </label>
 
                     <label
-                        class="flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition border border-gray-100"
+                        class="flex items-center gap-3 p-2.5 bg-black/20 rounded-xl cursor-pointer hover:bg-black/40 transition border border-amber-900/30"
                         id="opt-container-link">
                         <div class="relative flex items-center">
                             <input type="checkbox" id="share-opt-link" checked
-                                class="peer w-4.5 h-4.5 rounded text-green-500 focus:ring-green-500 border-gray-300">
+                                class="peer w-4.5 h-4.5 rounded text-amber-500 focus:ring-amber-500 border-gray-500 bg-black/50">
                             <i data-lucide="check"
-                                class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
+                                class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-gray-700">🔗 報名連結👇</span>
+                        <span class="text-xs font-medium text-amber-100">🔗 報名連結👇</span>
                     </label>
 
                     <div id="share-no-opts" class="hidden text-center text-xs text-gray-400 py-2">
@@ -987,41 +987,41 @@
 
     <!-- 報名操作教學彈窗 -->
     <div id="tutorial-modal"
-        class="hidden fixed inset-0 z-[130] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4">
-        <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[85dvh] sm:max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
+        class="hidden fixed inset-0 z-[130] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4">
+        <div class="premium-card rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[85dvh] sm:max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
             id="tutorial-modal-content">
             <!-- 標頭 -->
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/80 rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
-                <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                    <i data-lucide="help-circle" class="w-5 h-5 text-green-600"></i> 報名操作教學
+            <div class="p-4 border-b border-amber-900/50 flex justify-between items-center bg-[#0D131A] rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
+                <h3 class="font-bold text-[#D4AF37] flex items-center gap-2">
+                    <i data-lucide="help-circle" class="w-5 h-5 text-[#D4AF37]"></i> 報名操作教學
                 </h3>
                 <button onclick="closeTutorialModal()"
-                    class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition text-gray-600">
+                    class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition text-[#D4AF37]">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
             <!-- 內容區 -->
-            <div class="p-5 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe space-y-5 bg-gray-50/50">
+            <div class="p-5 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe space-y-5 bg-transparent">
                 <!-- 報名操作教學圖片 -->
-                <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-white p-1">
-                    <img src="./registration_tutorial.png" alt="報名教學圖解" class="w-full h-auto object-contain rounded-xl">
+                <div class="rounded-2xl overflow-hidden border border-amber-900/50 shadow-md bg-black/20 p-1">
+                    <img src="./registration_tutorial.png" alt="報名教學圖解" class="w-full h-auto object-contain rounded-xl opacity-90">
                 </div>
                 
                 <!-- 提示 Banner -->
-                <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 flex gap-3 text-xs text-amber-800">
-                    <i data-lucide="alert-circle" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+                <div class="bg-black/40 border border-amber-500/30 rounded-2xl p-4 flex gap-3 text-xs text-amber-100">
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5"></i>
                     <div class="space-y-1 leading-relaxed">
-                        <strong class="block font-bold">💡 填寫提示：</strong>
-                        若漏填 <span class="text-red-600 font-bold">*必選</span> 欄位（例如：<strong>上車地點</strong>或<strong>房型需求</strong>），點擊確認時網頁會自動捲動至該欄位，並以 <span class="text-red-600 font-bold">紅色外框高亮顯示</span> 提示您補選。
+                        <strong class="block font-bold text-[#D4AF37]">💡 填寫提示：</strong>
+                        若漏填 <span class="text-amber-500 font-bold">*必選</span> 欄位（例如：<strong>上車地點</strong>或<strong>房型需求</strong>），點擊確認時網頁會自動捲動至該欄位，並以 <span class="text-amber-500 font-bold">高亮顯示</span> 提示您補選。
                     </div>
                 </div>
             </div>
 
             <!-- 底部關閉按鈕 -->
-            <div class="p-4 border-t border-gray-100 bg-gray-50 flex gap-2 rounded-b-2xl">
+            <div class="p-4 border-t border-amber-900/50 bg-[#0D131A] flex gap-2 rounded-b-2xl">
                 <button onclick="closeTutorialModal()"
-                    class="w-full py-3 bg-[#06c755] hover:bg-[#05b04b] text-white font-bold rounded-xl shadow-md transition active:scale-95 text-center text-sm">
+                    class="w-full py-3 premium-gradient text-[#3d2600] font-bold rounded-xl shadow-md transition hover:brightness-110 active:scale-95 text-center text-sm">
                     我懂了，開始報名！
                 </button>
             </div>
