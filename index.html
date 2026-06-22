@@ -36,7 +36,13 @@
 
 <body class="bg-gray-50 min-h-screen pb-safe bg-[url('images/wood-bg.jpg')] bg-cover bg-fixed bg-center">
 
-    <header
+    <!-- Splash Screen Transition -->
+    <div id="splash-screen" class="fixed inset-0 z-[9999] bg-[#FAF8F5] flex flex-col items-center justify-center transition-all duration-1000">
+        <div class="relative w-64 h-64 flex items-center justify-center animate-splash-logo">
+            <!-- 預設讀取 images/logo.png 或 images/logo.jpg 作為啟動畫面圖標 -->
+            <img src="images/logo.jpg" onerror="this.src='images/logo.png'" alt="亞太大老二" class="max-w-full max-h-full object-contain drop-shadow-2xl mix-blend-multiply">
+        </div>
+    </div>    <header
         class="bg-[#0D131A] border-b border-amber-900/50 text-[#D4AF37] px-4 py-3 shadow-md sticky top-0 z-50 flex justify-between items-center h-14 lg:h-16">
         <div class="flex items-center gap-3">
             <button id="btn-back" onclick="handleBackNav()"
@@ -1005,7 +1011,7 @@
             <div class="p-5 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe space-y-5 bg-transparent">
                 <!-- 報名操作教學圖片 -->
                 <div class="rounded-2xl overflow-hidden border border-amber-900/50 shadow-md bg-black/20 p-1">
-                    <img src="./registration_tutorial.png" alt="報名教學圖解" class="w-full h-auto object-contain rounded-xl opacity-90">
+                    <img src="./registration_tutorial.jpg" alt="報名教學圖解" class="w-full h-auto object-contain rounded-xl opacity-90">
                 </div>
                 
                 <!-- 提示 Banner -->
@@ -1029,6 +1035,20 @@
     </div>
 
     <script src="app.js?v=202606221652"></script>
+
+    <!-- 啟動畫面控制腳本 -->
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) {
+                    splash.style.opacity = '0';
+                    splash.style.pointerEvents = 'none';
+                    setTimeout(() => splash.remove(), 1000); // 1秒後完全移除 DOM
+                }
+            }, 1800); // 停留 1.8 秒後淡出
+        });
+    </script>
 </body>
 
 </html>
