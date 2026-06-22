@@ -3,6 +3,16 @@ const LIFF_ID = "2008678090-aXTesgDK";
 const ADMIN_USER_IDS = ["U612df670c4d7d3cde0d599ab5008451f"];
 
 const CasinoApp = {
+
+    getChipColor(val) {
+        if(val == 1) return { bg: '#9ca3af', border: '#4b5563' }; // gray
+        if(val == 5) return { bg: '#f87171', border: '#b91c1c' }; // red
+        if(val == 10) return { bg: '#60a5fa', border: '#1d4ed8' }; // blue
+        if(val == 20) return { bg: '#4ade80', border: '#15803d' }; // green
+        if(val == 25) return { bg: '#c084fc', border: '#7e22ce' }; // purple
+        if(val == 50) return { bg: '#facc15', border: '#a16207' }; // yellow
+        return { bg: '#fbbf24', border: '#b45309' }; // default gold
+    },
     user: null,
     points: 0,
     currentChip: 10, // 預設 10
@@ -575,15 +585,15 @@ const CasinoApp = {
         this.rouletteBets[betId] = (this.rouletteBets[betId] || 0) + this.currentChip;
         
         // 顯示在畫面上
-        let chipEl = cellElement.querySelector('.placed-chip');
-        if (!chipEl) {
-            chipEl = document.createElement('div');
-            chipEl.className = 'placed-chip';
-            cellElement.appendChild(chipEl);
-        }
-        let displayVal = this.rouletteBets[betId];
-        if (displayVal >= 1000) displayVal = (displayVal/1000).toFixed(1) + 'k';
-        chipEl.innerText = displayVal;
+        const chipEl = document.createElement('div');
+          chipEl.className = 'placed-chip';
+          const offsetX = (Math.random() - 0.5) * 12;
+          const offsetY = (Math.random() - 0.5) * 12;
+          chipEl.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+          const colors = CasinoApp.getChipColor(this.currentChip);
+          chipEl.style.backgroundColor = colors.bg;
+          chipEl.style.borderColor = colors.border;
+          cellElement.appendChild(chipEl);
     },
 
     // ==========================================
@@ -672,15 +682,15 @@ const CasinoApp = {
         this.sicboBets[betId] = (this.sicboBets[betId] || 0) + this.currentChip;
         
         // 顯示在畫面上
-        let chipEl = cellElement.querySelector('.placed-chip');
-        if (!chipEl) {
-            chipEl = document.createElement('div');
-            chipEl.className = 'placed-chip';
-            cellElement.appendChild(chipEl);
-        }
-        let displayVal = this.sicboBets[betId];
-        if (displayVal >= 1000) displayVal = (displayVal/1000).toFixed(1) + 'k';
-        chipEl.innerText = displayVal;
+        const chipEl = document.createElement('div');
+          chipEl.className = 'placed-chip';
+          const offsetX = (Math.random() - 0.5) * 12;
+          const offsetY = (Math.random() - 0.5) * 12;
+          chipEl.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+          const colors = CasinoApp.getChipColor(this.currentChip);
+          chipEl.style.backgroundColor = colors.bg;
+          chipEl.style.borderColor = colors.border;
+          cellElement.appendChild(chipEl);
     },
 
     clearSicboBets() {
@@ -1002,7 +1012,10 @@ const CasinoApp = {
         // Add chip visually
         const chipEl = document.createElement('div');
         chipEl.className = 'placed-chip';
-        chipEl.innerHTML = this.currentChip;
+        chipEl.innerHTML = '';
+          const colors = CasinoApp.getChipColor(this.currentChip);
+          chipEl.style.backgroundColor = colors.bg;
+          chipEl.style.borderColor = colors.border;
         
         // Offset chip slightly so multiple chips don't perfectly stack
         const offsetX = (Math.random() - 0.5) * 20;
@@ -1323,21 +1336,30 @@ class ScratchCard {
         this.isDrawing = false;
         
         // Wait for image to load to draw the card back
-        this.img = new Image();
-        this.img.src = 'images/card_back.jpg';
-        this.img.onload = () => {
-            this.initCanvas();
-        };
-        // Fallback if image fails
-        this.img.onerror = () => {
-            this.ctx.fillStyle = '#1e3a8a';
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = '#eab308';
-            this.ctx.font = 'bold 12px sans-serif';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText('CASINO', this.canvas.width/2, this.canvas.height/2);
-            this.ctx.globalCompositeOperation = 'destination-out';
-        };
+        // Synchronously fill canvas so underlying card is instantly hidden
+          this.ctx.fillStyle = '#1e3a8a';
+          this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+          
+          this.img = new Image();
+          this.img.src = 'images/card_back.jpg';
+          this.img.onload = () => {
+              if (this.isRevealed) return;
+              this.ctx.globalCompositeOperation = 'source-over';
+              this.ctx.drawImage(this.img, 0, 0, this.canvas.width, this.canvas.height);
+              this.ctx.globalCompositeOperation = 'destination-out';
+          };
+          this.img.onerror = () => {
+              if (this.isRevealed) return;
+              this.ctx.globalCompositeOperation = 'source-over';
+              this.ctx.fillStyle = '#1e3a8a';
+              this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+              this.ctx.fillStyle = '#eab308';
+              this.ctx.font = 'bold 12px sans-serif';
+              this.ctx.textAlign = 'center';
+              this.ctx.fillText('CASINO', this.canvas.width/2, this.canvas.height/2);
+              this.ctx.globalCompositeOperation = 'destination-out';
+          };
+          this.ctx.globalCompositeOperation = 'destination-out';
 
         this.handleStart = this.handleStart.bind(this);
         this.handleMove = this.handleMove.bind(this);
@@ -1354,11 +1376,7 @@ class ScratchCard {
         this.canvas.addEventListener('touchcancel', this.handleEnd);
     }
 
-    initCanvas() {
-        if (this.isRevealed) return;
-        this.ctx.drawImage(this.img, 0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.globalCompositeOperation = 'destination-out';
-    }
+    
 
     getPos(e) {
         const rect = this.canvas.getBoundingClientRect();
