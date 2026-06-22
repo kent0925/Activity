@@ -5043,3 +5043,50 @@ window.buildRichShareAllText = function(eventsData) {
     shareText += `🔗 統一報名連結👇：\nhttps://liff.line.me/${typeof LIFF_ID !== 'undefined' ? LIFF_ID : ''}\n`;
     return shareText;
 };
+
+// 管理員測試模式
+let _adminTestCount = 0;
+let _adminTestTimer = null;
+window.adminTestMary = async function() {
+    _adminTestCount++;
+    if (_adminTestTimer) clearTimeout(_adminTestTimer);
+    _adminTestTimer = setTimeout(() => { _adminTestCount = 0; }, 2000);
+
+    if (_adminTestCount >= 5) {
+        _adminTestCount = 0;
+        const addPointsStr = prompt('【管理員測試】請輸入要增加的積分數量 (輸入數字)：', '10000');
+        if (!addPointsStr) return;
+        const addPoints = parseInt(addPointsStr);
+        if (isNaN(addPoints) || addPoints <= 0) {
+            alert('請輸入大於 0 的有效數字！');
+            return;
+        }
+
+        if (typeof maryState !== 'undefined') {
+            maryState.points += addPoints;
+            if (typeof updateMaryUI === 'function') updateMaryUI();
+        }
+        if (typeof CasinoApp !== 'undefined') {
+            CasinoApp.points += addPoints;
+            if (typeof CasinoApp.updatePointsUI === 'function') CasinoApp.updatePointsUI();
+        }
+        
+        if (typeof showToast === 'function') showToast(已成功為您增加  測試積分！, 3000);
+        else alert(已成功為您增加  測試積分！);
+        
+        try {
+            const userId = (typeof appState !== 'undefined' && appState.user) ? appState.user.userId : 
+                          ((typeof CasinoApp !== 'undefined' && CasinoApp.user) ? CasinoApp.user.userId : 'test_admin');
+            await window.apiSubmit({
+                action: 'playSmallMary',
+                userId: userId,
+                betPoints: 0,
+                isDoubleUp: true,
+                doubleWin: addPoints,
+                symbol: 管理員測試充值(+)
+            });
+        } catch (e) {
+            console.error('Test Add Points API Error:', e);
+        }
+    }
+};
