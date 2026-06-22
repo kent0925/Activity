@@ -1390,7 +1390,7 @@ async function maryConfirmExchange() {
         if (overlay) overlay.remove();
         if (res && res.success) {
             const addedChips = res.addedPoints !== undefined ? res.addedPoints : (roundedVal / 10);
-            showToast(\✅ 成功兌換  個籌碼\);
+            showToast(`✅ 成功兌換 ${addedChips} 個籌碼`);
             maryState.points += addedChips;
             if (typeof CasinoApp !== 'undefined') {
                 CasinoApp.points += addedChips;
