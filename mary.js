@@ -133,7 +133,7 @@ async function refreshMaryData() {
 
         maryState.points = data.points;
         maryState.monthlyGift = data.monthlyGift;
-        maryState.totalMaryScore = data.totalMaryScore;
+        maryState.totalMaryScore = (data.MaryScore !== undefined ? data.MaryScore : data.totalMaryScore);
         maryState.jackpotPool = data.jackpotPool;
 
         // 管理員無限點數保護
@@ -686,7 +686,7 @@ async function maryStartSpin() {
         if (res.success) {
             maryState.points = res.points;
             maryState.monthlyGift = res.monthlyGift;
-            maryState.totalMaryScore = res.totalMaryScore;
+            maryState.totalMaryScore = (res.MaryScore !== undefined ? res.MaryScore : res.totalMaryScore);
             if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
             updateMaryUI();
         }
@@ -874,7 +874,7 @@ async function maryDoubleUp(choice) {
                     // 直接更新後端回傳的正確點數
                     if (res.points !== undefined) maryState.points = res.points;
                     if (res.monthlyGift !== undefined) maryState.monthlyGift = res.monthlyGift;
-                    if (res.totalMaryScore !== undefined) maryState.totalMaryScore = res.totalMaryScore;
+                    if ((res.MaryScore !== undefined ? res.MaryScore : res.totalMaryScore) !== undefined) maryState.totalMaryScore = (res.MaryScore !== undefined ? res.MaryScore : res.totalMaryScore);
                 } else {
                     showToast(`⚠️ 彩池提示：${res.error || '未知的錯誤'}`, 3000);
                 }
@@ -1068,7 +1068,7 @@ async function maryDoubleUp(choice) {
                     // 直接更新後端回傳的正確點數
                     if (res.points !== undefined) maryState.points = res.points;
                     if (res.monthlyGift !== undefined) maryState.monthlyGift = res.monthlyGift;
-                    if (res.totalMaryScore !== undefined) maryState.totalMaryScore = res.totalMaryScore;
+                    if ((res.MaryScore !== undefined ? res.MaryScore : res.totalMaryScore) !== undefined) maryState.totalMaryScore = (res.MaryScore !== undefined ? res.MaryScore : res.totalMaryScore);
                 } else {
                     showToast(`⚠️ 彩池提示：${res.error || '未知的錯誤'}`, 3000);
                 }
@@ -1273,7 +1273,7 @@ function maryExchange() {
     fetch(`${GAS_URL}?action=getUserSlotScore&userId=${CasinoApp.user.userId}&_=${Date.now()}`)
         .then(r => r.json())
         .then(d => {
-            const slotScore = d.slotScore || 0;
+            const slotScore = d.Points !== undefined ? d.Points : (d.points !== undefined ? d.points : (d['分數'] !== undefined ? d['分數'] : (d.slotScore || 0)));
             const maxConvert = Math.floor(slotScore / 10) * 10;
             const maryPoints = Math.floor(maxConvert / 10);
 

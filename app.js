@@ -245,7 +245,7 @@ async function refreshMaryData() {
 
         maryState.points = data.MaryScore !== undefined ? data.MaryScore : (data.points || 0);
         maryState.monthlyGift = data.monthlyGift;
-        maryState.totalMaryScore = data.totalMaryScore;
+        maryState.totalMaryScore = (data.MaryScore !== undefined ? data.MaryScore : data.totalMaryScore);
         maryState.jackpotPool = data.jackpotPool;
 
         // ★ 管理員模式：給予無限點數
@@ -798,7 +798,7 @@ async function maryStartSpin() {
         if (res.success) {
             maryState.points = res.MaryScore !== undefined ? res.MaryScore : res.points;
             maryState.monthlyGift = res.monthlyGift;
-            maryState.totalMaryScore = res.totalMaryScore;
+            maryState.totalMaryScore = (res.MaryScore !== undefined ? res.MaryScore : res.totalMaryScore);
             if (res.jackpotPool !== undefined) maryState.jackpotPool = res.jackpotPool;
             updateMaryUI();
         }
@@ -987,7 +987,7 @@ async function maryDoubleUp(choice) {
                     if (res.MaryScore !== undefined) maryState.points = res.MaryScore;
                     else if (res.points !== undefined) maryState.points = res.points;
                     if (res.monthlyGift !== undefined) maryState.monthlyGift = res.monthlyGift;
-                    if (res.totalMaryScore !== undefined) maryState.totalMaryScore = res.totalMaryScore;
+                    if ((res.MaryScore !== undefined ? res.MaryScore : res.totalMaryScore) !== undefined) maryState.totalMaryScore = (res.MaryScore !== undefined ? res.MaryScore : res.totalMaryScore);
                 } else {
                     showToast(`⚠️ 彩池提示：${res.error || '未知的錯誤'}`, 3000);
                 }
@@ -1123,6 +1123,47 @@ async function maryCollect() {
     }, intervalMs);
 }
 
+// 支援計算機的按鍵函式
+window.maryExchangeAddNum = function(val) {
+    const input = document.getElementById('mary-exchange-input');
+    if (!input) return;
+    const maxValStr = document.getElementById('mary-exchange-max-convert')?.innerText;
+    const maxVal = parseInt(maxValStr?.replace(/,/g, '')) * 10 || 0; // 上限是拉霸積分
+
+    if (val === 'C') {
+        input.value = "";
+    } else if (val === 'MAX') {
+        input.value = maxVal;
+    } else {
+        let currentVal = input.value || "";
+        let newValStr = currentVal + val;
+        let newVal = parseInt(newValStr);
+        if (newVal > maxVal) newVal = maxVal;
+        input.value = newVal;
+    }
+    
+    // Check if confirm button should be enabled
+    const btnConfirm = document.getElementById('mary-exchange-btn-confirm');
+    if (btnConfirm) {
+        let checkVal = parseInt(input.value) || 0;
+        if (checkVal >= 10 && checkVal <= maxVal) {
+            btnConfirm.disabled = false;
+            btnConfirm.style.background = 'linear-gradient(135deg,#cc6600,#ffaa00)';
+            btnConfirm.style.color = '#000';
+            btnConfirm.style.cursor = 'pointer';
+            btnConfirm.style.boxShadow = '0 0 15px rgba(255,150,0,0.4)';
+            btnConfirm.innerText = "確認兌換";
+        } else {
+            btnConfirm.disabled = true;
+            btnConfirm.style.background = 'linear-gradient(135deg,#663300,#995500)';
+            btnConfirm.style.color = '#ccc';
+            btnConfirm.style.cursor = 'not-allowed';
+            btnConfirm.style.boxShadow = 'none';
+            btnConfirm.innerText = "分數不足";
+        }
+    }
+};
+
 // 兌換（加速開窗版）
 function maryExchange() {
     if (maryState.isSpinning || maryState.doubleUpActive) return;
@@ -1187,7 +1228,7 @@ function maryExchange() {
     fetch(`${GAS_URL}?action=getUserSlotScore&userId=${appState.user.userId}&_=${Date.now()}`)
         .then(r => r.json())
         .then(d => {
-            const slotScore = d.Points !== undefined ? d.Points : (d.slotScore || 0);
+            const slotScore = d.Points !== undefined ? d.Points : (d.points !== undefined ? d.points : (d['分數'] !== undefined ? d['分數'] : (d.slotScore || 0)));
             const maxConvert = Math.floor(slotScore / 10) * 10;
             const maryPoints = Math.floor(maxConvert / 10);
 
