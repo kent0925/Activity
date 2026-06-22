@@ -362,3 +362,55 @@ details[open]>summary .arrow-icon {
     margin-top: -10px;
     margin-left: -10px;
 }
+
+
+/* Baccarat Scratch Card Canvas */
+.scratch-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    cursor: crosshair;
+    border-radius: 6px;
+}
+
+/* Baccarat Card Styling */
+.baccarat-card-container {
+    position: relative;
+    width: 60px;
+    height: 84px;
+}
+.baccarat-card {
+    position: absolute;
+    inset: 0;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    color: black;
+}
+.baccarat-card.suit-hearts, .baccarat-card.suit-diamonds {
+    color: #dc2626; /* red-600 */
+}
+.baccarat-card .top-left { 
+    align-self: flex-start; 
+    line-height: 1; 
+    text-align: center;
+}
+.baccarat-card .bottom-right { 
+    align-self: flex-end; 
+    transform: rotate(180deg); 
+    line-height: 1; 
+    text-align: center;
+}
+.baccarat-card .center-suit {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+}
