@@ -1,47 +1,6 @@
 // ==========================================
 // 大老二兄弟會活動報名系統 - 初始化腳本
 // 從 index.html <head> 內的 <script> 抽出
-// 包含：拉霸設定、語錄、初始化、載入畫面邏輯
-// ==========================================
-
-window.SLOT_CONFIG = {
-    symbols: ['🍺', '🎉', '💀', '🍷', '🎲', '👑', '🔥', '💰'],
-    symbolScores: {
-        '🍺': 1,
-        '🎉': 2,
-        '💀': 0,
-        '🍷': 3,
-        '🎲': 4,
-        '👑': 5,
-        '🔥': 6,
-        '💰': 10
-    },
-    jackpots: {
-        '🍺🍺🍺': '恭喜！今晚你是買單王 👑',
-        '🎉🎉🎉': '酒神附身，戰力全開！💪',
-        '💀💀💀': '建議你今晚低調一點… 😇',
-        '🍷🍷🍷': '品味非凡！今晚紅酒之夜 🥂',
-        '🎲🎲🎲': '賭神降臨！手氣爆棚 🃏',
-        '👑👑👑': '今晚你就是王！全場焦點 ✨',
-        '🔥🔥🔥': '火力全開！誰都擋不住 🚀',
-        '💰💰💰': '財神來了！今晚大贏家 💵',
-    },
-    pairMsgs: [
-        '還不錯嘛，值得乾一杯！🍻',
-        '差一點就中大獎了！再喝一杯壓壓驚 🫣',
-        '運氣普普，酒量來補！💪',
-        '有點意思，今晚有戲！🎭',
-        '小中獎！獎品是幫大家倒酒 🫗',
-    ],
-    missMsgs: [
-        '沒中？沒關係，喝了再說！🍺',
-        '手氣差就用酒量補回來 💪',
-        '別氣餒，你的運氣都留給酒桌了 🎯',
-        '今晚注定靠實力（喝）🏆',
-        '槓龜也是一種才華 ✨',
-        '佛系喝酒，隨緣中獎 🧘',
-    ]
-};
 
 // 全域語錄陣列 (供分享功能共用)
 window.APP_QUOTES = [
@@ -132,43 +91,48 @@ document.addEventListener('DOMContentLoaded', function () {
     // ★ 取得並顯示出席王 Top 3
     fetchAttendanceTop3();
 
-    // ★ 啟動迷你老虎機：轉完後才關閉載入畫面
-    startSlotMachine(() => {
-        if (window.hideInitialOverlay) {
-            window.hideInitialOverlay();
-        }
-    });
+    // ★ 啟動迷你老虎機已經移除，改由 app.js 或 init.js 主動觸發隱藏
 });
 
-// 新增：抓取拉霸 Top 3 數據 (優化版：先顯後更)
+// 新增：抓取拉霸 Top 3 數據 (優化版：先顯後更，每日快取)
 async function fetchJackpotTop3() {
     const overlayContainer = document.getElementById('overlay-rankings-container');
     const homeContainer = document.getElementById('home-rankings-section');
     if (!overlayContainer && !homeContainer) return;
 
-    // 1. 先嘗試從 LocalStorage 讀取快取
-    const cacheKey = 'jackpot_top3_cache';
-    const cachedData = localStorage.getItem(cacheKey);
-    if (cachedData) {
-        try {
-            const top3 = JSON.parse(cachedData);
-            appState.jackpotRankings = top3; // ★ 快取時也同步更新，名單顯示才能正確
-            renderJackpotTop3(top3);
-            if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
-            if (homeContainer) homeContainer.classList.remove('hidden');
-        } catch (e) {
-            console.warn("Parse cache failed", e);
+    const cacheKey = 'jackpot_full_cache';
+    let cachedData = null;
+    try {
+        const stored = localStorage.getItem(cacheKey);
+        if (stored) cachedData = JSON.parse(stored);
+    } catch (e) {
+        console.warn("Parse cache failed", e);
+    }
+
+    const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+    let hasValidCache = false;
+
+    if (cachedData && cachedData.data && Array.isArray(cachedData.data)) {
+        appState.jackpotRankings = cachedData.data;
+        const top3 = cachedData.data.slice(0, 3);
+        renderJackpotTop3(top3);
+        if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
+        if (homeContainer) homeContainer.classList.remove('hidden');
+
+        if (cachedData.date === todayStr) {
+            hasValidCache = true; // 已經是今天的快取，不需再打 API
         }
     }
 
-    // 2. 背景呼叫 API 更新數據
+    if (hasValidCache) return;
+
     try {
-        // 原先為 getJackpotAll (拉霸排行榜)，現改為拿取小瑪莉專屬的英雄榜
         const res = await fetch(`${GAS_URL}?action=getMaryRankings&_=${Date.now()}`);
-        const allData = await res.json();
+        const responseJson = await res.json();
+        // GAS 改為回傳 { status: 'success', data: [...] }
+        const allData = responseJson.data || responseJson; 
 
         if (Array.isArray(allData) && allData.length > 0) {
-            // 同分處理 (筆畫)
             allData.sort((a, b) => {
                 const valA = a.score !== undefined ? a.score : a.count;
                 const valB = b.score !== undefined ? b.score : b.count;
@@ -176,13 +140,10 @@ async function fetchJackpotTop3() {
                 return String(a.name).localeCompare(String(b.name), 'zh-TW', { collation: 'stroke' });
             });
 
-            // 更新快取 (Top 3)
-            const top3 = allData.slice(0, 3);
-            localStorage.setItem(cacheKey, JSON.stringify(top3));
-            // 緩存完整名單
+            localStorage.setItem(cacheKey, JSON.stringify({ date: todayStr, data: allData }));
             appState.jackpotRankings = allData;
 
-            // 重新渲染最新數據
+            const top3 = allData.slice(0, 3);
             renderJackpotTop3(top3);
             if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
             if (homeContainer) homeContainer.classList.remove('hidden');
@@ -192,46 +153,54 @@ async function fetchJackpotTop3() {
     }
 }
 
-// 新增：抓取出席王 Top 3 數據 (優化版：先顯後更)
+// 新增：抓取出席王 Top 3 數據 (優化版：先顯後更，每日快取)
 async function fetchAttendanceTop3() {
     const overlayContainer = document.getElementById('overlay-rankings-container');
     const homeContainer = document.getElementById('home-rankings-section');
     if (!overlayContainer && !homeContainer) return;
 
-    // 1. 先嘗試從 LocalStorage 讀取快取
-    const cacheKey = 'attendance_top3_cache';
-    const cachedData = localStorage.getItem(cacheKey);
-    if (cachedData) {
-        try {
-            const top3 = JSON.parse(cachedData);
-            appState.attendanceRankings = top3; // ★ 優化：快取讀取後同步更新，排行榜 Modal 可即時顯示
-            renderAttendanceTop3(top3);
-            if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
-            if (homeContainer) homeContainer.classList.remove('hidden');
-        } catch (e) {
-            console.warn("Parse cache failed", e);
+    const cacheKey = 'attendance_full_cache';
+    let cachedData = null;
+    try {
+        const stored = localStorage.getItem(cacheKey);
+        if (stored) cachedData = JSON.parse(stored);
+    } catch (e) {
+        console.warn("Parse cache failed", e);
+    }
+
+    const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+    let hasValidCache = false;
+
+    if (cachedData && cachedData.data && Array.isArray(cachedData.data)) {
+        appState.attendanceRankings = cachedData.data;
+        const top3 = cachedData.data.slice(0, 3);
+        renderAttendanceTop3(top3);
+        if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
+        if (homeContainer) homeContainer.classList.remove('hidden');
+
+        if (cachedData.date === todayStr) {
+            hasValidCache = true; // 已經是今天的快取，不需再打 API
         }
     }
 
-    // 2. 背景呼叫 API 更新數據
+    if (hasValidCache) return;
+
     try {
         const res = await fetch(`${GAS_URL}?action=getParticipationStats&_=${Date.now()}`);
-        const allData = await res.json();
+        const responseJson = await res.json();
+        // GAS 改為回傳 { status: 'success', data: [...] }
+        const allData = responseJson.data || responseJson;
 
         if (Array.isArray(allData) && allData.length > 0) {
-            // 同分處理
             allData.sort((a, b) => {
                 if (b.count !== a.count) return b.count - a.count;
                 return String(a.name).localeCompare(String(b.name), 'zh-TW', { collation: 'stroke' });
             });
 
-            // 更新快取 (Top 3)
-            const top3 = allData.slice(0, 3);
-            localStorage.setItem(cacheKey, JSON.stringify(top3));
-            // 緩存完整名單
+            localStorage.setItem(cacheKey, JSON.stringify({ date: todayStr, data: allData }));
             appState.attendanceRankings = allData;
 
-            // 重新渲染最新數據
+            const top3 = allData.slice(0, 3);
             renderAttendanceTop3(top3);
             if (overlayContainer) overlayContainer.classList.remove('opacity-0', 'translate-y-4');
             if (homeContainer) homeContainer.classList.remove('hidden');
@@ -339,161 +308,3 @@ function renderAttendanceTop3(data) {
     if (typeof refreshIcons === 'function') refreshIcons();
 }
 
-// 防止重複觸發
-let _slotSpinning = false;
-
-// 修改：加入 onComplete 回呼函式
-function startSlotMachine(onComplete) {
-    const config = window.SLOT_CONFIG;
-    if (!config) {
-        if (onComplete) onComplete();
-        return;
-    }
-    if (_slotSpinning) return; // 正在旋轉中，忽略重複呼叫
-    _slotSpinning = true;
-
-    const symbols = config.symbols;
-    const reels = [
-        document.getElementById('slot-1'),
-        document.getElementById('slot-2'),
-        document.getElementById('slot-3')
-    ];
-    const resultEl = document.getElementById('slot-result');
-    if (!reels[0] || !reels[1] || !reels[2] || !resultEl) {
-        _slotSpinning = false;
-        if (onComplete) onComplete();
-        return;
-    }
-
-    // 開始旋轉：快速隨機切換符號
-    const intervals = reels.map(reel => {
-        return setInterval(() => {
-            reel.querySelector('.slot-symbol').textContent =
-                symbols[Math.floor(Math.random() * symbols.length)];
-        }, 80);
-    });
-
-    const finalSymbols = [];
-
-    // 停止單一轉輪的輔助函式（避免重複程式碼）
-    function stopReel(index, delay) {
-        setTimeout(() => {
-            clearInterval(intervals[index]);
-            const sym = symbols[Math.floor(Math.random() * symbols.length)];
-            reels[index].querySelector('.slot-symbol').textContent = sym;
-            reels[index].classList.remove('spinning');
-            reels[index].classList.add('stopped');
-            finalSymbols[index] = sym;
-
-            // 所有轉輪皆已停止時顯示結果
-            if (finalSymbols.filter(s => s !== undefined).length === 3) showResult();
-        }, delay);
-    }
-
-    stopReel(0, 800);
-    stopReel(1, 1400);
-    stopReel(2, 2000);
-
-    function showResult() {
-        try {
-            const key = finalSymbols.join('');
-
-            // 計算基礎分數（取整數）
-            let score = Math.round(
-                finalSymbols.reduce((acc, sym) => acc + (config.symbolScores[sym] || 0), 0)
-            );
-
-            let msg = '';
-            let isJackpot = false;
-
-            if (config.jackpots[key]) {
-                msg = config.jackpots[key];
-                isJackpot = true;
-                score = Math.round(score * 5); // 大獎 5 倍
-            } else if (
-                finalSymbols[0] === finalSymbols[1] ||
-                finalSymbols[1] === finalSymbols[2] ||
-                finalSymbols[0] === finalSymbols[2]
-            ) {
-                msg = config.pairMsgs[Math.floor(Math.random() * config.pairMsgs.length)];
-                score = Math.round(score * 2); // 一對 2 倍
-            } else {
-                msg = config.missMsgs[Math.floor(Math.random() * config.missMsgs.length)];
-            }
-
-            resultEl.textContent = `${msg} (獲得 ${score} 分)`;
-            resultEl.classList.add('show');
-            if (isJackpot) resultEl.classList.add('jackpot');
-
-            // 無論是否大獎都紀錄分數
-            recordJackpotResult(key, score);
-        } catch (e) {
-            console.error('showResult 發生錯誤', e);
-        } finally {
-            _slotSpinning = false; // 解除鎖定
-
-            // 顯示按鈕與倒數
-            const dots = document.getElementById('slot-loading-dots');
-            if (dots) dots.classList.add('hidden');
-
-            const actions = document.getElementById('slot-actions');
-            if (actions) {
-                actions.classList.remove('hidden');
-                actions.classList.add('flex');
-            }
-
-            // 等待 2 秒讓使用者選擇，未選擇則進入活動頁面
-            window._slotAutoJumpTimer = setTimeout(() => {
-                if (actions) actions.classList.add('hidden');
-                if (onComplete) onComplete();
-            }, 2000);
-        }
-    }
-}
-
-// 新增：再玩一次
-function playSlotAgain() {
-    if (window._slotAutoJumpTimer) clearTimeout(window._slotAutoJumpTimer);
-
-    const actions = document.getElementById('slot-actions');
-    if (actions) {
-        actions.classList.remove('flex');
-        actions.classList.add('hidden');
-    }
-
-    const dots = document.getElementById('slot-loading-dots');
-    if (dots) dots.classList.remove('hidden');
-
-    const resultEl = document.getElementById('slot-result');
-    if (resultEl) {
-        resultEl.classList.remove('show', 'jackpot');
-        resultEl.textContent = '拉霸中...';
-    }
-
-    // 再次旋轉
-    startSlotMachine(() => {
-        if (window.hideInitialOverlay) {
-            window.hideInitialOverlay();
-        }
-    });
-}
-
-// 紀錄拉霸結果與分數（僅限登入狀態）
-async function recordJackpotResult(symbolKey, score) {
-    if (typeof appState === 'undefined' ||
-        !appState.user?.userId ||
-        appState.user.userId === '') return;
-
-    try {
-        await apiSubmit({
-            action: 'recordJackpot',
-            userId: appState.user.userId,
-            name: appState.user.displayName,
-            symbol: symbolKey,
-            score: score
-        });
-        console.log('Slot result recorded, score:', score);
-    } catch (e) {
-        console.warn('recordJackpotResult failed (non-critical):', e);
-    }
-}

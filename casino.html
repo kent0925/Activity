@@ -27,6 +27,7 @@
 
     <!-- 主程式 -->
     <script src="casino.js?v=3" defer></script>
+    <script src="slot.js?v=1" defer></script>
     <script src="mary.js?v=3" defer></script>
 </head>
 <body class="bg-[#0D131A] min-h-screen text-white font-['Outfit'] pb-safe overflow-x-hidden">
@@ -86,6 +87,20 @@
                     <p class="text-sm text-gray-400">所有遊戲共用積分錢包</p>
                 </div>
                 
+                <!-- 遊戲入口：老虎機 (賺取每日積分) -->
+                <button onclick="CasinoApp.openGame('slot')" class="w-full relative overflow-hidden rounded-2xl group border border-amber-500/50 hover:border-amber-400 transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#2a1a00] to-[#1a0a00] h-32">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
+                    <div class="p-6 flex items-center justify-between relative z-10 h-full">
+                        <div class="text-left">
+                            <h3 class="text-2xl font-black text-amber-400 drop-shadow-md mb-1 text-shadow-lg shadow-black">老虎機</h3>
+                            <p class="text-xs text-gray-300 font-bold">每日首次遊玩可賺取基礎積分</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-black/50 border border-amber-500/30 flex items-center justify-center backdrop-blur-md shadow-[0_0_15px_rgba(251,191,36,0.4)]">
+                            <i data-lucide="coins" class="w-6 h-6 text-amber-400"></i>
+                        </div>
+                    </div>
+                </button>
+
                 <!-- 遊戲入口：小瑪莉 -->
                 <button onclick="CasinoApp.openGame('mary')" class="w-full relative overflow-hidden rounded-2xl group border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#1E3052] to-[#0D131A] h-32">
                     <div class="absolute inset-0 bg-[url('images/mary_banner.jpg')] opacity-50 mix-blend-screen group-hover:opacity-70 transition-opacity bg-cover bg-center"></div>
@@ -150,6 +165,33 @@
                         </div>
                     </div>
                 </button>
+            </div>
+
+            <!-- 老虎機視圖 (Slot View) -->
+            <div id="view-slot" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-10">
+                <div class="flex justify-between items-center bg-[#1E3052]/60 p-3 rounded-xl border border-white/10 backdrop-blur-md mb-4">
+                    <button onclick="CasinoApp.backToLobby()" class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-[#F3E5AB] flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)] border border-[#D4AF37]/50 active:scale-95"><i data-lucide="door-open" class="w-4 h-4 text-[#D4AF37]"></i> <span class="tracking-widest drop-shadow-md">返回大廳</span></button>
+                    <div class="text-xs text-gray-400">老虎機</div>
+                </div>
+                
+                <div class="flex flex-col items-center justify-center p-6 premium-dark-card border border-amber-500/30 rounded-3xl mt-10">
+                    <div class="text-amber-400 text-2xl font-bold mb-6 drop-shadow-md">🍺 每日免費積分</div>
+                    <div class="slot-machine-container w-full max-w-[300px]">
+                        <div class="text-gray-300 text-xs font-bold tracking-widest mb-3 text-center">🎰 今晚運勢</div>
+                        <div class="slot-machine bg-black/50 border-2 border-amber-500/50 rounded-xl p-2 shadow-[0_0_20px_rgba(251,191,36,0.2)]">
+                            <div class="slot-reel" id="slot-1"><span class="slot-symbol">🎲</span></div>
+                            <div class="slot-reel" id="slot-2"><span class="slot-symbol">🎲</span></div>
+                            <div class="slot-reel" id="slot-3"><span class="slot-symbol">🎲</span></div>
+                        </div>
+                        <div id="slot-result"
+                            class="slot-result text-white text-sm font-bold text-center mt-6 px-6 mx-auto min-h-[24px]">
+                            點擊下方按鈕開始拉霸</div>
+                    </div>
+                    <div id="slot-actions" class="flex flex-col items-center mt-8 w-full">
+                        <button onclick="playSlotAgain()" id="btn-play-slot"
+                            class="w-full bg-gradient-to-b from-amber-400 to-amber-600 hover:to-amber-500 text-black font-black py-3 px-10 rounded-xl shadow-[0_4px_15px_rgba(251,191,36,0.5)] transition-all active:scale-95 border-2 border-amber-300">開始拉霸！</button>
+                    </div>
+                </div>
             </div>
             <!-- 小瑪莉視圖 (Mary View) -->
             <div id="view-mary" class="hidden space-y-4 max-w-md mx-auto flex-col animate-fade-in pb-10">
