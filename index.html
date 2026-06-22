@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大老二兄弟會活動報名系統</title>
-    <meta property="og:title" content="大老二兄弟會活動報名系統" />
+    <title>大老爺活動報名系統</title>
+    <meta property="og:title" content="大老爺活動報名系統" />
     <meta property="og:description" id="og-description" content="酒杯舉起來，煩惱滾一邊。" />
     <meta property="og:image" content="https://kent0925.github.io/test/logo.jpg" />
     <meta property="og:type" content="website" />
@@ -34,31 +34,19 @@
 
 </head>
 
-<body class="bg-gray-50 min-h-screen pb-safe">
+<body class="bg-gray-50 min-h-screen pb-safe bg-[url('images/wood-bg.jpg')] bg-cover bg-fixed bg-center">
 
     <!-- 初始載入畫面 (Loading Overlay) -->
     <div id="initial-load-overlay"
         onclick="if(window.hideInitialOverlay && !_slotSpinning) window.hideInitialOverlay();"
         class="fixed inset-0 z-[100] bg-[#06c755] flex flex-col items-center justify-center transition-opacity duration-500 cursor-pointer">
-        <div class="text-white text-3xl font-bold mb-4 animate-bounce pointer-events-none">🍺 大老二兄弟會</div>
-        <!-- 迷你老虎機 -->
-        <div class="slot-machine-container" onclick="event.stopPropagation();">
-            <!-- 移除排行榜，保持載入畫面簡單 -->
-
-            <div class="text-white/70 text-xs font-bold tracking-widest mb-3 text-center">🎰 今晚運勢</div>
-            <div class="slot-machine">
-                <div class="slot-reel spinning" id="slot-1"><span class="slot-symbol">🎲</span></div>
-                <div class="slot-reel spinning" id="slot-2"><span class="slot-symbol">🎲</span></div>
-                <div class="slot-reel spinning" id="slot-3"><span class="slot-symbol">🎲</span></div>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full w-full max-w-sm mx-auto">
+            <div class="w-24 h-24 mb-4 relative">
+                <div class="absolute inset-0 bg-[#06c755] rounded-full opacity-20 animate-ping"></div>
+                <img src="https://kent0925.github.io/test/logo.jpg" alt="Logo"
+                    class="w-full h-full object-cover rounded-full border-2 border-white/50 shadow-lg relative z-10">
             </div>
-            <div id="slot-result"
-                class="slot-result text-white text-sm font-bold text-center mt-4 px-6 max-w-xs mx-auto min-h-[24px]">
-                拉霸中...</div>
-        </div>
-        <div id="slot-actions" class="hidden flex-col items-center mt-6 animate-fade-in z-50">
-            <button onclick="playSlotAgain()"
-                class="bg-amber-500 hover:bg-amber-600 text-black font-black py-2.5 px-10 rounded-full shadow-[0_4px_15px_rgba(251,191,36,0.5)] transition-all active:scale-95 mb-2 border-2 border-amber-300">再玩一次</button>
-            <div class="text-white/60 text-xs font-bold font-mono">2 秒後自動進入活動...</div>
+            <!-- 移除排行榜以確保載入畫面簡單 -->
         </div>
         <div id="slot-loading-dots" class="mt-6 flex gap-2">
             <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0s"></div>
@@ -296,14 +284,7 @@
                         </div>
                         <input type="hidden" id="user-id">
                     </div>
-                    <!-- 不克出席，僅贊助 核取方塊 -->
-                    <div class="flex items-center gap-2.5 p-3 bg-orange-50/30 rounded-xl border border-orange-100/50">
-                        <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)"
-                            class="w-4.5 h-4.5 rounded text-orange-500 focus:ring-orange-500 border-gray-300">
-                        <label for="no-attendance-sponsor" class="text-xs font-bold text-orange-800 cursor-pointer">
-                            🙋‍♂️ 不克出席，僅贊助 / 認桌
-                        </label>
-                    </div>
+
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">人數(含眷屬)</label>
@@ -315,6 +296,14 @@
                                 <i data-lucide="chevron-down"
                                     class="absolute right-3 top-3 w-3 h-3 text-gray-400 pointer-events-none"></i>
                             </div>
+                        </div>
+                        
+                        <div class="flex flex-col items-end justify-center pt-2">
+                            <label class="block text-xs font-bold text-gray-700 mb-1.5">不克出席，僅贊助/認桌</label>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -372,7 +361,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="guest-section" class="bg-orange-50/50 p-4 rounded-xl border border-orange-100">
+                <div id="guest-section" class="premium-card p-4 rounded-xl border border-amber-900/50">
                     <div class="flex justify-between items-center mb-3">
                         <label class="text-sm font-bold text-orange-800 flex items-center gap-1.5"><i
                                 data-lucide="user-plus" class="w-4 h-4"></i> 來賓</label>
@@ -404,7 +393,7 @@
                     </div>
                 </div>
 
-                <div class="p-4 border border-gray-200 rounded-xl bg-gray-50/30">
+                <div class="premium-card p-4 border border-amber-900/50 rounded-xl mt-4">
                     <div class="flex justify-between items-center mb-3">
                         <label class="text-sm font-bold text-gray-800 flex items-center gap-1.5"><i data-lucide="gift"
                                 class="w-4 h-4 text-purple-500"></i> 贊助項目</label>
