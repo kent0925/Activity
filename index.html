@@ -218,15 +218,15 @@
                         </div>
                     </div>
                 </div>
-                <div id="travel-itinerary-section" class="hidden mt-6 pt-5 border-t border-dashed border-gray-100">
+                <div id="travel-itinerary-section" class="hidden mt-6 pt-5 border-t border-dashed border-amber-900/50">
                     <details
-                        class="group main-itinerary bg-gray-50/50 rounded-2xl border border-gray-100 open:bg-white open:shadow-sm transition-all duration-300">
-                        <summary class="flex justify-between items-center p-4 cursor-pointer select-none">
-                            <span class="flex items-center gap-3 font-bold text-gray-700">
-                                <i data-lucide="map" class="w-5 h-5 text-green-600"></i> 查看完整行程
+                        class="group main-itinerary rounded-2xl border border-amber-900/50 open:bg-black/20 open:shadow-lg transition-all duration-300 overflow-hidden">
+                        <summary class="flex justify-between items-center p-4 cursor-pointer select-none premium-gradient">
+                            <span class="flex items-center gap-3 font-bold text-[#3d2600] text-base">
+                                <i data-lucide="map" class="w-5 h-5 text-[#3d2600]"></i> 查看完整行程
                             </span>
-                            <div class="bg-white rounded-full p-1.5 shadow-sm border border-gray-100 arrow-icon">
-                                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-500"></i>
+                            <div class="bg-white/20 rounded-full p-1.5 shadow-sm arrow-icon">
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-[#3d2600]"></i>
                             </div>
                         </summary>
                         <div id="itinerary-accordion-content" class="px-4 pb-4 pt-1 space-y-3"></div>
@@ -543,54 +543,54 @@
     </div>
 
     <div id="details-modal"
-        class="hidden fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4">
-        <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-sm max-h-[85dvh] sm:max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
+        class="hidden fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4">
+        <div class="premium-card rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-sm max-h-[85dvh] sm:max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
             id="modal-content">
             <div
-                class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/80 rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
-                <h3 class="font-bold text-gray-800 flex items-center gap-2"><i data-lucide="list"
-                        class="w-5 h-5 text-gray-600"></i> 詳細名單</h3>
+                class="p-4 border-b border-amber-900/50 flex justify-between items-center bg-[#0D131A] rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
+                <h3 class="font-bold text-[#D4AF37] flex items-center gap-2"><i data-lucide="list"
+                        class="w-5 h-5 text-[#D4AF37]"></i> 詳細名單</h3>
                 <div class="flex items-center gap-2">
                     <button onclick="copyDetailsToClipboard()"
-                        class="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-800 transition flex items-center gap-1 shadow-sm active:scale-95">
+                        class="premium-gradient text-[#3d2600] px-3 py-1.5 rounded-lg text-xs font-bold hover:brightness-110 transition flex items-center gap-1 shadow-sm active:scale-95">
                         <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製名單
                     </button>
                     <button onclick="sendToTelegram()"
-                        class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 transition flex items-center gap-1 shadow-sm active:scale-95">
+                        class="bg-[#24A1DE] text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-[#1a8bc4] transition flex items-center gap-1 shadow-sm active:scale-95">
                         <i data-lucide="send" class="w-3.5 h-3.5"></i> 發送至 Telegram
                     </button>
                     <button onclick="closeDetailsModal()"
-                        class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition text-gray-600"><i
+                        class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition text-[#D4AF37]"><i
                             data-lucide="x" class="w-5 h-5"></i></button>
                 </div>
             </div>
 
             <div id="modal-summary"
-                class="bg-blue-50/50 p-3 text-xs text-gray-700 border-b border-blue-100/50 grid grid-cols-2 gap-2">
+                class="bg-[#0D131A]/80 p-3 text-xs text-amber-100 border-b border-amber-900/50 grid grid-cols-2 gap-2">
             </div>
 
             <div class="p-0 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe">
                 <div id="modal-loading" class="flex flex-col items-center py-12">
-                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-green-500 mb-2"></i>
-                    <span class="text-xs text-gray-400">正在讀取最新資料...</span>
+                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-[#D4AF37] mb-2"></i>
+                    <span class="text-xs text-amber-500">正在讀取最新資料...</span>
                 </div>
 
                 <div id="details-lists-container" class="hidden pb-10 sm:pb-4">
-                    <div class="px-4 py-2 bg-gray-100 text-xs font-bold text-gray-500 sticky top-0">人員名單</div>
-                    <ul id="details-list-people" class="divide-y divide-gray-100"></ul>
+                    <div class="px-4 py-2 bg-black/40 text-xs font-bold text-amber-500 sticky top-0 border-b border-amber-900/30">人員名單</div>
+                    <ul id="details-list-people" class="divide-y divide-amber-900/30 bg-transparent text-[#EFECE5]"></ul>
 
                     <div id="travel-separator"
-                        class="hidden px-4 py-2 bg-gray-100 text-xs font-bold text-gray-500 sticky top-0 mt-2">住宿與交通
+                        class="hidden px-4 py-2 bg-black/40 text-xs font-bold text-amber-500 sticky top-0 mt-2 border-b border-amber-900/30">住宿與交通
                     </div>
-                    <ul id="details-list-travel" class="hidden divide-y divide-gray-100"></ul>
+                    <ul id="details-list-travel" class="hidden divide-y divide-amber-900/30 bg-transparent text-[#EFECE5]"></ul>
 
                     <div id="details-separator"
-                        class="hidden px-4 py-2 bg-gray-100 text-xs font-bold text-gray-500 sticky top-0 mt-2">贊助與認桌
+                        class="hidden px-4 py-2 bg-black/40 text-xs font-bold text-amber-500 sticky top-0 mt-2 border-b border-amber-900/30">贊助與認桌
                     </div>
-                    <ul id="details-list-items" class="divide-y divide-gray-100"></ul>
+                    <ul id="details-list-items" class="divide-y divide-amber-900/30 bg-transparent text-[#EFECE5]"></ul>
                 </div>
 
-                <div id="modal-empty" class="hidden flex flex-col items-center justify-center py-12 text-gray-400">
+                <div id="modal-empty" class="hidden flex flex-col items-center justify-center py-12 text-amber-500/50">
                     <i data-lucide="clipboard-x" class="w-10 h-10 mb-2 opacity-50"></i>
                     <p class="text-sm">目前尚未有人報名</p>
                 </div>
@@ -599,23 +599,23 @@
     </div>
 
     <div id="confirm-modal"
-        class="hidden fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6 animate-fade-in">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xs p-6 transform scale-100 transition-all">
-            <h3 class="text-lg font-bold text-gray-900 mb-2">確認動作</h3>
-            <p id="confirm-msg" class="text-gray-600 mb-6 text-sm leading-relaxed">確定要執行此操作嗎？</p>
+        class="hidden fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">
+        <div class="premium-card rounded-2xl shadow-2xl w-full max-w-xs p-6 transform scale-100 transition-all border border-amber-900/50">
+            <h3 class="text-lg font-bold text-[#D4AF37] mb-2">確認動作</h3>
+            <p id="confirm-msg" class="text-amber-100 mb-6 text-sm leading-relaxed">確定要執行此操作嗎？</p>
             <div class="flex gap-3">
                 <button id="confirm-no"
-                    class="flex-1 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition">取消</button>
+                    class="flex-1 py-2.5 rounded-xl border border-amber-900/50 bg-[#0D131A] text-gray-400 font-medium hover:bg-white/10 transition">取消</button>
                 <button id="confirm-yes"
-                    class="flex-1 py-2.5 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 shadow-md transition">確定</button>
+                    class="flex-1 py-2.5 rounded-xl bg-red-900/80 border border-red-500/50 text-red-100 font-medium hover:bg-red-800 shadow-md transition">確定</button>
             </div>
         </div>
     </div>
 
     <div id="toast"
-        class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-5 py-3 rounded-full shadow-2xl opacity-0 transition-all duration-300 pointer-events-none z-[100] text-sm flex items-center gap-2.5 backdrop-blur-md">
-        <div class="bg-green-500 rounded-full p-0.5"><i data-lucide="check" class="w-3 h-3 text-white"></i></div>
-        <span id="toast-msg" class="font-medium tracking-wide">操作成功</span>
+        class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-[#0D131A] border border-[#D4AF37]/50 text-[#D4AF37] px-5 py-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.8)] opacity-0 transition-all duration-300 pointer-events-none z-[100] text-sm flex items-center gap-2.5 backdrop-blur-md">
+        <div class="bg-[#D4AF37]/20 border border-[#D4AF37]/50 rounded-full p-0.5"><i data-lucide="check" class="w-3 h-3 text-[#D4AF37]"></i></div>
+        <span id="toast-msg" class="font-bold tracking-wide text-[#EFECE5]">操作成功</span>
     </div>
 
     <div id="share-modal"
@@ -736,35 +736,35 @@
 
     <!-- 詳細排行榜彈窗 -->
     <div id="rankings-modal" onclick="closeRankingsModal()"
-        class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
+        class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
         <div id="rankings-modal-content" onclick="event.stopPropagation();"
-            class="bg-white/90 rounded-3xl shadow-2xl w-full max-w-xs flex flex-col overflow-hidden transform transition-all border border-white/20">
+            class="premium-card rounded-3xl shadow-2xl w-full max-w-xs flex flex-col overflow-hidden transform transition-all border border-amber-900/50">
             <!-- Top Notice -->
             <div
                 class="bg-amber-500/10 text-amber-600 text-[10px] py-2 text-center font-bold tracking-widest border-b border-amber-500/10">
                 <i data-lucide="info" class="w-3 h-3 inline-block -mt-0.5 mr-1"></i> 十秒後或點擊任意處即可離開
             </div>
             <!-- Header/Tabs -->
-            <div class="flex border-b border-black/5 bg-gray-50/50">
+            <div class="flex border-b border-amber-900/50 bg-[#0D131A]/80">
                 <button id="rank-tab-attendance" onclick="switchRankTab('attendance')"
-                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-400">出席王</button>
+                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-amber-100">出席王</button>
                 <button id="rank-tab-jackpot" onclick="switchRankTab('jackpot')"
-                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-400">小瑪莉英雄榜</button>
+                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-amber-100">小瑪莉英雄榜</button>
             </div>
 
             <!-- List Area -->
             <div class="flex-1 overflow-y-auto max-h-[60dvh] min-h-[300px] p-2 space-y-1 custom-scrollbar"
                 id="rankings-list-container">
                 <div class="flex flex-col items-center justify-center py-20 animate-pulse">
-                    <i data-lucide="loader-2" class="w-8 h-8 text-gray-300 animate-spin mb-2"></i>
-                    <span class="text-xs text-gray-400">數據讀取中...</span>
+                    <i data-lucide="loader-2" class="w-8 h-8 text-[#D4AF37] animate-spin mb-2"></i>
+                    <span class="text-xs text-amber-500">數據讀取中...</span>
                 </div>
             </div>
 
             <!-- Footer: Auto close indicator -->
             <div
-                class="px-4 py-2 bg-gray-50/80 text-[11px] text-gray-500 text-center border-t border-black/5 font-medium">
-                <span id="rank-close-timer" class="font-black text-amber-500">10</span> 秒後自動關閉
+                class="px-4 py-2 bg-[#0D131A] text-[11px] text-amber-100/50 text-center border-t border-amber-900/50 font-medium">
+                <span id="rank-close-timer" class="font-black text-[#D4AF37]">10</span> 秒後自動關閉
             </div>
         </div>
     </div>
