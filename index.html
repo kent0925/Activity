@@ -1,34 +1,34 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大老二兄弟會報名系統</title>
-    <meta property="og:title" content="大老二兄弟會報名系統" />
-    <meta property="og:description" id="og-description" content="酒杯舉起來，煩惱滾一邊。" />
+    <title>憭扯?????頂蝯?/title>
+    <meta property="og:title" content="憭扯?????頂蝯? />
+    <meta property="og:description" id="og-description" content="??絲靘??拇皛曆??? />
     <meta property="og:image" content="https://kent0925.github.io/test/logo.jpg" />
     <meta property="og:type" content="website" />
-    <!-- 新增 SEO 與品牌標籤 -->
-    <meta name="description" id="meta-description" content="酒杯舉起來，煩惱滾一邊。" />
+    <!-- ?啣? SEO ????蝐?-->
+    <meta name="description" id="meta-description" content="??絲靘??拇皛曆??? />
     <meta name="theme-color" content="#06c755">
 
     <meta name="twitter:card" content="summary_large_image">
-    <!-- 隨機 Meta 描述初始化 -->
+    <!-- ?冽? Meta ?膩????-->
     <script src="init.js"></script>
 
-    <!-- 效能優化 (Performance Optimizations) -->
+    <!-- ??芸? (Performance Optimizations) -->
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://static.line-scdn.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" defer></script>
     <script src="https://unpkg.com/lucide@0.575.0/dist/umd/lucide.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
-    <!-- 新增：引入 Chart.js -->
+    <!-- ?啣?嚗???Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <link rel="stylesheet" href="style.css">
 
@@ -39,8 +39,8 @@
     <!-- Splash Screen Transition -->
     <div id="splash-screen" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-all duration-1000">
         <div class="relative w-72 h-72 flex items-center justify-center animate-splash-logo">
-            <!-- 預設讀取 images/logo.png 或 images/logo.jpg 作為啟動畫面圖標 -->
-            <img src="images/logo.jpg" onerror="this.src='images/logo.png'" alt="亞太大老二" class="max-w-full max-h-full object-contain">
+            <!-- ?身霈??images/logo.png ??images/logo.jpg 雿???恍?? -->
+            <img src="images/logo.jpg" onerror="this.src='images/logo.png'" alt="鈭云憭扯?" class="max-w-full max-h-full object-contain">
         </div>
     </div>    <header
         class="bg-[#0D131A] border-b border-amber-900/50 text-[#D4AF37] px-4 py-3 shadow-md sticky top-0 z-50 flex justify-between items-center h-14 lg:h-16">
@@ -49,11 +49,11 @@
                 class="hidden p-1.5 hover:bg-white/20 rounded-full transition active:scale-90">
                 <i data-lucide="arrow-left" class="w-6 h-6"></i>
             </button>
-            <h1 class="text-lg font-bold tracking-wide" id="header-title">大老二兄弟會報名系統</h1>
+            <h1 class="text-lg font-bold tracking-wide" id="header-title">憭扯?????頂蝯?/h1>
         </div>
-        <!-- 右上角快速分享按鈕 -->
+        <!-- ?喃?閫翰??鈭急???-->
         <button id="btn-header-share" onclick="openShareModal()"
-            class="hidden p-2 hover:bg-white/20 rounded-full transition active:scale-90" title="分享活動資訊">
+            class="hidden p-2 hover:bg-white/20 rounded-full transition active:scale-90" title="?澈瘣餃?鞈?">
             <i data-lucide="share-2" class="w-5 h-5"></i>
         </button>
     </header>
@@ -61,67 +61,67 @@
     <div class="max-w-md mx-auto p-4 pb-24 relative min-h-[calc(100vh-64px)]">
 
         <div id="view-home" class="view-section space-y-2 animate-fade-in">
-            <!-- Premium 排行榜核心區塊 -->
+            <!-- Premium ??璁敹?憛?-->
             <div id="home-rankings-section" class="premium-dark-card p-4 pb-2 animate-fade-in relative overflow-hidden">
-                <!-- 背景微光裝飾 -->
+                <!-- ?敺桀?鋆ˇ -->
                 <div class="absolute top-0 left-0 w-32 h-32 bg-amber-500/10 rounded-full -ml-16 -mt-16 blur-3xl"></div>
                 <div class="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mb-16 blur-3xl"></div>
 
                 <div class="grid grid-cols-2 gap-4 divide-x divide-white/10 relative z-10">
-                    <!-- 左側：出席王 -->
+                    <!-- 撌血嚗撣剔? -->
                     <div id="participation-stats-container" onclick="openRankingsModal('attendance', event)"
                         class="cursor-pointer active:opacity-70 transition-opacity">
                         <div class="flex items-center gap-1.5 mb-1 px-1">
                             <div class="w-7 h-7 bg-amber-500/20 rounded-lg flex items-center justify-center">
                                 <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
                             </div>
-                            <span class="text-xs font-black text-amber-50/90 tracking-wider">出席王排行</span>
+                            <span class="text-xs font-black text-amber-50/90 tracking-wider">?箏葉??銵?/span>
                         </div>
                         <div id="participation-top3-list" class="flex justify-around items-end h-[90px]">
-                            <div class="text-xs text-amber-200/30 animate-pulse">載入中...</div>
+                            <div class="text-xs text-amber-200/30 animate-pulse">頛銝?..</div>
                         </div>
                     </div>
-                    <!-- 右側：拉霸英雄 -->
+                    <!-- ?喳嚗??貉??-->
                     <div id="home-jackpot-container" onclick="openRankingsModal('jackpot', event)"
                         class="cursor-pointer active:opacity-70 transition-opacity">
                         <div class="flex items-center gap-1.5 mb-1 px-2">
                             <div class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center">
                                 <i data-lucide="crown" class="w-4 h-4 text-white"></i>
                             </div>
-                            <span class="text-xs font-black text-white/90 tracking-wider">瑪莉英雄榜</span>
+                            <span class="text-xs font-black text-white/90 tracking-wider">?芾??梢?璁?/span>
                         </div>
                         <div id="home-jackpot-list" class="flex justify-around items-end h-[90px]">
-                            <div class="text-xs text-white/30 animate-pulse">載入中...</div>
+                            <div class="text-xs text-white/30 animate-pulse">頛銝?..</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 歷史活動與Casino (並列) -->
+            <!-- 甇瑕瘣餃??asino (銝血?) -->
             <div class="flex justify-center gap-3 px-1">
                 <button onclick="toggleHistoryView()" id="btn-history-toggle"
                     class="flex-1 max-w-[180px] bg-white/10 backdrop-blur-md text-white/70 px-4 py-2.5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/20 transition-all font-bold text-xs border border-white/20 shadow-sm">
                     <i data-lucide="history" class="w-4 h-4"></i>
-                    <span id="history-btn-text">回顧過往</span>
+                    <span id="history-btn-text">?“??</span>
                 </button>
                 <button onclick="window.location.href='casino.html'" id="btn-casino-open"
                     class="flex-1 max-w-[180px] bg-gradient-to-br from-[#2A1B08] to-[#140D04] text-[#F3E5AB] px-4 py-2.5 rounded-2xl flex items-center justify-center gap-2 hover:brightness-110 transition-all font-black text-xs shadow-[0_0_15px_rgba(212,175,55,0.4)] border border-[#D4AF37] relative overflow-hidden group active:scale-95">
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent translate-x-[-100%] animate-[shimmer_2.5s_infinite]"></div>
                     <i data-lucide="crown" class="w-4 h-4 text-[#D4AF37] relative z-10 drop-shadow-[0_0_5px_rgba(212,175,55,0.8)]"></i>
-                    <span class="relative z-10 tracking-wider text-shadow-sm">Casino 大廳</span>
+                    <span class="relative z-10 tracking-wider text-shadow-sm">Casino 憭批輒</span>
                 </button>
             </div>
 
-            <!-- 報名操作指南按鈕 -->
+            <!-- ?勗??????? -->
             <div class="flex justify-center px-1 mt-3">
                 <button type="button" onclick="openTutorialModal()"
                     class="w-full bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 text-[#D4AF37] py-3 rounded-2xl flex items-center justify-center gap-2 transition-all font-black text-xs border border-[#D4AF37]/20 shadow-sm active:scale-95">
                     <i data-lucide="help-circle" class="w-4 h-4"></i>
-                    <span>💡 如何報名？報名操作指南</span>
+                    <span>? 憒??勗?嚗??雿???/span>
                 </button>
             </div>
 
-            <!-- 歷史活動列表 (隱藏狀態) -->
+            <!-- 甇瑕瘣餃??” (?梯???? -->
             <div id="history-list" class="hidden space-y-4 animate-fade-in">
                 <div id="history-loading" class="hidden space-y-3">
                     <div class="h-20 bg-gray-200 rounded-xl skeleton"></div>
@@ -130,40 +130,40 @@
                 <div id="history-items" class="space-y-3"></div>
             </div>
 
-            <!-- 分類 Tab (原 view-event-list 內容) -->
+            <!-- ?? Tab (??view-event-list ?批捆) -->
             <div id="active-event-section">
                 <div id="filter-container"
                     class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 sticky top-[56px] pt-2 z-40 bg-gray-50/95 backdrop-blur-sm">
                     <button onclick="switchCategory('all')" id="tab-all"
-                        class="filter-tab active px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">全部</button>
+                        class="filter-tab active px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">?券</button>
                     <button onclick="switchCategory('general')" id="tab-general"
-                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">一般</button>
+                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">銝??/button>
                     <button onclick="switchCategory('banquet')" id="tab-banquet"
-                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">餐會</button>
+                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">擗?</button>
                     <button onclick="switchCategory('travel')" id="tab-travel"
-                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">旅遊</button>
+                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">??</button>
                 </div>
 
-                <!-- 活動列表骨架屏 -->
+                <!-- 瘣餃??”撉冽撅?-->
                 <div id="event-list-loading" class="hidden space-y-3 mt-2">
                     <div class="bg-white p-4 rounded-xl shadow-sm h-28 w-full skeleton"></div>
                     <div class="bg-white p-4 rounded-xl shadow-sm h-28 w-full skeleton"></div>
                 </div>
 
-                <!-- 活動卡片容器 -->
+                <!-- 瘣餃??∠?摰孵 -->
                 <div id="event-grid-container" class="grid grid-cols-1 gap-4 pb-20 mt-2"></div>
 
-                <!-- 無活動提示 -->
+                <!-- ?⊥暑??蝷?-->
                 <div id="no-events-msg" class="hidden flex flex-col items-center justify-center py-16 text-gray-400">
                     <div class="bg-gray-100 p-4 rounded-full mb-3"><i data-lucide="calendar-x" class="w-8 h-8"></i>
                     </div>
-                    <p class="font-medium">目前沒有此類型的活動</p>
+                    <p class="font-medium">?桀?瘝?甇日???瘣餃?</p>
                     <p class="text-xs text-gray-400 mt-1" id="debug-msg"></p>
                 </div>
             </div>
         </div>
 
-        <!-- FAB: 建立新活動按鈕 (固定右下角) -->
+        <!-- FAB: 撱箇??唳暑????(?箏??喃?閫? -->
         <button onclick="showCreateView()" id="btn-create-event"
             class="fixed bottom-6 right-6 w-14 h-14 premium-gradient text-white rounded-full shadow-2xl flex justify-center items-center hover:scale-110 transition-all active:scale-95 z-50">
             <i data-lucide="plus" class="w-7 h-7"></i>
@@ -176,25 +176,25 @@
                     <div id="manager-controls" class="hidden">
                         <button onclick="toggleEventStatus()" id="btn-status-toggle"
                             class="text-xs px-3 py-1.5 rounded-full font-bold border transition flex items-center gap-1">
-                            <span>載入中</span>
+                            <span>頛銝?/span>
                         </button>
                     </div>
                 </div>
-                <h2 id="display-name" class="text-xl font-bold text-gray-900 pr-20 leading-tight">活動名稱</h2>
+                <h2 id="display-name" class="text-xl font-bold text-gray-900 pr-20 leading-tight">瘣餃??迂</h2>
                 <div class="mt-4 space-y-3">
                     <div class="flex items-start gap-3">
                         <div class="bg-green-50 p-2 rounded-lg text-green-600 shrink-0 mt-0.5"><i data-lucide="user"
                                 class="w-4 h-4"></i></div>
                         <div>
-                            <div class="text-xs text-gray-500">主辦</div>
-                            <div id="display-organizer" class="font-medium text-gray-800">主辦人</div>
+                            <div class="text-xs text-gray-500">銝餉齒</div>
+                            <div id="display-organizer" class="font-medium text-gray-800">銝餉齒鈭?/div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="bg-blue-50 p-2 rounded-lg text-blue-600 shrink-0 mt-0.5"><i data-lucide="clock"
                                 class="w-4 h-4"></i></div>
                         <div class="flex-1">
-                            <div class="text-xs text-gray-500">時間</div>
+                            <div class="text-xs text-gray-500">??</div>
                             <div id="display-time-container" class="font-medium text-gray-800"></div>
                         </div>
                     </div>
@@ -202,11 +202,11 @@
                         <div class="bg-red-50 p-2 rounded-lg text-red-600 shrink-0 mt-0.5"><i data-lucide="map-pin"
                                 class="w-4 h-4"></i></div>
                         <div class="flex-1">
-                            <div class="text-xs text-gray-500">地點</div>
+                            <div class="text-xs text-gray-500">?圈?</div>
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <div id="display-location" class="font-bold text-gray-800">地點名稱</div>
-                                    <div id="display-address" class="text-xs text-gray-500 mt-0.5">詳細地址</div>
+                                    <div id="display-location" class="font-bold text-gray-800">?圈??迂</div>
+                                    <div id="display-address" class="text-xs text-gray-500 mt-0.5">閰喟敦?啣?</div>
                                 </div>
                                 <a id="map-link" href="#" target="_blank"
                                     class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition active:scale-95"><i
@@ -214,12 +214,12 @@
                             </div>
                         </div>
                     </div>
-                    <!-- ★ 備註欄位：由 GAS 寫入，空白時隱藏 -->
+                    <!-- ???酉甈?嚗 GAS 撖怠嚗征?賣??梯? -->
                     <div id="display-note-section" class="hidden flex items-start gap-3">
                         <div class="bg-amber-50 p-2 rounded-lg text-amber-600 shrink-0 mt-0.5"><i data-lucide="info"
                                 class="w-4 h-4"></i></div>
                         <div class="flex-1">
-                            <div class="text-xs text-gray-500">備註</div>
+                            <div class="text-xs text-gray-500">?酉</div>
                             <div id="display-note" class="text-sm text-gray-700 mt-0.5 whitespace-pre-line leading-relaxed"></div>
                         </div>
                     </div>
@@ -229,7 +229,7 @@
                         class="group main-itinerary rounded-2xl border border-amber-900/50 open:bg-black/20 open:shadow-lg transition-all duration-300 overflow-hidden">
                         <summary class="flex justify-between items-center p-4 cursor-pointer select-none premium-gradient">
                             <span class="flex items-center gap-3 font-bold text-[#3d2600] text-base">
-                                <i data-lucide="map" class="w-5 h-5 text-[#3d2600]"></i> 查看完整行程
+                                <i data-lucide="map" class="w-5 h-5 text-[#3d2600]"></i> ?亦?摰銵?
                             </span>
                             <div class="bg-white/20 rounded-full p-1.5 shadow-sm arrow-icon">
                                 <i data-lucide="chevron-down" class="w-4 h-4 text-[#3d2600]"></i>
@@ -245,11 +245,11 @@
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center shadow-inner">
                             <i data-lucide="edit-3" class="w-6 h-6 text-[#D4AF37]"></i></div>
-                        <h2 class="text-xl font-bold text-[#EFECE5]" id="form-title">填寫報名資料</h2>
+                        <h2 class="text-xl font-bold text-[#EFECE5]" id="form-title">憛怠神?勗?鞈?</h2>
                     </div>
                     <button type="button" onclick="openTutorialModal()"
                         class="text-xs text-[#D4AF37] hover:text-[#B8860B] font-bold flex items-center gap-1 bg-[#D4AF37]/10 px-2.5 py-1.5 rounded-lg border border-[#D4AF37]/20 transition shadow-sm active:scale-95">
-                        <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> 報名教學
+                        <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> ?勗??飛
                     </button>
                 </div>
                 <input type="hidden" id="eventId" name="eventId">
@@ -258,15 +258,15 @@
                 <input type="hidden" id="formAction" value="register">
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold text-[#D4AF37] mb-2">報名者</label>
+                        <label class="block text-sm font-semibold text-[#D4AF37] mb-2">?勗???/label>
                         <div class="flex gap-4 items-center bg-black/20 p-4 rounded-2xl border border-amber-900/50 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
                             <img id="user-picture" src="https://ui-avatars.com/api/?name=Guest"
                                 class="w-12 h-12 rounded-full bg-[#0D131A] object-cover border-2 border-[#D4AF37] shadow-sm">
                             <div class="flex-1 min-w-0">
                                 <input type="text" id="user-name"
                                     class="w-full bg-transparent border-none p-0 text-[#EFECE5] font-bold text-base focus:ring-0"
-                                    readonly value="讀取中...">
-                                <div class="text-xs text-amber-500 mt-0.5">將以此身分進行報名</div>
+                                    readonly value="霈?葉...">
+                                <div class="text-xs text-amber-500 mt-0.5">撠誑甇方澈?脰??勗?</div>
                             </div>
                         </div>
                         <input type="hidden" id="user-id">
@@ -274,7 +274,7 @@
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-[#D4AF37] mb-1.5">人數(含眷屬)</label>
+                            <label class="block text-sm font-medium text-[#D4AF37] mb-1.5">鈭箸(?怎撅?</label>
                             <div class="relative">
                                 <i data-lucide="users" class="absolute left-3 top-2.5 w-4 h-4 text-[#D4AF37]"></i>
                                 <select id="family-count"
@@ -286,7 +286,7 @@
                         </div>
                         
                         <div class="flex flex-col items-end justify-center pt-2">
-                            <label class="block text-xs font-bold text-[#D4AF37] mb-1.5">不克出席，僅贊助/認桌</label>
+                            <label class="block text-xs font-bold text-[#D4AF37] mb-1.5">銝??箏葉嚗?韐/隤?</label>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
                                 <div class="w-11 h-6 bg-[#3d2b1f] border border-[#8b6914] peer-focus:outline-none rounded-full peer peer-checked:bg-gradient-to-r peer-checked:from-[#D4AF37] peer-checked:to-[#A67C00] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#f3e5ab] after:border-[#8b6914] after:border after:shadow-[0_2px_4px_rgba(0,0,0,0.5)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
@@ -294,35 +294,35 @@
                         </div>
                     </div>
                 </div>
-                <!-- ★ 修復：補回被意外刪除的動態欄位區塊 -->
+                <!-- ??靽桀儔嚗??◤???芷????雿?憛?-->
                 <div id="dynamic-fields" class="space-y-4">
                     <div id="field-travel" class="hidden space-y-3 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
                         <div class="text-sm font-bold text-blue-800 flex items-center gap-1.5 mb-2"><i data-lucide="bus"
-                                class="w-4 h-4"></i> 旅遊選項</div>
+                                class="w-4 h-4"></i> ???賊?</div>
                         <div>
-                            <label class="text-xs font-medium text-gray-600 block mb-1.5">上車地點 <span class="text-red-500 font-bold">*必選</span></label>
+                            <label class="text-xs font-medium text-gray-600 block mb-1.5">銝??圈? <span class="text-red-500 font-bold">*敹</span></label>
                             <div class="flex gap-2">
                                 <div class="relative flex-1">
                                     <select id="pickup-loc" onchange="updatePickupMap()"
                                         class="w-full text-sm border-gray-300 rounded-lg py-2 pl-3 pr-8 bg-white appearance-none focus:ring-1 focus:ring-blue-500 outline-none">
-                                        <option value="">請選擇...</option>
+                                        <option value="">隢??..</option>
                                     </select>
                                     <i data-lucide="chevron-down"
                                         class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none"></i>
                                 </div>
                                 <a id="pickup-map-btn" href="#" target="_blank"
                                     class="hidden bg-white px-3 border border-gray-200 rounded-lg text-blue-500 hover:bg-blue-50 flex items-center justify-center transition"
-                                    title="查看地圖">
+                                    title="?亦??啣?">
                                     <i data-lucide="map" class="w-4 h-4"></i>
                                 </a>
                             </div>
                         </div>
                         <div>
-                            <label class="text-xs font-medium text-gray-600 block mb-1.5">房型需求 (已選 / 總量) <span class="text-red-500 font-bold">*必選</span></label>
+                            <label class="text-xs font-medium text-gray-600 block mb-1.5">?踹??瘙?(撌脤 / 蝮賡?) <span class="text-red-500 font-bold">*敹</span></label>
                             <div class="relative">
                                 <select id="room-type"
                                     class="w-full text-sm border-gray-300 rounded-lg py-2 pl-3 pr-8 bg-white appearance-none focus:ring-1 focus:ring-blue-500 outline-none">
-                                    <option value="">請選擇...</option>
+                                    <option value="">隢??..</option>
                                 </select>
                                 <i data-lucide="chevron-down"
                                     class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none"></i>
@@ -332,7 +332,7 @@
                     <div id="field-banquet" class="hidden p-4 bg-red-50/50 rounded-xl border border-red-100">
                         <div class="flex justify-between items-center">
                             <label class="text-sm font-bold text-red-800 flex items-center gap-1.5"><i
-                                    data-lucide="monitor" class="w-4 h-4"></i> 認桌數量</label>
+                                    data-lucide="monitor" class="w-4 h-4"></i> 隤??賊?</label>
                             <div class="flex items-center gap-2 bg-white rounded-lg border border-red-200 p-1">
                                 <select id="table-count"
                                     class="w-20 text-center border-none rounded bg-transparent text-sm focus:ring-0 font-medium text-red-600">
@@ -343,7 +343,7 @@
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                 </select>
-                                <span class="text-xs text-gray-500 pr-2">桌</span>
+                                <span class="text-xs text-gray-500 pr-2">獢?/span>
                             </div>
                         </div>
                     </div>
@@ -351,13 +351,13 @@
                 <div id="guest-section" class="premium-card p-4 rounded-xl border border-amber-900/50">
                     <div class="flex justify-between items-center mb-3">
                         <label class="text-sm font-bold text-[#D4AF37] flex items-center gap-1.5"><i
-                                data-lucide="user-plus" class="w-4 h-4 text-[#D4AF37]"></i> 來賓</label>
-                        <span class="text-xs text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">選填</span>
+                                data-lucide="user-plus" class="w-4 h-4 text-[#D4AF37]"></i> 靘?</label>
+                        <span class="text-xs text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">?詨‵</span>
                     </div>
                     <div id="guest-list-container" class="space-y-2 mb-3 empty:hidden"></div>
                     <div class="bg-black/20 p-3 rounded-lg border border-amber-900/30 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] space-y-2">
                         <div class="flex gap-2">
-                            <input type="text" id="add-guest-name" placeholder="來賓姓名"
+                            <input type="text" id="add-guest-name" placeholder="靘?憪?"
                                 class="flex-1 border border-amber-900/50 bg-[#0D131A] text-[#EFECE5] rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-[#D4AF37] outline-none placeholder-gray-500">
                             <select id="add-guest-count"
                                 class="w-24 border border-amber-900/50 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm text-center focus:ring-1 focus:ring-[#D4AF37] outline-none"></select>
@@ -365,26 +365,26 @@
                         <div id="guest-travel-options" class="hidden grid grid-cols-2 gap-2">
                             <select id="add-guest-pickup"
                                 class="w-full border border-amber-900/50 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm focus:ring-1 focus:ring-[#D4AF37] outline-none">
-                                <option value="">上車地點 (*必選)</option>
+                                <option value="">銝??圈? (*敹)</option>
                             </select>
                             <select id="add-guest-room"
                                 class="w-full border border-amber-900/50 bg-[#0D131A] text-[#EFECE5] rounded-lg px-2 py-2 text-sm focus:ring-1 focus:ring-[#D4AF37] outline-none">
-                                <option value="">房型 (*必選)</option>
+                                <option value="">?踹? (*敹)</option>
                             </select>
                         </div>
                         <button type="button" onclick="addGuest()"
                             class="w-full premium-gradient text-[#3d2600] font-bold shadow-md py-2 rounded-lg text-sm hover:brightness-110 transition flex justify-center items-center gap-1 active:scale-95">
-                            <i data-lucide="plus" class="w-4 h-4"></i> 加入名單
+                            <i data-lucide="plus" class="w-4 h-4"></i> ??
                         </button>
-                        <p class="text-[10px] text-amber-500 mt-1 font-medium text-center">※ 請務必點擊「加入名單」按鈕，資料才會增加。</p>
+                        <p class="text-[10px] text-amber-500 mt-1 font-medium text-center">??隢?敹????亙??柴???鞈???憓???/p>
                     </div>
                 </div>
 
                 <div class="premium-card p-4 border border-amber-900/50 rounded-xl mt-4">
                     <div class="flex justify-between items-center mb-3">
                         <label class="text-sm font-bold text-[#D4AF37] flex items-center gap-1.5"><i data-lucide="gift"
-                                class="w-4 h-4 text-[#D4AF37]"></i> 贊助項目</label>
-                        <span class="text-xs text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full">選填</span>
+                                class="w-4 h-4 text-[#D4AF37]"></i> 韐?</label>
+                        <span class="text-xs text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full">?詨‵</span>
                     </div>
                     <div id="sponsor-list-container" class="space-y-2 mb-3 empty:hidden"></div>
                     <div class="space-y-3 bg-black/20 p-3 rounded-lg border border-amber-900/30 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
@@ -392,28 +392,28 @@
                             <label
                                 class="cursor-pointer flex items-center gap-1.5 hover:text-green-600 transition"><input
                                     type="radio" name="addSponsorType" value="alcohol" checked
-                                    onclick="renderAddSponsorUI()" class="accent-green-500"> 酒類</label>
+                                    onclick="renderAddSponsorUI()" class="accent-green-500"> ??</label>
                             <label class="cursor-pointer flex items-center gap-1.5 hover:text-red-600 transition"><input
                                     type="radio" name="addSponsorType" value="money" onclick="renderAddSponsorUI()"
-                                    class="accent-red-500"> 紅包</label>
+                                    class="accent-red-500"> 蝝?</label>
                             <label
                                 class="cursor-pointer flex items-center gap-1.5 hover:text-blue-600 transition"><input
                                     type="radio" name="addSponsorType" value="other" onclick="renderAddSponsorUI()"
-                                    class="accent-blue-500"> 其他</label>
+                                    class="accent-blue-500"> ?嗡?</label>
                         </div>
                         <div id="sponsor-input-area" class="flex flex-wrap gap-2 items-center min-h-[36px]"></div>
                         <button type="button" onclick="addSponsor()"
                             class="w-full bg-[#0D131A] border border-[#D4AF37]/50 text-[#D4AF37] px-3 py-2 rounded-lg text-sm font-bold hover:bg-white/5 transition flex justify-center items-center gap-1.5 active:scale-95 shadow-sm">
-                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> 新增贊助
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> ?啣?韐
                         </button>
-                        <p class="text-[10px] text-amber-500 mt-1 font-medium text-center">※ 請務必點擊「新增贊助」按鈕，資料才會增加。</p>
+                        <p class="text-[10px] text-amber-500 mt-1 font-medium text-center">??隢?敹??憓??押???鞈???憓???/p>
                     </div>
                 </div>
 
                 <div class="flex gap-3 pt-2">
                     <button type="submit" id="submit-btn"
                         class="flex-1 premium-gradient text-white font-bold py-3.5 rounded-xl hover:brightness-110 transition shadow-md active:scale-95 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <span>確認報名</span><i data-lucide="send" class="w-4 h-4"></i>
+                        <span>蝣箄??勗?</span><i data-lucide="send" class="w-4 h-4"></i>
                     </button>
                     <button type="button" id="cancel-reg-btn" onclick="handleCancel()"
                         class="hidden bg-red-50 text-red-500 border border-red-200 font-bold py-3.5 px-4 rounded-xl hover:bg-red-100 transition shadow-sm active:scale-95">
@@ -429,12 +429,12 @@
                 <div class="flex justify-between items-center mb-6 relative z-10">
                     <h2 class="text-base font-bold flex items-center gap-2">
                         <i data-lucide="bar-chart-2" class="w-5 h-5 text-accent"></i>
-                        <span id="stat-title">活動即時統計</span>
+                        <span id="stat-title">瘣餃??單?蝯梯?</span>
                     </h2>
                     <div class="flex gap-3">
                         <button onclick="openShareModal()"
                             class="glass-effect text-white px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-all text-xs font-semibold hover:bg-white/20">
-                            <i data-lucide="share-2" class="w-3.5 h-3.5"></i> 分享
+                            <i data-lucide="share-2" class="w-3.5 h-3.5"></i> ?澈
                         </button>
                         <button onclick="fetchStats(true)"
                             class="glass-effect text-white p-1.5 rounded-xl transition-all hover:bg-white/20">
@@ -446,12 +446,12 @@
                 <div class="grid grid-cols-2 gap-4 relative z-10">
                     <div onclick="openDetailsModal('people')"
                         class="glass-effect p-5 rounded-2xl hover:bg-white/20 transition-all border-white/10 text-center cursor-pointer active:scale-95">
-                        <div class="text-xs text-green-100 mb-2 font-medium">人數(含眷屬)</div>
+                        <div class="text-xs text-green-100 mb-2 font-medium">鈭箸(?怎撅?</div>
                         <div class="text-4xl font-black text-white tracking-tighter" id="stat-total">0</div>
                     </div>
                     <div onclick="openDetailsModal('secondary')"
                         class="glass-effect p-5 rounded-2xl hover:bg-white/20 transition-all border-white/10 text-center cursor-pointer active:scale-95">
-                        <div class="text-xs text-green-100 mb-2 font-medium" id="stat-sec-label">次要統計</div>
+                        <div class="text-xs text-green-100 mb-2 font-medium" id="stat-sec-label">甈∟?蝯梯?</div>
                         <div class="text-4xl font-black text-accent tracking-tighter" id="stat-sec-val">0</div>
                     </div>
                 </div>
@@ -461,87 +461,87 @@
         <div id="view-create" class="view-section hidden space-y-5 animate-fade-in">
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-200">
                 <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2"><i data-lucide="plus-square"
-                        class="w-6 h-6 text-gray-900"></i> 建立新活動</h2>
+                        class="w-6 h-6 text-gray-900"></i> 撱箇??唳暑??/h2>
                 <form onsubmit="handleCreateEvent(event)" class="space-y-5">
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1.5">活動類型</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">瘣餃?憿?</label>
                         <select id="new-type" onchange="toggleCreateFields()"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black/10 outline-none transition">
-                            <option value="general">一般活動</option>
-                            <option value="banquet">大型餐會</option>
-                            <option value="travel">旅遊活動</option>
+                            <option value="general">銝?祆暑??/option>
+                            <option value="banquet">憭批?擗?</option>
+                            <option value="travel">??瘣餃?</option>
                         </select>
                     </div>
 
                     <div id="travel-notice"
                         class="hidden p-3 bg-yellow-50 text-yellow-700 text-sm rounded-lg border border-yellow-200 flex gap-2 items-start">
                         <i data-lucide="alert-circle" class="w-5 h-5 shrink-0 mt-0.5"></i>
-                        <span>上車地點及房型、房型價格請通知管理員由管理員填寫</span>
+                        <span>銝??圈?????潸??蝞∠??∠蝞∠??∪‵撖?/span>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">活動名稱</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">瘣餃??迂</label>
                         <input type="text" id="new-name" required
                             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-black/10 outline-none"
-                            placeholder="例如：五月慶生會">
+                            placeholder="靘?嚗????">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">主辦人</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">銝餉齒鈭?/label>
                         <input type="text" id="new-organizer" readonly
                             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 bg-gray-100 text-gray-500 cursor-not-allowed">
                     </div>
 
                     <div id="new-field-time-single">
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">活動時間</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">瘣餃???</label>
                         <input type="datetime-local" id="new-time-single"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2.5">
                     </div>
 
                     <div id="new-field-time-range" class="hidden grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">出發日期</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">?箇?交?</label>
                             <input type="date" id="new-date-start"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2.5">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">回程日期</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">???交?</label>
                             <input type="date" id="new-date-end"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2.5">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">報名截止時間 <span
-                                class="text-gray-400 font-normal text-xs">(選填)</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">?勗??芣迫?? <span
+                                class="text-gray-400 font-normal text-xs">(?詨‵)</span></label>
                         <input type="datetime-local" id="new-deadline"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 bg-gray-50">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">地點名稱</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">?圈??迂</label>
                         <input type="text" id="new-location"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-black/10 outline-none"
-                            placeholder="請輸入地點">
+                            placeholder="隢撓?亙暺?>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">詳細地址</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">閰喟敦?啣?</label>
                         <input type="text" id="new-address"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-black/10 outline-none"
-                            placeholder="請輸入地址">
+                            placeholder="隢撓?亙?">
                     </div>
 
                     <div id="new-field-itinerary" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">行程內容 (格式：D1: 標題|內容)</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">銵??批捆 (?澆?嚗1: 璅?|?批捆)</label>
                         <textarea id="new-itinerary" rows="4"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm font-mono"
-                            placeholder="D1: 集合|08:00 車站集合;D2: 景點|10:00 抵達..."></textarea>
+                            placeholder="D1: ??|08:00 頠???;D2: ?舫?|10:00 ?菟?..."></textarea>
                     </div>
 
                     <button type="submit" id="create-btn"
                         class="w-full bg-gray-900 text-white font-bold py-3.5 rounded-xl hover:bg-gray-800 transition shadow-lg flex justify-center items-center gap-2 mt-2">
-                        <span>確認建立</span><i data-lucide="check-square" class="w-4 h-4"></i>
+                        <span>蝣箄?撱箇?</span><i data-lucide="check-square" class="w-4 h-4"></i>
                     </button>
                 </form>
             </div>
@@ -555,15 +555,15 @@
             <div
                 class="p-4 border-b border-amber-900/50 flex justify-between items-center bg-[#0D131A] rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
                 <h3 class="font-bold text-[#D4AF37] flex items-center gap-2"><i data-lucide="list"
-                        class="w-5 h-5 text-[#D4AF37]"></i> 詳細名單</h3>
+                        class="w-5 h-5 text-[#D4AF37]"></i> 閰喟敦?</h3>
                 <div class="flex items-center gap-2">
                     <button onclick="copyDetailsToClipboard()"
                         class="premium-gradient text-[#3d2600] px-3 py-1.5 rounded-lg text-xs font-bold hover:brightness-110 transition flex items-center gap-1 shadow-sm active:scale-95">
-                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製名單
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> 銴ˊ?
                     </button>
                     <button onclick="sendToTelegram()"
                         class="bg-[#24A1DE] text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-[#1a8bc4] transition flex items-center gap-1 shadow-sm active:scale-95">
-                        <i data-lucide="send" class="w-3.5 h-3.5"></i> 發送至 Telegram
+                        <i data-lucide="send" class="w-3.5 h-3.5"></i> ?潮 Telegram
                     </button>
                     <button onclick="closeDetailsModal()"
                         class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition text-[#D4AF37]"><i
@@ -578,27 +578,27 @@
             <div class="p-0 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe">
                 <div id="modal-loading" class="flex flex-col items-center py-12">
                     <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-[#D4AF37] mb-2"></i>
-                    <span class="text-xs text-amber-500">正在讀取最新資料...</span>
+                    <span class="text-xs text-amber-500">甇?霈???啗???..</span>
                 </div>
 
                 <div id="details-lists-container" class="hidden pb-10 sm:pb-4">
-                    <div class="px-4 py-2 bg-black/40 text-xs font-bold text-amber-500 sticky top-0 border-b border-amber-900/30">人員名單</div>
+                    <div class="px-4 py-2 bg-black/40 text-xs font-bold text-amber-500 sticky top-0 border-b border-amber-900/30">鈭箏?</div>
                     <ul id="details-list-people" class="divide-y divide-amber-900/30 bg-transparent text-[#EFECE5]"></ul>
 
                     <div id="travel-separator"
-                        class="hidden px-4 py-2 bg-black/40 text-xs font-bold text-amber-500 sticky top-0 mt-2 border-b border-amber-900/30">住宿與交通
+                        class="hidden px-4 py-2 bg-black/40 text-xs font-bold text-amber-500 sticky top-0 mt-2 border-b border-amber-900/30">雿挪?漱??
                     </div>
                     <ul id="details-list-travel" class="hidden divide-y divide-amber-900/30 bg-transparent text-[#EFECE5]"></ul>
 
                     <div id="details-separator"
-                        class="hidden px-4 py-2 bg-black/40 text-xs font-bold text-amber-500 sticky top-0 mt-2 border-b border-amber-900/30">贊助與認桌
+                        class="hidden px-4 py-2 bg-black/40 text-xs font-bold text-amber-500 sticky top-0 mt-2 border-b border-amber-900/30">韐??獢?
                     </div>
                     <ul id="details-list-items" class="divide-y divide-amber-900/30 bg-transparent text-[#EFECE5]"></ul>
                 </div>
 
                 <div id="modal-empty" class="hidden flex flex-col items-center justify-center py-12 text-amber-500/50">
                     <i data-lucide="clipboard-x" class="w-10 h-10 mb-2 opacity-50"></i>
-                    <p class="text-sm">目前尚未有人報名</p>
+                    <p class="text-sm">?桀?撠?犖?勗?</p>
                 </div>
             </div>
         </div>
@@ -607,13 +607,13 @@
     <div id="confirm-modal"
         class="hidden fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">
         <div class="premium-card rounded-2xl shadow-2xl w-full max-w-xs p-6 transform scale-100 transition-all border border-amber-900/50">
-            <h3 class="text-lg font-bold text-[#D4AF37] mb-2">確認動作</h3>
-            <p id="confirm-msg" class="text-amber-100 mb-6 text-sm leading-relaxed">確定要執行此操作嗎？</p>
+            <h3 class="text-lg font-bold text-[#D4AF37] mb-2">蝣箄???</h3>
+            <p id="confirm-msg" class="text-amber-100 mb-6 text-sm leading-relaxed">蝣箏?閬銵迨????</p>
             <div class="flex gap-3">
                 <button id="confirm-no"
-                    class="flex-1 py-2.5 rounded-xl border border-amber-900/50 bg-[#0D131A] text-gray-400 font-medium hover:bg-white/10 transition">取消</button>
+                    class="flex-1 py-2.5 rounded-xl border border-amber-900/50 bg-[#0D131A] text-gray-400 font-medium hover:bg-white/10 transition">??</button>
                 <button id="confirm-yes"
-                    class="flex-1 py-2.5 rounded-xl bg-red-900/80 border border-red-500/50 text-red-100 font-medium hover:bg-red-800 shadow-md transition">確定</button>
+                    class="flex-1 py-2.5 rounded-xl bg-red-900/80 border border-red-500/50 text-red-100 font-medium hover:bg-red-800 shadow-md transition">蝣箏?</button>
             </div>
         </div>
     </div>
@@ -621,27 +621,27 @@
     <div id="toast"
         class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-[#0D131A] border border-[#D4AF37]/50 text-[#D4AF37] px-5 py-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.8)] opacity-0 transition-all duration-300 pointer-events-none z-[100] text-sm flex items-center gap-2.5 backdrop-blur-md">
         <div class="bg-[#D4AF37]/20 border border-[#D4AF37]/50 rounded-full p-0.5"><i data-lucide="check" class="w-3 h-3 text-[#D4AF37]"></i></div>
-        <span id="toast-msg" class="font-bold tracking-wide text-[#EFECE5]">操作成功</span>
+        <span id="toast-msg" class="font-bold tracking-wide text-[#EFECE5]">????</span>
     </div>
 
     <div id="share-modal"
         class="hidden fixed inset-0 z-[90] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">
         <div class="premium-card rounded-2xl shadow-2xl w-full max-w-xs p-5 transform transition-all scale-100 flex flex-col">
             <h3 class="text-lg font-bold text-[#D4AF37] mb-3 border-b border-amber-900/50 pb-2 flex items-center gap-2">
-                <i data-lucide="share-2" class="w-5 h-5 text-[#D4AF37]"></i> 分享選項
+                <i data-lucide="share-2" class="w-5 h-5 text-[#D4AF37]"></i> ?澈?賊?
             </h3>
 
-            <!-- 頁籤切換 -->
+            <!-- ?惜?? -->
             <div class="flex border border-amber-900/50 mb-4 text-xs font-bold bg-[#0D131A] rounded-lg p-0.5" id="share-tabs-container">
                 <button id="share-tab-single" onclick="switchShareTab('single')"
-                    class="flex-1 py-2 text-center rounded-md transition-all text-[#3d2600] premium-gradient shadow-sm">此活動名單</button>
+                    class="flex-1 py-2 text-center rounded-md transition-all text-[#3d2600] premium-gradient shadow-sm">甇斗暑????/button>
                 <button id="share-tab-all" onclick="switchShareTab('all')"
-                    class="flex-1 py-2 text-center rounded-md transition-all text-gray-400 hover:text-gray-300">所有活動</button>
+                    class="flex-1 py-2 text-center rounded-md transition-all text-gray-400 hover:text-gray-300">??暑??/button>
             </div>
 
-            <!-- 容器 1：此活動名單 -->
+            <!-- 摰孵 1嚗迨瘣餃?? -->
             <div id="share-single-content" class="space-y-4">
-                <p class="text-[10px] text-gray-500">請勾選要包含在複製內容中的資訊：</p>
+                <p class="text-[10px] text-gray-500">隢?貉???刻?鋆賢摰嫣葉??閮?</p>
 
                 <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
                     <label
@@ -653,7 +653,7 @@
                             <i data-lucide="check"
                                 class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-amber-100">👥 詳細名單 (姓名/人數)</span>
+                        <span class="text-xs font-medium text-amber-100">? 閰喟敦? (憪?/鈭箸)</span>
                     </label>
 
                     <label
@@ -665,7 +665,7 @@
                             <i data-lucide="check"
                                 class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-amber-100">上車地點 / 房型</span>
+                        <span class="text-xs font-medium text-amber-100">銝??圈? / ?踹?</span>
                     </label>
 
                     <label
@@ -677,7 +677,7 @@
                             <i data-lucide="check"
                                 class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-amber-100">贊助 / 認桌資訊</span>
+                        <span class="text-xs font-medium text-amber-100">韐 / 隤?鞈?</span>
                     </label>
 
                     <label
@@ -689,7 +689,7 @@
                             <i data-lucide="check"
                                 class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-amber-100">🗺️ Google 地圖連結</span>
+                        <span class="text-xs font-medium text-amber-100">?儭?Google ?啣????</span>
                     </label>
 
                     <label
@@ -701,46 +701,46 @@
                             <i data-lucide="check"
                                 class="absolute w-3 h-3 text-[#3d2600] pointer-events-none opacity-0 peer-checked:opacity-100 left-0.5 top-0.5"></i>
                         </div>
-                        <span class="text-xs font-medium text-amber-100">🔗 報名連結👇</span>
+                        <span class="text-xs font-medium text-amber-100">?? ?勗??????</span>
                     </label>
 
                     <div id="share-no-opts" class="hidden text-center text-xs text-amber-500/50 py-2">
-                        無額外資訊可選，將複製基本名單
+                        ?⊿?憭?閮?賂?撠?鋆賢?砍???
                     </div>
                 </div>
 
                 <div class="space-y-2 pt-2">
                     <button onclick="executeShare('single')" id="btn-share-single"
                         class="w-full py-2.5 rounded-xl premium-gradient text-[#3d2600] font-bold text-xs hover:brightness-110 shadow-md flex justify-center items-center gap-1.5 transition active:scale-95">
-                        <i data-lucide="share-2" class="w-3.5 h-3.5"></i> 確認分享
+                        <i data-lucide="share-2" class="w-3.5 h-3.5"></i> 蝣箄??澈
                     </button>
                 </div>
             </div>
 
-            <!-- 容器 2：所有活動 -->
+            <!-- 摰孵 2嚗??暑??-->
             <div id="share-all-content" class="hidden space-y-4">
-                <p class="text-[10px] text-amber-100/50">請勾選要分享的舉辦中活動：</p>
+                <p class="text-[10px] text-amber-100/50">隢?貉??澈??颲虫葉瘣餃?嚗?/p>
 
                 <div id="share-all-events-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
-                    <!-- 由 JS 動態渲染舉辦中活動清單 -->
-                    <div class="text-center text-xs text-amber-500/50 py-4">讀取活動中...</div>
+                    <!-- ??JS ??皜脫??齒銝剜暑????-->
+                    <div class="text-center text-xs text-amber-500/50 py-4">霈?暑?葉...</div>
                 </div>
 
                 <div class="space-y-2 pt-2">
                     <button onclick="executeShare('all')" id="btn-share-all"
                         class="w-full py-2.5 rounded-xl premium-gradient text-[#3d2600] font-bold text-xs hover:brightness-110 shadow-md flex justify-center items-center gap-1.5 transition active:scale-95">
-                        <i data-lucide="share-2" class="w-3.5 h-3.5"></i> 確認分享
+                        <i data-lucide="share-2" class="w-3.5 h-3.5"></i> 蝣箄??澈
                     </button>
                 </div>
             </div>
 
-            <!-- 底部取消按鈕 -->
+            <!-- 摨???? -->
             <button onclick="document.getElementById('share-modal').classList.add('hidden')"
-                class="w-full py-2 mt-4 rounded-xl border border-amber-900/50 bg-black/40 text-gray-400 font-bold text-xs hover:bg-black/60 transition">取消</button>
+                class="w-full py-2 mt-4 rounded-xl border border-amber-900/50 bg-black/40 text-gray-400 font-bold text-xs hover:bg-black/60 transition">??</button>
         </div>
     </div>
 
-    <!-- 詳細排行榜彈窗 -->
+    <!-- 閰喟敦??璁?蝒?-->
     <div id="rankings-modal" onclick="closeRankingsModal()"
         class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
         <div id="rankings-modal-content" onclick="event.stopPropagation();"
@@ -748,14 +748,14 @@
             <!-- Top Notice -->
             <div
                 class="bg-amber-500/10 text-amber-600 text-[10px] py-2 text-center font-bold tracking-widest border-b border-amber-500/10">
-                <i data-lucide="info" class="w-3 h-3 inline-block -mt-0.5 mr-1"></i> 十秒後或點擊任意處即可離開
+                <i data-lucide="info" class="w-3 h-3 inline-block -mt-0.5 mr-1"></i> ??敺?暺?隞餅???舫??
             </div>
             <!-- Header/Tabs -->
             <div class="flex border-b border-amber-900/50 bg-[#0D131A]/80">
                 <button id="rank-tab-attendance" onclick="switchRankTab('attendance')"
-                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-amber-100">出席王</button>
+                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-amber-100">?箏葉??/button>
                 <button id="rank-tab-jackpot" onclick="switchRankTab('jackpot')"
-                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-amber-100">小瑪莉英雄榜</button>
+                    class="flex-1 py-3.5 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-amber-100">撠???</button>
             </div>
 
             <!-- List Area -->
@@ -763,19 +763,19 @@
                 id="rankings-list-container">
                 <div class="flex flex-col items-center justify-center py-20 animate-pulse">
                     <i data-lucide="loader-2" class="w-8 h-8 text-[#D4AF37] animate-spin mb-2"></i>
-                    <span class="text-xs text-amber-500">數據讀取中...</span>
+                    <span class="text-xs text-amber-500">?豢?霈?葉...</span>
                 </div>
             </div>
 
             <!-- Footer: Auto close indicator -->
             <div
                 class="px-4 py-2 bg-[#0D131A] text-[11px] text-amber-100/50 text-center border-t border-amber-900/50 font-medium">
-                <span id="rank-close-timer" class="font-black text-[#D4AF37]">10</span> 秒後自動關閉
+                <span id="rank-close-timer" class="font-black text-[#D4AF37]">10</span> 蝘??芸???
             </div>
         </div>
     </div>
 
-    <!-- 小瑪莉遊戲彈窗 - 正宗台式街機風格 -->
+    <!-- 撠???脣?蝒?- 甇???啣?銵?憸冽 -->
     <div id="small-mary-modal"
         class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/95 backdrop-blur-md p-2 md:p-4 animate-fade-in overflow-hidden"
         oncontextmenu="return false;">
@@ -783,22 +783,22 @@
             class="relative bg-[#3d2b1f] border-[6px] border-[#8b6914] rounded-[30px] shadow-[0_0_50px_rgba(0,0,0,0.8),_inset_0_0_30px_rgba(255,150,0,0.2)] flex flex-col overflow-hidden shrink-0"
             style="width: 100%; max-width: 420px; font-family: 'Segoe UI', sans-serif;">
 
-            <!-- 頂部裝飾與控制按鈕 -->
+            <!-- ?鋆ˇ??嗆???-->
             <div
                 class="flex justify-between items-center px-6 py-3 bg-gradient-to-b from-[#5d3b24] to-[#3d2b1f] border-b-4 border-[#251810]">
-                <div class="flex items-center gap-2 cursor-pointer" onclick="adminTestMary()" title="連續點擊5次啟動測試模式">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="adminTestMary()" title="???暺?5甈∪??葫閰行芋撘?>
                     <div class="w-3 h-3 rounded-full bg-red-600 shadow-[0_0_8px_red] animate-pulse"></div>
-                    <span class="text-xs font-black text-[#ffcc00] tracking-widest uppercase">小瑪莉</span>
+                    <span class="text-xs font-black text-[#ffcc00] tracking-widest uppercase">撠??/span>
                 </div>
                 <div class="flex gap-3">
                     <button onclick="openMaryHelp()"
                         class="w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-amber-500 font-bold hover:bg-black/60 transition-colors">?</button>
                     <button onclick="closeSmallMary()"
-                        class="w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white/60 hover:text-white transition-colors">✕</button>
+                        class="w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white/60 hover:text-white transition-colors">??/button>
                 </div>
             </div>
 
-            <!-- 數位計分板 (Scoreboard) -->
+            <!-- ?訾?閮???(Scoreboard) -->
             <div class="px-6 pt-4 pb-1 bg-[#1a110a]">
                 <div class="grid grid-cols-2 gap-4">
                     <div
@@ -817,27 +817,27 @@
                             style="font-family: 'Courier New', monospace; text-shadow: 0 0 10px rgba(255,150,0,0.5);">
                             0000
                         </div>
-                        <div id="mary-gift-points" class="text-[9px] text-amber-600 font-bold text-center mt-1">贈分: 0
+                        <div id="mary-gift-points" class="text-[9px] text-amber-600 font-bold text-center mt-1">韐?: 0
                         </div>
                     </div>
                 </div>
-                <!-- 彩金池 — 獨立置中於兩個計分板下方 -->
+                <!-- 敶拚?瘙????函?蝵桐葉?澆???銝 -->
                 <div class="flex justify-center mt-3 mb-2">
                     <div id="mary-jackpot-pool"
                         class="bg-black border-4 border-rose-700 rounded-xl px-8 py-3 text-[18px] sm:text-xl text-rose-400 font-extrabold text-center animate-pulse shadow-[0_0_20px_rgba(255,30,30,0.6)]"
-                        style="letter-spacing:4px;">🎰 彩金池: 0</div>
+                        style="letter-spacing:4px;">? 敶拚?瘙? 0</div>
                 </div>
             </div>
 
-            <!-- 主遊戲區 (Track & Center Piece) -->
+            <!-- 銝駁??脣? (Track & Center Piece) -->
             <div class="flex-1 relative p-2 bg-[#251810] flex flex-col">
-                <!-- 24格跑道 -->
+                <!-- 24?潸???-->
                 <div id="mary-track-grid"
                     class="flex-1 grid grid-cols-7 grid-rows-7 gap-1 p-1 bg-white/5 border-2 border-[#5a3a00] rounded-lg relative overflow-hidden">
-                    <!-- 中央插圖區 -->
+                    <!-- 銝剖亢??? -->
                     <div id="mary-center"
                         class="col-start-2 col-end-7 row-start-2 row-end-7 bg-[#2da6ff] rounded-md border-2 border-[#1e4d1e] relative overflow-hidden flex flex-col items-center justify-center p-2 shadow-[inset_0_0_20px_rgba(0,0,0,0.3)]">
-                        <!-- 類馬力歐插圖 (暫用 Emoji 示意，可換為圖片) -->
+                        <!-- 憿收???? (?怎 Emoji 蝷箸?嚗???) -->
                         <div
                             class="text-[80px] font-black opacity-20 filter grayscale-0 select-none absolute text-[#44aaff] tracking-widest break-all">
                             BAR</div>
@@ -845,20 +845,20 @@
                             class="text-[100px] font-black text-[#55ccff]/10 select-none -mb-8 z-0 tracking-widest leading-none">
                             BAR</div>
 
-                        <!-- 中央大獎數字 -->
+                        <!-- 銝剖亢憭抒??詨? -->
                         <div id="mary-center-num"
                             class="bg-black/80 border-4 border-[#ff4444] rounded-xl px-4 py-2 text-5xl font-black text-[#ff4444] shadow-[0_0_20px_rgba(255,68,68,0.5)] tabular-nums z-10"
                             style="font-family: 'Courier New', monospace;">0</div>
 
-                        <!-- 覆蓋於上方的大/小按鈕區 -->
+                        <!-- 閬??潔??寧?憭?撠??? -->
                         <div id="mary-double-btns"
                             class="hidden absolute inset-0 z-20 flex flex-col justify-between py-2 bg-black/40 backdrop-blur-sm">
                             <div class="flex justify-between items-center w-full px-2 mt-4">
                                 <button onclick="maryDoubleUp('small')"
-                                    class="mary-phys-btn bg-[#ff4444] border-b-4 border-[#cc0000] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(255,0,0,0.5)] active:translate-y-1 active:border-b-0 leading-tight">押小<br><span
+                                    class="mary-phys-btn bg-[#ff4444] border-b-4 border-[#cc0000] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(255,0,0,0.5)] active:translate-y-1 active:border-b-0 leading-tight">?澆?<br><span
                                         class="text-[10px] opacity-80">1-6</span></button>
 
-                                <!-- ★ 新增：中間顯示開出的數字 -->
+                                <!-- ???啣?嚗葉?＊蝷粹??箇??詨? -->
                                 <div id="mary-double-num-display"
                                     class="hidden flex items-center justify-center bg-black border-2 border-[#ffcc00] rounded-full w-12 h-12 shadow-[0_0_15px_rgba(255,200,0,0.5)] mx-1">
                                     <span id="mary-double-number"
@@ -867,16 +867,16 @@
                                 </div>
 
                                 <button onclick="maryDoubleUp('big')"
-                                    class="mary-phys-btn bg-[#4444ff] border-b-4 border-[#0000cc] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(0,0,255,0.5)] active:translate-y-1 active:border-b-0 leading-tight">押大<br><span
+                                    class="mary-phys-btn bg-[#4444ff] border-b-4 border-[#0000cc] rounded-md px-4 py-3 text-xs font-black text-white shadow-[0_0_15px_rgba(0,0,255,0.5)] active:translate-y-1 active:border-b-0 leading-tight">?澆之<br><span
                                         class="text-[10px] opacity-80">8-13</span></button>
                             </div>
                             <div class="flex justify-center w-full mb-1">
                                 <button onclick="maryCollect()"
-                                    class="mary-phys-btn bg-[#00aa33] border-b-4 border-[#006622] rounded-md px-6 py-2 text-sm font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_15px_rgba(0,255,0,0.6)]">領獎</button>
+                                    class="mary-phys-btn bg-[#00aa33] border-b-4 border-[#006622] rounded-md px-6 py-2 text-sm font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_15px_rgba(0,255,0,0.6)]">??</button>
                             </div>
                         </div>
 
-                        <!-- ONCE MORE 裝飾 -->
+                        <!-- ONCE MORE 鋆ˇ -->
                         <div
                             class="absolute left-1 top-1/2 -translate-y-1/2 text-[8px] font-black text-white/40 uppercase whitespace-nowrap [writing-mode:vertical-rl] tracking-widest z-0">
                             Once More</div>
@@ -886,89 +886,89 @@
                     </div>
                 </div>
 
-                <!-- 跑道格由 JS 生成 -->
+                <!-- 頝??潛 JS ?? -->
             </div>
 
-            <!-- 下方賠率壓注區 (Betting Panel) -->
+            <!-- 銝鞈?憯釣? (Betting Panel) -->
             <div class="bg-[#1a110a] border-t-4 border-b-4 border-[#3d2b1f] p-3 flex-none mt-auto">
                 <div id="mary-bet-panel" class="grid grid-cols-8 gap-1.5 h-full items-end">
-                    <!-- 由 JS 生成 8 個壓注按鈕 -->
+                    <!-- ??JS ?? 8 ??瘜冽???-->
                 </div>
             </div>
 
-            <!-- 實體按鈕區 (Action Buttons) -->
+            <!-- 撖阡???? (Action Buttons) -->
             <div class="bg-gradient-to-t from-[#251810] to-[#5d3b24] px-4 pt-4 pb-6 flex justify-between items-center gap-2 flex-none"
                 style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;">
-                <!-- 左側：功能鈕 -->
+                <!-- 撌血嚗??賡? -->
                 <div class="flex gap-2">
                     <button onclick="maryClearBet()"
-                        class="mary-phys-btn bg-[#cccccc] border-b-4 border-[#888] rounded-md px-3 py-2 text-[10px] font-black text-[#333] active:translate-y-1 active:border-b-0">清除</button>
+                        class="mary-phys-btn bg-[#cccccc] border-b-4 border-[#888] rounded-md px-3 py-2 text-[10px] font-black text-[#333] active:translate-y-1 active:border-b-0">皜</button>
                     <button onclick="maryExchange()"
-                        class="mary-phys-btn bg-[#4aaeff] border-b-4 border-[#2277cc] rounded-md px-3 py-2 text-[10px] font-black text-white active:translate-y-1 active:border-b-0">兌換</button>
+                        class="mary-phys-btn bg-[#4aaeff] border-b-4 border-[#2277cc] rounded-md px-3 py-2 text-[10px] font-black text-white active:translate-y-1 active:border-b-0">??</button>
                 </div>
 
-                <!-- 中央：裝飾或者功能區，已將大/小按鍵移至中央 -->
+                <!-- 銝剖亢嚗?憌暹????賢?嚗歇撠之/撠??萇宏?喃葉憭?-->
                 <div id="mary-action-area" class="flex-1 flex justify-center gap-2">
                     <button onclick="maryRandomBet()"
-                        class="mary-phys-btn bg-[#aa44ff] border-b-4 border-[#7700cc] rounded-md px-4 py-2 text-[11px] font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_10px_rgba(170,68,255,0.5)]">隨機押注</button>
+                        class="mary-phys-btn bg-[#aa44ff] border-b-4 border-[#7700cc] rounded-md px-4 py-2 text-[11px] font-black text-white active:translate-y-1 active:border-b-0 shadow-[0_0_10px_rgba(170,68,255,0.5)]">?冽??潭釣</button>
                 </div>
 
-                <!-- 右側：開始鈕 -->
+                <!-- ?喳嚗?憪? -->
                 <button id="mary-btn-start" onclick="maryStartSpin()"
                     class="mary-phys-btn bg-[#00ff88] border-b-4 border-[#00aa55] rounded-xl px-6 py-3 text-lg font-black text-[#004d00] shadow-[0_4px_0_#00aa55,_0_8px_15px_rgba(0,0,0,0.4)] hover:brightness-110 active:translate-y-1 active:shadow-none transition-all">START</button>
             </div>
 
-            <!-- 比大小結果遮罩 -->
+            <!-- 瘥之撠??蝵?-->
             <div id="mary-double-result"
                 class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-black/95 border-4 border-[#ffcc00] rounded-2xl p-6 text-center shadow-[0_0_50px_rgba(255,200,0,0.5)]">
                 <div id="mary-double-num" class="text-6xl font-black text-[#ffcc00] mb-2"
                     style="font-family: 'Courier New', monospace;">7</div>
-                <div id="mary-double-msg" class="text-sm font-bold text-white">結果</div>
+                <div id="mary-double-msg" class="text-sm font-bold text-white">蝯?</div>
             </div>
 
-            <!-- 說明層 (Help Overlay) -->
+            <!-- 隤芣?撅?(Help Overlay) -->
             <div id="mary-help-overlay"
                 class="hidden absolute inset-0 z-[100] bg-[#1a110a]/95 backdrop-blur-md p-6 overflow-y-auto text-white flex flex-col">
                 <div class="flex justify-between items-center mb-6 border-b-2 border-amber-500 pb-2">
-                    <h3 class="text-lg font-black text-amber-500">🎰 小瑪莉 遊戲說明</h3>
+                    <h3 class="text-lg font-black text-amber-500">? 撠???隤芣?</h3>
                     <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')"
-                        class="text-2xl text-white/40 hover:text-white">✕</button>
+                        class="text-2xl text-white/40 hover:text-white">??/button>
                 </div>
                 <div class="space-y-4 text-sm leading-relaxed text-gray-300">
-                    <p>• <b class="text-amber-400">點數：</b> 每月發放 200 贈分。可使用拉霸積分 10:1 兌換。</p>
-                    <p>• <b class="text-amber-400">壓注：</b> 點擊符號按鈕加注。長按可快速加注。</p>
-                    <p>• <b class="text-amber-400">比大小：</b> 中獎後可挑戰翻倍，開出 7 點莊家通殺。</p>
+                    <p>??<b class="text-amber-400">暺嚗?/b> 瘥??潭 200 韐??雿輻?蝛? 10:1 ????/p>
+                    <p>??<b class="text-amber-400">憯釣嚗?/b> 暺?蝚西????釣??敹恍?瘜具?/p>
+                    <p>??<b class="text-amber-400">瘥之撠?</b> 銝剔?敺?蝧餃?? 7 暺?摰園捏??/p>
                     <div class="grid grid-cols-2 gap-2 bg-black/40 p-4 rounded-xl border border-white/10 font-mono">
-                        <div class="flex justify-between"><span>🍎</span><span>x2</span></div>
-                        <div class="flex justify-between"><span>🍊</span><span>x5</span></div>
-                        <div class="flex justify-between"><span>🥭</span><span>x10</span></div>
-                        <div class="flex justify-between"><span>🔔</span><span>x20</span></div>
-                        <div class="flex justify-between"><span>🍉</span><span>x30</span></div>
-                        <div class="flex justify-between"><span>🌟</span><span>x40</span></div>
-                        <div class="flex justify-between"><span>7️⃣</span><span>x50</span></div>
-                        <div class="flex justify-between text-[#44aaff]"><span>💎 BAR</span><span>x100</span></div>
+                        <div class="flex justify-between"><span>??</span><span>x2</span></div>
+                        <div class="flex justify-between"><span>??</span><span>x5</span></div>
+                        <div class="flex justify-between"><span>?平</span><span>x10</span></div>
+                        <div class="flex justify-between"><span>??</span><span>x20</span></div>
+                        <div class="flex justify-between"><span>??</span><span>x30</span></div>
+                        <div class="flex justify-between"><span>??</span><span>x40</span></div>
+                        <div class="flex justify-between"><span>7儭</span><span>x50</span></div>
+                        <div class="flex justify-between text-[#44aaff]"><span>?? BAR</span><span>x100</span></div>
                     </div>
                 </div>
                 <button onclick="document.getElementById('mary-help-overlay').classList.add('hidden')"
-                    class="mt-8 w-full py-3 bg-amber-500 rounded-xl text-black font-black">我明白了</button>
+                    class="mt-8 w-full py-3 bg-amber-500 rounded-xl text-black font-black">???賭?</button>
             </div>
         </div>
 
-        <!-- 自訂數字鍵盤 (Keypad Overlay) -->
+        <!-- ?芾??詨??萇 (Keypad Overlay) -->
         <div id="mary-keypad-overlay"
             class="hidden absolute inset-0 z-[110] bg-black/80 backdrop-blur-sm flex items-center justify-center pointer-events-auto">
             <div
                 class="bg-[#1a110a] border-2 border-[#ffcc00] rounded-xl w-72 p-4 shadow-[0_0_30px_rgba(255,204,0,0.3)] relative">
                 <button onclick="maryCloseKeypad()"
-                    class="absolute -top-4 -right-4 bg-[#ff4444] text-white w-10 h-10 rounded-full font-bold border-2 border-[#1a110a] text-xl shadow-lg active:scale-95">✕</button>
-                <div id="mary-keypad-title" class="text-[#ffcc00] font-black text-center mb-3 text-lg">押注: 🍎</div>
+                    class="absolute -top-4 -right-4 bg-[#ff4444] text-white w-10 h-10 rounded-full font-bold border-2 border-[#1a110a] text-xl shadow-lg active:scale-95">??/button>
+                <div id="mary-keypad-title" class="text-[#ffcc00] font-black text-center mb-3 text-lg">?潭釣: ??</div>
                 <div class="bg-black/80 border border-[#444] rounded-lg p-3 mb-4 shadow-inner">
                     <input type="number" id="mary-keypad-input"
                         class="w-full bg-transparent text-[#00ff88] text-right text-4xl font-mono outline-none"
                         placeholder="0" value="" min="0" oninput="maryKeypadValidate()">
                 </div>
                 <div class="grid grid-cols-3 gap-2">
-                    <!-- 數字鍵 -->
+                    <!-- ?詨???-->
                     <button onclick="maryKeypadType(1)"
                         class="mary-phys-btn bg-[#333] text-white rounded-lg py-3 text-2xl font-black border-b-4 border-[#111] active:translate-y-1 active:border-b-0">1</button>
                     <button onclick="maryKeypadType(2)"
@@ -991,15 +991,15 @@
     </div>
     </div>
 
-    <!-- 報名操作教學彈窗 -->
+    <!-- ?勗????飛敶? -->
     <div id="tutorial-modal"
         class="hidden fixed inset-0 z-[130] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4">
         <div class="premium-card rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[85dvh] sm:max-h-[85vh] flex flex-col relative transform translate-y-full sm:translate-y-10 opacity-0 transition-all duration-300"
             id="tutorial-modal-content">
-            <!-- 標頭 -->
+            <!-- 璅 -->
             <div class="p-4 border-b border-amber-900/50 flex justify-between items-center bg-[#0D131A] rounded-t-2xl backdrop-blur-md sticky top-0 z-10">
                 <h3 class="font-bold text-[#D4AF37] flex items-center gap-2">
-                    <i data-lucide="help-circle" class="w-5 h-5 text-[#D4AF37]"></i> 報名操作教學
+                    <i data-lucide="help-circle" class="w-5 h-5 text-[#D4AF37]"></i> ?勗????飛
                 </h3>
                 <button onclick="closeTutorialModal()"
                     class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition text-[#D4AF37]">
@@ -1007,28 +1007,28 @@
                 </button>
             </div>
 
-            <!-- 內容區 -->
+            <!-- ?批捆? -->
             <div class="p-5 overflow-y-auto flex-1 min-h-0 overscroll-contain pb-safe space-y-5 bg-transparent">
-                <!-- 報名操作教學圖片 -->
+                <!-- ?勗????飛?? -->
                 <div class="rounded-2xl overflow-hidden border border-amber-900/50 shadow-md bg-black/20 p-1">
-                    <img src="./registration_tutorial.jpg" alt="報名教學圖解" class="w-full h-auto object-contain rounded-xl opacity-90">
+                    <img src="images/registration_tutorial.jpg" alt="?勗??飛?圾" class="w-full h-auto object-contain rounded-xl opacity-90">
                 </div>
                 
-                <!-- 提示 Banner -->
+                <!-- ?內 Banner -->
                 <div class="bg-black/40 border border-amber-500/30 rounded-2xl p-4 flex gap-3 text-xs text-amber-100">
                     <i data-lucide="alert-circle" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5"></i>
                     <div class="space-y-1 leading-relaxed">
-                        <strong class="block font-bold text-[#D4AF37]">💡 填寫提示：</strong>
-                        若漏填 <span class="text-amber-500 font-bold">*必選</span> 欄位（例如：<strong>上車地點</strong>或<strong>房型需求</strong>），點擊確認時網頁會自動捲動至該欄位，並以 <span class="text-amber-500 font-bold">高亮顯示</span> 提示您補選。
+                        <strong class="block font-bold text-[#D4AF37]">? 憛怠神?內嚗?/strong>
+                        ?交?憛?<span class="text-amber-500 font-bold">*敹</span> 甈?嚗?憒?<strong>銝??圈?</strong>??strong>?踹??瘙?/strong>嚗?暺?蝣箄??雯???芸??脣??唾府甈?嚗蒂隞?<span class="text-amber-500 font-bold">擃漁憿舐內</span> ?內?刻??詻?
                     </div>
                 </div>
             </div>
 
-            <!-- 底部關閉按鈕 -->
+            <!-- 摨???? -->
             <div class="p-4 border-t border-amber-900/50 bg-[#0D131A] flex gap-2 rounded-b-2xl">
                 <button onclick="closeTutorialModal()"
-                    class="w-full py-3 premium-gradient text-[#3d2600] font-bold rounded-xl shadow-md transition hover:brightness-110 active:scale-95 text-center text-sm">
-                    我懂了，開始報名！
+                    class="btn-primary premium-gradient">
+                    ??鈭????勗?嚗?
                 </button>
             </div>
         </div>
@@ -1036,7 +1036,7 @@
 
     <script src="app.js?v=202606222212"></script>
 
-    <!-- 啟動畫面控制腳本 -->
+    <!-- ???恍?批?單 -->
     <script>
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -1044,11 +1044,12 @@
                 if (splash) {
                     splash.style.opacity = '0';
                     splash.style.pointerEvents = 'none';
-                    setTimeout(() => splash.remove(), 1000); // 1秒後完全移除 DOM
+                    setTimeout(() => splash.remove(), 1000); // 1蝘?摰蝘駁 DOM
                 }
-            }, 1800); // 停留 1.8 秒後淡出
+            }, 1800); // ?? 1.8 蝘?瘛∪
         });
     </script>
 </body>
 
 </html>
+
