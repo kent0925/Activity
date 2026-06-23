@@ -2627,6 +2627,9 @@
   .text-\[\#D4AF37\]\/80 {
     color: color-mix(in oklab, #D4AF37 80%, transparent);
   }
+  .text-\[\#DC2626\] {
+    color: #DC2626;
+  }
   .text-\[\#EAD7BA\] {
     color: #EAD7BA;
   }
