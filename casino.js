@@ -113,6 +113,10 @@ const CasinoApp = {
             document.getElementById('loading-overlay').style.opacity = '0';
             setTimeout(() => document.getElementById('loading-overlay').classList.add('hidden'), 300);
 
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
         } catch (e) {
             console.error("Casino Init Error:", e);
             alert("初始化失敗");
