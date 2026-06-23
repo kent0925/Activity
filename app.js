@@ -5026,6 +5026,8 @@ window.toggleNoAttendance = function(checkbox) {
 
     if (isNoAttendance) {
         if (familySelect) {
+            // 暫存原本的人數，以便取消勾選時復原
+            familySelect.dataset.prevValue = familySelect.value;
             familySelect.value = "0";
             familySelect.disabled = true;
             familySelect.classList.add("opacity-50", "cursor-not-allowed");
@@ -5036,7 +5038,12 @@ window.toggleNoAttendance = function(checkbox) {
         if (familySelect) {
             familySelect.disabled = false;
             familySelect.classList.remove("opacity-50", "cursor-not-allowed");
-            if (familySelect.value === "0") familySelect.value = "1";
+            // 嘗試復原原本設定的人數
+            if (familySelect.dataset.prevValue && familySelect.dataset.prevValue !== "0") {
+                familySelect.value = familySelect.dataset.prevValue;
+            } else if (familySelect.value === "0") {
+                familySelect.value = "1";
+            }
         }
         if (guestSection) guestSection.classList.remove("hidden");
         if (eventType === "travel" && travelField) travelField.classList.remove("hidden");
