@@ -669,18 +669,16 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     border: 1px solid #FFFFFF;
 }
 
-/* 啟動畫面動畫 (Splash Screen Animation - 心臟跳動效果) */
+/* 啟動畫面動畫 (Splash Screen Animation) */
 @keyframes splashLogoAnim {
-    0% { transform: scale(0.8); opacity: 0; filter: blur(5px); }
-    15% { transform: scale(1.0); opacity: 1; filter: blur(0px); }
-    25% { transform: scale(1.15); }
-    35% { transform: scale(1.0); }
-    45% { transform: scale(1.15); }
-    60% { transform: scale(1.0); }
-    100% { transform: scale(1.0); opacity: 1; }
+    /* 縮小起始尺寸 (從 0.85 改成 0.6) 讓一開始看起來更遠 */
+    0% { transform: scale(0.6); opacity: 0; filter: blur(10px); }
+    /* 放大最高點尺寸 (從 1.05 改成 1.2) 讓衝出來的感覺更強烈 */
+    30% { transform: scale(1.2); opacity: 1; filter: blur(0px); }
+    /* 回彈到原始大小 */
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .animate-splash-logo {
-    /* 這裡的 ease-in-out 讓心跳的收縮擴張更自然 */
-    animation: splashLogoAnim 1.6s ease-in-out forwards;
+    animation: splashLogoAnim 1.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
 }
