@@ -1,3 +1,4 @@
+@source "../**/*.{html,js}";
 @import "tailwindcss";
 
 .btn-primary {
@@ -5,34 +6,33 @@
 }
 
 /* ==========================================
-   憭扯????暑??頂蝯?- 銝餅見撘”
-   ?銝駁?嚗楛瘚瑁???#162544 + ?日???#B8922A
+   ?�扯?�??????��???�??��???- ?��?見�??��?   ??�?��???�楛�?????#162544 + ?????#B8922A
    ========================================== */
 
 :root {
-  /* ????*/
-  --bg-main: #0D131A;                 /* 蝬脤?銝餉??荔?璆菜楛?? */
-  --card-dark-bg: rgba(24, 34, 46, 0.75); /* 瘛梯?∠??嚗葆敺桅???憭? */
-  --card-light-bg: #FAF8F5;            /* 摨蝯梯??∠?嚗?蝐喟 */
+  /* ??��???��???*/
+  --bg-main: #0D131A;                 /* ?�脤??��??????��?�??? */
+  --card-dark-bg: rgba(24, 34, 46, 0.75); /* ?�梯??????��??�?�敺桅??????�? */
+  --card-light-bg: #FAF8F5;            /* ?�?�蝯�?????�??��?�?*/
   
-  /* 瘛梯?銝???嚗Ⅱ靽?瘨仃???箇嚗?*/
-  --text-on-dark-primary: #EFECE5;    /* 銝餅?憿?憪?嚗?????*/
-  --text-on-dark-secondary: #B8B2A7;  /* 甈∟?鞈?/???啣?嚗滓?啗???*/
+  /* ?�梯???��??��??????��??�靽�??��?�?�??箇�???*/
+  --text-on-dark-primary: #EFECE5;    /* ?��?????�??�??????*/
+  --text-on-dark-secondary: #B8B2A7;  /* ?��???�?/?�?????��?????*/
   
-  /* 瘛箄?銝??? */
-  --text-on-light-primary: #2B2622;   /* 蝯梯??詨?/璅?嚗楛?剜???*/
+  /* ?��????��??��????? */
+  --text-on-light-primary: #2B2622;   /* ?�梯??�?/?��???��?????*/
   
-  /* ??撘瑁矽?脰?暺韌 */
-  --accent-brass: #D4AF37;            /* ??/??/??嚗?賊??? */
-  --accent-brass-hover: #B58728;      /* ???詨??莎?瘛梁?圈? */
-  --text-warning: #A47E5C;            /* 霅血??內??嚗?隞??蝝?嚗?? */
+  /* ????��??????�??*/
+  --accent-brass: #D4AF37;            /* ???/???/????�??�???? */
+  --accent-brass-hover: #B58728;      /* ????�?????��????? */
+  --text-warning: #A47E5C;            /* ?��????�內????��??????�??�???� */
   
-  /* ??蝺? */
-  --border-color: rgba(212, 175, 55, 0.25); /* 頛凝??瑼喲?蝝唳???*/
+  /* ????�? */
+  --border-color: rgba(212, 175, 55, 0.25); /* ?��??????�喲??�唳???*/
 
-  /* 蝟餌絞?詨捆霈 (撠??啗??身摰? */
+  /* ?��?�?詨�??��???(?��???????�身?? */
   --primary: var(--accent-brass);
-  --primary-dark: var(--accent-brass-hover);  /* ?餌???撠憿 */
+  --primary-dark: var(--accent-brass-hover);  /* ?�?????��??�憿?� */
   --primary-light: rgba(212, 175, 55, 0.15);
   --accent: var(--accent-brass);
   --danger: var(--text-warning);
@@ -65,7 +65,7 @@ body {
     scrollbar-width: none;
 }
 
-/* ?餌??祆? (Glassmorphism) */
+/* ?�??�? (Glassmorphism) */
 .glass-effect {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
@@ -97,7 +97,7 @@ body {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
-/* ?芸?蝢拙???*/
+/* ????��????*/
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -132,7 +132,7 @@ body {
     animation: pulse-subtle 2s infinite ease-in-out;
 }
 
-/* 閰喟敦璅?? */
+/* ?��??��??? */
 details>summary {
     list-style: none;
     cursor: pointer;
@@ -150,7 +150,7 @@ details[open]>summary .arrow-icon {
     transform: rotate(180deg);
 }
 
-/* ??璅惜 (Tabs) */
+/* ????��???(Tabs) */
 .filter-tab {
     transition: all 0.3s ease;
     position: relative;
@@ -162,7 +162,7 @@ details[open]>summary .arrow-icon {
     box-shadow: 0 4px 12px rgba(184, 146, 42, 0.4);
 }
 
-/* 撉冽撅??交???(Skeleton Loading) */
+/* ?�冽�????�???(Skeleton Loading) */
 .skeleton {
     background: linear-gradient(90deg, #1E3052 25%, #2a4070 50%, #1E3052 75%);
     background-size: 200% 100%;
@@ -179,7 +179,7 @@ details[open]>summary .arrow-icon {
     }
 }
 
-/* 銵?鋆蔭?絲摰???*/
+/* ?�??��????�絲?�?????*/
 .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
 }
@@ -188,9 +188,9 @@ details[open]>summary .arrow-icon {
     padding-top: env(safe-area-inset-top);
 }
 
-/* --- 銵?銵冽?憸函?寞? (?啣?) --- */
+/* --- ?�??�冽??�函??�? (???) --- */
 
-/* 1. ?梯??汗?券?閮剔? details 銝?敶?*/
+/* 1. ?�???��?????��?? details ?�???*/
 .itinerary-group summary::-webkit-details-marker {
     display: none;
 }
@@ -199,8 +199,8 @@ details[open]>summary .arrow-icon {
     list-style: none;
 }
 
-/* 2. ?批 + ??- ?內????頛?*/
-/* ?身???(??)嚗＊蝷?Plus (+), ?梯? Minus (-) */
+/* 2. ??��? + ??- ?內????�???*/
+/* ??�身????(?�?)?�＊蝷?Plus (+), ?�? Minus (-) */
 .itinerary-group summary .icon-plus {
     display: block;
 }
@@ -209,7 +209,7 @@ details[open]>summary .arrow-icon {
     display: none;
 }
 
-/* ??details 鋡急???(open) ???梯? Plus, 憿舐內 Minus */
+/* ??details ?��???(open) ?�??�? Plus, ?��???Minus */
 .itinerary-group[open] summary .icon-plus {
     display: none;
 }
@@ -218,7 +218,7 @@ details[open]>summary .arrow-icon {
     display: block;
 }
 
-/* 3. ?批捆撅???皛?? */
+/* 3. ??��??�??�??�???� */
 .itinerary-group[open] .group-content {
     animation: slideDown 0.3s ease-out;
 }
@@ -235,7 +235,7 @@ details[open]>summary .arrow-icon {
     }
 }
 
-/* 餈瑚???璈?*/
+/* 餈�???�???*/
 .slot-machine-container {
     text-align: center;
 }
@@ -350,7 +350,7 @@ details[open]>summary .arrow-icon {
     color: #EAD7BA;
 }
 
-/* 閰喟敦??璁??桀?蝒?*/
+/* ?��??????�??桀???*/
 #rankings-modal-content {
     background: rgba(30, 48, 82, 0.96);
     backdrop-filter: blur(20px);
@@ -385,10 +385,10 @@ details[open]>summary .arrow-icon {
 }
 
 /* =====================================================
-   ?銝駁?閬? (瘛望絲頠? + ?日???
-   雿輻 CSS 閬?蝣箔?銝憯?HTML 蝯?????   ===================================================== */
+   ??�?��???��?? (?��?絲�??? + ?????
+   ?�輻??CSS ?��???????��?憯?HTML ?��???????   ===================================================== */
 
-/* --- 蝭拚摰孵? --- */
+/* --- ?��?摰孵�???��? --- */
 #filter-container {
     background-color: rgba(22, 37, 68, 0.96) !important;
     backdrop-filter: blur(8px);
@@ -399,7 +399,7 @@ details[open]>summary .arrow-icon {
     border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
-/* --- ?質?∠? ??瘛梯? --- */
+/* --- ?質??? ???�梯? --- */
 #event-info-card.bg-white,
 #regForm,
 .bg-white.rounded-2xl,
@@ -408,7 +408,7 @@ details[open]>summary .arrow-icon {
     border-color: rgba(184, 146, 42, 0.2) !important;
 }
 
-/* --- ???脰???????瘛梯? --- */
+/* --- ????��??????????�???�梯? --- */
 .bg-gray-50,
 .bg-gray-50\/80,
 .bg-gray-50\/50,
@@ -416,21 +416,21 @@ details[open]>summary .arrow-icon {
     background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
-/* --- ???脰撓?交? --- */
+/* --- ????��???��??�? --- */
 .bg-gray-200 { background-color: #253A63 !important; }
 
-/* --- ??憿嚗楛??????--- */
+/* --- ????�?��?�???????--- */
 .text-gray-900, .text-gray-800 { color: rgba(255, 255, 255, 0.92) !important; }
 .text-gray-700 { color: rgba(255, 255, 255, 0.80) !important; }
 .text-gray-600, .text-gray-500 { color: rgba(255, 255, 255, 0.55) !important; }
 .text-gray-400 { color: rgba(255, 255, 255, 0.38) !important; }
 
-/* --- ??憿 --- */
+/* --- ????�??--- */
 .border-gray-100, .border-gray-200 { border-color: rgba(255, 255, 255, 0.1) !important; }
 .border-gray-300 { border-color: rgba(255, 255, 255, 0.2) !important; }
 .divide-gray-100 > * + * { border-color: rgba(255, 255, 255, 0.08) !important; }
 
-/* --- 敶抵?內? ????? --- */
+/* --- ?�抵??內??��? ????�??�?? --- */
 .bg-green-50  { background-color: rgba(184, 146, 42, 0.15) !important; }
 .bg-blue-50   { background-color: rgba(255, 255, 255, 0.08) !important; }
 .bg-red-50    { background-color: rgba(255, 255, 255, 0.08) !important; }
@@ -440,19 +440,19 @@ details[open]>summary .arrow-icon {
 .bg-blue-50\/50   { background-color: rgba(255, 255, 255, 0.04) !important; }
 .bg-red-50\/50    { background-color: rgba(255, 255, 255, 0.04) !important; }
 
-/* --- 敶抵?內?? ??? --- */
+/* --- ?�抵??內??? ????� --- */
 .text-green-600 { color: #EFC958 !important; }
 .text-blue-600  { color: rgba(255, 255, 255, 0.65) !important; }
 .text-red-600   { color: rgba(255, 255, 255, 0.65) !important; }
 .text-amber-600 { color: #EFC958 !important; }
 .text-yellow-700{ color: #EFC958 !important; }
 
-/* --- 敶抵section璅??? --- */
+/* --- ?�抵?�section?��????? --- */
 .text-blue-800  { color: rgba(255, 255, 255, 0.88) !important; }
 .text-red-800   { color: rgba(255, 255, 255, 0.88) !important; }
 .text-orange-800{ color: rgba(255, 255, 255, 0.88) !important; }
 
-/* --- 敶抵 border ????? --- */
+/* --- ?�抵??border ????�??? --- */
 .border-orange-100, .border-orange-100\/50,
 .border-orange-200  { border-color: rgba(184, 146, 42, 0.20) !important; }
 .border-blue-100    { border-color: rgba(184, 146, 42, 0.15) !important; }
@@ -460,43 +460,43 @@ details[open]>summary .arrow-icon {
 .border-yellow-200  { border-color: rgba(184, 146, 42, 0.25) !important; }
 .border-amber-200   { border-color: rgba(184, 146, 42, 0.25) !important; }
 
-/* --- 璈?蝝怨?寞??? --- */
+/* --- ???�怨?�???? --- */
 .text-orange-600  { color: #EFC958 !important; }
 .text-orange-500  { color: #EFC958 !important; }
 .text-purple-600  { color: #EFC958 !important; }
 .text-purple-500  { color: #EFC958 !important; }
 
-/* --- 璈?蝝怨 badge ? --- */
+/* --- ???�怨 badge ??��? --- */
 .bg-orange-100  { background-color: rgba(184, 146, 42, 0.15) !important; }
 .bg-purple-100  { background-color: rgba(184, 146, 42, 0.15) !important; }
 .bg-orange-500  { background-color: #B8922A !important; }
 .hover\:bg-orange-600:hover { background-color: #9A7820 !important; }
 
-/* --- 頛詨獢?select / input 蝯曹?瘛梯?摨? --- */
+/* --- ?�詨?�獢??select / input ?�曹??�梯??�? --- */
 #view-activity-detail select,
 #regForm select,
 #regForm input[type="text"],
 #view-create select,
 #view-create input {
-    background-color: rgba(13, 19, 26, 0.6) !important; /* ??霈?拙??靘?*/
+    background-color: rgba(13, 19, 26, 0.6) !important; /* ????��?????�??*/
     color: #EAD7BA !important;
     border-color: rgba(212, 175, 55, 0.3) !important;
 }
 #regForm select option,
 #view-create select option { background-color: #1E3052; color: white; }
 
-/* --- 瘛梁?? ??瘛梯? --- */
+/* --- ?��?�??? ???�梯? --- */
 .bg-gray-800 { background-color: #253A63 !important; }
 .bg-gray-900 { background-color: #B8922A !important; }
 .hover\:bg-gray-700:hover { background-color: #1E3052 !important; }
 .hover\:bg-gray-800:hover { background-color: #9A7820 !important; }
 
-/* --- 蝯梯????撅祆????寞??祕擐玟??鞈芾?蝡????--- */
+/* --- ?�梯???????��??????�??�??��??????�芾??�???��???--- */
 .premium-gradient,
 button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     background-image: url('images/wood-bg.jpg');
-    color: #3d2600 !important; /* 瘛勗??? */
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important; /* ?????*/
+    color: #3d2600 !important; /* ?��????�??? */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important; /* ??��??????*/
     box-shadow: 0 6px 15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.7), inset 0 -3px 5px rgba(0,0,0,0.2) !important;
     border: 1px solid #8e6a3c !important;
     font-weight: 900 !important;
@@ -512,7 +512,7 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
 }
 .premium-gradient .glass-effect i { color: #2b1d00 !important; }
 
-/* --- 閰喟敦?敶? --- */
+/* --- ?��????��??��?? --- */
 #modal-content {
     border: 2px solid transparent;
     background: 
@@ -537,7 +537,7 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     color: rgba(255, 255, 255, 0.5) !important;
 }
 
-/* --- 蝣箄?敶? --- */
+/* --- ?????��?? --- */
 #confirm-modal > div > div {
     border: 2px solid transparent;
     background: 
@@ -556,7 +556,7 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
 }
 #confirm-no:hover { background-color: rgba(255, 255, 255, 0.08) !important; }
 
-/* --- ?勗??飛敶? --- */
+/* --- ????�??��?? --- */
 #tutorial-modal-content {
     border: 2px solid transparent;
     background: 
@@ -582,20 +582,20 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* ?飛敶??內 Banner */
+/* ?�??��????�內 Banner */
 #tutorial-modal-content .bg-amber-50 {
     background-color: rgba(184, 146, 42, 0.12) !important;
     border-color: rgba(184, 146, 42, 0.3) !important;
 }
 #tutorial-modal-content .text-amber-800 { color: rgba(255, 255, 255, 0.85) !important; }
 
-/* --- 撱箇?瘣餃?? --- */
+/* --- ?��???????? --- */
 #view-create > div.bg-white {
     background-color: #1E3052 !important;
     border-color: rgba(184, 146, 42, 0.2) !important;
 }
 
-/* --- 甇瑕瘣餃????芾???嚗????????嚗?--- */
+/* --- ?��??�瘣�???????????��????????????--- */
 #btn-history-toggle {
     background-color: rgba(255, 255, 255, 0.09) !important;
     color: rgba(255, 255, 255, 0.70) !important;
@@ -605,7 +605,7 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     background-color: rgba(255, 255, 255, 0.15) !important;
 }
 
-/* ==================== 蝬脤?撠蝡??箇結??==================== */
+/* ==================== ?�脤??��??�蝡???箇�???==================== */
 .rivet {
     position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #e2cfb3 0%, #7c5c3b 100%);
     border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
@@ -674,13 +674,13 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     border: 1px solid #FFFFFF;
 }
 
-/* ???恍?脣? (瘛∪銝行憭? */
+/* ?�???��????��??� (?�∪?��?行�??? */
 @keyframes splashLogoEnter {
     0% { transform: scale(0.6); opacity: 0; filter: blur(10px); }
     100% { transform: scale(1.1); opacity: 1; filter: blur(0px); }
 }
 
-/* ???恍??頝喳?? (?澆/敹歲?? */
+/* ?�???��??�??�喳???� (?澆/?��?? */
 @keyframes splashLogoPulse {
     0% { transform: scale(1.1); }
     50% { transform: scale(1.25); }
@@ -688,9 +688,431 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
 }
 
 .animate-splash-logo {
-    /* ?銵?0.5 蝘??脣嚗??活??(infinite) ?瑁?頝喳??寞? */
+    /* ??��???0.5 ?��?????��?�??�???�活??(infinite) ????�喳??�? */
     animation: 
         splashLogoEnter 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards,
         splashLogoPulse 1.2s ease-in-out 0.4s infinite;
 }
 
+
+
+
+
+/* MERGED FROM casino.css */
+
+/* ==========================================
+   大老�??��??�活?�報?�系�?- 主樣式表
+   ?�色主�?：深海�???#162544 + ?��???#B8922A
+   ========================================== */
+
+:root {
+  /* ?�景?�卡??*/
+  --bg-main: #0D131A;                 /* 網�?主�??��?極深?��? */
+  --card-dark-bg: rgba(24, 34, 46, 0.75); /* 深色?��??�景：帶微透�??��?夜�? */
+  --card-light-bg: #FAF8F5;            /* 底部統�??��?：�?米白 */
+  
+  /* 深色?�景上�??��?（確保�?消失?��??�眼�?*/
+  --text-on-dark-primary: #EFECE5;    /* 主�?�?姓�?：�??��???*/
+  --text-on-dark-secondary: #B8B2A7;  /* 次�?資�?/?��??��?：淺?��???*/
+  
+  /* 淺色?�景上�??��? */
+  --text-on-light-primary: #2B2622;   /* 統�??��?/標�?：深?��???*/
+  
+  /* ?��?強調?��?點綴 */
+  --accent-brass: #D4AF37;            /* ?��?/?��?/?��?：古?��??��? */
+  --accent-brass-hover: #B58728;      /* ?��??��??��?深玫?��? */
+  --text-warning: #A47E5C;            /* 警�??�示?��?（�?�??紅�?：�??�色 */
+  
+  /* ?��?線�? */
+  --border-color: rgba(212, 175, 55, 0.25); /* 輕微?��?檳�?細�???*/
+
+  /* 系統?�容變數 (對�??��??�設�? */
+  --primary: var(--accent-brass);
+  --primary-dark: var(--accent-brass-hover);  /* ?��??��?專用顏色 */
+  --primary-light: rgba(212, 175, 55, 0.15);
+  --accent: var(--accent-brass);
+  --danger: var(--text-warning);
+  --bg-gray: var(--bg-main);
+  --card-bg: var(--card-dark-bg);
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
+}
+
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--bg-main, #0D131A);
+    color: var(--text-on-dark-primary, #EFECE5);
+}
+
+/* Accessibility Focus */
+*:focus-visible {
+    outline: 2px solid var(--accent, #D4AF37);
+    outline-offset: 2px;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* ?��??��? (Glassmorphism) */
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+}
+
+.premium-gradient {
+    background: linear-gradient(135deg, #9A7820 0%, #B8922A 50%, #EFC958 100%);
+}
+
+.premium-card {
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: 1.25rem;
+    background: 
+        linear-gradient(rgba(26,36,54,0.3), rgba(26,36,54,0.3)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/wood-bg.jpg') border-box;
+    background-size: auto, 350px, 100% 100%;
+    background-repeat: no-repeat, repeat, no-repeat;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 15px 35px rgba(0,0,0,0.6);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #EAD7BA;
+}
+
+.premium-card:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* ?��?義�???*/
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes pulse-subtle {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animate-pulse-subtle {
+    animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+/* 詳細�?? */
+details>summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+details>summary::-webkit-details-marker {
+    display: none;
+}
+
+.arrow-icon {
+    transition: transform 0.3s ease;
+}
+
+details[open]>summary .arrow-icon {
+    transform: rotate(180deg);
+}
+
+/* ?��?標籤 (Tabs) */
+.filter-tab {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.filter-tab.active {
+    background-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(184, 146, 42, 0.4);
+}
+
+/* 骨架屏�??��???(Skeleton Loading) */
+.skeleton {
+    background: linear-gradient(90deg, #1E3052 25%, #2a4070 50%, #1E3052 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite linear;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* 行�?裝置?�海安全?�??*/
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+    padding-top: env(safe-area-inset-top);
+}
+
+/* --- 行�?表�?風琴?��? (?��?) --- */
+
+/* 1. ?��??�覽?��?設�? details 三�?�?*/
+.itinerary-group summary::-webkit-details-marker {
+    display: none;
+}
+
+.itinerary-group summary {
+    list-style: none;
+}
+
+/* 2. ?�制 + ??- ?�示?��??��?�?*/
+/* ?�設?�??(?��?)：顯�?Plus (+), ?��? Minus (-) */
+.itinerary-group summary .icon-plus {
+    display: block;
+}
+
+.itinerary-group summary .icon-minus {
+    display: none;
+}
+
+/* ??details 被�???(open) ?��??��? Plus, 顯示 Minus */
+.itinerary-group[open] summary .icon-plus {
+    display: none;
+}
+
+.itinerary-group[open] summary .icon-minus {
+    display: block;
+}
+
+/* 3. ?�容展�??��?滑�??�畫 */
+.itinerary-group[open] .group-content {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 迷�??��?�?*/
+.slot-machine-container {
+    text-align: center;
+}
+
+.slot-machine {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.slot-reel {
+    width: 72px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    border: 2px solid rgba(184, 146, 42, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.slot-reel.spinning {
+    animation: reelShake 0.1s linear infinite;
+}
+
+.slot-reel.stopped {
+    animation: reelStop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-color: rgba(184, 146, 42, 0.8);
+    background: rgba(184, 146, 42, 0.15);
+}
+
+@keyframes reelShake {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(-3px); }
+    75% { transform: translateY(3px); }
+}
+
+@keyframes reelStop {
+    0% { transform: translateY(-10px); }
+    50% { transform: translateY(5px); }
+    100% { transform: translateY(0); }
+}
+
+/* 賭場專用籌碼 */
+.chip-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    padding: 3px;
+    background: #1a202c;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.2);
+    border: 2px solid;
+    transition: transform 0.2s, box-shadow 0.2s;
+    outline: none;
+    cursor: pointer;
+}
+.chip-btn.selected {
+    transform: scale(1.15) translateY(-5px);
+    box-shadow: 0 10px 15px rgba(212,175,55,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+    border-color: #D4AF37 !important;
+}
+.chip-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px dashed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    background: rgba(0,0,0,0.4);
+}
+
+/* 中獎區塊高光與動畫 */
+@keyframes winningPulse {
+    0% {
+        box-shadow: 0 0 5px rgba(251, 191, 36, 0.4);
+        border-color: rgba(251, 191, 36, 0.6);
+        background-color: rgba(251, 191, 36, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(251, 191, 36, 1);
+        border-color: rgba(251, 191, 36, 1) !important;
+        background-color: rgba(251, 191, 36, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(251, 191, 36, 0.4);
+        border-color: rgba(251, 191, 36, 0.6);
+        background-color: rgba(251, 191, 36, 0.1);
+    }
+}
+
+.winning-cell {
+    animation: winningPulse 1.2s infinite;
+    z-index: 10;
+    position: relative;
+    border: 2px solid #FCD34D !important;
+}
+
+/* 如果玩家有押注該中獎區域，特效更為強烈 */
+.winning-bet {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.5) 0%, rgba(251, 191, 36, 0.7) 100%) !important;
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.5) !important;
+    border: 2px solid #FFF !important;
+    transform: scale(1.02);
+    transition: transform 0.3s;
+}
+
+
+/* Placed Chips on Board */
+.placed-chip {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.4);
+    z-index: 20;
+    pointer-events: none;
+    border: 2px dashed rgba(255,255,255,0.7);
+    /* By default center it */
+    top: 50%;
+    left: 50%;
+    margin-top: -10px;
+    margin-left: -10px;
+}
+
+
+/* Baccarat Scratch Card Canvas */
+.scratch-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    cursor: crosshair;
+    border-radius: 6px;
+}
+
+/* Baccarat Card Styling */
+.baccarat-card-container {
+    position: relative;
+    width: 60px;
+    height: 84px;
+}
+.baccarat-card {
+    position: absolute;
+    inset: 0;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    color: black;
+}
+.baccarat-card.suit-hearts, .baccarat-card.suit-diamonds {
+    color: #dc2626; /* red-600 */
+}
+.baccarat-card .top-left { 
+    align-self: flex-start; 
+    line-height: 1; 
+    text-align: center;
+}
+.baccarat-card .bottom-right { 
+    align-self: flex-end; 
+    transform: rotate(180deg); 
+    line-height: 1; 
+    text-align: center;
+}
+.baccarat-card .center-suit {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+}
