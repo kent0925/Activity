@@ -1,0 +1,696 @@
+@import "tailwindcss";
+
+.btn-primary {
+    @apply w-full py-3 text-[#3d2600] font-bold rounded-xl shadow-md transition hover:brightness-110 active:scale-95 text-center text-sm;
+}
+
+/* ==========================================
+   憭扯????暑??頂蝯?- 銝餅見撘”
+   ?銝駁?嚗楛瘚瑁???#162544 + ?日???#B8922A
+   ========================================== */
+
+:root {
+  /* ????*/
+  --bg-main: #0D131A;                 /* 蝬脤?銝餉??荔?璆菜楛?? */
+  --card-dark-bg: rgba(24, 34, 46, 0.75); /* 瘛梯?∠??嚗葆敺桅???憭? */
+  --card-light-bg: #FAF8F5;            /* 摨蝯梯??∠?嚗?蝐喟 */
+  
+  /* 瘛梯?銝???嚗Ⅱ靽?瘨仃???箇嚗?*/
+  --text-on-dark-primary: #EFECE5;    /* 銝餅?憿?憪?嚗?????*/
+  --text-on-dark-secondary: #B8B2A7;  /* 甈∟?鞈?/???啣?嚗滓?啗???*/
+  
+  /* 瘛箄?銝??? */
+  --text-on-light-primary: #2B2622;   /* 蝯梯??詨?/璅?嚗楛?剜???*/
+  
+  /* ??撘瑁矽?脰?暺韌 */
+  --accent-brass: #D4AF37;            /* ??/??/??嚗?賊??? */
+  --accent-brass-hover: #B58728;      /* ???詨??莎?瘛梁?圈? */
+  --text-warning: #A47E5C;            /* 霅血??內??嚗?隞??蝝?嚗?? */
+  
+  /* ??蝺? */
+  --border-color: rgba(212, 175, 55, 0.25); /* 頛凝??瑼喲?蝝唳???*/
+
+  /* 蝟餌絞?詨捆霈 (撠??啗??身摰? */
+  --primary: var(--accent-brass);
+  --primary-dark: var(--accent-brass-hover);  /* ?餌???撠憿 */
+  --primary-light: rgba(212, 175, 55, 0.15);
+  --accent: var(--accent-brass);
+  --danger: var(--text-warning);
+  --bg-gray: var(--bg-main);
+  --card-bg: var(--card-dark-bg);
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
+}
+
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--bg-main, #0D131A);
+    color: var(--text-on-dark-primary, #EFECE5);
+}
+
+/* Accessibility Focus */
+*:focus-visible {
+    outline: 2px solid var(--accent, #D4AF37);
+    outline-offset: 2px;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* ?餌??祆? (Glassmorphism) */
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+}
+
+.premium-gradient {
+    background: linear-gradient(135deg, #9A7820 0%, #B8922A 50%, #EFC958 100%);
+}
+
+.premium-card {
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: 1.25rem;
+    background: 
+        linear-gradient(rgba(26,36,54,0.3), rgba(26,36,54,0.3)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/wood-bg.jpg') border-box;
+    background-size: auto, 350px, 100% 100%;
+    background-repeat: no-repeat, repeat, no-repeat;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 15px 35px rgba(0,0,0,0.6);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #EAD7BA;
+}
+
+.premium-card:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* ?芸?蝢拙???*/
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes pulse-subtle {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animate-pulse-subtle {
+    animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+/* 閰喟敦璅?? */
+details>summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+details>summary::-webkit-details-marker {
+    display: none;
+}
+
+.arrow-icon {
+    transition: transform 0.3s ease;
+}
+
+details[open]>summary .arrow-icon {
+    transform: rotate(180deg);
+}
+
+/* ??璅惜 (Tabs) */
+.filter-tab {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.filter-tab.active {
+    background-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(184, 146, 42, 0.4);
+}
+
+/* 撉冽撅??交???(Skeleton Loading) */
+.skeleton {
+    background: linear-gradient(90deg, #1E3052 25%, #2a4070 50%, #1E3052 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite linear;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* 銵?鋆蔭?絲摰???*/
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+    padding-top: env(safe-area-inset-top);
+}
+
+/* --- 銵?銵冽?憸函?寞? (?啣?) --- */
+
+/* 1. ?梯??汗?券?閮剔? details 銝?敶?*/
+.itinerary-group summary::-webkit-details-marker {
+    display: none;
+}
+
+.itinerary-group summary {
+    list-style: none;
+}
+
+/* 2. ?批 + ??- ?內????頛?*/
+/* ?身???(??)嚗＊蝷?Plus (+), ?梯? Minus (-) */
+.itinerary-group summary .icon-plus {
+    display: block;
+}
+
+.itinerary-group summary .icon-minus {
+    display: none;
+}
+
+/* ??details 鋡急???(open) ???梯? Plus, 憿舐內 Minus */
+.itinerary-group[open] summary .icon-plus {
+    display: none;
+}
+
+.itinerary-group[open] summary .icon-minus {
+    display: block;
+}
+
+/* 3. ?批捆撅???皛?? */
+.itinerary-group[open] .group-content {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 餈瑚???璈?*/
+.slot-machine-container {
+    text-align: center;
+}
+
+.slot-machine {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.slot-reel {
+    width: 72px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    border: 2px solid rgba(184, 146, 42, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.slot-reel.spinning {
+    animation: reelShake 0.1s linear infinite;
+}
+
+.slot-reel.stopped {
+    animation: reelStop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-color: rgba(184, 146, 42, 0.8);
+    background: rgba(184, 146, 42, 0.15);
+}
+
+@keyframes reelShake {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-2px);
+    }
+
+    75% {
+        transform: translateY(2px);
+    }
+}
+
+@keyframes reelStop {
+    0% {
+        transform: scale(1.2);
+    }
+
+    60% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.slot-result {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-height: 24px;
+}
+
+.slot-result.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes jackpotPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(184, 146, 42, 0.5);
+    }
+
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 25px rgba(212, 168, 67, 0.9);
+    }
+}
+
+.slot-result.jackpot {
+    animation: jackpotPulse 1s ease-in-out infinite;
+    color: #EFC958;
+}
+
+/* --- Premium Rankings --- */
+.premium-dark-card {
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: 1.25rem;
+    background: 
+        linear-gradient(rgba(26,36,54,0.3), rgba(26,36,54,0.3)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/wood-bg.jpg') border-box;
+    background-size: auto, 350px, 100% 100%;
+    background-repeat: no-repeat, repeat, no-repeat;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 10px 25px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    color: #EAD7BA;
+}
+
+/* 閰喟敦??璁??桀?蝒?*/
+#rankings-modal-content {
+    background: rgba(30, 48, 82, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(184, 146, 42, 0.25);
+}
+
+.ranking-item {
+    transition: all 0.2s ease;
+}
+
+.ranking-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateX(2px);
+}
+
+.ranking-medal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+}
+
+.rank-number {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.35);
+    width: 24px;
+    text-align: center;
+}
+
+/* =====================================================
+   ?銝駁?閬? (瘛望絲頠? + ?日???
+   雿輻 CSS 閬?蝣箔?銝憯?HTML 蝯?????   ===================================================== */
+
+/* --- 蝭拚摰孵? --- */
+#filter-container {
+    background-color: rgba(22, 37, 68, 0.96) !important;
+    backdrop-filter: blur(8px);
+}
+.filter-tab:not(.active) {
+    background-color: rgba(255, 255, 255, 0.07) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* --- ?質?∠? ??瘛梯? --- */
+#event-info-card.bg-white,
+#regForm,
+.bg-white.rounded-2xl,
+.bg-white.rounded-t-2xl {
+    background-color: #1E3052 !important;
+    border-color: rgba(184, 146, 42, 0.2) !important;
+}
+
+/* --- ???脰???????瘛梯? --- */
+.bg-gray-50,
+.bg-gray-50\/80,
+.bg-gray-50\/50,
+.bg-gray-50\/30 {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --- ???脰撓?交? --- */
+.bg-gray-200 { background-color: #253A63 !important; }
+
+/* --- ??憿嚗楛??????--- */
+.text-gray-900, .text-gray-800 { color: rgba(255, 255, 255, 0.92) !important; }
+.text-gray-700 { color: rgba(255, 255, 255, 0.80) !important; }
+.text-gray-600, .text-gray-500 { color: rgba(255, 255, 255, 0.55) !important; }
+.text-gray-400 { color: rgba(255, 255, 255, 0.38) !important; }
+
+/* --- ??憿 --- */
+.border-gray-100, .border-gray-200 { border-color: rgba(255, 255, 255, 0.1) !important; }
+.border-gray-300 { border-color: rgba(255, 255, 255, 0.2) !important; }
+.divide-gray-100 > * + * { border-color: rgba(255, 255, 255, 0.08) !important; }
+
+/* --- 敶抵?內? ????? --- */
+.bg-green-50  { background-color: rgba(184, 146, 42, 0.15) !important; }
+.bg-blue-50   { background-color: rgba(255, 255, 255, 0.08) !important; }
+.bg-red-50    { background-color: rgba(255, 255, 255, 0.08) !important; }
+.bg-amber-50  { background-color: rgba(184, 146, 42, 0.12) !important; }
+.bg-yellow-50 { background-color: rgba(184, 146, 42, 0.10) !important; }
+.bg-orange-50\/50, .bg-orange-50\/30 { background-color: rgba(255, 255, 255, 0.04) !important; }
+.bg-blue-50\/50   { background-color: rgba(255, 255, 255, 0.04) !important; }
+.bg-red-50\/50    { background-color: rgba(255, 255, 255, 0.04) !important; }
+
+/* --- 敶抵?內?? ??? --- */
+.text-green-600 { color: #EFC958 !important; }
+.text-blue-600  { color: rgba(255, 255, 255, 0.65) !important; }
+.text-red-600   { color: rgba(255, 255, 255, 0.65) !important; }
+.text-amber-600 { color: #EFC958 !important; }
+.text-yellow-700{ color: #EFC958 !important; }
+
+/* --- 敶抵section璅??? --- */
+.text-blue-800  { color: rgba(255, 255, 255, 0.88) !important; }
+.text-red-800   { color: rgba(255, 255, 255, 0.88) !important; }
+.text-orange-800{ color: rgba(255, 255, 255, 0.88) !important; }
+
+/* --- 敶抵 border ????? --- */
+.border-orange-100, .border-orange-100\/50,
+.border-orange-200  { border-color: rgba(184, 146, 42, 0.20) !important; }
+.border-blue-100    { border-color: rgba(184, 146, 42, 0.15) !important; }
+.border-red-100     { border-color: rgba(184, 146, 42, 0.15) !important; }
+.border-yellow-200  { border-color: rgba(184, 146, 42, 0.25) !important; }
+.border-amber-200   { border-color: rgba(184, 146, 42, 0.25) !important; }
+
+/* --- 璈?蝝怨?寞??? --- */
+.text-orange-600  { color: #EFC958 !important; }
+.text-orange-500  { color: #EFC958 !important; }
+.text-purple-600  { color: #EFC958 !important; }
+.text-purple-500  { color: #EFC958 !important; }
+
+/* --- 璈?蝝怨 badge ? --- */
+.bg-orange-100  { background-color: rgba(184, 146, 42, 0.15) !important; }
+.bg-purple-100  { background-color: rgba(184, 146, 42, 0.15) !important; }
+.bg-orange-500  { background-color: #B8922A !important; }
+.hover\:bg-orange-600:hover { background-color: #9A7820 !important; }
+
+/* --- 頛詨獢?select / input 蝯曹?瘛梯?摨? --- */
+#view-activity-detail select,
+#regForm select,
+#regForm input[type="text"],
+#view-create select,
+#view-create input {
+    background-color: rgba(13, 19, 26, 0.6) !important; /* ??霈?拙??靘?*/
+    color: #EAD7BA !important;
+    border-color: rgba(212, 175, 55, 0.3) !important;
+}
+#regForm select option,
+#view-create select option { background-color: #1E3052; color: white; }
+
+/* --- 瘛梁?? ??瘛梯? --- */
+.bg-gray-800 { background-color: #253A63 !important; }
+.bg-gray-900 { background-color: #B8922A !important; }
+.hover\:bg-gray-700:hover { background-color: #1E3052 !important; }
+.hover\:bg-gray-800:hover { background-color: #9A7820 !important; }
+
+/* --- 蝯梯????撅祆????寞??祕擐玟??鞈芾?蝡????--- */
+.premium-gradient,
+button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
+    background-image: url('images/wood-bg.jpg');
+    color: #3d2600 !important; /* 瘛勗??? */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important; /* ?????*/
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.7), inset 0 -3px 5px rgba(0,0,0,0.2) !important;
+    border: 1px solid #8e6a3c !important;
+    font-weight: 900 !important;
+}
+.premium-gradient .text-white,
+.premium-gradient .text-green-100 { color: #5a3c00 !important; font-weight: bold; }
+.premium-gradient .text-accent { color: #2b1d00 !important; }
+.premium-gradient .glass-effect {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    color: #2b1d00 !important;
+}
+.premium-gradient .glass-effect i { color: #2b1d00 !important; }
+
+/* --- 閰喟敦?敶? --- */
+#modal-content {
+    border: 2px solid transparent;
+    background: 
+        linear-gradient(rgba(30,48,82,0.5), rgba(30,48,82,0.5)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/wood-bg.jpg') border-box !important;
+    background-size: auto, 350px, 100% 100% !important;
+    background-repeat: no-repeat, repeat, no-repeat !important;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
+}
+#modal-content .bg-gray-50\/80 {
+    background-color: rgba(22, 37, 68, 0.85) !important;
+}
+#modal-content h3, #modal-content .font-bold { color: white; }
+#modal-summary {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+#modal-content .bg-gray-100 {
+    background-color: rgba(255, 255, 255, 0.09) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* --- 蝣箄?敶? --- */
+#confirm-modal > div > div {
+    border: 2px solid transparent;
+    background: 
+        linear-gradient(rgba(30,48,82,0.5), rgba(30,48,82,0.5)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/wood-bg.jpg') border-box !important;
+    background-size: auto, 350px, 100% 100% !important;
+    background-repeat: no-repeat, repeat, no-repeat !important;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
+}
+#confirm-modal h3 { color: white !important; }
+#confirm-modal p  { color: rgba(255, 255, 255, 0.68) !important; }
+#confirm-no {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+#confirm-no:hover { background-color: rgba(255, 255, 255, 0.08) !important; }
+
+/* --- ?勗??飛敶? --- */
+#tutorial-modal-content {
+    border: 2px solid transparent;
+    background: 
+        linear-gradient(rgba(30,48,82,0.5), rgba(30,48,82,0.5)) padding-box,
+        url('images/leather-bg.jpg') padding-box,
+        url('images/wood-bg.jpg') border-box !important;
+    background-size: auto, 350px, 100% 100% !important;
+    background-repeat: no-repeat, repeat, no-repeat !important;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
+}
+#tutorial-modal-content .bg-gray-50\/80 {
+    background-color: rgba(22, 37, 68, 0.85) !important;
+}
+#tutorial-modal-content h3 { color: white !important; }
+#tutorial-modal-content .bg-gray-50\/50,
+#tutorial-modal-content .p-5.bg-gray-50\/50 {
+    background-color: #1E3052 !important;
+}
+#tutorial-modal-content .bg-gray-50 {
+    background-color: rgba(22, 37, 68, 0.85) !important;
+}
+#tutorial-modal-content .border-gray-100 {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ?飛敶??內 Banner */
+#tutorial-modal-content .bg-amber-50 {
+    background-color: rgba(184, 146, 42, 0.12) !important;
+    border-color: rgba(184, 146, 42, 0.3) !important;
+}
+#tutorial-modal-content .text-amber-800 { color: rgba(255, 255, 255, 0.85) !important; }
+
+/* --- 撱箇?瘣餃?? --- */
+#view-create > div.bg-white {
+    background-color: #1E3052 !important;
+    border-color: rgba(184, 146, 42, 0.2) !important;
+}
+
+/* --- 甇瑕瘣餃????芾???嚗????????嚗?--- */
+#btn-history-toggle {
+    background-color: rgba(255, 255, 255, 0.09) !important;
+    color: rgba(255, 255, 255, 0.70) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+#btn-history-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ==================== 蝬脤?撠蝡??箇結??==================== */
+.rivet {
+    position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #e2cfb3 0%, #7c5c3b 100%);
+    border-radius: 50%; box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 1px 1px 3px rgba(0,0,0,0.8);
+    border: 1px solid #332414; z-index: 20; margin: 0 !important;
+}
+.rivet::after { content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 1.5px; background: rgba(0,0,0,0.5); transform: translateY(-50%) rotate(45deg); }
+.rivet.tl { top: 6px; left: 6px; }
+.rivet.tr { top: 6px; right: 6px; }
+.rivet.bl { bottom: 6px; left: 6px; }
+.rivet.br { bottom: 6px; right: 6px; }
+
+/* Custom Leather Backgrounds */
+.leather-card {
+    background: linear-gradient(rgba(26, 36, 54, 0.4), rgba(26, 36, 54, 0.4)), url('images/leather-bg.jpg') repeat;
+    background-size: auto, 350px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.3);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+.leather-tab-bar {
+    background: linear-gradient(rgba(26, 36, 54, 0.6), rgba(26, 36, 54, 0.6)), url('images/leather-bg.jpg') repeat;
+    background-size: auto, 350px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.btn-gold-texture {
+    background-color: #D4AF37;
+    background-image: url('images/wood-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #3d2600 !important;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.6);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.7), inset 0 -3px 5px rgba(0,0,0,0.2);
+    border: 1px solid #EFC958;
+}
+
+.btn-ruby-velvet {
+    background-color: #8B0000;
+    background-image: url('images/ruby-velvet.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #FFF2D6 !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.6), inset 0 2px 5px rgba(255,255,255,0.2), inset 0 -3px 5px rgba(0,0,0,0.4);
+    border: 1px solid #FF6B6B;
+}
+
+.btn-rose-gold {
+    background-color: #B76E79;
+    background-image: url('images/rose-gold.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #3d1c21 !important;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+    box-shadow: 0 4px 15px rgba(183, 110, 121, 0.4), inset 0 2px 5px rgba(255,255,255,0.4), inset 0 -3px 5px rgba(0,0,0,0.2);
+    border: 1px solid #D69FAB;
+}
+
+.btn-platinum {
+    background-color: #E5E4E2;
+    background-image: url('images/platinum.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #1a1a1a !important;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+    box-shadow: 0 4px 15px rgba(229, 228, 226, 0.4), inset 0 2px 5px rgba(255,255,255,0.6), inset 0 -3px 5px rgba(0,0,0,0.2);
+    border: 1px solid #FFFFFF;
+}
+
+/* ???恍?脣? (瘛∪銝行憭? */
+@keyframes splashLogoEnter {
+    0% { transform: scale(0.6); opacity: 0; filter: blur(10px); }
+    100% { transform: scale(1.1); opacity: 1; filter: blur(0px); }
+}
+
+/* ???恍??頝喳?? (?澆/敹歲?? */
+@keyframes splashLogoPulse {
+    0% { transform: scale(1.1); }
+    50% { transform: scale(1.25); }
+    100% { transform: scale(1.1); }
+}
+
+.animate-splash-logo {
+    /* ?銵?0.5 蝘??脣嚗??活??(infinite) ?瑁?頝喳??寞? */
+    animation: 
+        splashLogoEnter 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards,
+        splashLogoPulse 1.2s ease-in-out 0.4s infinite;
+}
+
