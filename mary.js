@@ -49,7 +49,7 @@ async function apiSubmit(data) {
 
     // 管理員無限點數防護：阻擋管理員寫入後端，保護彩池與真實數據
     if (typeof CasinoApp !== 'undefined' && CasinoApp.user && typeof ADMIN_USER_IDS !== 'undefined' && ADMIN_USER_IDS.includes(CasinoApp.user.userId)) {
-        console.log("Admin Mode: Intercepting apiSubmit", data);
+
         const winPts = data.winPoints || 0;
         return {
             success: true,

@@ -4935,7 +4935,7 @@ function copyTextToClipboard(text, forceCopyOnly = false, silent = false) {
             title: e ? e.name : '活動分享',
             text: text
         }).then(() => {
-            console.log('分享成功');
+
         }).catch((err) => {
             // 若使用者主動取消分享，會回傳 AbortError，此時不須執行複製
             if (err.name !== 'AbortError') {
