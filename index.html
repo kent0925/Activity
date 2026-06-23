@@ -64,6 +64,12 @@
         <div id="view-home" class="view-section space-y-2 animate-fade-in">
             <!-- Premium 排行榜核心區塊 -->
             <div id="home-rankings-section" class="premium-dark-card p-4 pb-2 animate-fade-in relative overflow-hidden">
+
+<div class="absolute top-2 left-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+<div class="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+<div class="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+
                 <!-- 背景微光裝飾 -->
                 <div class="absolute top-0 left-0 w-32 h-32 bg-amber-500/10 rounded-full -ml-16 -mt-16 blur-3xl"></div>
                 <div class="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mb-16 blur-3xl"></div>
@@ -287,7 +293,7 @@
                         </div>
                         
                         <div class="flex flex-col items-end justify-center pt-2">
-                            <label class="block text-xs font-bold text-[#D4AF37] mb-1.5">不克出席，僅贊助/認桌</label>
+                            <label class="block text-xs font-bold text-[#D4AF37] mb-1.5">🙋‍♂️ 不克出席，僅贊助 / 認桌</label>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="no-attendance-sponsor" onchange="toggleNoAttendance(this)" class="sr-only peer">
                                 <div class="w-11 h-6 bg-[#3d2b1f] border border-[#8b6914] peer-focus:outline-none rounded-full peer peer-checked:bg-gradient-to-r peer-checked:from-[#D4AF37] peer-checked:to-[#A67C00] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#f3e5ab] after:border-[#8b6914] after:border after:shadow-[0_2px_4px_rgba(0,0,0,0.5)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
@@ -349,11 +355,17 @@
                         </div>
                     </div>
                 </div>
-                <div id="guest-section" class="premium-card p-4 rounded-xl border border-amber-900/50">
+                <div id="guest-section" class="premium-dark-card p-4 rounded-xl border border-amber-900/50 mt-4">
+
+<div class="absolute top-2 left-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+<div class="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+<div class="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+
                     <div class="flex justify-between items-center mb-3">
                         <label class="text-sm font-bold text-[#D4AF37] flex items-center gap-1.5"><i
                                 data-lucide="user-plus" class="w-4 h-4 text-[#D4AF37]"></i> 來賓</label>
-                        <span class="text-xs text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">選填</span>
+                        <span class="text-xs text-orange-400 bg-orange-900/50 border border-orange-700 px-2 py-0.5 rounded-full">選填</span>
                     </div>
                     <div id="guest-list-container" class="space-y-2 mb-3 empty:hidden"></div>
                     <div class="bg-black/20 p-3 rounded-lg border border-amber-900/30 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] space-y-2">
@@ -381,11 +393,17 @@
                     </div>
                 </div>
 
-                <div class="premium-card p-4 border border-amber-900/50 rounded-xl mt-4">
+                <div class="premium-dark-card p-4 border border-amber-900/50 rounded-xl mt-4 relative">
+
+<div class="absolute top-2 left-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+<div class="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+<div class="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+
                     <div class="flex justify-between items-center mb-3">
                         <label class="text-sm font-bold text-[#D4AF37] flex items-center gap-1.5"><i data-lucide="gift"
                                 class="w-4 h-4 text-[#D4AF37]"></i> 贊助項目</label>
-                        <span class="text-xs text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full">選填</span>
+                        <span class="text-xs text-purple-400 bg-purple-900/50 border border-purple-700 px-2 py-0.5 rounded-full">選填</span>
                     </div>
                     <div id="sponsor-list-container" class="space-y-2 mb-3 empty:hidden"></div>
                     <div class="space-y-3 bg-black/20 p-3 rounded-lg border border-amber-900/30 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
