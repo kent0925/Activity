@@ -1540,6 +1540,9 @@
   .border-gray-600 {
     border-color: var(--color-gray-600);
   }
+  .border-gray-700 {
+    border-color: var(--color-gray-700);
+  }
   .border-green-200 {
     border-color: var(--color-green-200);
   }
@@ -1602,6 +1605,9 @@
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-red-500) 50%, transparent);
     }
+  }
+  .border-red-800 {
+    border-color: var(--color-red-800);
   }
   .border-red-900\/50 {
     border-color: color-mix(in srgb, oklch(39.6% 0.141 25.723) 50%, transparent);

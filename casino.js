@@ -182,7 +182,7 @@ const CasinoApp = {
         this.currentView = gameType;
         
         // 小瑪莉與老虎機都不需要底部籌碼列
-        if (gameType === 'mary' || gameType === 'slot') {
+        if (gameType === 'mary' || gameType === 'slot' || gameType === 'lobby') {
             document.getElementById('casino-footer').classList.add('translate-y-full');
             // 初始化小瑪莉
             if (typeof initMaryBoard === 'function') {
@@ -448,8 +448,8 @@ const CasinoApp = {
         const evenOdds = [
             { id: '1to18', label: '1 to 18' },
             { id: 'even', label: 'EVEN' },
-            { id: 'red', label: 'RED', cls: 'text-red-500' },
-            { id: 'black', label: 'BLACK', cls: 'text-gray-900' },
+            { id: 'red', label: 'RED', cls: 'bg-red-600 text-white' },
+            { id: 'black', label: 'BLACK', cls: 'bg-gray-900 text-white' },
             { id: 'odd', label: 'ODD' },
             { id: '19to36', label: '19 to 36' }
         ];
@@ -458,9 +458,9 @@ const CasinoApp = {
             const el = document.createElement('div');
             el.className = 'roulette-cell cell-trans col-span-2 mt-[1px] text-[10px] sm:text-xs relative'; // 跨 2 欄
             if (e.cls) {
-                el.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-white/90 ${e.cls} rounded">${e.label}</div>`;
+                el.innerHTML = `<div class="w-full h-full flex items-center justify-center ${e.cls} rounded">${e.label}</div>`;
             } else {
-                el.innerText = e.label;
+                el.innerHTML = `<div class="w-full h-full flex items-center justify-center font-bold text-xs">${e.label}</div>`;
             }
             el.onclick = () => this.placeRouletteBet(e.id, el);
             numbersGrid.appendChild(el);
