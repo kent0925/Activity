@@ -669,16 +669,22 @@ button.bg-gradient-to-r.from-\[\#D4AF37\].to-\[\#A67C00\] {
     border: 1px solid #FFFFFF;
 }
 
-/* 啟動畫面動畫 (Splash Screen Animation) */
-@keyframes splashLogoAnim {
-    /* 縮小起始尺寸 (從 0.85 改成 0.6) 讓一開始看起來更遠 */
+/* 啟動畫面進場動畫 (淡入並放大) */
+@keyframes splashLogoEnter {
     0% { transform: scale(0.6); opacity: 0; filter: blur(10px); }
-    /* 放大最高點尺寸 (從 1.05 改成 1.2) 讓衝出來的感覺更強烈 */
-    30% { transform: scale(1.2); opacity: 1; filter: blur(0px); }
-    /* 回彈到原始大小 */
-    100% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.1); opacity: 1; filter: blur(0px); }
+}
+
+/* 啟動畫面持續跳動動畫 (呼吸/心跳感) */
+@keyframes splashLogoPulse {
+    0% { transform: scale(1.1); }
+    50% { transform: scale(1.25); }
+    100% { transform: scale(1.1); }
 }
 
 .animate-splash-logo {
-    animation: splashLogoAnim 1.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    /* 先執行 0.5 秒的進場，接著無限次數 (infinite) 執行跳動特效 */
+    animation: 
+        splashLogoEnter 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards,
+        splashLogoPulse 1.2s ease-in-out 0.4s infinite;
 }
