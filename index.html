@@ -139,16 +139,44 @@
 
             <!-- 分類 Tab (原 view-event-list 內容) -->
             <div id="active-event-section">
+                <style>
+                    .vip-filter-container {
+                        background: rgba(10, 15, 22, 0.95);
+                        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+                    }
+                    .vip-filter-tab {
+                        background: rgba(255, 255, 255, 0.03);
+                        border: 1px solid rgba(212, 175, 55, 0.2);
+                        color: #A0AEC0;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        box-shadow: inset 0 1px 2px rgba(255,255,255,0.05);
+                    }
+                    .vip-filter-tab:hover {
+                        background: rgba(212, 175, 55, 0.1);
+                        border-color: rgba(212, 175, 55, 0.4);
+                        color: #EFECE5;
+                    }
+                    .vip-filter-tab.active {
+                        background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #8B6508 100%) !important;
+                        border-color: #F3E5AB !important;
+                        color: #1A0F0A !important;
+                        font-weight: 900 !important;
+                        box-shadow: 0 2px 8px rgba(212, 175, 55, 0.5), inset 0 1px 1px rgba(255,255,255,0.8) !important;
+                        text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+                        transform: translateY(-1px);
+                    }
+                </style>
                 <div id="filter-container"
-                    class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 sticky top-[56px] pt-2 z-40 bg-gray-50/95 backdrop-blur-sm">
+                    class="vip-filter-container flex gap-2 overflow-x-auto hide-scrollbar pb-3 px-4 sticky top-[56px] pt-3 z-40 backdrop-blur-md">
                     <button onclick="switchCategory('all')" id="tab-all"
-                        class="filter-tab active px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">全部</button>
+                        class="filter-tab vip-filter-tab active px-5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">全部</button>
                     <button onclick="switchCategory('general')" id="tab-general"
-                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">一般</button>
+                        class="filter-tab vip-filter-tab px-5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">一般</button>
                     <button onclick="switchCategory('banquet')" id="tab-banquet"
-                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">餐會</button>
+                        class="filter-tab vip-filter-tab px-5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">餐會</button>
                     <button onclick="switchCategory('travel')" id="tab-travel"
-                        class="filter-tab px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium whitespace-nowrap shadow-sm">旅遊</button>
+                        class="filter-tab vip-filter-tab px-5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">旅遊</button>
                 </div>
 
                 <!-- 活動列表骨架屏 -->
