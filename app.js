@@ -4148,6 +4148,7 @@ async function generateEventCanvas(e, data, stats) {
             const family = getIntField(p, 'family');
             const isHonorary = (family === 0);
             if (!isHonorary) countP++;
+            let itemHtml = '';
             const guestData = parseGuestData(p);
             const finalGuestCount = calculateFinalGuestCount(p, guestData);
             const total = family + finalGuestCount;
@@ -4587,6 +4588,7 @@ const data = appState.cachedDetails || [];
                 const family = getIntField(p, 'family');
                 const isHonorary = (family === 0);
                 if (!isHonorary) countP++;
+                let pText = '';
                 const guestData = parseGuestData(p);
                 // 冗餘處理：使用統一計算函數
                 const finalGuestCount = calculateFinalGuestCount(p, guestData);
