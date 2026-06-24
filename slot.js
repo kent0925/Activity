@@ -76,6 +76,7 @@ function startSlotMachine() {
             clearInterval(intervals[index]);
             const sym = symbols[Math.floor(Math.random() * symbols.length)];
             reels[index].querySelector('.slot-symbol').textContent = sym;
+            if (window.CasinoAudio) window.CasinoAudio.playReelStop();
             reels[index].classList.remove('spinning');
             reels[index].classList.add('stopped');
             finalSymbols[index] = sym;
