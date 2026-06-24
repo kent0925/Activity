@@ -2578,10 +2578,13 @@ async function openDetailsModal(filterType = 'all') {
 
 function renderDetailLists(data) {
     const listP = document.getElementById('details-list-people');
+    const listH = document.getElementById('details-list-honor');
     const listT = document.getElementById('details-list-travel');
     const listI = document.getElementById('details-list-items');
 
-    listP.innerHTML = ''; listT.innerHTML = ''; listI.innerHTML = '';
+    listP.innerHTML = ''; listH.innerHTML = ''; listT.innerHTML = ''; listI.innerHTML = '';
+    document.getElementById('honor-separator').classList.add('hidden');
+    listH.classList.add('hidden');
     document.getElementById('travel-separator').classList.add('hidden');
     listT.classList.add('hidden');
     document.getElementById('details-separator').classList.add('hidden');
@@ -2591,8 +2594,10 @@ function renderDetailLists(data) {
     let hasItems = false;
 
     const fragP = document.createDocumentFragment();
+    const fragH = document.createDocumentFragment();
     const fragT = document.createDocumentFragment();
     const fragI = document.createDocumentFragment();
+    let countP = 0;
 
     data.forEach((row, idx) => {
         const name = findCaseInsensitiveValue(row, ['name', 'Name', '姓名', 'UserName', 'username']) || 'Unknown';
@@ -2626,7 +2631,9 @@ function renderDetailLists(data) {
         const tableCount = getIntField(row, 'tableCount');
         const sponsor = getField(row, 'sponsor');
 
-        const num = (idx + 1).toString().padStart(2, '0');
+        const isHonorary = (family === 0);
+        if (!isHonorary) countP++;
+        const num = isHonorary ? '<i data-lucide="crown" class="w-4 h-4 text-[#D4AF37]"></i>' : countP.toString().padStart(2, '0');
 
         // 取得角色標籤
         const roles = getParticipantRoles(name, appState.currentEvent);
@@ -2657,13 +2664,18 @@ function renderDetailLists(data) {
 
         const medalHtml = maryMedal ? `<span class="ml-1.5 text-base">${maryMedal}</span>` : '';
 
+        const numDisplay = isHonorary ? num : `${num}.`;
         liP.innerHTML = `
             <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                <span class="text-gray-400 font-mono text-sm">${num}.</span>
+                <span class="text-gray-400 font-mono text-sm flex items-center">${numDisplay}</span>
                 ${nameDisplayHtml}${nameSuffix}${medalHtml}
             </div>
             ${subHtml}`;
-        fragP.appendChild(liP);
+        if (isHonorary) {
+            fragH.appendChild(liP);
+        } else {
+            fragP.appendChild(liP);
+        }
 
         if (appState.currentEvent.type === 'travel') {
             // 檢查主要人員
@@ -2722,8 +2734,14 @@ function renderDetailLists(data) {
     });
 
     listP.appendChild(fragP);
+    listH.appendChild(fragH);
     listT.appendChild(fragT);
     listI.appendChild(fragI);
+    
+    if (fragH.children.length > 0) {
+        document.getElementById('honor-separator').classList.remove('hidden');
+        listH.classList.remove('hidden');
+    }
 
     if (hasTravel) {
         document.getElementById('travel-separator').classList.remove('hidden');
@@ -4130,7 +4148,7 @@ async function generateEventCanvas(e, data, stats) {
             const guestData = parseGuestData(p);
             const finalGuestCount = calculateFinalGuestCount(p, guestData);
             const total = family + finalGuestCount;
-            const num = count.toString().padStart(2, '0');
+            const num = isHonorary ? '<span style="font-size:1.1em">👑</span>' : countP.toString().padStart(2, '0') + '.';
             const status = p.status || p.note || '';
             let prefix = status ? status : '';
 
@@ -4145,33 +4163,33 @@ async function generateEventCanvas(e, data, stats) {
                 else if (rankIndex === 2) { nameColor = '#F87171'; maryMedal = '🥉'; }
             }
 
-            html += `<div class="list-item"><div class="item-title">`;
-            html += `<span style="color:#D4AF7A;margin-right:0.5em;">${num}.</span> `;
+            itemHtml += `<div class="list-item"><div class="item-title">`;
+            itemHtml += `<span style="color:#D4AF7A;margin-right:0.5em;">${num}</span> `;
             
             if (roles.length > 0) {
                 const r = roles[0]; // 取第一個職稱
                 const icons = roles.map(r => r.icon).join('');
                 const roleNames = roles.map(r => r.roleName).join('、');
-                html += `<span class="name" style="color:${r.color};"><span style="font-size:1.15em;margin-right:2px">${icons}</span>${escapeHtml(prefix)}${escapeHtml(p.name)}<span class="tag" style="color:${r.color};margin-left:0.3em;">${roleNames}</span></span>`;
+                itemHtml += `<span class="name" style="color:${r.color};"><span style="font-size:1.15em;margin-right:2px">${icons}</span>${escapeHtml(prefix)}${escapeHtml(p.name)}<span class="tag" style="color:${r.color};margin-left:0.3em;">${roleNames}</span></span>`;
             } else {
                 const finalNameColor = nameColor !== 'inherit' ? nameColor : '#F8FAFC';
-                html += `<span class="name" style="color:${finalNameColor};">${escapeHtml(prefix)}${escapeHtml(p.name)}</span>`;
+                itemHtml += `<span class="name" style="color:${finalNameColor};">${escapeHtml(prefix)}${escapeHtml(p.name)}</span>`;
             }
 
             if (maryMedal) {
-                html += `<span style="font-size:1.15em;margin-left:4px">${maryMedal}</span>`;
+                itemHtml += `<span style="font-size:1.15em;margin-left:4px">${maryMedal}</span>`;
             }
 
-            if (total > 1) html += `<span class="count">×${total}</span>`;
-            html += `</div>`;
+            if (total > 1) itemHtml += `<span class="count">×${total}</span>`;
+            itemHtml += `</div>`;
 
             if (guestData.length > 0) {
                 const guestParts = guestData.map(g => g.count > 1 ? `${g.name}×${g.count}` : g.name);
-                html += `<div class="item-detail">來賓：${guestParts.join('、')}</div>`;
+                itemHtml += `<div class="item-detail">來賓：${guestParts.join('、')}</div>`;
             } else {
                 const guestNameStr = getField(p, 'guestName');
                 if (guestNameStr && guestNameStr !== '無') {
-                    html += `<div class="item-detail">來賓：${guestNameStr}</div>`;
+                    itemHtml += `<div class="item-detail">來賓：${guestNameStr}</div>`;
                 }
             }
 
@@ -4188,12 +4206,21 @@ async function generateEventCanvas(e, data, stats) {
                     });
                 }
                 if (travelLines.length > 0) {
-                    html += `<div class="item-detail" style="color:#A88B60;">${travelLines.join('、')}</div>`;
+                    itemHtml += `<div class="item-detail" style="color:#A88B60;">${travelLines.join('、')}</div>`;
                 }
             }
-            html += `</div>`;
+            itemHtml += `</div>`;
+        
+            if (isHonorary) honoraryHtml += itemHtml;
+            else attendeesHtml += itemHtml;
         });
-        html += `</div></div>`;
+        
+        if (attendeesHtml) {
+            html += `<div class="inner-box"><div class="list-card"><div class="list-header"><span class="icon">👥</span><h2>報名名單</h2></div>${attendeesHtml}</div></div>`;
+        }
+        if (honoraryHtml) {
+            html += `<div class="inner-box" style="margin-top:-10px;"><div class="list-card" style="border:1px solid rgba(212,175,55,0.4);"><div class="list-header" style="border-bottom:1px solid rgba(212,175,55,0.3);"><span class="icon">👑</span><h2 style="color:#D4AF37;">榮譽贊助</h2></div>${honoraryHtml}</div></div>`;
+        }
     }
 
     if (data.length > 0) {
@@ -4561,7 +4588,7 @@ const data = appState.cachedDetails || [];
                 // ★ 修正：FamilyCount 現在儲存為「眷屬數」，getIntField 已補償 +1 (本人)
                 const total = family + finalGuestCount;
 
-                const num = count.toString().padStart(2, '0');
+                const num = isHonorary ? '👑' : countP.toString().padStart(2, '0');
                 const status = p.status || p.note || '';
                 const prefix = status ? status : '';
 
@@ -4580,23 +4607,23 @@ const data = appState.cachedDetails || [];
                 if (roles.length > 0) {
                     const icons = roles.map(r => r.icon).join('');
                     const roleNames = roles.map(r => r.roleName).join('、');
-                    text += `${num}. ${icons}${prefix}${p.name} ${roleNames}${maryMedalCopy ? ' ' + maryMedalCopy : ''}`;
+                    pText += `${num}. ${icons}${prefix}${p.name} ${roleNames}${maryMedalCopy ? ' ' + maryMedalCopy : ''}`;
                 } else {
-                    text += `${num}. ${prefix}${p.name}${maryMedalCopy ? ' ' + maryMedalCopy : ''}`;
+                    pText += `${num}. ${prefix}${p.name}${maryMedalCopy ? ' ' + maryMedalCopy : ''}`;
                 }
-                if (total > 1) text += ` *${total}`;
-                text += `\n`;
+                if (total > 1) pText += ` *${total}`;
+                pText += `\n`;
 
                 // ★ 修改：來賓名單整合為單行，顯示在下方 ★
                 if (guestData.length > 0) {
                     const guestParts = guestData.map(g => {
                         return g.count > 1 ? `${g.name}*${g.count}` : g.name;
                     });
-                    text += `      來賓：${guestParts.join('、')}\n`;
+                    pText += `      來賓：${guestParts.join('、')}\n`;
                 } else {
                     const guestNameStr = getField(p, 'guestName');
                     if (guestNameStr && guestNameStr !== '無') {
-                        text += `      來賓：${guestNameStr}\n`;
+                        pText += `      來賓：${guestNameStr}\n`;
                     }
                 }
 
@@ -4615,8 +4642,15 @@ const data = appState.cachedDetails || [];
                             if (extras.length > 0) {
                                 travelLines.push(`[賓]${g.name}: ${extras.join('/')}`);
                             }
-                        });
-                    }
+                        
+                if (isHonorary) honoraryText += pText;
+                else attendeesText += pText;
+            });
+            text += attendeesText;
+            if (honoraryText) {
+                text += `\n👑 榮譽贊助：\n` + honoraryText;
+            }
+        }
                     if (travelLines.length > 0) {
                         travelLines.forEach(l => text += `      ${l}\n`);
                     }
