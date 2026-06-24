@@ -231,14 +231,14 @@
                         </div>
                     </div>
                 </div>
-                <div id="travel-itinerary-section" class="hidden mt-6 pt-5 border-t border-dashed border-amber-900/50">
+                <div id="travel-itinerary-section" class="hidden mt-4 pt-3 border-t border-dashed border-amber-900/50">
                     <details
-                        class="group main-itinerary rounded-2xl border border-amber-900/50 open:bg-black/20 open:shadow-lg transition-all duration-300 overflow-hidden">
-                        <summary class="flex justify-between items-center p-4 cursor-pointer select-none premium-gradient">
-                            <span class="flex items-center gap-3 font-bold text-[#3d2600] text-base">
-                                <i data-lucide="map" class="w-5 h-5 text-[#3d2600]"></i> 查看完整行程
+                        class="group main-itinerary rounded-xl border border-amber-900/50 open:bg-black/20 open:shadow-lg transition-all duration-300 overflow-hidden">
+                        <summary class="flex justify-between items-center px-4 py-2 cursor-pointer select-none premium-gradient">
+                            <span class="flex items-center gap-2 font-bold text-[#3d2600] text-sm">
+                                <i data-lucide="map" class="w-4 h-4 text-[#3d2600]"></i> 查看完整行程
                             </span>
-                            <div class="bg-white/20 rounded-full p-1.5 shadow-sm arrow-icon">
+                            <div class="bg-white/20 rounded-full p-1 shadow-sm arrow-icon">
                                 <i data-lucide="chevron-down" class="w-4 h-4 text-[#3d2600]"></i>
                             </div>
                         </summary>
@@ -272,14 +272,14 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-[#D4AF37] mb-2">報名者</label>
-                        <div class="flex gap-4 items-center bg-black/20 p-4 rounded-2xl border border-amber-900/50 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
+                        <div class="inline-flex gap-3 items-center bg-black/20 p-2 pr-6 rounded-2xl border border-amber-900/50 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] max-w-full">
                             <img id="user-picture" src="https://ui-avatars.com/api/?name=Guest"
-                                class="w-12 h-12 rounded-full bg-[#0D131A] object-cover border-2 border-[#D4AF37] shadow-sm">
-                            <div class="flex-1 min-w-0">
+                                class="w-10 h-10 rounded-full bg-[#0D131A] object-cover border-2 border-[#D4AF37] shadow-sm shrink-0">
+                            <div class="min-w-0">
                                 <input type="text" id="user-name"
-                                    class="w-full bg-transparent border-none p-0 text-[#EFECE5] font-bold text-base focus:ring-0"
+                                    class="w-full bg-transparent border-none p-0 text-[#EFECE5] font-bold text-sm focus:ring-0 truncate"
                                     readonly value="讀取中...">
-                                <div class="text-xs text-amber-500 mt-0.5">將以此身分進行報名</div>
+                                <div class="text-[10px] text-amber-500 mt-0.5">將以此身分進行報名</div>
                             </div>
                         </div>
                         <input type="hidden" id="user-id">
@@ -428,9 +428,9 @@
                         </div>
                         <div id="sponsor-input-area" class="flex flex-wrap gap-2 items-center min-h-[36px]"></div>
                         <button type="button" onclick="addSponsor()"
-                            class="w-full bg-[#0D131A] border border-[#D4AF37]/50 text-[#D4AF37] px-3 py-2 rounded-lg text-sm font-bold hover:bg-white/5 transition flex justify-center items-center gap-1.5 active:scale-95 shadow-sm">
-                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> 新增贊助
-                        </button>
+    class="w-full premium-gradient text-[#3d2600] font-bold shadow-md py-2 rounded-lg text-sm hover:brightness-110 transition flex justify-center items-center gap-1 active:scale-95">
+    <i data-lucide="plus" class="w-4 h-4"></i> 新增贊助
+</button>
                         <p class="text-[10px] text-amber-500 mt-1 font-medium text-center">※ 請務必點擊「新增贊助」按鈕，資料才會增加。</p>
                     </div>
                 </div>
