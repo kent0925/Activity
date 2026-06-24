@@ -250,12 +250,14 @@
             <form id="regForm" class="mary-glass bg-[#0A0F16]/90 p-6 space-y-8 relative border-[2px] border-[#D4AF37]/30 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.8),_inset_0_0_20px_rgba(212,175,55,0.1)] overflow-hidden" onsubmit="handleSubmit(event)">
                 <!-- 絨布質感的微紅色徑向光芒 -->
                 <div class="absolute inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_at_center,rgba(139,0,0,0.15)_0%,transparent_70%)]"></div>
-                <div class="relative z-10">
+                
+                <!-- 四個角落的鉚釘 (提升 z-index 並相對 form 定位) -->
+                <div class="absolute top-3 left-3 w-2 h-2 rounded-full bg-black shadow-inner border border-white/10 pointer-events-none z-20"></div>
+                <div class="absolute top-3 right-3 w-2 h-2 rounded-full bg-black shadow-inner border border-white/10 pointer-events-none z-20"></div>
+                <div class="absolute bottom-3 left-3 w-2 h-2 rounded-full bg-black shadow-inner border border-white/10 pointer-events-none z-20"></div>
+                <div class="absolute bottom-3 right-3 w-2 h-2 rounded-full bg-black shadow-inner border border-white/10 pointer-events-none z-20"></div>
 
-  <div class="absolute top-2 left-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
-  <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
-  <div class="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
-  <div class="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
+                <div class="relative z-10">
 
                 <div class="flex items-center justify-between pb-4 border-b border-white/10">
                     <div class="flex items-center gap-3">
@@ -366,7 +368,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="guest-section" class="premium-dark-card p-4 rounded-xl border border-amber-900/50 mt-4">
+                <div id="guest-section" class="premium-dark-card p-4 rounded-xl border border-amber-900/50 mt-4 relative">
 
 <div class="absolute top-2 left-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
 <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#0D131A] shadow-inner border border-black/80 pointer-events-none"></div>
@@ -450,7 +452,6 @@
                         class="hidden bg-red-50 text-red-500 border border-red-200 font-bold py-3.5 px-4 rounded-xl hover:bg-red-100 transition shadow-sm active:scale-95">
                         <i data-lucide="trash-2" class="w-5 h-5"></i>
                     </button>
-                </div>
                 </div>
                 </div> <!-- 結束 relative z-10 -->
             </form>
