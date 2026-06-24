@@ -4141,10 +4141,13 @@ async function generateEventCanvas(e, data, stats) {
 
     if (includeNames && data.length > 0) {
         html += `<div class="inner-box"><div class="list-card"><div class="list-header"><span class="icon">👥</span><h2>報名名單</h2></div>`;
-        let count = 0;
+        let attendeesHtml = '';
+        let honoraryHtml = '';
+        let countP = 0;
         data.forEach(p => {
-            count++;
             const family = getIntField(p, 'family');
+            const isHonorary = (family === 0);
+            if (!isHonorary) countP++;
             const guestData = parseGuestData(p);
             const finalGuestCount = calculateFinalGuestCount(p, guestData);
             const total = family + finalGuestCount;
@@ -4577,10 +4580,13 @@ const data = appState.cachedDetails || [];
 
 
         if (options.includeNames !== false) {
-            let count = 0;
+            let attendeesText = '';
+            let honoraryText = '';
+            let countP = 0;
             data.forEach((p, i) => {
-                count++;
                 const family = getIntField(p, 'family');
+                const isHonorary = (family === 0);
+                if (!isHonorary) countP++;
                 const guestData = parseGuestData(p);
                 // 冗餘處理：使用統一計算函數
                 const finalGuestCount = calculateFinalGuestCount(p, guestData);
