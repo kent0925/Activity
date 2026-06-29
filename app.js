@@ -2406,7 +2406,18 @@ function renderEventGrid(type) {
         DOM.noEventsMsg.classList.add('hidden');
         filtered.forEach(e => {
             const card = document.createElement('div');
-            card.className = "leather-card p-4 rounded-2xl cursor-pointer flex items-center gap-4 relative overflow-hidden group hover:shadow-[0_8px_25px_rgba(212,175,55,0.15)] transition-shadow";
+            card.className = "p-4 rounded-2xl cursor-pointer flex items-center gap-4 relative overflow-hidden group hover:shadow-[0_8px_25px_rgba(212,175,55,0.15)] transition-all transform hover:-translate-y-1 bg-[#0D131A] border border-[#D4AF37]/30 shadow-lg";
+            
+            // 加入 VIP 票券邊緣的半圓形缺口 (Ticket Notch) 效果
+            const notchLeft = document.createElement('div');
+            notchLeft.className = "absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-50 rounded-full border-r border-[#D4AF37]/30 shadow-inner z-10";
+            
+            const notchRight = document.createElement('div');
+            notchRight.className = "absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-50 rounded-full border-l border-[#D4AF37]/30 shadow-inner z-10";
+            
+            card.appendChild(notchLeft);
+            card.appendChild(notchRight);
+            
             card.onclick = () => enterEventDetail(e.id);
 
             let icon, colorClass, bgClass;
@@ -2425,7 +2436,7 @@ function renderEventGrid(type) {
                 badge = '<span class="absolute top-0 right-0 bg-[#3A1C1C] border-b border-l border-red-500/30 text-red-400 text-[10px] px-3 py-1 rounded-bl-lg font-bold">已截止</span>';
             }
 
-            // ★ 倒數標記：距離活動還有幾天
+            // ★ 倒數標記：距離活動還有幾天 (現代感膠囊標籤)
             let countdownBadge = '';
             if (e.time) {
                 const now = new Date();
@@ -2440,31 +2451,42 @@ function renderEventGrid(type) {
                     const eventMid = new Date(eventStart.getFullYear(), eventStart.getMonth(), eventStart.getDate());
                     const diffDays = Math.round((eventMid - todayMid) / (1000 * 60 * 60 * 24));
                     if (diffDays === 0) {
-                        countdownBadge = '<span class="inline-flex items-center gap-0.5 text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded-full font-bold">🔴 今天！</span>';
+                        countdownBadge = '<span class="inline-flex items-center gap-1 text-[10px] bg-gradient-to-r from-red-600 to-red-500 text-white px-2 py-0.5 rounded-full font-bold shadow-[0_0_8px_rgba(239,68,68,0.4)]">🔴 今天！</span>';
                     } else if (diffDays === 1) {
-                        countdownBadge = '<span class="inline-flex items-center gap-0.5 text-[10px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-full font-bold">⏰ 明天</span>';
+                        countdownBadge = '<span class="inline-flex items-center gap-1 text-[10px] bg-gradient-to-r from-amber-500 to-amber-400 text-white px-2 py-0.5 rounded-full font-bold shadow-[0_0_8px_rgba(245,158,11,0.4)]">⏰ 明天</span>';
                     } else if (diffDays > 1 && diffDays <= 7) {
-                        countdownBadge = `<span class="inline-flex items-center gap-0.5 text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-bold">📆 還有 ${diffDays} 天</span>`;
+                        countdownBadge = `<span class="inline-flex items-center gap-1 text-[10px] bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#D4AF37] px-2 py-0.5 rounded-full font-bold shadow-[0_0_5px_rgba(212,175,55,0.2)]">📆 倒數 ${diffDays} 天</span>`;
                     }
                 }
             }
 
-            card.innerHTML = `
+            // 修改內部結構：加入右側虛線 (Ticket Perforation) 與更優雅的排版
+            const innerHTMLStr = `
                 ${badge}
-                <div class="${bgClass} w-12 h-12 rounded-2xl flex items-center justify-center ${colorClass} shrink-0 group-hover:scale-110 transition-transform">
+                <div class="${bgClass} w-14 h-14 rounded-full flex items-center justify-center ${colorClass} shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-inner border border-[#D4AF37]/20 z-10 relative">
                     <i data-lucide="${icon}" class="w-6 h-6"></i>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <h3 class="font-bold text-gray-800 text-lg mb-1 leading-snug">${escapeHtml(e.name)}</h3>
-                    <div class="text-xs text-gray-500 mb-2 break-words">主辦: ${escapeHtml(e.organizer)}</div>
-                    <div class="flex items-center gap-3 text-xs text-gray-500">
-                        <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> ${formatDateShort(e.time)}</span>
-                        <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${escapeHtml(e.location)}</span>
+                
+                <div class="flex-1 min-w-0 pr-4 border-r border-dashed border-[#D4AF37]/30 z-10 relative py-1">
+                    <h3 class="font-bold text-[#EFECE5] text-lg mb-1 leading-snug truncate group-hover:text-[#D4AF37] transition-colors">${escapeHtml(e.name)}</h3>
+                    <div class="flex items-center gap-3 text-xs text-gray-400 mb-1.5">
+                        <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-[#A67C00]"></i> ${formatDateShort(e.time)}</span>
+                        <span class="flex items-center gap-1 truncate"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-[#A67C00]"></i> ${escapeHtml(e.location)}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="text-[10px] text-gray-500 bg-white/5 px-1.5 py-0.5 rounded">主辦: ${escapeHtml(e.organizer)}</div>
                         ${countdownBadge}
                     </div>
                 </div>
-                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300"></i>
+                
+                <div class="shrink-0 w-10 flex items-center justify-center z-10 relative">
+                    <div class="w-8 h-8 rounded-full bg-[#D4AF37]/10 flex items-center justify-center group-hover:bg-[#D4AF37] transition-colors">
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-[#D4AF37] group-hover:text-[#0D131A] transition-colors"></i>
+                    </div>
+                </div>
             `;
+            // 使用 += 是因為前面已經 appendChild(notch) 了
+            card.innerHTML += innerHTMLStr;
             container.appendChild(card);
         });
         refreshIcons();
