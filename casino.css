@@ -447,3 +447,32 @@ details[open]>summary .arrow-icon {
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(212, 175, 55, 0.3);
 }
+
+/* Roulette Betting Board Cells */
+.roulette-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: filter 0.2s;
+    user-select: none;
+}
+.roulette-cell:hover {
+    filter: brightness(1.2);
+}
+.cell-red {
+    background-color: #dc2626;
+}
+.cell-black {
+    background-color: #111827;
+    border: 1px solid #374151;
+}
+.cell-green {
+    background-color: #16a34a;
+}
+.cell-trans {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
