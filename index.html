@@ -144,8 +144,9 @@
                         background: rgba(10, 15, 22, 0.85);
                         backdrop-filter: blur(12px);
                         -webkit-backdrop-filter: blur(12px);
-                        border-bottom: 1px solid rgba(212, 175, 55, 0.15);
-                        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.8);
+                        /* 原理一：凹陷效果 */
+                        box-shadow: inset 0 6px 10px rgba(0,0,0,0.8), inset 0 -1px 1px rgba(255,255,255,0.05);
+                        border-bottom: 1px solid rgba(0, 0, 0, 0.8);
                         margin-left: -1rem;
                         margin-right: -1rem;
                         padding-left: 1rem;
@@ -153,23 +154,26 @@
                     }
                     .vip-filter-tab {
                         background: rgba(255, 255, 255, 0.03);
-                        border: 1px solid rgba(212, 175, 55, 0.2);
+                        border: 1px solid rgba(255, 255, 255, 0.05);
                         color: #A0AEC0;
                         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        box-shadow: inset 0 1px 2px rgba(255,255,255,0.05);
+                        /* 原理一：微微凸起 */
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
                     }
                     .vip-filter-tab:hover {
-                        background: rgba(212, 175, 55, 0.1);
-                        border-color: rgba(212, 175, 55, 0.4);
+                        background: rgba(255, 255, 255, 0.08);
+                        border-color: rgba(255, 255, 255, 0.15);
                         color: #EFECE5;
                     }
                     .vip-filter-tab.active {
-                        background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #8B6508 100%) !important;
-                        border-color: #F3E5AB !important;
+                        /* 原理二：金屬質感漸層 */
+                        background: linear-gradient(135deg, #fffcf0 0%, #e8d39e 25%, #bfa87a 45%, #ffffff 55%, #bf9e68 80%, #fff3ca 100%) !important;
+                        border-color: #fffcf0 !important;
                         color: #1A0F0A !important;
                         font-weight: 900 !important;
-                        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4), inset 0 1px 1px rgba(255,255,255,0.9) !important;
-                        text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+                        /* 原理一：明顯的凸起陰影 */
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.8) !important;
+                        text-shadow: 0 1px 0 rgba(255,255,255,0.5);
                         transform: translateY(-2px);
                     }
                 </style>

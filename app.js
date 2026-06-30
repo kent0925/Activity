@@ -2406,7 +2406,13 @@ function renderEventGrid(type) {
         DOM.noEventsMsg.classList.add('hidden');
         filtered.forEach(e => {
             const card = document.createElement('div');
-            card.className = "p-4 rounded-[20px] cursor-pointer flex items-center gap-4 relative overflow-hidden group hover:shadow-[0_8px_25px_rgba(212,175,55,0.25)] transition-all transform hover:-translate-y-1 bg-[rgba(20,25,35,0.8)] backdrop-blur-[10px] border border-[#D4AF37]/30 shadow-lg";
+            card.className = "p-4 rounded-[20px] cursor-pointer flex items-center gap-4 relative overflow-hidden group hover:shadow-[0_15px_30px_rgba(0,0,0,0.8)] transition-all transform hover:-translate-y-1 border border-black/80";
+            // 原理三：疊加模式 (blend mode) 融合皮革紋理
+            card.style.background = "linear-gradient(to bottom, rgba(40,45,55,0.9), rgba(15,20,25,0.95)), url('images/leather-bg.jpg')";
+            card.style.backgroundSize = "cover";
+            card.style.backgroundBlendMode = "overlay";
+            // 原理一：凸起效果 (外陰影 + 頂部邊緣高光)
+            card.style.boxShadow = "0 10px 20px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.15)";
             
             // 加入 VIP 票券邊緣的半圓形缺口 (Ticket Notch) 效果
             const notchLeft = document.createElement('div');
@@ -2451,11 +2457,13 @@ function renderEventGrid(type) {
                     const eventMid = new Date(eventStart.getFullYear(), eventStart.getMonth(), eventStart.getDate());
                     const diffDays = Math.round((eventMid - todayMid) / (1000 * 60 * 60 * 24));
                     if (diffDays === 0) {
-                        countdownBadge = '<span class="inline-flex items-center gap-1 text-[10px] bg-gradient-to-r from-red-600 to-red-500 text-white px-2 py-0.5 rounded-full font-bold shadow-[0_0_8px_rgba(239,68,68,0.4)]">🔴 今天！</span>';
+                        // 原理四：霓虹發光感
+                        countdownBadge = '<span class="inline-flex items-center gap-1 text-[10px] text-white px-2 py-0.5 rounded-full font-bold" style="background: rgba(255,0,0,0.2); box-shadow: 0 0 5px rgba(255,0,0,0.8), 0 0 15px rgba(255,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.4); text-shadow: 0 0 5px rgba(255,255,255,0.8);">🔴 今天！</span>';
                     } else if (diffDays === 1) {
-                        countdownBadge = '<span class="inline-flex items-center gap-1 text-[10px] bg-gradient-to-r from-amber-500 to-amber-400 text-white px-2 py-0.5 rounded-full font-bold shadow-[0_0_8px_rgba(245,158,11,0.4)]">⏰ 明天</span>';
+                        countdownBadge = '<span class="inline-flex items-center gap-1 text-[10px] text-white px-2 py-0.5 rounded-full font-bold" style="background: rgba(255,165,0,0.2); box-shadow: 0 0 5px rgba(255,165,0,0.8), 0 0 15px rgba(255,165,0,0.4), inset 0 1px 0 rgba(255,255,255,0.4); text-shadow: 0 0 5px rgba(255,255,255,0.8);">⏰ 明天</span>';
                     } else if (diffDays > 1 && diffDays <= 7) {
-                        countdownBadge = `<span class="inline-flex items-center gap-1 text-[10px] bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#D4AF37] px-2 py-0.5 rounded-full font-bold shadow-[0_0_5px_rgba(212,175,55,0.2)]">📆 倒數 ${diffDays} 天</span>`;
+                        // 原理四：多重濾鏡與光暈
+                        countdownBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-[#00E5FF] px-2 py-0.5 rounded-full font-bold" style="background: rgba(0,229,255,0.1); box-shadow: 0 0 5px rgba(0,229,255,0.8), 0 0 15px rgba(0,229,255,0.4), inset 0 1px 0 rgba(255,255,255,0.4); text-shadow: 0 0 8px rgba(0,229,255,0.8);">📆 倒數 ${diffDays} 天</span>`;
                     }
                 }
             }
