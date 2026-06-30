@@ -2406,7 +2406,7 @@ function renderEventGrid(type) {
         DOM.noEventsMsg.classList.add('hidden');
         filtered.forEach(e => {
             const card = document.createElement('div');
-            card.className = "p-4 rounded-2xl cursor-pointer flex items-center gap-4 relative overflow-hidden group hover:shadow-[0_8px_25px_rgba(212,175,55,0.15)] transition-all transform hover:-translate-y-1 bg-[#0D131A] border border-[#D4AF37]/30 shadow-lg";
+            card.className = "p-4 rounded-[20px] cursor-pointer flex items-center gap-4 relative overflow-hidden group hover:shadow-[0_8px_25px_rgba(212,175,55,0.25)] transition-all transform hover:-translate-y-1 bg-[rgba(20,25,35,0.8)] backdrop-blur-[10px] border border-[#D4AF37]/30 shadow-lg";
             
             // 加入 VIP 票券邊緣的半圓形缺口 (Ticket Notch) 效果
             const notchLeft = document.createElement('div');
@@ -2431,9 +2431,9 @@ function renderEventGrid(type) {
             let badge = '';
             // 優先顯示已報名，即使已截止
             if (appState.myRegistrations.includes(e.id)) {
-                badge = '<span class="absolute top-0 right-0 bg-gradient-to-r from-[#D4AF37] to-[#A67C00] text-[#0D131A] text-[10px] px-3 py-1 rounded-bl-lg font-extrabold shadow-[0_2px_8px_rgba(212,175,55,0.4)] border-b border-l border-[#F8E19B]/30">已報名</span>';
+                badge = '<span class="absolute top-0 right-0 bg-black/40 backdrop-blur-md border-b border-l border-[#D4AF37]/30 text-[#D4AF37] px-3 py-1 rounded-bl-[20px] font-bold shadow-sm text-[10px]">已報名</span>';
             } else if (e.deadline && new Date() > new Date(e.deadline)) {
-                badge = '<span class="absolute top-0 right-0 bg-[#3A1C1C] border-b border-l border-red-500/30 text-red-400 text-[10px] px-3 py-1 rounded-bl-lg font-bold">已截止</span>';
+                badge = '<span class="absolute top-0 right-0 bg-[#3A1C1C] border-b border-l border-red-500/30 text-red-400 text-[10px] px-3 py-1 rounded-bl-[20px] font-bold">已截止</span>';
             }
 
             // ★ 倒數標記：距離活動還有幾天 (現代感膠囊標籤)
@@ -2463,13 +2463,13 @@ function renderEventGrid(type) {
             // 修改內部結構：加入右側虛線 (Ticket Perforation) 與更優雅的排版
             const innerHTMLStr = `
                 ${badge}
-                <div class="${bgClass} w-14 h-14 rounded-full flex items-center justify-center ${colorClass} shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-inner border border-[#D4AF37]/20 z-10 relative">
-                    <i data-lucide="${icon}" class="w-6 h-6"></i>
+                <div class="${bgClass} w-14 h-14 rounded-full flex items-center justify-center ${colorClass} shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-inner border border-[#D4AF37]/20 z-10 relative group-hover:shadow-[0_0_15px_currentColor]">
+                    <i data-lucide="${icon}" class="w-6 h-6 drop-shadow-[0_0_8px_currentColor]"></i>
                 </div>
                 
                 <div class="flex-1 min-w-0 pr-4 border-r border-dashed border-[#D4AF37]/30 z-10 relative py-1">
-                    <h3 class="font-bold text-[#EFECE5] text-lg mb-1 leading-snug truncate group-hover:text-[#D4AF37] transition-colors">${escapeHtml(e.name)}</h3>
-                    <div class="flex items-center gap-3 text-xs text-gray-400 mb-1.5">
+                    <h3 class="font-black text-[#EFECE5] text-xl mb-1 leading-snug truncate group-hover:text-[#D4AF37] transition-colors">${escapeHtml(e.name)}</h3>
+                    <div class="flex items-center gap-3 text-xs text-[#A0A0A0] mb-1.5">
                         <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-[#A67C00]"></i> ${formatDateShort(e.time)}</span>
                         <span class="flex items-center gap-1 truncate"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-[#A67C00]"></i> ${escapeHtml(e.location)}</span>
                     </div>
@@ -2480,7 +2480,7 @@ function renderEventGrid(type) {
                 </div>
                 
                 <div class="shrink-0 w-10 flex items-center justify-center z-10 relative">
-                    <div class="w-8 h-8 rounded-full bg-[#D4AF37]/10 flex items-center justify-center group-hover:bg-[#D4AF37] transition-colors">
+                    <div class="w-8 h-8 rounded-full bg-[#D4AF37]/10 flex items-center justify-center group-hover:bg-[#D4AF37] group-hover:shadow-[0_0_15px_rgba(212,175,55,0.6)] transition-all">
                         <i data-lucide="chevron-right" class="w-5 h-5 text-[#D4AF37] group-hover:text-[#0D131A] transition-colors"></i>
                     </div>
                 </div>
