@@ -33,13 +33,10 @@
     <link rel="stylesheet" href="style.css?v=20260623_2">
     <style>
         .vip-filter-container {
-            background: rgba(10, 5, 0, 0.4);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            /* 原理一：淺淺的凹陷效果，融入木紋背景 */
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.1);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-            border-top: 1px solid rgba(0, 0, 0, 0.2);
+            background: transparent;
+            /* 移除所有底框與陰影，讓按鈕直接浮在木紋背景上 */
+            box-shadow: none;
+            border: none;
             margin-left: -1rem;
             margin-right: -1rem;
             padding-left: 1rem;
@@ -48,15 +45,17 @@
         .vip-filter-tab {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            color: #A0AEC0;
+            color: rgba(255, 255, 255, 0.5); /* 中性灰白，避免偏藍 */
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             /* 原理一：微微凸起 */
             box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
         .vip-filter-tab:hover {
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.15);
-            color: #EFECE5;
+            color: rgba(255, 255, 255, 0.9);
         }
         .vip-filter-tab.active {
             /* 原理二：金屬質感漸層 */
@@ -77,6 +76,17 @@
             background-size: cover !important;
             background-blend-mode: overlay !important;
             box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.15) !important;
+        }
+        
+        /* 全域修復：所有按鈕預設需有手指游標，並移除手機點擊藍色閃爍 */
+        button, a, select, input {
+            -webkit-tap-highlight-color: transparent;
+        }
+        button {
+            cursor: pointer;
+        }
+        button:disabled {
+            cursor: not-allowed !important;
         }
     </style>
 
