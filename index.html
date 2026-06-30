@@ -31,6 +31,55 @@
     <!-- 新增：引入 Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <link rel="stylesheet" href="style.css?v=20260623_2">
+    <style>
+        .vip-filter-container {
+            background: linear-gradient(to bottom, rgba(26, 20, 15, 0.85), rgba(15, 10, 5, 0.95)), url('images/leather-bg.jpg');
+            background-size: cover;
+            background-blend-mode: overlay;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            /* 原理一：凹陷效果 */
+            box-shadow: inset 0 6px 10px rgba(0,0,0,0.8), inset 0 -1px 1px rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+            margin-left: -1rem;
+            margin-right: -1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        .vip-filter-tab {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #A0AEC0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* 原理一：微微凸起 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+        }
+        .vip-filter-tab:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #EFECE5;
+        }
+        .vip-filter-tab.active {
+            /* 原理二：金屬質感漸層 */
+            background: linear-gradient(135deg, #fffcf0 0%, #e8d39e 25%, #bfa87a 45%, #ffffff 55%, #bf9e68 80%, #fff3ca 100%) !important;
+            border-color: #fffcf0 !important;
+            color: #1A0F0A !important;
+            font-weight: 900 !important;
+            /* 原理一：明顯的凸起陰影 */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.8) !important;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+        /* 將 premium-dark-card 的覆寫移至此處，避免更動 style.css */
+        .premium-dark-card {
+            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+            border-radius: 20px !important;
+            background: linear-gradient(to bottom, rgba(40,45,55,0.9), rgba(15,20,25,0.95)), url('images/leather-bg.jpg') !important;
+            background-size: cover !important;
+            background-blend-mode: overlay !important;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.15) !important;
+        }
+    </style>
 
 <link rel="icon" type="image/png" href="images/logo.jpg">
 </head>
@@ -139,46 +188,7 @@
 
             <!-- 分類 Tab (原 view-event-list 內容) -->
             <div id="active-event-section">
-                <style>
-                    .vip-filter-container {
-                        background: linear-gradient(to bottom, rgba(26, 20, 15, 0.85), rgba(15, 10, 5, 0.95)), url('images/leather-bg.jpg');
-                        background-size: cover;
-                        background-blend-mode: overlay;
-                        backdrop-filter: blur(12px);
-                        -webkit-backdrop-filter: blur(12px);
-                        /* 原理一：凹陷效果 */
-                        box-shadow: inset 0 6px 10px rgba(0,0,0,0.8), inset 0 -1px 1px rgba(255,255,255,0.05);
-                        border-bottom: 1px solid rgba(0, 0, 0, 0.8);
-                        margin-left: -1rem;
-                        margin-right: -1rem;
-                        padding-left: 1rem;
-                        padding-right: 1rem;
-                    }
-                    .vip-filter-tab {
-                        background: rgba(255, 255, 255, 0.03);
-                        border: 1px solid rgba(255, 255, 255, 0.05);
-                        color: #A0AEC0;
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        /* 原理一：微微凸起 */
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
-                    }
-                    .vip-filter-tab:hover {
-                        background: rgba(255, 255, 255, 0.08);
-                        border-color: rgba(255, 255, 255, 0.15);
-                        color: #EFECE5;
-                    }
-                    .vip-filter-tab.active {
-                        /* 原理二：金屬質感漸層 */
-                        background: linear-gradient(135deg, #fffcf0 0%, #e8d39e 25%, #bfa87a 45%, #ffffff 55%, #bf9e68 80%, #fff3ca 100%) !important;
-                        border-color: #fffcf0 !important;
-                        color: #1A0F0A !important;
-                        font-weight: 900 !important;
-                        /* 原理一：明顯的凸起陰影 */
-                        box-shadow: 0 8px 16px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.8) !important;
-                        text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-                        transform: translateY(-2px);
-                    }
-                </style>
+
                 <div id="filter-container"
                     class="vip-filter-container flex gap-3 overflow-x-auto hide-scrollbar pb-4 sticky top-[56px] pt-4 z-40 mb-4">
                     <button onclick="switchCategory('all')" id="tab-all"
