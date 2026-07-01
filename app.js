@@ -1449,24 +1449,40 @@ window.onload = async function () {
             if (pullDist > 60 && !_pullIndicator) {
                 _pullIndicator = document.createElement('div');
                 _pullIndicator.id = 'pull-refresh-indicator';
-                _pullIndicator.style.cssText = 'text-align:center;padding:10px;font-size:13px;color:#06c755;font-weight:600;';
-                _pullIndicator.textContent = '⎆ 釋放刷新活動列表';
+                _pullIndicator.style.cssText = 'text-align:center;padding:10px;font-size:13px;color:#06c755;font-weight:600;display:flex;justify-content:center;align-items:center;gap:6px;transition:all 0.3s ease;overflow:hidden;';
+                _pullIndicator.innerHTML = '<i data-lucide="arrow-down" style="width:16px;height:16px;"></i><span>釋放刷新活動列表</span>';
                 homeView.insertBefore(_pullIndicator, homeView.firstChild);
+                if (window.lucide) window.lucide.createIcons({ root: _pullIndicator });
             }
         }, { passive: true });
 
         homeView.addEventListener('touchend', async () => {
             if (_pullIndicator) {
-                _pullIndicator.textContent = '… 刷新中';
+                _pullIndicator.innerHTML = '<i data-lucide="loader-2" class="animate-spin" style="width:16px;height:16px;"></i><span>刷新中...</span>';
+                if (window.lucide) window.lucide.createIcons({ root: _pullIndicator });
                 try {
                     await fetchEvents();
                     renderEventGrid(appState.currentCategory || 'all');
-                    showToast('✅ 已刷新');
+                    _pullIndicator.innerHTML = '<i data-lucide="check" style="width:16px;height:16px;"></i><span>已刷新</span>';
+                    if (window.lucide) window.lucide.createIcons({ root: _pullIndicator });
                 } catch (e) {
-                    showToast('刷新失敗');
+                    _pullIndicator.innerHTML = '<i data-lucide="x" style="width:16px;height:16px;color:red;"></i><span style="color:red;">刷新失敗</span>';
+                    if (window.lucide) window.lucide.createIcons({ root: _pullIndicator });
                 }
-                _pullIndicator.remove();
-                _pullIndicator = null;
+                
+                setTimeout(() => {
+                    if (_pullIndicator) {
+                        _pullIndicator.style.height = '0px';
+                        _pullIndicator.style.padding = '0px';
+                        _pullIndicator.style.opacity = '0';
+                        setTimeout(() => {
+                            if (_pullIndicator) {
+                                _pullIndicator.remove();
+                                _pullIndicator = null;
+                            }
+                        }, 300);
+                    }
+                }, 800);
             }
             _isPulling = false;
         }, { passive: true });
