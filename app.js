@@ -4115,7 +4115,7 @@ async function generateEventCanvas(e, data, stats) {
       .rivet.bl { bottom: 8px; left: 8px; }
       .rivet.br { bottom: 8px; right: 8px; }
       .inner-box {
-          background-color: rgba(26, 36, 54, 0.6);
+          background-color: rgba(0, 0, 0, 0.4);
           border: 1px solid rgba(212, 175, 55, 0.2);
           border-radius: 8px;
           box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.3);
@@ -4127,7 +4127,8 @@ async function generateEventCanvas(e, data, stats) {
       img.header-icon-img { width: 3em; height: 3em; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.8)); margin-right: 0.5em; }
       .header-card {
         padding: 1.25em; display: flex; align-items: center; justify-content: center; gap: 0.75em;
-        background: linear-gradient(180deg, rgba(42,56,82,1) 0%, rgba(26,36,54,1) 100%);
+        background: linear-gradient(180deg, rgba(40,45,55,0.9) 0%, rgba(15,20,25,0.95) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.3);
         border-radius: 8px;
       }
       .header-icon { font-size: 2.5em; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); padding-bottom: 4px; margin-right: 0.5em; }
@@ -4138,7 +4139,8 @@ async function generateEventCanvas(e, data, stats) {
       }
       .info-card {
         padding: 1.25em;
-        background: linear-gradient(180deg, rgba(34,46,68,1) 0%, rgba(20,28,42,1) 100%);
+        background: linear-gradient(180deg, rgba(30,35,40,0.9) 0%, rgba(10,15,20,0.95) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.2);
         border-radius: 8px;
       }
       .info-list { list-style: none; padding: 0; margin: 0; font-size: 0.9em; }
@@ -4152,10 +4154,11 @@ async function generateEventCanvas(e, data, stats) {
       .list-card {
         padding: 1.25em;
         border-radius: 8px;
-        background-color: rgba(26,36,54,1);
+        background-color: rgba(20,25,30,0.95);
+        border: 1px solid rgba(212, 175, 55, 0.2);
         background-image: 
-          linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03)),
-          linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03));
+          linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.02) 75%, rgba(255,255,255,0.02)),
+          linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.02) 75%, rgba(255,255,255,0.02));
         background-size: 40px 40px;
         background-position: 0 0, 20px 20px;
       }
@@ -4170,7 +4173,7 @@ async function generateEventCanvas(e, data, stats) {
       .item-detail { font-size: 0.85em; color: #94A3B8; margin-left: 2em; padding-top: 0.2em; line-height: 1.4; }
       .tag { font-size: 0.95em; font-weight: bold; margin-left: 0.5em; display: inline-flex; align-items: center; letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
       .tag-orange { color: #F97316; } .tag-pink { color: #EC4899; } .tag-purple { color: #D8B4FE; } .tag-gold { color: #EAB308; }
-      .sponsor-card { padding: 1.25em; background: linear-gradient(180deg, rgba(34,46,68,1) 0%, rgba(20,28,42,1) 100%); border-radius: 8px; margin-bottom: 0; }
+      .sponsor-card { padding: 1.25em; background: linear-gradient(180deg, rgba(30,35,40,0.9) 0%, rgba(10,15,20,0.95) 100%); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; margin-bottom: 0; }
       .footer-wrapper { width: 100%; text-align: center; margin-top: 1em; position: relative; z-index: 10; }
       .total-count { color: #D4AF7A; font-weight: bold; font-size: 1.2em; letter-spacing: 0.15em; margin-bottom: 0.5em; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
       .copyright { color: #A89580; font-size: 0.8em; letter-spacing: 0.1em; }
