@@ -3039,8 +3039,16 @@ function toggleHistoryView() {
             const fragment = document.createDocumentFragment();
             history.forEach(e => {
                 const div = document.createElement('div');
-                // 復刻首頁活動小卡外觀，但加上 grayscale 與降低透明度來區分「歷史感」
-                div.className = "premium-dark-card p-4 rounded-xl cursor-pointer flex justify-between items-center transition-all duration-300 hover:scale-[1.02] hover:grayscale-0 opacity-80 hover:opacity-100 grayscale relative overflow-hidden";
+                // 加上 history-card 方便在 CSS 中管理 hover 特效，同時先寫上 inline style 作為保底
+                div.className = "premium-dark-card p-4 rounded-xl cursor-pointer flex justify-between items-center relative overflow-hidden history-card";
+                div.style.transition = "all 0.3s ease";
+                div.style.opacity = "0.75";
+                div.style.filter = "grayscale(100%)";
+                
+                // 滑鼠互動特效
+                div.onmouseenter = () => { div.style.opacity = "1"; div.style.filter = "grayscale(0%)"; div.style.transform = "scale(1.02)"; };
+                div.onmouseleave = () => { div.style.opacity = "0.75"; div.style.filter = "grayscale(100%)"; div.style.transform = "scale(1)"; };
+                
                 div.onclick = () => openHistoryImage(e.id);
                 
                 // 加入 VIP 票券邊緣的半圓形缺口 (Ticket Notch) 效果
@@ -3068,7 +3076,8 @@ function toggleHistoryView() {
                             </div>
                         </div>
                     </div>
-                    <span class="text-[10px] bg-black/40 text-gray-400 border border-gray-600/50 px-3 py-1 rounded-bl-[12px] rounded-tr-[12px] font-bold shadow-sm self-start -mt-2 -mr-2">已結束</span>
+                    <!-- 修正為與首頁完全相同的絕對定位右上角標籤 -->
+                    <span class="absolute top-0 right-0 bg-black/60 backdrop-blur-md border-b border-l border-gray-500/30 text-gray-400 px-3 py-1 rounded-bl-[20px] font-bold shadow-sm text-[10px]">已結束</span>
                 `;
                 div.appendChild(content);
                 fragment.appendChild(div);
