@@ -3039,15 +3039,38 @@ function toggleHistoryView() {
             const fragment = document.createDocumentFragment();
             history.forEach(e => {
                 const div = document.createElement('div');
-                div.className = "leather-card p-4 rounded-xl cursor-pointer flex justify-between items-center transition-all hover:scale-[1.02]";
+                // 復刻首頁活動小卡外觀，但加上 grayscale 與降低透明度來區分「歷史感」
+                div.className = "premium-dark-card p-4 rounded-xl cursor-pointer flex justify-between items-center transition-all duration-300 hover:scale-[1.02] hover:grayscale-0 opacity-80 hover:opacity-100 grayscale relative overflow-hidden";
                 div.onclick = () => openHistoryImage(e.id);
-                div.innerHTML = `
-                    <div>
-                        <h4 class="font-bold text-[#EFECE5]">${e.name}</h4>
-                        <div class="text-xs text-white/50 mt-0.5">主辦：${e.organizer || '未指定'}</div>
-                        <div class="text-xs text-white/40 mt-1">${formatDateShort(e.time)}</div>
+                
+                // 加入 VIP 票券邊緣的半圓形缺口 (Ticket Notch) 效果
+                const notchLeft = document.createElement('div');
+                notchLeft.className = "absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-50 rounded-full border-r border-gray-500/30 shadow-inner z-10";
+                
+                const notchRight = document.createElement('div');
+                notchRight.className = "absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-50 rounded-full border-l border-gray-500/30 shadow-inner z-10";
+                
+                div.appendChild(notchLeft);
+                div.appendChild(notchRight);
+                
+                const content = document.createElement('div');
+                content.className = "w-full flex justify-between items-center relative z-10";
+                content.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                            <i data-lucide="archive" class="w-5 h-5 text-gray-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-300 text-sm">${e.name}</h4>
+                            <div class="text-xs text-gray-500 mt-0.5 flex items-center gap-2">
+                                <span><i data-lucide="calendar" class="w-3 h-3 inline pb-0.5"></i> ${formatDateShort(e.time)}</span>
+                                <span><i data-lucide="user" class="w-3 h-3 inline pb-0.5"></i> ${e.organizer || '未指定'}</span>
+                            </div>
+                        </div>
                     </div>
-                    <span class="text-xs bg-white/10 text-[#D4AF37] border border-[#D4AF37]/30 px-2 py-1 rounded-full">已結束</span>`;
+                    <span class="text-[10px] bg-black/40 text-gray-400 border border-gray-600/50 px-3 py-1 rounded-bl-[12px] rounded-tr-[12px] font-bold shadow-sm self-start -mt-2 -mr-2">已結束</span>
+                `;
+                div.appendChild(content);
                 fragment.appendChild(div);
             });
             list.appendChild(fragment);
