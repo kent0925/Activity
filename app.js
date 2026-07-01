@@ -1449,7 +1449,7 @@ window.onload = async function () {
             if (pullDist > 60 && !_pullIndicator) {
                 _pullIndicator = document.createElement('div');
                 _pullIndicator.id = 'pull-refresh-indicator';
-                _pullIndicator.style.cssText = 'text-align:center;padding:10px;font-size:13px;color:#06c755;font-weight:600;display:flex;justify-content:center;align-items:center;gap:6px;transition:all 0.3s ease;overflow:hidden;';
+                _pullIndicator.style.cssText = 'text-align:center;padding:10px;font-size:13px;color:#D4AF37;font-weight:600;display:flex;justify-content:center;align-items:center;gap:6px;transition:all 0.3s ease;overflow:hidden;';
                 _pullIndicator.innerHTML = '<i data-lucide="arrow-down" style="width:16px;height:16px;"></i><span>釋放刷新活動列表</span>';
                 homeView.insertBefore(_pullIndicator, homeView.firstChild);
                 if (window.lucide) window.lucide.createIcons({ root: _pullIndicator });
